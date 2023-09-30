@@ -115,13 +115,19 @@ class DataNotityType {
 // 代理请求类型定义
 class HttpRequestType {
 // 目标地址
-  late String uri;
+  String uri;
   // 请求方法
-  late String method;
+  String method;
   // 请求头
-  late Map<String, List<String>> header;
+  Map<String, String> header;
   // 请求体
-  late String content;
+  String content;
+  HttpRequestType({
+    required this.uri,
+    required this.method,
+    required this.header,
+    required this.content,
+  });
 }
 
 // Http请求响应类型定义
@@ -1802,6 +1808,8 @@ class FormEditData {
   /// 操作时间
 
   FormEditData({
+    required this.before,
+    required this.after,
     this.nodeId,
     this.creator,
     this.createTime,
@@ -2791,38 +2799,72 @@ class DirectoryContent {
   });
 }
 
-class Edge {
-  String id; // 主键
-  String start; // 开始
-  String end; // 结束
-
-  Edge({
-    required this.id,
-    required this.start,
-    required this.end,
-  });
-}
-
-class Mapping {
+class Mapping extends Node {
   String source; // 源
   String target; // 目标
-  List<Mapping> mappings; // 映射列表
+  List<SubMapping> mappings; // 映射列表
 
-  Mapping({
+  Mapping(
+      {required this.source,
+      required this.target,
+      required this.mappings,
+      required super.id,
+      required super.code,
+      required super.name,
+      required super.typeName,
+      super.preScripts,
+      super.postScripts,
+      super.status});
+}
+
+class SubMapping {
+  String source; // 源
+  String target; // 目标
+  List<SubMapping>? mappings; // 映射列表
+
+  SubMapping({
     required this.source,
     required this.target,
-    required this.mappings,
+    this.mappings,
   });
 }
 
-class Store {
-  String formId; // 表单 ID
+// 存储
+class Store extends Node {
   String directoryId; // 目录 ID
+  String workId; // 办事 ID
+  List<String> formIds; // 表单 ID
+  bool directIs; // 是否直接存入平台
 
   Store({
-    required this.formId,
+    required this.formIds,
     required this.directoryId,
+    required this.workId,
+    required this.directIs,
+    required super.id,
+    required super.name,
+    required super.typeName,
+    required super.code,
+    super.preScripts,
+    super.postScripts,
+    super.status,
   });
+}
+
+///子配置
+class SubTransfer extends Node {
+  // 子配置 ID
+  String nextId;
+
+  SubTransfer(
+      {required this.nextId,
+      required super.code,
+      required super.id,
+      required super.name,
+      required super.typeName,
+      super.preScripts,
+      super.postScripts,
+      super.status});
 }
 
 class Selection {
@@ -2861,6 +2903,74 @@ class Script {
   });
 }
 
+/// 图状态
+enum GStatus {
+  editable("Editable"),
+  viewable("Viewable"),
+  running("Running"),
+  completed("Completed"),
+  error("Error");
+
+  const GStatus(this.label);
+
+  final String label;
+
+  static String getName(GraphStatus stasus) {
+    return stasus.label;
+  }
+}
+
+/// 图事件
+enum GEvent {
+  editRun("EditRun"),
+  viewRun("ViewRun"),
+  throw_("Throw"),
+  completed("Completed");
+
+  const GEvent(this.label);
+
+  final String label;
+
+  static String getName(GraphStatus stasus) {
+    return stasus.label;
+  }
+}
+
+/// 节点状态
+enum NStatus {
+  editable("Editable"),
+  viewable("Viewable"),
+  running("Running"),
+  completed("Completed"),
+  error("Error");
+
+  const NStatus(this.label);
+
+  final String label;
+
+  static String getName(GraphStatus stasus) {
+    return stasus.label;
+  }
+}
+
+/// 节点类型
+enum NodeType {
+  form("表单"),
+  table("表格"),
+  request("请求"),
+  subGraph("子图"),
+  mapping("映射"),
+  storage("存储");
+
+  const NodeType(this.label);
+
+  final String label;
+
+  static String getName(GraphStatus stasus) {
+    return stasus.label;
+  }
+}
+
 enum GraphStatus {
   editable("Editable"),
   viewable("Viewable"),
@@ -2893,21 +3003,6 @@ enum NodeStatus {
   }
 }
 
-enum NodeType {
-  request("Request"),
-  link("Link"),
-  mapping("Mapping"),
-  store("Store");
-
-  const NodeType(this.label);
-
-  final String label;
-
-  static String getName(NodeType type) {
-    return type.label;
-  }
-}
-
 enum Event {
   edit("Edit"),
   view("View"),
@@ -2935,157 +3030,168 @@ enum ScriptPos {
   }
 }
 
-class Node<T> {
+class Node {
   String id; // 主键
+  String code; // 编码
   String name; // 名称
   String typeName; // 类型
-  List<Script> preScripts; // 前置脚本
-  List<Script> postScripts; // 后置脚本
-  T data; // 数据（请求、子链接、映射、存储）
+  String? preScripts; // 前置脚本
+  String? postScripts; // 后置脚本
+  NStatus? status; // 后置脚本
 
   Node({
     required this.id,
+    required this.code,
     required this.name,
     required this.typeName,
-    required this.preScripts,
-    required this.postScripts,
+    this.preScripts,
+    this.postScripts,
+    this.status,
+  });
+}
+
+class Edge {
+  String id; // 主键
+  String start; // 开始
+  String end; // 结束
+
+  Edge({
+    required this.id,
+    required this.start,
+    required this.end,
+  });
+}
+// 请求
+
+class Request extends Node {
+  HttpRequestType data; //
+
+  Request(
+      {required this.data,
+      required super.id,
+      required super.code,
+      required super.name,
+      required super.typeName,
+      super.preScripts,
+      super.postScripts,
+      super.status});
+}
+
+class Tables extends Node {
+  List<String> formIds; //
+  FileItemModel? file; //
+
+  Tables(
+      {required this.formIds,
+      this.file,
+      required super.id,
+      required super.code,
+      required super.name,
+      required super.typeName,
+      super.preScripts,
+      super.postScripts,
+      super.status});
+}
+
+class Sheet<T> {
+  String name; //名称
+  int headers; //表头行数
+  List<Column> columns; //列信息
+  List<T> data; //
+  //
+
+  Sheet({
+    required this.name,
+    required this.headers,
+    required this.columns,
     required this.data,
   });
 }
 
-//export type RunNode<T> = NodeStatus & Node<T>;
-class RunNode<T> extends Node<T> {
-  RunNode({
-    required String id,
-    required String name,
-    required String typeName,
-    required List<Script> preScripts,
-    required List<Script> postScripts,
-    required T data,
-  }) : super(
-          id: id,
-          name: name,
-          typeName: typeName,
-          preScripts: preScripts,
-          postScripts: postScripts,
-          data: data,
-        );
-}
+class Column {
+  String title; //字段名称
+  String dataIndex; //标识符
+  String valueType; //类型
+  bool? hide; //是否隐藏
+  //
 
-class RequestNode extends Node<HttpRequestType> {
-  RequestNode({
-    required String id,
-    required String name,
-    required String typeName,
-    required List<Script> preScripts,
-    required List<Script> postScripts,
-    required HttpRequestType data,
-  }) : super(
-          id: id,
-          name: name,
-          typeName: typeName,
-          preScripts: preScripts,
-          postScripts: postScripts,
-          data: data,
-        );
-}
-
-class LinkNode extends Node<String> {
-  LinkNode({
-    required String id,
-    required String name,
-    required String typeName,
-    required List<Script> preScripts,
-    required List<Script> postScripts,
-    required String data,
-  }) : super(
-          id: id,
-          name: name,
-          typeName: typeName,
-          preScripts: preScripts,
-          postScripts: postScripts,
-          data: data,
-        );
-}
-
-class ScriptNode extends Node<Script> {
-  ScriptNode({
-    required String id,
-    required String name,
-    required String typeName,
-    required List<Script> preScripts,
-    required List<Script> postScripts,
-    required Script data,
-  }) : super(
-          id: id,
-          name: name,
-          typeName: typeName,
-          preScripts: preScripts,
-          postScripts: postScripts,
-          data: data,
-        );
-}
-
-class MappingNode extends Node<Mapping> {
-  MappingNode({
-    required String id,
-    required String name,
-    required String typeName,
-    required List<Script> preScripts,
-    required List<Script> postScripts,
-    required Mapping data,
-  }) : super(
-          id: id,
-          name: name,
-          typeName: typeName,
-          preScripts: preScripts,
-          postScripts: postScripts,
-          data: data,
-        );
-}
-
-class StoreNode extends Node<Store> {
-  StoreNode({
-    required String id,
-    required String name,
-    required String typeName,
-    required List<Script> preScripts,
-    required List<Script> postScripts,
-    required Store data,
-  }) : super(
-          id: id,
-          name: name,
-          typeName: typeName,
-          preScripts: preScripts,
-          postScripts: postScripts,
-          data: data,
-        );
+  Column({
+    required this.title,
+    required this.dataIndex,
+    required this.valueType,
+    this.hide,
+  });
 }
 
 class KeyValue {
   String? key;
 }
 
+class Shift<T, S> {
+  S start;
+  T event;
+  S end;
+
+  Shift({required this.start, required this.event, required this.end});
+}
+
 // 迁移配置
 class XTransfer extends XStandard {
-  List<Environment> envs; // 环境集合
-  String? curEnv; // 当前环境
-  List<Node<dynamic>> nodes; // 节点集合
-  List<Edge> edges; // 边集合
-  dynamic graph; // 图数据
-
+  // 环境集合
+  List<Environment> envs;
+  // 当前环境
+  String? curEnv;
+  // 节点集合
+  List<Node> nodes;
+  // 边集合
+  List<Edge> edges;
+  // 图数据
+  late dynamic graph;
+  // 是否自循环
+  final bool isSelfCirculation;
+  // 退出循环脚本
+  final String judge;
   XTransfer({
     required this.envs,
     this.curEnv,
     required this.nodes,
     required this.edges,
     required this.graph,
-    required super.id,
-    required String name,
-    required String typeName,
-    required List<Script> preScripts,
-    required List<Script> postScripts,
+    required this.isSelfCirculation,
+    required this.judge,
     required super.directoryId,
+    required super.id,
+  });
+}
+
+// 任务
+class XTask {
+  // 唯一标识
+  String id;
+  // 当前状态
+  GStatus status;
+  // 环境
+  Environment? env;
+  // 节点
+  List<Node> nodes;
+  // 边
+  List<Edge> edges;
+  // 图数据
+  dynamic graph;
+  // 开始时间
+  DateTime startTime;
+  // 结束时间
+  DateTime? endTime;
+
+  XTask({
+    required this.id,
+    required this.status,
+    this.env,
+    required this.nodes,
+    required this.edges,
+    required this.graph,
+    required this.startTime,
+    this.endTime,
   });
 }
 

@@ -12,18 +12,25 @@ import 'package:orginone/main.dart';
 import 'apply.dart';
 
 abstract class IWork extends IFileInfo<XWorkDefine> {
-  late IApplication application;
-  late List<IForm> forms;
+  /// 主表
+  late List<IForm> primaryForms;
 
+  ///子表
+  late List<IForm> detailForms;
+
+  ///应用
+  late IApplication application;
+
+  ///流程节点
   WorkNodeModel? node;
 
   // 更新办事定义的实现
   Future<bool> update(WorkDefineModel req);
 
+  ///加载事项定义节点
   Future<WorkNodeModel?> loadWorkNode({bool reload = false});
 
-  Future<List<IForm>> loadWorkForms({bool reload = false});
-
+  ///生成办事申请单
   Future<IWorkApply?> createApply();
 }
 
