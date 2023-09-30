@@ -196,8 +196,8 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
   SysFileInfo(FileItemModel metadata, IDirectory directory)
       : filedata = metadata,
         super(
-          fileToEntity(
-              metadata, directory.metadata.belongId, directory.metadata.belong),
+          fileToEntity(metadata, directory.metadata.belongId!,
+              directory.metadata.belong),
           directory,
         );
 

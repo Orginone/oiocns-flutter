@@ -1,6 +1,5 @@
 import 'package:intl/intl.dart';
 
-
 class LPDateUtils {
   static int getNowMs() {
     return DateTime.now().millisecondsSinceEpoch;
@@ -18,8 +17,8 @@ class LPDateUtils {
   static bool beforeMonth({required DateTime current, required DateTime max}) {
     if (current.year < max.year) {
       return true;
-    }else if (current.year == max.year) {
-      if(current.month < max.month){
+    } else if (current.year == max.year) {
+      if (current.month < max.month) {
         return true;
       }
     }
@@ -29,8 +28,8 @@ class LPDateUtils {
   static bool afterMonth({required DateTime current, required DateTime min}) {
     if (current.year > min.year) {
       return true;
-    }else if (current.year == min.year) {
-      if(current.month > min.month){
+    } else if (current.year == min.year) {
+      if (current.month > min.month) {
         return true;
       }
     }
@@ -39,20 +38,16 @@ class LPDateUtils {
 
   /// 获取本月第一天
   static DateTime getMonthFirstDay({DateTime? date}) {
-    if(date == null){
-      date = DateTime.now();
-    }
+    date ??= DateTime.now();
     return DateTime(date.year, date.month, 1);
   }
 
   /// 获取本月最后一天
   static DateTime getMonthLastDay({DateTime? date}) {
-    if(date == null){
-      date = DateTime.now();
-    }
+    date ??= DateTime.now();
     int d = getDayCounts(date.month);
     return DateTime(date.year, date.month, d)
-        .add(Duration(days: 1, minutes: -1,seconds: 59));
+        .add(const Duration(days: 1, minutes: -1, seconds: 59));
   }
 
   /// 获取一个月有多少天
@@ -94,11 +89,11 @@ class LPDateUtils {
 
 extension RemoveSpace on String {
   String get removeSpace {
-    if (this == null || this.isEmpty) {
+    if (isEmpty) {
       return this;
     }
     String breakWord = '';
-    this.runes.forEach((element) {
+    runes.forEach((element) {
       breakWord += String.fromCharCode(element);
       breakWord += '\u200B';
     });
@@ -108,9 +103,9 @@ extension RemoveSpace on String {
 
 extension Format on DateTime {
   String format({String format = "yyyy-MM-dd"}) {
-     if(this == null){
-       return "";
-     }
+    if (this == null) {
+      return "";
+    }
     return DateFormat(format, "zh_CN").format(this);
   }
 
@@ -131,14 +126,14 @@ extension Format on DateTime {
   }
 
   static String _twoDigits(int n) {
-    if (n >= 10) return "${n}";
-    return "0${n}";
+    if (n >= 10) return "$n";
+    return "0$n";
   }
 
   static String _threeDigits(int n) {
-    if (n >= 100) return "${n}";
-    if (n >= 10) return "0${n}";
-    return "00${n}";
+    if (n >= 100) return "$n";
+    if (n >= 10) return "0$n";
+    return "00$n";
   }
 
   static String _fourDigits(int n) {
