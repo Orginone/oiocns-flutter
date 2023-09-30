@@ -468,8 +468,7 @@ class XAuthority extends XEntity {
 }
 
 class XDirectory extends XStandard {
-  late String parentId; // 父目录ID
-
+  String? parentId; // 父目录ID
   List<XProperty>? propertys; // 目录下的属性
   List<XForm>? forms; // 目录下的单
   List<XSpecies>? species; // 目录下的分类
@@ -478,7 +477,7 @@ class XDirectory extends XStandard {
   List<XDirectory>? nodes; // 目录的结构
 
   XDirectory({
-    required this.parentId,
+    this.parentId,
     this.propertys,
     this.forms,
     this.species,
@@ -1616,6 +1615,92 @@ class XWorkDefineArray {
     json["limit"] = limit;
     json["total"] = total;
     json["result"] = result;
+    return json;
+  }
+}
+
+class Node {
+  // 雪花ID
+  String? id;
+
+  // 前端定义的编码 代替原先的NodeId
+  String? code;
+
+  // 节点类型
+  String? type;
+
+  // 节点名称
+  String? name;
+
+  // 审批数量
+  int? num;
+
+  // 节点审批操作人类型 暂只支持 '角色'
+  String? destType;
+
+  // 节点审批操作Id 如 '角色Id'
+  String? destId;
+
+  // 节点审批操作名称 如 '角色名称'
+  String? destName;
+
+  // 子节点
+  Node? children;
+
+  // 节点归属
+  String? belongId;
+
+  //构造方法
+  Node({
+    required this.id,
+    required this.code,
+    required this.type,
+    required this.name,
+    required this.num,
+    required this.destType,
+    required this.destId,
+    required this.destName,
+    required this.children,
+    required this.belongId,
+  }); //通过JSON构造
+  Node.fromJson(Map<String, dynamic> json) {
+    id = json["id"];
+    code = json["code"];
+    belongId = json["belongId"];
+    type = json["type"];
+    name = json["name"];
+    num = json["num"];
+    destType = json["destType"];
+    destId = json["destId"];
+    destName = json["destName"];
+    children =
+        json["children"] != null ? Node.fromJson(json["children"]) : null;
+  }
+
+  //通过动态数组解析成List
+  static List<Node> fromList(List<Map<String, dynamic>> list) {
+    List<Node> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(Node.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["id"] = id;
+    json["code"] = code;
+    json["type"] = type;
+    json["belongId"] = belongId;
+    json["name"] = name;
+    json["num"] = num;
+    json["destType"] = destType;
+    json["destId"] = destId;
+    json["destName"] = destName;
+    json["children"] = children;
     return json;
   }
 }

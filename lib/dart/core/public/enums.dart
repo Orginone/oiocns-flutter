@@ -70,7 +70,8 @@ enum MessageType {
   video("视频"),
   voice("语音"),
   recall("撤回"),
-  notify('通知'); //ts还未实现
+  notify('通知'), //ts还未实现
+  uploading('upload'); //ts还未实现
 
   const MessageType(this.label);
 

@@ -59,7 +59,7 @@ class XObject<T extends Xbase> {
     return this._cache;
   }
 
-  Future<T> get<T>(String path) async {
+  Future<T?> get<T>(String path) async {
     if (!this._loaded) {
       await this.all();
     }
@@ -116,7 +116,7 @@ class XObject<T extends Xbase> {
   }
 
   void subscribe(dynamic data, Null Function(XCache data) param1,
-      {required String id}) {
+      {String? id}) {
     var kernel = KernelApi();
     kernel.on(
       '${this._target.belongId}-${id != '' || this._target.id != ''}-${this._objName}',

@@ -3164,6 +3164,7 @@ class XTransfer extends XStandard {
     required this.judge,
     required super.directoryId,
     required super.id,
+    required super.typeName,
   });
 }
 
