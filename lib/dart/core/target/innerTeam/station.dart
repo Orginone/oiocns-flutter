@@ -9,9 +9,11 @@ import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
-abstract class IStation implements ITeam {
+import '../person.dart';
+
+abstract class IStation extends ITeam {
   /// 设立岗位的单位
-  late ICompany company;
+  late ICompany companyspace;
 
   /// 岗位下的角色
   late List<XIdentity> identitys;
@@ -27,22 +29,42 @@ abstract class IStation implements ITeam {
 }
 
 class Station extends Team implements IStation {
-  Station(XTarget metadata, this.company)
-      : super(metadata, [metadata.belong?.name ?? '', '${metadata.typeName}群'],
-            space: company) {
+  Station(XTarget metadata, ICompany space)
+      : super([space.key], metadata, [space.id]) {
+    companyspace = space;
+    user = space.user;
     identitys = [];
-    directory = company.directory;
+    directory = companyspace.directory;
   }
 
   @override
-  late ICompany company;
+  late ICompany companyspace;
+
+  @override
+  late IPerson user;
+
+  @override
+  late IDirectory directory;
 
   @override
   late List<XIdentity> identitys;
 
+  final bool _identityLoaded = false;
+
+  // @override
+  // // TODO: implement chats
+  // List<IMsgChat> get chats => [this];
+
   @override
-  // TODO: implement chats
-  List<IMsgChat> get chats => [this];
+  Future<List<XIdentity>> loadIdentitys({bool? reload = false}) async {
+    if (!_identityLoaded || reload!) {
+      var res = await kernel.queryTeamIdentitys(IdReq(id: metadata.id!));
+      if (res.success) {
+        identitys = (res.data?.result ?? []);
+      }
+    }
+    return identitys;
+  }
 
   @override
   Future<ITeam?> createTarget(TargetModel data) async {
@@ -65,17 +87,6 @@ class Station extends Team implements IStation {
       company.stations.removeWhere((i) => i == this);
     }
     return res.success;
-  }
-
-  @override
-  Future<List<XIdentity>> loadIdentitys({bool reload = false}) async {
-    if (identitys.isEmpty || reload) {
-      var res = await kernel.queryTeamIdentitys(IdReq(id: metadata.id!));
-      if (res.success) {
-        identitys = (res.data?.result ?? []);
-      }
-    }
-    return identitys;
   }
 
   @override
@@ -143,4 +154,7 @@ class Station extends Team implements IStation {
   @override
   // TODO: implement locationKey
   String get locationKey => '';
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
