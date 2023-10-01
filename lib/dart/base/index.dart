@@ -1,11 +1,6 @@
 import 'dart:convert';
 
-import 'package:orginone/dart/base/common/uint.dart';
 import 'package:orginone/dart/base/model.dart';
-
-var pageAll = ({String filter = ''}) {
-  return PageModel(offset: 0, limit: Constants.maxUint16, filter: filter);
-};
 
 /// 解析头像
 var parseAvatar = (String? avatar) {

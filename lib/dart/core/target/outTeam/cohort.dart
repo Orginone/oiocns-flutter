@@ -1,50 +1,36 @@
-import 'package:flutter/material.dart';
-import 'package:flutter/src/material/popup_menu.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
-import 'package:orginone/main.dart';
 
-abstract class ICohort extends ITarget {}
+abstract class ICohort extends ITarget {
+  ICohort(super.metadata, super.directory, super.relations);
+}
 
 class Cohort extends Target implements ICohort {
-  Cohort(IBelong space, XTarget metadata)
-      : super(metadata, [metadata.belong?.name ?? '', metadata.typeName!],
-            space: space) {
-    speciesTypes.add(SpeciesType.market);
-  }
+  Cohort(this.metadata, this.space, this.relationId)
+      : super(
+          [space!.key],
+          metadata,
+          [relationId],
+          space: space,
+          user: space.user,
+        );
 
   @override
-  // TODO: implement chats
-  List<IMsgChat> get chats => [this];
-
+  XTarget metadata;
   @override
-  Future<void> deepLoad(
-      {bool reload = false, bool reloadContent = false}) async {
-    await Future.wait([
-      loadMembers(reload: reload),
-      directory.loadContent(reload: reloadContent)
-    ]);
-  }
-
+  late IBelong? space;
   @override
-  Future<bool> delete() async {
-    final res = await kernel.deleteTarget(IdReq(id: metadata.id!));
-    if (res.success) {
-      space.cohorts.removeWhere((i) => i == this);
-    }
-    return res.success;
-  }
+  String relationId;
 
   @override
   Future<bool> exit() async {
-    if (metadata.belongId != space.metadata.id) {
-      if (await removeMembers([space.user.metadata])) {
-        space.cohorts.removeWhere((i) => i == this);
+    if (metadata.belongId != space?.metadata.id) {
+      if (await removeMembers(
+          space?.user?.metadata != null ? [space!.user!.metadata] : [])) {
+        space?.cohorts.removeWhere((i) => i == this);
         return true;
       }
     }
@@ -52,44 +38,33 @@ class Cohort extends Target implements ICohort {
   }
 
   @override
-  // TODO: implement subTarget
-  List<ITarget> get subTarget => [];
-
-  @override
-  // TODO: implement targets
-  List<ITarget> get targets => [this];
-
-  @override
-  // TODO: implement popupMenuItem
-  List<PopupMenuItem> get popupMenuItem {
-    List<PopupMenuKey> key = [];
-    if (hasRelationAuth()) {
-      key.addAll([...createPopupMenuKey, PopupMenuKey.updateInfo]);
+  Future<bool> delete({bool? notity}) async {
+    final success = await super.delete(notity: notity);
+    if (success) {
+      space?.cohorts.removeWhere((i) => i == this);
     }
-    key.addAll(defaultPopupMenuKey);
-
-    return key
-        .map((e) => PopupMenuItem(
-              value: e,
-              child: Text(e.label),
-            ))
-        .toList();
+    return success;
   }
 
   @override
-  bool isLoaded = false;
-
+  List<ITarget> get subTarget => [];
   @override
-  Future<bool> teamChangedNotity(XTarget target) async {
-    return await pullMembers([target]);
-  }
-
+  List<ISession> get chats => targets.map((i) => i.session).toList();
   @override
-  List<IFileInfo<XEntity>> content(int mode) {
+  List<ITarget> get targets => [this];
+  @override
+  List<IFileInfo<XEntity>> content({int? mode}) {
     return [];
   }
 
   @override
-  // TODO: implement locationKey
-  String get locationKey => '';
+  Future<void> deepLoad({bool? reload = false}) async {
+    await Future.wait([
+      loadMembers(reload: reload),
+      directory.loadDirectoryResource(reload: reload)
+    ]);
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

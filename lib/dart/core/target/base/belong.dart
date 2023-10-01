@@ -117,7 +117,7 @@ abstract class Belong extends Target implements IBelong {
     var metadata = await create(data);
     if (metadata != null) {
       metadata.belong = this.metadata;
-      var cohort = Cohort(this, metadata);
+      var cohort = Cohort(metadata, this, metadata.belongId ?? '');
       if (this.metadata.typeName != TargetType.person.label) {
         if (!(await pullSubTarget(cohort))) {
           return null;

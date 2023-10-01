@@ -1,18 +1,20 @@
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 
 import 'company.dart';
 
-abstract class IUniversity extends ICompany {}
+abstract class IUniversity extends ICompany {
+  IUniversity(super.metadata, super.relations, super.directory);
+}
 
 class University extends Company implements IUniversity {
-  University(super.metadata, super.user){
+  University(super.metadata, super.user) {
     departmentTypes = [
-      TargetType.college,
-      TargetType.office,
-      TargetType.working,
-      TargetType.research,
-      TargetType.laboratory,
-      TargetType.department,
+      TargetType.college.label,
+      TargetType.office.label,
+      TargetType.working.label,
+      TargetType.research.label,
+      TargetType.laboratory.label,
+      TargetType.department.label,
     ];
   }
 }

@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/session.dart';
+import 'package:orginone/dart/core/public/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
+import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
@@ -10,30 +11,26 @@ import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/innerTeam/station.dart';
 import 'package:orginone/dart/core/target/outTeam/cohort.dart';
 import 'package:orginone/dart/core/target/outTeam/group.dart';
+import 'package:orginone/dart/core/target/outTeam/storage.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
 ///单位类型接口
 abstract class ICompany extends IBelong {
-  ///构造方法
-  ICompany(
-    this.groups,
-    this.stations,
-    this.departments,
-    this.departmentTypes,
-  ) : super();
+  ///构造函数
+  ICompany(super.metadata, super.relations, super.directory);
   //加入/管理的组织集群
-  final List<IGroup> groups;
+  late List<IGroup> groups;
 
   //设立的岗位
-  final List<IStation> stations;
+  late List<IStation> stations;
 
   //设立的部门
-  final List<IDepartment> departments;
+  late List<IDepartment> departments;
 
   //支持的内设机构类型
-  final List<String> departmentTypes;
+  late List<String> departmentTypes;
 
   //退出单位
   @override
@@ -56,17 +53,15 @@ abstract class ICompany extends IBelong {
 }
 
 class Company extends Belong implements ICompany {
-  Company(this.metadata, this.user) : super(metadata, ['全员群'], user) {
+  Company(this.metadata, this.user)
+      : super(metadata, [metadata.id], user: user) {
     departmentTypes = [
-      TargetType.office,
-      TargetType.working,
-      TargetType.research,
-      TargetType.laboratory,
-      TargetType.department,
+      TargetType.office.label,
+      TargetType.working.label,
+      TargetType.research.label,
+      TargetType.laboratory.label,
+      TargetType.department.label,
     ];
-    departments = [];
-    groups = [];
-    stations = [];
   }
 
   @override
@@ -75,54 +70,90 @@ class Company extends Belong implements ICompany {
   @override
   final IPerson user;
   @override
-  late List<IGroup> groups;
+  List<IGroup> groups = [];
   @override
-  late List<IStation> stations;
+  List<IStation> stations = [];
   @override
-  late List<IDepartment> departments;
+  List<IDepartment> departments = [];
   @override
-  late List<String> departmentTypes;
-  final bool _groupLoaded = false;
-  final bool _departmentLoaded = false;
+  List<String> departmentTypes = [];
+  bool _groupLoaded = false;
+  bool _departmentLoaded = false;
+
   @override
-  Future<bool> applyJoin(List<XTarget> members) async {
-    for (final member in members) {
-      if (member.typeName == TargetType.group.label) {
-        await kernel.applyJoinTeam(GainModel(
-          id: member.id,
-          subId: metadata.id,
-        ));
+  Future<List<IGroup>> loadGroups({bool reload = false}) async {
+    if (!_groupLoaded || reload) {
+      final res = await kernel.queryJoinedTargetById(GetJoinedModel(
+        id: metadata.id,
+        typeNames: [TargetType.group.label],
+        page: pageAll,
+      ));
+      if (res.success) {
+        _groupLoaded = true;
+        storages = [];
+        groups = [];
+
+        for (var i in res.data?.result ?? []) {
+          switch (i.typeName) {
+            case TargetType.storage:
+              storages.add(Storage(i, [id], this));
+              break;
+            default:
+              groups.add(Group([key], i, [id], this));
+          }
+        }
       }
     }
-    return true;
+    return groups;
   }
 
   @override
-  // TODO: implement chats
-  List<IMsgChat> get chats {
-    final chats = <IMsgChat>[this];
-    chats.addAll(cohortChats);
-    chats.addAll(memberChats);
-    return chats;
+  Future<List<IDepartment>> loadDepartments({bool reload = false}) async {
+    if (!_departmentLoaded || reload) {
+      final res = await kernel.querySubTargetById(GetSubsModel(
+        id: metadata.id,
+        subTypeNames: [
+          ...departmentTypes,
+          TargetType.cohort.label,
+          TargetType.station.label
+        ],
+        page: pageAll,
+      ));
+      if (res.success) {
+        _departmentLoaded = true;
+        departments = [];
+        stations = [];
+        cohorts = [];
+
+        for (var i in (res.data?.result ?? [])) {
+          switch (i.typeName) {
+            case TargetType.cohort:
+              cohorts.add(Cohort(i, this, id));
+              break;
+            case TargetType.station:
+              stations.add(Station(i, this));
+              break;
+            default:
+              departments.add(Department([key], i, this));
+          }
+        }
+      }
+    }
+    return departments;
   }
 
   @override
-  // TODO: implement cohortChats
-  List<IMsgChat> get cohortChats {
-    final chats = <IMsgChat>[];
-    for (final item in departments) {
-      chats.addAll(item.chats);
+  Future<IGroup?> createGroup(TargetModel data) async {
+    data.typeName = TargetType.group.label;
+    final metadata = await create(data);
+    if (metadata != null) {
+      final group = Group([key], metadata, [id], this);
+      await group.deepLoad();
+      groups.add(group);
+      await group.pullMembers([this.metadata]);
+      return group;
     }
-    for (final item in stations) {
-      chats.addAll(item.chats);
-    }
-    for (final item in cohorts) {
-      chats.addAll(item.chats);
-    }
-    if (superAuth != null) {
-      // chats.addAll(superAuth!.chats);
-    }
-    return chats;
+    return null;
   }
 
   @override
@@ -133,26 +164,12 @@ class Company extends Belong implements ICompany {
     data.public = false;
     final metadata = await create(data);
     if (metadata != null) {
-      metadata.belong = belong;
-      var department = Department(metadata, this);
+      final department = Department([key], metadata, this);
+      await department.deepLoad();
       if (await pullSubTarget(department)) {
         departments.add(department);
         return department;
       }
-    }
-    return null;
-  }
-
-  @override
-  Future<IGroup?> createGroup(TargetModel data) async {
-    data.typeName = TargetType.group.label;
-    final metadata = await create(data);
-    if (metadata != null) {
-      metadata.belong = belong;
-      final group = Group(metadata, this);
-      groups.add(group);
-      await group.pullMembers([metadata]);
-      return group;
     }
     return null;
   }
@@ -163,7 +180,6 @@ class Company extends Belong implements ICompany {
     data.typeName = TargetType.station.label;
     final metadata = await create(data);
     if (metadata != null) {
-      metadata.belong = belong;
       final station = Station(metadata, this);
       if (await pullSubTarget(station)) {
         stations.add(station);
@@ -188,42 +204,16 @@ class Company extends Belong implements ICompany {
   }
 
   @override
-  Future<void> deepLoad(
-      {bool reload = false, bool reloadContent = false}) async {
-    await Future.wait([
-      loadGroups(reload: reload),
-      loadDepartments(reload: reload),
-      loadStations(reload: reload),
-      loadCohorts(reload: reload),
-      loadMembers(reload: reload),
-      loadSuperAuth(reload: reload),
-      directory.loadContent(reload: reloadContent),
-    ]);
-
-    for (var group in groups) {
-      group.deepLoad(reload: reload, reloadContent: reloadContent);
+  Future<bool> applyJoin(List<XTarget> members) async {
+    for (final member in members) {
+      if (member.typeName == TargetType.group.label) {
+        await kernel.applyJoinTeam(GainModel(
+          id: member.id,
+          subId: metadata.id,
+        ));
+      }
     }
-    for (var department in departments) {
-      department.deepLoad(reload: reload, reloadContent: reloadContent);
-    }
-    for (var station in stations) {
-      station.deepLoad(reload: reload, reloadContent: reloadContent);
-    }
-    for (var cohort in cohorts) {
-      cohort.deepLoad(reload: reload, reloadContent: reloadContent);
-    }
-    superAuth?.deepLoad(reload: reload);
-  }
-
-  @override
-  Future<bool> delete() async {
-    final res = await kernel.deleteTarget(IdReq(
-      id: metadata.id,
-    ));
-    if (res.success) {
-      user.companys.removeWhere((i) => i == this);
-    }
-    return res.success;
+    return true;
   }
 
   @override
@@ -236,112 +226,54 @@ class Company extends Belong implements ICompany {
   }
 
   @override
-  Future<List<ICohort>> loadCohorts({bool reload = false}) async {
-    if (cohorts.isEmpty || reload) {
-      final res = await kernel.querySubTargetById(GetSubsModel(
-        id: metadata.id,
-        subTypeNames: [TargetType.cohort.label],
-        page: PageRequest(offset: 0, limit: 9999, filter: ''),
-      ));
-      if (res.success) {
-        cohorts = (res.data?.result ?? []).map((i) => Cohort(this, i)).toList();
-      }
+  Future<bool> delete({bool? notity}) async {
+    final success = await super.delete(notity: notity);
+    if (success) {
+      user.companys.value = user.companys.where((i) => i.key != key).toList();
     }
-    return cohorts;
+    return success;
   }
 
   @override
-  Future<List<IDepartment>> loadDepartments({bool reload = false}) async {
-    if (departments.isEmpty || reload) {
-      final res = await kernel.querySubTargetById(GetSubsModel(
-        id: metadata.id,
-        subTypeNames: departmentTypes.map((e) => e.label).toList(),
-        page: PageRequest(offset: 0, limit: 9999, filter: ''),
-      ));
-      if (res.success) {
-        departments =
-            (res.data?.result ?? []).map((i) => Department(i, this)).toList();
-      }
-    }
-    return departments;
-  }
-
-  @override
-  Future<List<IGroup>> loadGroups({bool reload = false}) async {
-    if (groups.isEmpty || reload) {
-      final res = await kernel.queryJoinedTargetById(GetJoinedModel(
-        id: metadata.id,
-        typeNames: [TargetType.group.label],
-        page: PageRequest(offset: 0, limit: 9999, filter: ''),
-      ));
-      if (res.success) {
-        groups = (res.data?.result ?? []).map((i) => Group(i, this)).toList();
-      }
-    }
-    return groups;
-  }
-
-  @override
-  Future<List<IStation>> loadStations({bool reload = false}) async {
-    if (stations.isEmpty || reload) {
-      final res = await kernel.querySubTargetById(GetSubsModel(
-        id: metadata.id,
-        subTypeNames: [TargetType.station.label],
-        page: PageRequest(offset: 0, limit: 9999, filter: ''),
-      ));
-      if (res.success) {
-        stations =
-            (res.data?.result ?? []).map((i) => Station(i, this)).toList();
-      }
-    }
-    return stations;
-  }
-
-  @override
-  // TODO: implement parentTarget
-  List<ITarget> get parentTarget {
-    return [this, ...groups];
-  }
-
-  @override
-  // TODO: implement subTarget
   List<ITarget> get subTarget {
     return [...departments, ...cohorts];
   }
 
   @override
-  void loadMemberChats(List<XTarget> members, bool isAdd) {
-    members = members.where((i) => i.id != userId).toList();
-    if (isAdd) {
-      for (var i in members) {
-        var item = PersonMsgChat(
-          belong,
-          i.id,
-          ShareIcon(
-              name: i.name!,
-              typeName: i.typeName!,
-              avatar: FileItemShare.parseAvatar(i.icon)),
-          [metadata.name!, '同事'],
-          i.remark ?? "",
-          this,
-        );
-        memberChats.add(item);
-      }
-    } else {
-      var chats = <PersonMsgChat>[];
-      for (var a in memberChats) {
-        for (var i in members) {
-          if (a.chatId != i.id) {
-            chats.add(a);
-          }
-        }
-      }
-      memberChats = chats;
-    }
+  List<ITarget> get shareTarget => [this, ...groups];
+  @override
+  List<ITarget> get parentTarget {
+    return [this, ...groups];
   }
 
   @override
-  // TODO: implement targets
+  List<ISession> get chats {
+    List<ISession> chats = [session];
+    chats.addAll(cohortChats);
+    chats.addAll(memberChats);
+    return chats;
+  }
+
+  @override
+  List<ISession> get cohortChats {
+    List<ISession> chats = [];
+    for (final item in groups) {
+      chats.addAll(item.chats);
+    }
+    for (final item in departments) {
+      chats.addAll(item.chats);
+    }
+    for (final item in cohorts) {
+      chats.addAll(item.chats);
+    }
+    for (final item in storages) {
+      chats.addAll(item.chats);
+    }
+
+    return chats;
+  }
+
+  @override
   List<ITarget> get targets {
     List<ITarget> targets = [this];
     for (var item in groups) {
@@ -353,77 +285,65 @@ class Company extends Belong implements ICompany {
     for (var item in cohorts) {
       targets.addAll(item.targets);
     }
+    for (var item in storages) {
+      targets.addAll(item.targets);
+    }
     return targets;
   }
 
   @override
-  // TODO: implement shareTarget
-  List<ITarget> get shareTarget => [this, ...groups];
+  Future<void> deepLoad({bool? reload = false}) async {
+    await Future.wait([
+      loadDepartments(reload: reload!),
+      loadGroups(reload: reload),
+      loadMembers(reload: reload),
+      loadSuperAuth(reload: reload),
+      directory.loadDirectoryResource(reload: reload),
+    ]);
 
-  @override
-  // TODO: implement popupMenuItem
-  List<PopupMenuItem> get popupMenuItem {
-    List<PopupMenuKey> key = [];
-    if (hasRelationAuth()) {
-      key.addAll([
-        ...createPopupMenuKey,
-        PopupMenuKey.updateInfo,
-        PopupMenuKey.createDepartment,
-        PopupMenuKey.createGroup,
-      ]);
+    for (var group in groups) {
+      group.deepLoad(
+        reload: reload,
+      );
     }
-    key.addAll(defaultPopupMenuKey);
-    return key
-        .map((e) => PopupMenuItem(
-              value: e,
-              child: Text(e.label),
-            ))
-        .toList();
+    for (var department in departments) {
+      department.deepLoad(
+        reload: reload,
+      );
+    }
+    for (var station in stations) {
+      station.deepLoad(
+        reload: reload,
+      );
+    }
+    for (var cohort in cohorts) {
+      cohort.deepLoad(
+        reload: reload,
+      );
+    }
+    superAuth?.deepLoad(reload: reload);
   }
 
   @override
-  bool isLoaded = false;
+  List<OperateModel> operates({int? mode}) {
+    var os = super.operates();
+    if (hasRelationAuth()) {
+      List<OperateModel> menus = [];
 
-  @override
-  Future<bool> teamChangedNotity(XTarget target) async {
-    switch (TargetType.getType(target.typeName!)) {
-      case TargetType.person:
-        return await pullMembers([target]);
-      case TargetType.group:
-        if (!groups.any((i) => i.id == target.id)) {
-          final group = Group(target, this);
-          await group.deepLoad();
-          groups.add(group);
-          return true;
-        }
-        break;
-      case TargetType.station:
-        if (!stations.any((i) => i.id == target.id)) {
-          final station = Station(target, this);
-          await station.deepLoad();
-          stations.add(station);
-          return true;
-        }
-        break;
-      case TargetType.cohort:
-        if (!cohorts.any((i) => i.id == target.id)) {
-          final cohort = Cohort(this, target);
-          await cohort.deepLoad();
-          cohorts.add(cohort);
-          return true;
-        }
-        break;
-      default:
-        if (departmentTypes.contains(target.typeName as TargetType)) {
-          if (!departments.any((i) => i.id == target.id)) {
-            final department = Department(target, this);
-            await department.deepLoad();
-            departments.add(department);
-            return true;
-          }
-        }
+      menus.add(OperateModel.fromJson(TargetOperates.newGroup.toJson()));
+      menus.add(OperateModel.fromJson(TargetOperates.newDepartment.toJson()));
+
+      var om = OperateModel(
+          sort: 2,
+          cmd: 'setNew',
+          label: '设立更多',
+          iconType: 'setNew',
+          menus: menus);
+      os.insert(0, om);
+      os.insert(0, OperateModel.fromJson(CompanyJoins().toJson()));
     }
-    return false;
+
+    return os;
   }
 
   @override
@@ -432,8 +352,83 @@ class Company extends Belong implements ICompany {
   }
 
   @override
-  // TODO: implement locationKey
-  String get locationKey => '';
+  Future<bool> removeMembers(
+    List<XTarget> members, {
+    bool? notity = false,
+  }) async {
+    notity = await super.removeMembers(members, notity: notity);
+    if (notity) {
+      for (var a in subTarget) {
+        a.removeMembers(members, notity: true);
+      }
+    }
+    return notity;
+  }
+
+  Future<String> _removeJoinTarget(XTarget target) async {
+    var index = [...groups, ...storages].indexWhere((i) => i.id == target.id);
+    var find = [...groups, ...storages].firstWhere((i) => i.id == target.id);
+    if (index != -1) {
+      await find.delete(notity: true);
+      return '$name已被从${target.name}移除.';
+    }
+    return '';
+  }
+
+  Future<String> _addJoinTarget(XTarget target) async {
+    switch (TargetType.getType(target.typeName ?? '')) {
+      case TargetType.group:
+        if (groups.every((i) => i.id != target.id)) {
+          final group = Group([key], target, [id], this);
+          await group.deepLoad();
+          groups.add(group);
+          return '$name已成功加入到${target.name}.';
+        }
+        break;
+      case TargetType.storage:
+        if (storages.every((i) => i.id != target.id)) {
+          final storage = Storage(target, [], this);
+          await storage.deepLoad();
+          storages.add(storage);
+          return '$name已成功加入到${target.name}.';
+        }
+        break;
+      default:
+    }
+    return '';
+  }
+
+  Future<String> _addSubTarget(XTarget target) async {
+    switch (TargetType.getType(target.typeName ?? '')) {
+      case TargetType.cohort:
+        if (cohorts.every((i) => i.id != target.id)) {
+          final cohort = Cohort(target, this, id);
+          await cohort.deepLoad();
+          cohorts.add(cohort);
+          return '$name创建了${target.name}.';
+        }
+        break;
+      case TargetType.station:
+        if (stations.every((i) => i.id != target.id)) {
+          final station = Station(target, this);
+          await station.deepLoad();
+          stations.add(station);
+          return '$name创建了${target.name}.';
+        }
+        break;
+      default:
+        if (departmentTypes.contains(target.typeName)) {
+          if (departments.every((i) => i.id != target.id)) {
+            final department = Department([key], target, this);
+            await department.deepLoad();
+            departments.add(department);
+            return '$name创建了${target.name}.';
+          }
+        }
+        break;
+    }
+    return '';
+  }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

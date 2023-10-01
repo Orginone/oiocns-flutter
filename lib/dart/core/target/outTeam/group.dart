@@ -1,19 +1,17 @@
-import 'package:flutter/material.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/chat/session.dart';
+import 'package:orginone/dart/core/public/consts.dart';
+import 'package:orginone/dart/core/public/enums.dart';
+import 'package:orginone/dart/core/public/operates.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
 /// 单位群接口
 abstract class IGroup implements ITarget {
-  /// 加载单位群的单位
-  late ICompany company;
-
   /// 父级单位群
   IGroup? parent;
 
@@ -28,30 +26,63 @@ abstract class IGroup implements ITarget {
 }
 
 class Group extends Target implements IGroup {
-  @override
-  late List<IGroup> children;
-
-  @override
-  late ICompany company;
-
-  @override
-  IGroup? parent;
-
-  Group(XTarget metadata, this.company)
-      : super(metadata, [metadata.belong?.name ?? '', '单位群'], space: company) {
-    children = [];
-    speciesTypes.add(SpeciesType.market);
-    memberTypes = companyTypes;
+  ///构造函数
+  Group(
+    this.keys,
+    this.metadata,
+    this.relations,
+    this.company, {
+    this.parent,
+  }) : super(
+          keys,
+          metadata,
+          [...relations, metadata.id],
+          space: company,
+          user: company.user,
+          memberTypes: [
+            TargetType.company,
+            TargetType.hospital,
+            TargetType.university,
+          ],
+        ) {
+    keys = [...keys, key];
+    relations = [...relations, metadata.id];
   }
 
   @override
-  // TODO: implement chats
-  List<IMsgChat> get chats {
-    List<IMsgChat> chats = [this];
-    for (final item in children) {
-      chats.addAll(item.chats);
+  List<String> keys;
+  @override
+  XTarget metadata;
+  @override
+  List<String> relations;
+  ICompany company;
+
+  @override
+  late IBelong? space;
+
+  @override
+  late List<IGroup> children;
+  @override
+  IGroup? parent;
+
+  bool _childrenLoaded = false;
+
+  @override
+  Future<List<IGroup>> loadChildren({bool reload = false}) async {
+    if (!_childrenLoaded || reload == true) {
+      final res = await kernel.querySubTargetById(GetSubsModel(
+        id: metadata.id,
+        subTypeNames: [TargetType.group.label],
+        page: pageAll,
+      ));
+      if (res.success) {
+        _childrenLoaded = true;
+        children = (res.data?.result ?? [])
+            .map((i) => Group(keys, i, relations, company, parent: this))
+            .toList();
+      }
     }
-    return chats;
+    return children;
   }
 
   @override
@@ -59,8 +90,7 @@ class Group extends Target implements IGroup {
     data.typeName = TargetType.group.label;
     final metadata = await create(data);
     if (metadata != null) {
-      metadata.belong = this.metadata;
-      final group = Group(metadata, company);
+      final group = Group(keys, metadata, relations, company, parent: this);
       children.add(group);
       return group;
     }
@@ -70,32 +100,6 @@ class Group extends Target implements IGroup {
   @override
   Future<ITeam?> createTarget(TargetModel data) async {
     return await createChildren(data);
-  }
-
-  @override
-  Future<void> deepLoad(
-      {bool reload = false, bool reloadContent = false}) async {
-    await Future.wait([
-      loadChildren(reload: reload),
-      loadMembers(reload: reload),
-      directory.loadContent(reload: reloadContent),
-    ]);
-    for (var group in children) {
-      await group.deepLoad(reload: reload, reloadContent: reloadContent);
-    }
-  }
-
-  @override
-  Future<bool> delete() async {
-    final res = await kernel.deleteTarget(IdReq(id: metadata.id!));
-    if (res.success) {
-      if (parent != null) {
-        parent!.children.removeWhere((i) => i != this);
-      } else {
-        company.groups.removeWhere((i) => i != this);
-      }
-    }
-    return res.success;
   }
 
   @override
@@ -114,27 +118,32 @@ class Group extends Target implements IGroup {
   }
 
   @override
-  Future<List<IGroup>> loadChildren({bool reload = false}) async {
-    if (children.isEmpty || reload == true) {
-      final res = await kernel.querySubTargetById(GetSubsModel(
-        id: metadata.id!,
-        subTypeNames: [TargetType.group.label],
-        page: PageRequest(offset: 0, limit: 9999, filter: ''),
-      ));
-      if (res.success) {
-        children =
-            (res.data?.result ?? []).map((i) => Group(i, company)).toList();
+  Future<bool> delete({bool? notity}) async {
+    final success = await super.delete(notity: notity);
+
+    if (success) {
+      if (parent != null) {
+        parent?.children =
+            parent?.children.where((i) => i.key != key).toList() ?? [];
+      } else {
+        company.groups = company.groups.where((i) => i.key != key).toList();
       }
     }
-    return children;
+    return success;
   }
 
   @override
-  // TODO: implement subTarget
   List<ITarget> get subTarget => children;
+  @override
+  List<ISession> get chats {
+    List<ISession> chats = [];
+    for (final item in children) {
+      chats.addAll(item.chats);
+    }
+    return chats;
+  }
 
   @override
-  // TODO: implement targets
   List<ITarget> get targets {
     List<ITarget> targets = [this];
     for (var item in children) {
@@ -144,54 +153,50 @@ class Group extends Target implements IGroup {
   }
 
   @override
-  // TODO: implement belongId
-  String get belongId => metadata.belongId!;
+  List<ITarget> content({int? mode}) {
+    return [...children];
+  }
 
   @override
-  // TODO: implement id
-  String get id => metadata.id!;
+  Future<void> deepLoad({bool? reload = false}) async {
+    await Future.wait([
+      loadChildren(reload: reload!),
+      loadMembers(reload: reload),
+      directory.loadDirectoryResource(reload: reload),
+    ]);
+    for (var group in children) {
+      await group.deepLoad(
+        reload: reload,
+      );
+    }
+  }
 
   @override
-  // TODO: implement popupMenuItem
-  List<PopupMenuItem> get popupMenuItem {
-    List<PopupMenuKey> key = [];
+  List<OperateModel> operates({int? mode}) {
+    final operates = super.operates();
     if (hasRelationAuth()) {
-      key.addAll(createPopupMenuKey);
+      operates.insert(
+          0, OperateModel.fromJson(TargetOperates.newGroup.toJson()));
     }
-
-    key.addAll(defaultPopupMenuKey);
-    return key
-        .map((e) => PopupMenuItem(
-              value: e,
-              child: Text(e.label),
-            ))
-        .toList();
+    return operates;
   }
 
-  @override
-  bool isLoaded = false;
+  Future _addSubTarget(XTarget target) async {
+    switch (TargetType.getType(target.typeName!)) {
+      case TargetType.group:
+        if (children.every((i) => i.id != target.id)) {
+          final group = Group(keys, target, relations, company, parent: this);
+          await group.deepLoad();
+          children.add(group);
+          return '$name创建了${target.name}.';
+        }
+        break;
 
-  @override
-  Future<bool> teamChangedNotity(XTarget target) async {
-    if (target.typeName == TargetType.group.label) {
-      if (!children.any((i) => i.id == target.id)) {
-        final group = Group(target, company);
-        await group.deepLoad();
-        children.add(group);
-        return true;
-      }
-      return false;
-    } else {
-      return await pullMembers([target]);
+      default:
     }
+    return '';
   }
 
   @override
-  List<IFileInfo<XEntity>> content(int mode) {
-    return [];
-  }
-
-  @override
-  // TODO: implement locationKey
-  String get locationKey => '';
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

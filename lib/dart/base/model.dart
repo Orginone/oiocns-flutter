@@ -4455,16 +4455,15 @@ class GetJoinedModel {
   final List<String> typeNames;
 
   // 分页
-  final PageRequest page;
+  final PageModel? page;
 
-  GetJoinedModel(
-      {required this.id, required this.typeNames, required this.page});
+  GetJoinedModel({required this.id, required this.typeNames, this.page});
 
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
     json["id"] = id;
     json["typeNames"] = typeNames;
-    json["page"] = page.toJson();
+    json["page"] = page?.toJson();
     return json;
   }
 }

@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/common/commands.dart';
-import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/core/chat/session.dart';
+import 'package:orginone/dart/core/public/consts.dart';
 import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
@@ -105,7 +104,7 @@ abstract class Team extends Entity<XTarget> implements ITeam {
       var res = await kernel.querySubTargetById(GetSubsModel(
         id: metadata.id,
         subTypeNames: memberTypes?.map((e) => e.label).toList() ?? [],
-        page: pageAll(),
+        page: pageAll,
       ));
       if (res.success) {
         _memberLoaded = true;

@@ -4920,6 +4920,7 @@ class XTarget extends XEntity {
   bool? public;
 
   String? thingId;
+  String? storeId;
 
   List<XIdProof>? idProofs;
   List<XIdentity>? shareIdentitys;
@@ -4947,6 +4948,7 @@ class XTarget extends XEntity {
   //构造方法
   XTarget({
     required this.thingId,
+    required this.storeId,
     required this.idProofs,
     required this.identitys,
     required this.things,

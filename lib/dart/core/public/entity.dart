@@ -40,9 +40,9 @@ abstract class IEntity<T> extends Emitter {
   late ShareIcon belong;
 
   //查找元数据
-  //U findMetadata<U>(String id) {}
+  T? findMetadata<T>(String id);
   //更新元数据
-  void updateMetadata<U extends XEntity>(U data);
+  void updateMetadata<T extends XEntity>(T data);
 
   ///对实体可进行操作
   ///@param mode 模式，默认为配置模式
@@ -132,6 +132,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
     }
   }
 
+  @override
   T? findMetadata<T>(String id) {
     if (shareIdSet.containsKey(id)) {
       return shareIdSet.values as T;
