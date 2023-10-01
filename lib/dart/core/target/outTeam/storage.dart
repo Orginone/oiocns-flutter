@@ -3,19 +3,23 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 
 import '../base/target.dart';
 
-abstract class IStrorage extends ITarget {
+abstract class IStorage extends ITarget {
   //是否处于激活状态
-  late bool isActivate;
+  final bool isActivate;
+
+  IStorage(this.isActivate);
   //激活存储
   Future<bool> activateStorage();
 }
 
-class Storage extends Target implements IStrorage {
+class Storage extends Target implements IStorage {
   Storage(XTarget _metadata, List<String> _relations, IBelong _space)
       : super(
           [_space.key],
           _metadata,
           [..._relations, _metadata.id],
-          _space,
-        ) {}
+        );
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

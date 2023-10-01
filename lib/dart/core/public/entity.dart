@@ -9,6 +9,7 @@ import '../../base/schema.dart';
 Map<String, dynamic> shareIdSet = <String, dynamic>{};
 
 abstract class IEntity<T> extends Emitter {
+  IEntity(this.metadata);
   //实体唯一键
   late String key;
   //唯一标识
@@ -23,7 +24,7 @@ abstract class IEntity<T> extends Emitter {
   //实体描述
   late String remark;
   //数据实体
-  late T metadata;
+  final T metadata;
   //用户ID
   late String userId;
   //归属Id
@@ -36,6 +37,7 @@ abstract class IEntity<T> extends Emitter {
   late ShareIcon updater;
   //归属
   late ShareIcon belong;
+
   //查找元数据
   //U findMetadata<U>(String id) {}
   //更新元数据
@@ -48,19 +50,19 @@ abstract class IEntity<T> extends Emitter {
 
 ///实体类实现
 abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
-  late dynamic _metadata;
+  T _metadata;
   @override
   late String key;
 
-  Entity(T metadata) {
+  Entity(this._metadata) : super() {
     this.key = super.id;
-    this._metadata = metadata;
+
     shareIdSet[metadata.id] = metadata;
   }
 
   @override
   String get id {
-    return this._metadata.id;
+    return this.metadata.id;
   }
 
   @override
@@ -98,7 +100,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
 
   @override
   String get belongId {
-    return this._metadata.belongId;
+    return metadata.belongId!;
   }
 
   @override
@@ -123,7 +125,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
 
   void setMetadata(T metadata) {
     if (metadata.id == id) {
-      this.metadata = metadata;
+      _metadata = metadata;
       shareIdSet[id] = metadata;
       changCallback();
     }

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/index.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -42,7 +43,6 @@ abstract class ITeam implements IEntity<XTarget> {
   Future<bool> update(TargetModel data);
 
   //删除(注销)团队
-  @override
   Future<bool> delete({bool? notity});
 
   //用户拉入新成员
@@ -64,31 +64,37 @@ abstract class ITeam implements IEntity<XTarget> {
 
 ///团队基类实现
 abstract class Team extends Entity<XTarget> implements ITeam {
+  //构造函数
+  Team(
+    this.keys,
+    this.metadata,
+    this.relations, {
+    this.memberTypes = mTypes,
+  }) : super(metadata) {
+    kernel.subscribe('${metadata.belongId}-${metadata.id}-target',
+        [...keys, key], (data) => _receiveTarget(data as TargetOperateModel));
+  }
+
+  ///构造函数使用的参数
+  final List<String> keys;
   @override
-  late IBelong space;
+  final XTarget metadata;
+  final List<String> relations;
   @override
-  late IPerson user;
+  final List<TargetType> memberTypes;
+  //其他参数
   @override
-  late List<TargetType> memberTypes;
+  List<XTarget> members = [];
   @override
-  late List<XTarget> members = [];
-  @override
-  late List<ISession> memberChats = [];
-  late List<String> relations;
+  List<ISession> memberChats = [];
   @override
   late IDirectory directory;
   bool _memberLoaded = false;
-
+  @override
+  abstract IBelong space;
+  @override
+  abstract IPerson user;
   static const mTypes = [TargetType.person];
-  Team(List<String> _keys, XTarget _metadata, List<String> _relations,
-      {List<TargetType> memberTypes = mTypes})
-      : super(_metadata) {
-    this.memberTypes = memberTypes;
-    relations = _relations;
-    kernel.subscribe('${metadata.belongId}-${metadata.id}-target',
-        [..._keys, key], (data) => receiveTarget(data as TargetOperateModel));
-  }
-
   bool get isInherited => metadata.belongId != space.id;
 
   @override
@@ -199,7 +205,7 @@ abstract class Team extends Entity<XTarget> implements ITeam {
       if (hasRelationAuth() && id != belongId) {
         await sendTargetNotity(OperateType.delete);
       }
-      final res = await kernel.deleteTarget(IdReq(id: metadata.id));
+      final res = await kernel.deleteTarget(IdModel(metadata.id));
       notity = res.success;
     }
     if (notity) {
@@ -268,7 +274,7 @@ abstract class Team extends Entity<XTarget> implements ITeam {
     return res.success;
   }
 
-  Future<void> receiveTarget(TargetOperateModel data) async {
+  Future<void> _receiveTarget(TargetOperateModel data) async {
     var message = "";
     switch (data.operate) {
       case 'Add':

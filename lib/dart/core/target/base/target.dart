@@ -39,7 +39,7 @@ abstract class ITarget extends IFileInfo<XTarget> with ITeam {
   //子用户
   List<ITarget> get subTarget;
   //所有相关用户
-  List<ITarget> get targets;
+  List<ITarget> targets;
   //用户相关的所有会话
   @override
   List<ISession> get chats;
@@ -57,27 +57,6 @@ abstract class ITarget extends IFileInfo<XTarget> with ITeam {
 
 ///用户基类实现
 abstract class Target extends Team implements ITarget {
-  @override
-  late IPerson user;
-  @override
-  late IBelong space;
-  @override
-  late ISession session;
-  @override
-  late IDirectory directory;
-  @override
-  late DataResource resource;
-  //继承了IFileInfo
-  // late List<XCache> cache;
-  @override
-  late bool isContainer;
-  @override
-  late List<IIdentity> identitys = [];
-  @override
-  late IDirectory memberDirectory;
-  //暂存
-  final bool _identityLoaded = false;
-
   Target(List<String> _keys, XTarget _metadata, List<String> _relations,
       {IBelong? space, IPerson? user, List<TargetType>? memberTypes})
       : super(_keys, _metadata, _relations) {
@@ -125,7 +104,26 @@ abstract class Target extends Team implements ITarget {
       },
     );
   }
-
+  @override
+  late IPerson? user;
+  @override
+  late IBelong space;
+  @override
+  late ISession session;
+  @override
+  late IDirectory directory;
+  @override
+  late DataResource resource;
+  //继承了IFileInfo
+  // late List<XCache> cache;
+  @override
+  late bool isContainer;
+  @override
+  late List<IIdentity> identitys = [];
+  @override
+  late IDirectory memberDirectory;
+  //暂存
+  final bool _identityLoaded = false;
   @override
   String get spaceId {
     return space.id;
@@ -177,7 +175,7 @@ abstract class Target extends Team implements ITarget {
           page: PageRequest(offset: 0, limit: 9999, filter: '')));
       identitys.clear();
       if (res.success && res.data?.result != null) {
-        for (var element in res.data!.result!) {
+        for (var element in res.data!.result) {
           identitys.add(Identity(space, element));
         }
       }

@@ -55,12 +55,12 @@ class MsgChatData {
         isToping = map["isToping"] ?? false,
         isFindme = map["isFindme"],
         lastMsgTime = map["lastMsgTime"],
-        mentionMe = map['mentionMe']??false,
+        mentionMe = map['mentionMe'] ?? false,
         lastMessage = map["lastMessage"] == null
             ? null
-            : MsgSaveModel.fromJson(map["lastMessage"]){
-    if(map['labels']!=null){
-      map['labels'].forEach((str){
+            : MsgSaveModel.fromJson(map["lastMessage"]) {
+    if (map['labels'] != null) {
+      map['labels'].forEach((str) {
         labels.add(str);
       });
     }
@@ -168,7 +168,8 @@ abstract class IMsgChat extends IEntity {
   Future<List<XTarget>> loadMembers({bool reload = false});
 
   /// 发送消息
-  Future<bool> sendMessage(MessageType type, String text,[List<String> mentions =const [],MsgSaveModel? cite]);
+  Future<bool> sendMessage(MessageType type, String text,
+      [List<String> mentions = const [], MsgSaveModel? cite]);
 
   /// 撤销消息
   Future<void> recallMessage(String id);
@@ -189,9 +190,9 @@ abstract class IMsgChat extends IEntity {
   Future<bool> clearMessage();
 
   /// 接收消息
-  void receiveMessage(MsgSaveModel msg,bool isCurrentSession);
+  void receiveMessage(MsgSaveModel msg, bool isCurrentSession);
 
-  void receiveTags(List<String> ids,List<String> tags);
+  void receiveTags(List<String> ids, List<String> tags);
 }
 
 abstract class MsgChat extends Entity implements IMsgChat {
@@ -267,7 +268,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
   }
 
   @override
-  onMessage() async{
+  onMessage() async {
     settingCtrl.chat.currentChat = this;
     if (chatdata.value.noReadCount > 0) {
       chatdata.value.noReadCount = 0;
@@ -278,9 +279,9 @@ abstract class MsgChat extends Entity implements IMsgChat {
     }
     chatdata.refresh();
   }
-  
+
   @override
- Future<void> cache() async{
+  Future<void> cache() async {
     chatdata.value.labels = labels;
     var res = await kernel.anystore.set(
       "${StoreCollName.chatMessage}.T${chatdata.value.fullId}",
@@ -290,7 +291,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
       },
       userId,
     );
-    if(chatdata.value.noReadCount == 0){
+    if (chatdata.value.noReadCount == 0) {
       await kernel.anystore.set(
         "${StoreCollName.chatMessage}.Changed",
         {
@@ -300,10 +301,11 @@ abstract class MsgChat extends Entity implements IMsgChat {
         userId,
       );
     }
-    if(!res.success){
+    if (!res.success) {
       ToastUtils.showMsg(msg: res.msg);
     }
-    print("code------------------${"${StoreCollName.chatMessage}.T${chatdata.value.fullId}"}");
+    print(
+        "code------------------${"${StoreCollName.chatMessage}.T${chatdata.value.fullId}"}");
     print("data------------------${chatdata.toJson()}");
   }
 
@@ -312,7 +314,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
     if (chatdata.value.fullId == cache.fullId) {
       labels = (Set<String>.from(labels)..addAll(cache.labels ?? [])).toList();
       chatdata.value.chatName = cache.chatName ?? chatdata.value.chatName;
-      share.name = chatdata.value.chatName??"";
+      share.name = chatdata.value.chatName ?? "";
       if (chatdata.value.noReadCount != cache.noReadCount) {
         chatdata.value.noReadCount = cache.noReadCount;
       }
@@ -347,17 +349,18 @@ abstract class MsgChat extends Entity implements IMsgChat {
   }
 
   @override
-  Future<bool> sendMessage(MessageType type, String msgBody,[List<String> mentions = const [],MsgSaveModel? cite]) async {
-    Map<String,dynamic> data = {
-      "body":msgBody,
-      "mentions":mentions,
+  Future<bool> sendMessage(MessageType type, String msgBody,
+      [List<String> mentions = const [], MsgSaveModel? cite]) async {
+    Map<String, dynamic> data = {
+      "body": msgBody,
+      "mentions": mentions,
       'cite': cite?.toJson(),
     };
 
     var res = await kernel.createImMsg(MsgSendModel(
       msgType: type.label,
       toId: chatId,
-      belongId: belong.id!,
+      belongId: belong.id,
       msgBody: EncryptionUtil.deflate("[obj]${jsonEncode(data)}"),
     ));
     return res.success;
@@ -391,9 +394,9 @@ abstract class MsgChat extends Entity implements IMsgChat {
     if (res.success) {
       messages.removeWhere((item) => item.id == id);
       chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
-      try{
+      try {
         chatdata.value.lastMessage = messages.last.metadata;
-      }catch(e){
+      } catch (e) {
         chatdata.value.lastMessage = null;
       }
       chatdata.refresh();
@@ -458,7 +461,9 @@ abstract class MsgChat extends Entity implements IMsgChat {
     }
     for (var msg in messages) {
       if (tagsMsgType.tags[0] == '已读' && msg.metadata.tags == null) {
-        msg.metadata.tags = [Tag(label: '已读', userId: tagsMsgType.id, time: '')];
+        msg.metadata.tags = [
+          Tag(label: '已读', userId: tagsMsgType.id, time: '')
+        ];
       }
       return msg;
     }
@@ -466,32 +471,33 @@ abstract class MsgChat extends Entity implements IMsgChat {
   }
 
   @override
-  receiveMessage(MsgSaveModel msg,bool isCurrentSession) async{
-    var imsg = Message(this,msg);
+  receiveMessage(MsgSaveModel msg, bool isCurrentSession) async {
+    var imsg = Message(this, msg);
     if (imsg.msgType == MessageType.recall.label) {
-       try{
-         messages.firstWhere((p0) => p0.id == imsg.id).recall();
-       }catch(e){
-         messages.insert(0,imsg);
-       }
-    }else if(imsg.msgType == MessageType.file.label || imsg.msgType == MessageType.image.label ){
-        String name = msg.body?.name??"";
-        var index = messages.indexWhere((p0) => p0.body?.name == name);
-        if(index != -1){
-          messages[index] = imsg;
-          messages.refresh();
-        }else{
-          print('');
-          messages.insert(0,imsg);
-        }
-    }else{
-      messages.insert(0,imsg);
+      try {
+        messages.firstWhere((p0) => p0.id == imsg.id).recall();
+      } catch (e) {
+        messages.insert(0, imsg);
+      }
+    } else if (imsg.msgType == MessageType.file.label ||
+        imsg.msgType == MessageType.image.label) {
+      String name = msg.body?.name ?? "";
+      var index = messages.indexWhere((p0) => p0.body?.name == name);
+      if (index != -1) {
+        messages[index] = imsg;
+        messages.refresh();
+      } else {
+        print('');
+        messages.insert(0, imsg);
+      }
+    } else {
+      messages.insert(0, imsg);
     }
-    if(userId != msg.fromId && !isCurrentSession){
+    if (userId != msg.fromId && !isCurrentSession) {
       chatdata.value.noReadCount += 1;
       NotificationUtil.showChatMessageNotification(msg);
     }
-    if(isCurrentSession){
+    if (isCurrentSession) {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         controller.markVisibleMessagesAsRead();
       });
@@ -507,7 +513,7 @@ abstract class MsgChat extends Entity implements IMsgChat {
   void _loadMessages(List<dynamic> msgs) {
     for (var msg in msgs) {
       var item = MsgSaveModel.fromJson(msg);
-      messages.add(Message(this,item));
+      messages.add(Message(this, item));
     }
     if (chatdata.value.lastMsgTime == nullTime && msgs.isNotEmpty) {
       var time = DateTime.parse(msgs[0].createTime).millisecondsSinceEpoch;
@@ -517,17 +523,15 @@ abstract class MsgChat extends Entity implements IMsgChat {
   }
 
   @override
-  void receiveTags(List<String> ids, List<String> tags) async{
+  void receiveTags(List<String> ids, List<String> tags) async {
     if (ids.isNotEmpty && tags.isNotEmpty) {
       for (var id in ids) {
-       try{
-         var message = messages.firstWhere((m) => m.id == id);
-         message.receiveTags(tags);
-         messages.refresh();
-         await cache();
-       }catch(e){
-
-       }
+        try {
+          var message = messages.firstWhere((m) => m.id == id);
+          message.receiveTags(tags);
+          messages.refresh();
+          await cache();
+        } catch (e) {}
       }
     }
   }

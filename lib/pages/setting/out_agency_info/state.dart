@@ -1,15 +1,11 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/target/out_team/group.dart';
+import 'package:orginone/dart/core/target/outTeam/group.dart';
 
-class OutAgencyInfoState extends BaseGetState{
+class OutAgencyInfoState extends BaseGetState {
   late IGroup group;
-
 
   late TabController tabController;
 
@@ -17,7 +13,7 @@ class OutAgencyInfoState extends BaseGetState{
 
   var index = 0.obs;
 
-  OutAgencyInfoState(){
+  OutAgencyInfoState() {
     group = Get.arguments['group'];
   }
 }
@@ -25,4 +21,3 @@ class OutAgencyInfoState extends BaseGetState{
 List<String> tabTitle = [
   "组织群成员",
 ];
-

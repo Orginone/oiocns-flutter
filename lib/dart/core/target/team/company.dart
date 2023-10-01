@@ -8,33 +8,39 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/innerTeam/station.dart';
-import 'package:orginone/dart/core/target/out_team/cohort.dart';
-import 'package:orginone/dart/core/target/out_team/group.dart';
+import 'package:orginone/dart/core/target/outTeam/cohort.dart';
+import 'package:orginone/dart/core/target/outTeam/group.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
+///单位类型接口
 abstract class ICompany extends IBelong {
-  //管理的单位群
-  late List<IGroup> groups;
+  ///构造方法
+  ICompany(
+    this.groups,
+    this.stations,
+    this.departments,
+    this.departmentTypes,
+  ) : super();
+  //加入/管理的组织集群
+  final List<IGroup> groups;
 
   //设立的岗位
-  late List<IStation> stations;
+  final List<IStation> stations;
 
   //设立的部门
-  late List<IDepartment> departments;
+  final List<IDepartment> departments;
 
   //支持的内设机构类型
-  late List<TargetType> departmentTypes;
+  final List<String> departmentTypes;
 
   //退出单位
+  @override
   Future<bool> exit();
 
-  //加载单位群
+  //加载组织集群
   Future<List<IGroup>> loadGroups({bool reload = false});
-
-  //加载创建的群
-  Future<List<IStation>> loadStations({bool reload = false});
 
   //加载单位的部门
   Future<List<IDepartment>> loadDepartments({bool reload = false});
@@ -50,19 +56,7 @@ abstract class ICompany extends IBelong {
 }
 
 class Company extends Belong implements ICompany {
-  @override
-  late List<TargetType> departmentTypes;
-
-  @override
-  late List<IDepartment> departments;
-
-  @override
-  late List<IGroup> groups;
-
-  @override
-  late List<IStation> stations;
-
-  Company(XTarget metadata, IPerson user) : super(metadata, ['全员群'], user) {
+  Company(this.metadata, this.user) : super(metadata, ['全员群'], user) {
     departmentTypes = [
       TargetType.office,
       TargetType.working,
@@ -76,12 +70,27 @@ class Company extends Belong implements ICompany {
   }
 
   @override
+  final XTarget metadata;
+
+  @override
+  final IPerson user;
+  @override
+  late List<IGroup> groups;
+  @override
+  late List<IStation> stations;
+  @override
+  late List<IDepartment> departments;
+  @override
+  late List<String> departmentTypes;
+  final bool _groupLoaded = false;
+  final bool _departmentLoaded = false;
+  @override
   Future<bool> applyJoin(List<XTarget> members) async {
     for (final member in members) {
       if (member.typeName == TargetType.group.label) {
         await kernel.applyJoinTeam(GainModel(
-          id: member.id!,
-          subId: metadata.id!,
+          id: member.id,
+          subId: metadata.id,
         ));
       }
     }
@@ -209,7 +218,7 @@ class Company extends Belong implements ICompany {
   @override
   Future<bool> delete() async {
     final res = await kernel.deleteTarget(IdReq(
-      id: metadata.id!,
+      id: metadata.id,
     ));
     if (res.success) {
       user.companys.removeWhere((i) => i == this);
@@ -230,7 +239,7 @@ class Company extends Belong implements ICompany {
   Future<List<ICohort>> loadCohorts({bool reload = false}) async {
     if (cohorts.isEmpty || reload) {
       final res = await kernel.querySubTargetById(GetSubsModel(
-        id: metadata.id!,
+        id: metadata.id,
         subTypeNames: [TargetType.cohort.label],
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
@@ -245,7 +254,7 @@ class Company extends Belong implements ICompany {
   Future<List<IDepartment>> loadDepartments({bool reload = false}) async {
     if (departments.isEmpty || reload) {
       final res = await kernel.querySubTargetById(GetSubsModel(
-        id: metadata.id!,
+        id: metadata.id,
         subTypeNames: departmentTypes.map((e) => e.label).toList(),
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
@@ -261,7 +270,7 @@ class Company extends Belong implements ICompany {
   Future<List<IGroup>> loadGroups({bool reload = false}) async {
     if (groups.isEmpty || reload) {
       final res = await kernel.queryJoinedTargetById(GetJoinedModel(
-        id: metadata.id!,
+        id: metadata.id,
         typeNames: [TargetType.group.label],
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
@@ -276,7 +285,7 @@ class Company extends Belong implements ICompany {
   Future<List<IStation>> loadStations({bool reload = false}) async {
     if (stations.isEmpty || reload) {
       final res = await kernel.querySubTargetById(GetSubsModel(
-        id: metadata.id!,
+        id: metadata.id,
         subTypeNames: [TargetType.station.label],
         page: PageRequest(offset: 0, limit: 9999, filter: ''),
       ));
@@ -307,7 +316,7 @@ class Company extends Belong implements ICompany {
       for (var i in members) {
         var item = PersonMsgChat(
           belong,
-          i.id!,
+          i.id,
           ShareIcon(
               name: i.name!,
               typeName: i.typeName!,
@@ -418,11 +427,14 @@ class Company extends Belong implements ICompany {
   }
 
   @override
-  List<IFileInfo<XEntity>> content(int mode) {
+  List<IFileInfo<XEntity>> content({int? mode}) {
     return [];
   }
 
   @override
   // TODO: implement locationKey
   String get locationKey => '';
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
