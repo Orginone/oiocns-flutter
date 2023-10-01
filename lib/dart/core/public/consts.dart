@@ -77,15 +77,12 @@ enum FormModalType {
   const FormModalType(this.label);
 }
 
-///用于获取全部的分页模型,有错误暂时不启用
-// enum PageAll {
-//   offset(0),
-//   limit((2 << 15) - 1),
-//   filter('');
-
-//   final String label;
-//   const PageAll(this.label);
-// }
+///用于获取全部的分页模型
+final pageAll = PageModel(
+  offset: 0,
+  limit: (2 << 15) - 1, //ushort.max
+  filter: '',
+);
 
 ///通用状态信息Map
 class Status {

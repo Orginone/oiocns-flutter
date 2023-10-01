@@ -313,12 +313,12 @@ class PageResult<T> {
   // 总数
   int total;
   // 结果
-  List<T> rsult;
+  List<T> result;
   PageResult({
     required this.total,
     required this.offset,
     required this.limit,
-    required this.rsult,
+    required this.result,
   });
 
   factory PageResult.fromJson(Map<String, dynamic> json) {
@@ -326,7 +326,7 @@ class PageResult<T> {
       total: json['total'] as int,
       offset: json['offset'] as int,
       limit: json['limit'] as int,
-      rsult: List<T>.from(json['rsult'] as List),
+      result: List<T>.from(json['result'] as List),
     );
   }
 
@@ -335,7 +335,7 @@ class PageResult<T> {
       'total': total,
       'offset': offset,
       'limit': limit,
-      'rsult': rsult,
+      'result': result,
     };
   }
 }
@@ -421,12 +421,12 @@ class IdPair {
 
 // 请求数据核类型定义
 class PageModel {
-  //过滤条件
-  String filter;
   // 偏移量
   int offset;
   // 最大数量
   int limit;
+  //过滤条件
+  String filter;
 
   PageModel({
     required this.filter,
@@ -466,10 +466,10 @@ class IdPageModel {
   //分页
   final PageModel? page;
 
-  IdPageModel(
-    this.id,
+  IdPageModel({
+    required this.id,
     this.page,
-  );
+  });
 }
 
 class IdArrayModel {
@@ -7256,4 +7256,40 @@ class WorkSubmitModel {
     };
     return data;
   }
+}
+
+class DiskInfoType {
+  // 状态
+  int ok;
+  // 文件数量
+  int files;
+  // 对象数量
+  int objects;
+  // 集合数量
+  int collections;
+  // 文件的总大小
+  int fileSize;
+  // 数据的总大小
+  int dataSize;
+  // 数据占用磁盘的总大小
+  int totalSize;
+  // 文件系统挂载磁盘已使用大小
+  int fsUsedSize;
+  // 文件系统挂载磁盘的总大小
+  int fsTotalSize;
+  // 查询时间
+  String getTime;
+
+  DiskInfoType({
+    required this.ok,
+    required this.files,
+    required this.objects,
+    required this.collections,
+    required this.fileSize,
+    required this.dataSize,
+    required this.totalSize,
+    required this.fsUsedSize,
+    required this.fsTotalSize,
+    required this.getTime,
+  });
 }

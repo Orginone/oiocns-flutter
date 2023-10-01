@@ -24,7 +24,7 @@ abstract class IFileInfo<T extends XEntity> extends IEntity<T> {
 
   /// 是否为容器
   late bool isContainer;
-  late IDirectory directory;
+  final IDirectory directory;
 
   /// 路径Key
   late String locationKey;
@@ -50,14 +50,18 @@ abstract class IFileInfo<T extends XEntity> extends IEntity<T> {
 
   /// 缓存用户数据
   Future<bool> cacheUserData({bool? notify});
+  IFileInfo(this.directory);
 }
 
 /// 文件类抽象实现
 abstract class FileInfo<T extends XEntity> extends Entity<T>
     implements IFileInfo<T> {
-  FileInfo(T metadata, this.directory) : super(metadata) {
-    this.isContainer = false;
-    this.cache = XCache(fullId: '${this.spaceId}_${metadata.id}');
+  FileInfo(
+    T metadata,
+    this.directory,
+  ) : super(metadata) {
+    isContainer = false;
+    cache = XCache(fullId: '${this.spaceId}_${metadata.id}');
     Future.delayed(Duration(milliseconds: id == userId ? 100 : 0), () async {
       await loadUserData();
     });
@@ -68,7 +72,7 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
   @override
   late bool isContainer;
   @override
-  late IDirectory directory;
+  IDirectory directory;
 
   @override
   bool get isInherited => directory.isInherited;
@@ -107,8 +111,8 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
 
   Future<void> loadUserData() async {
     final data = await target.user.cacheObj.get<XCache>(cachePath);
-    if (data.fullId == cache.fullId) {
-      cache = data;
+    if (data?.fullId == cache.fullId) {
+      cache = data!;
     }
     target.user.cacheObj.subscribe(cachePath, (XCache data) {
       if (data.fullId == cache.fullId) {
@@ -117,7 +121,7 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
         directory.changCallback();
         command.emitterFlag(flag: cacheFlag);
       }
-    }, id: data.fullId);
+    }, id: data?.fullId);
   }
 
   @override
@@ -170,6 +174,7 @@ abstract class ISysFileInfo extends IFileInfo<XEntity> {
 
   /// 分享信息
   FileItemShare shareInfo();
+  ISysFileInfo(super.directory);
 }
 
 /// 文件转实体
