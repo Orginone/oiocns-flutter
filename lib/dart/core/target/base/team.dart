@@ -78,6 +78,7 @@ abstract class Team extends Entity<XTarget> implements ITeam {
   @override
   late IDirectory directory;
   bool _memberLoaded = false;
+
   static const mTypes = [TargetType.person];
   Team(List<String> _keys, XTarget _metadata, List<String> _relations,
       {List<TargetType> memberTypes = mTypes})

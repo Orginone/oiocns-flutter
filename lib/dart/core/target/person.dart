@@ -41,9 +41,9 @@ abstract class IPerson extends IBelong {
   // 加载赋予人的身份(角色)实体
   Future<List<XIdProof>> loadGivedIdentitys({bool reload = false});
   //赋予身份
-  void giveIdentity(List<XIdentity> identitus, {String? identity});
+  void giveIdentity(List<XIdentity> identitys, {String? identity});
   //移除赋予人的身份（角色）实体
-  void removeGivedIdentity(List<String> identityIds, [String? teamId]);
+  void removeGivedIdentity(List<String> identityIds, {String? teamId});
   // //加载单位
   // Future<List<ICompany>> loadCompanys({bool reload = false}); /////
   //创建单位
@@ -89,7 +89,7 @@ class Person extends Belong implements IPerson {
   void giveIdentity(List<XIdentity> identitys, {String teamId = ''}) {
     for (var identity in identitys) {
       if (
-        !givedIdentitys.some(
+        !givedIdentitys.any(
           (a) => a.identityId == identity.id && a.teamId == teamId,
         )
       ) {
@@ -106,7 +106,7 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  void removeGivedIdentity(List<String> identityIds, [String? teamId]) {
+  void removeGivedIdentity(List<String> identityIds, {String? teamId}) {
     var idProofs = givedIdentitys
         .where((a) => identityIds.contains(a.identityId))
         .toList();
