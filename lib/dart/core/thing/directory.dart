@@ -153,7 +153,7 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
 
   @override
   bool get isInherited {
-    return metadata.belongId != target.space.id;
+    return metadata.belongId != target.space?.id ?? false;
   }
 
   @override
@@ -431,7 +431,7 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
     final List<OperateModel> operates = [];
     if (typeName == '成员目录') {
       if (target.hasRelationAuth()) {
-        if (target.user.copyFiles.isNotEmpty) {
+        if (target.user?.copyFiles.isNotEmpty ?? false) {
           operates.add(OperateModel.fromJson(FileOperates.parse.toJson()));
         }
         operates.add(OperateModel.fromJson(TeamOperates.pull.toJson()));
@@ -458,7 +458,7 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
         operates.add(OperateModel.fromJson(DirectoryNew().toJson()));
         operates.add(OperateModel.fromJson(NewWarehouse().toJson()));
 
-        if (target.user.copyFiles.isNotEmpty) {
+        if (target.user?.copyFiles.isNotEmpty ?? false) {
           operates.add(OperateModel.fromJson(FileOperates.parse.toJson()));
         }
       }

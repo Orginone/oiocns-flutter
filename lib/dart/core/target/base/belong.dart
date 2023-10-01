@@ -1,31 +1,50 @@
-
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
+import 'package:orginone/dart/core/public/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
+import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/outTeam/cohort.dart';
 import 'package:orginone/dart/core/target/outTeam/storage.dart';
 import 'package:orginone/dart/core/target/person.dart';
+import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/main.dart';
 
 abstract class IBelong extends ITarget {
+  IBelong(
+    this.metadata,
+    this.relations,
+    this.directory, {
+    this.user,
+    this.memberTypes = mTypes,
+  }) : super(metadata, directory, relations);
 
- IBelong(this.cohorts, this.storages, this.parentTarget, this.cohortChats, this.shareTarget,{this.superAuth });
+  @override
+  final XTarget metadata;
+  @override
+  final List<String> relations;
+  @override
+  final IPerson? user;
+  @override
+  final List<TargetType>? memberTypes;
+
+  @override
+  final IDirectory directory;
   //超管权限，权限为树结构
- final IAuthority? superAuth;
- //加入/管理的群
- final List<ICohort> cohorts;
+  late IAuthority? superAuth;
+  //加入/管理的群
+  late List<ICohort> cohorts;
   //存储资源群
- final List<IStorage> storages;
+  late List<IStorage> storages;
   //上级用户
- final  List<ITarget>  parentTarget;
+  late List<ITarget> parentTarget;
   //群会话
- final List<ISession>  cohortChats;
+  late List<ISession> cohortChats;
   //共享组织
- final List<ITarget>  shareTarget;
-
+  late List<ITarget> shareTarget;
 
   /// 获取存储占用情况
   Future<DiskInfoType> getDiskInfo();
@@ -36,51 +55,57 @@ abstract class IBelong extends ITarget {
   //设立人员群
   Future<ICohort?> createCohort(TargetModel data);
   //发送职权变更消息
-  Future<bool> sendAuthorityChangeMsg(
-    String operate,
-    XAuthority authority
-  );
+  Future<bool> sendAuthorityChangeMsg(String operate, XAuthority authority);
 }
 
 //自归属用户基类实现
 abstract class Belong extends Target implements IBelong {
- 
-
-  Belong(this.metadata, this.relations,{this.user,this.memberTypes} ) : super([], metadata, relations) {
+  ///构造函数
+  Belong(
+    this.metadata,
+    this.relations, {
+    this.user,
+    this.memberTypes = mTypes,
+  }) : super([], metadata, relations,
+            space: null, user: user, memberTypes: memberTypes) {
     memberTypes = [TargetType.person];
 
-    kernel.subscribe('${metadata.belongId}-${metadata.id}-authority',
-        [key], (data) => superAuth?.receiveAuthority(data)); ///////
+    kernel.subscribe('${metadata.belongId}-${metadata.id}-authority', [key],
+        (data) => superAuth?.receiveAuthority(data)); ///////
 
     // speciesTypes = [SpeciesType.store, SpeciesType.dict];
     // message = ChatMessage(this);
   }
 
-@override
+  @override
   final XTarget metadata;
-@override
+  @override
   final List<String> relations;
-@override
-  final IPerson ?user;
-@override
+  @override
+  final IPerson? user;
+  @override
   final List<TargetType>? memberTypes;
 
- @override
-  IBelong space;
+  @override
+  IBelong? space;
   @override
   late List<ICohort> cohorts;
 
   @override
-  List<IStorage> storages;
+  late List<IStorage> storages;
 
   @override
   IAuthority? superAuth;
   @override
   Future<IAuthority?> loadSuperAuth({bool reload = false}) async {
     if (superAuth == null || reload) {
-      var res = await kernel.queryAuthorityTree(IdReq(id: metadata.id));
-      if (res.success && res.data?.id != null) {
-        superAuth = Authority(res.data!, this);
+      var res = await kernel.queryAuthorityTree(IdPageModel(
+        id: metadata.id,
+        page: pageAll,
+      ));
+      if (res.success) {
+        superAuth =
+            Authority(res.data as XAuthority, space!, this as Authority);
       }
     }
     return superAuth;
@@ -99,27 +124,35 @@ abstract class Belong extends Target implements IBelong {
         }
       }
       cohorts.add(cohort);
-      await cohort.pullMembers([user.metadata]);
+      await cohort.pullMembers([user!.metadata]);
       return cohort;
     }
     return null;
   }
 
   @override
+  Future<DiskInfoType> getDiskInfo() async {
+    final data = await kernel.diskInfo(id, relations);
+    return data.data!;
+  }
+
+  @override
   void loadMemberChats(List<XTarget> newmembers, bool isAdd) {
     super.loadMemberChats(members, isAdd);
-    newmembers = newmembers.filter((i) => i.id != userId);
-    if(isAdd){
-      var labels = id == user.id['好友']：[name,'同事'];
-      for (var i in newmembers) { 
-        if (!memberChats.some((a) => a.id === i.id)) {
-          memberChats.addAll(Session(i.id, this, i, labels));
+    newmembers = newmembers.where((i) => i.id != userId).toList();
+    if (isAdd) {
+      var labels = id == user?.id ? ['好友'] : [name, '同事'];
+      for (var i in newmembers) {
+        if (!memberChats.any((a) => a.id == i.id)) {
+          memberChats.add(Session(i.id, this, i, labels));
         }
       }
-    }else {
-      memberChats = memberChats.filter((i) =>
-        newMembers.every((a) => a.id != i.sessionId),
-      );
+    } else {
+      memberChats = memberChats
+          .where(
+            (i) => newmembers.every((a) => a.id != i.sessionId),
+          )
+          .toList();
     }
   }
 
@@ -131,31 +164,35 @@ abstract class Belong extends Target implements IBelong {
   }
 
   @override
-  List<OperateModel> operates(){
-    var operates = super.operates();///////
-    if(hasRelationAuth()){
-      operates.unshift(targetOperates.newCohort);
+  List<OperateModel> operates({int? mode}) {
+    var operates = super.operates(); ///////
+    if (hasRelationAuth()) {
+      operates.insert(
+        0,
+        OperateModel.fromJson(TargetOperates.newCohort.toJson()),
+      );
     }
     return operates;
   }
 
   @override
   List<ITarget> get shareTarget;
+
+  @override
+  List<ISession> get cohortChats; /////////
   @override
   List<ITarget> get parentTarget;
-  @override
-  List<ISession> get cohortChats;/////////
-  
   @override
   Future<bool> applyJoin(List<XTarget> members);
 
   @override
-  Future<bool> sendAuthorityChangeMsg(String operate,XAuthority authority) async{
+  Future<bool> sendAuthorityChangeMsg(
+      String operate, XAuthority authority) async {
     var res = await kernel.dataNotify(DataNotityType(
       data: {
         operate,
         authority,
-        user.metadata,
+        user?.metadata,
       },
       flag: 'authority',
       onlineOnly: true,
@@ -167,8 +204,4 @@ abstract class Belong extends Target implements IBelong {
     ));
     return res.success;
   }
-
-  
-
-
 }

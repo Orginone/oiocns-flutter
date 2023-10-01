@@ -10,6 +10,8 @@ Map<String, dynamic> shareIdSet = <String, dynamic>{};
 
 abstract class IEntity<T> extends Emitter {
   IEntity(this.metadata);
+  //数据实体
+  final T metadata;
   //实体唯一键
   late String key;
   //唯一标识
@@ -23,8 +25,7 @@ abstract class IEntity<T> extends Emitter {
   late String typeName;
   //实体描述
   late String remark;
-  //数据实体
-  final T metadata;
+
   //用户ID
   late String userId;
   //归属Id

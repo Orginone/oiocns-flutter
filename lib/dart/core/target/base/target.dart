@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
+import 'package:orginone/dart/core/public/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/identity/identity.dart';
@@ -14,35 +15,30 @@ import 'package:orginone/main.dart';
 import '../../public/operates.dart';
 import 'team.dart';
 
-/// 空间类型数据
-class SpaceType {
-  // 唯一标识
-  late String id;
-
-  // 名称
-  late String name;
-
-  // 类型
-  late TargetType typeName;
-
-  // 头像
-  late ShareIcon share;
-}
-
 abstract class ITarget extends IFileInfo<XTarget> with ITeam {
+  ///构造函数
+  ITarget(this.metadata, this.directory, this.relations)
+      : super(metadata, directory);
+
+  @override
+  final XTarget metadata;
+  @override
+  late IDirectory directory;
+  final List<String> relations;
   //会话
   late ISession session;
   //用户资源
   late DataResource resource;
   //用户设立的身份（角色）
   late List<IIdentity> identitys;
+
   //子用户
-  List<ITarget> get subTarget;
+  late List<ITarget> subTarget;
   //所有相关用户
-  List<ITarget> targets;
+  late List<ITarget> targets;
   //用户相关的所有会话
   @override
-  List<ISession> get chats;
+  late List<ISession> chats;
   //成员目录
   late IDirectory memberDirectory;
   //退出用户群
@@ -57,26 +53,26 @@ abstract class ITarget extends IFileInfo<XTarget> with ITeam {
 
 ///用户基类实现
 abstract class Target extends Team implements ITarget {
-  Target(List<String> _keys, XTarget _metadata, List<String> _relations,
-      {IBelong? space, IPerson? user, List<TargetType>? memberTypes})
-      : super(_keys, _metadata, _relations) {
+  Target(this.keys, this.metadata, this.relations,
+      {this.space, this.user, this.memberTypes = mTypes})
+      : super(keys, metadata, relations, memberTypes: memberTypes) {
     if (space != null) {
-      this.space = space;
+      space = space;
     } else {
-      this.space = this as IBelong;
+      space = this as IBelong;
     }
     if (user != null) {
-      this.user = user;
+      user = user;
     } else {
-      this.user = this as IPerson;
+      user = this as IPerson;
     }
-    cache = XCache(fullId: '${_metadata.belongId}_${_metadata.id}');
-    resource = DataResource(_metadata, _relations, [key]);
+    cache = XCache(fullId: '${metadata.belongId}_${metadata.id}');
+    resource = DataResource(metadata, relations, [key]);
     directory = Directory(
       {
-        ..._metadata.toJson(),
-        'shareId': _metadata.id,
-        'id': '${_metadata.id}_',
+        ...metadata.toJson(),
+        'shareId': metadata.id,
+        'id': '${metadata.id}_',
         'typeName': '目录',
       } as XDirectory,
       this,
@@ -86,57 +82,65 @@ abstract class Target extends Team implements ITarget {
       {
         ...directory.metadata.toJson(),
         'typeName': '成员目录',
-        'id': '${_metadata.id}__',
-        'name': _metadata.typeName == TargetType.person.label
+        'id': '${metadata.id}__',
+        'name': metadata.typeName == TargetType.person.label
             ? '我的好友'
-            : '${_metadata.typeName}成员',
+            : '${metadata.typeName}成员',
       } as XDirectory,
       this,
       this as IDirectory,
       parent: directory,
     );
     isContainer = true;
-    session = Session(id, this, _metadata);
+    session = Session(id, this, metadata);
     Future.delayed(
       Duration(milliseconds: id == userId ? 100 : 0),
       () async {
-        await loadUserData(_keys, _metadata);
+        await loadUserData(keys, metadata);
       },
     );
   }
+
+  ///构造函数使用的参数
+  @override
+  final List<String> keys;
+  @override
+  final XTarget metadata;
+  @override
+  final List<String> relations;
+  @override
+  late List<TargetType>? memberTypes;
   @override
   late IPerson? user;
   @override
-  late IBelong space;
+  late IBelong? space;
+
+  ///其他参数
   @override
   late ISession session;
+  @override
+  late bool isContainer;
   @override
   late IDirectory directory;
   @override
   late DataResource resource;
-  //继承了IFileInfo
-  // late List<XCache> cache;
+
   @override
-  late bool isContainer;
+  late XCache cache;
+
   @override
-  late List<IIdentity> identitys = [];
+  List<IIdentity> identitys = [];
   @override
   late IDirectory memberDirectory;
   //暂存
   final bool _identityLoaded = false;
   @override
-  String get spaceId {
-    return space.id;
-  }
+  String get spaceId => space?.id ?? '';
 
   @override
-  String get locationKey {
-    return id;
-  }
+  String get locationKey => id;
 
-  String get cachePath {
-    return 'targets.${cache.fullId}';
-  }
+  String get cachePath => 'targets.${cache.fullId}';
 
   Future<void> loadUserData(List<String> keys, XTarget metadata) async {
     kernel.subscribe(
@@ -144,14 +148,14 @@ abstract class Target extends Team implements ITarget {
       keys,
       (dynamic data) => _receiveIdentity(data),
     );
-    final data = await user.cacheObj.get<XCache>(cachePath);
+    final data = await user?.cacheObj.get<XCache>(cachePath);
     if (data != null && data.fullId == cache.fullId) {
       cache = data;
     }
-    user.cacheObj.subscribe(cachePath, (XCache data) {
+    user?.cacheObj.subscribe(cachePath, (XCache data) {
       if (data.fullId == cache.fullId) {
         cache = data;
-        user.cacheObj.setValue(cachePath, data);
+        user?.cacheObj.setValue(cachePath, data);
         directory.changCallback();
       }
     });
@@ -159,9 +163,9 @@ abstract class Target extends Team implements ITarget {
 
   @override
   Future<bool> cacheUserData({bool? notify = true}) async {
-    var success = await user.cacheObj.set(cachePath, cache);
+    var success = await user?.cacheObj.set(cachePath, cache) ?? false;
     if (success && notify!) {
-      await user.cacheObj
+      await user?.cacheObj
           .notity(cachePath, cache, onlyTarget: true, ignoreSelf: true);
     }
     return success;
@@ -170,14 +174,13 @@ abstract class Target extends Team implements ITarget {
   @override
   Future<List<IIdentity>> loadIdentitys({bool reload = false}) async {
     if (identitys.isEmpty || reload) {
-      var res = await kernel.queryTargetIdentitys(IDBelongReq(
-          id: metadata.id,
-          page: PageRequest(offset: 0, limit: 9999, filter: '')));
+      var res = await kernel
+          .queryTargetIdentitys(IdPageModel(id: metadata.id, page: pageAll));
       identitys.clear();
       if (res.success && res.data?.result != null) {
-        for (var element in res.data!.result) {
-          identitys.add(Identity(space, element));
-        }
+        identitys = (res.data?.result ?? [])
+            .map((item) => Identity(item, this))
+            .toList();
       }
     }
     return identitys;
@@ -188,8 +191,9 @@ abstract class Target extends Team implements ITarget {
     data.shareId = metadata.id;
     var res = await kernel.createIdentity(data);
     if (res.success && res.data?.id != null) {
-      var identity = Identity(space, res.data!);
+      final identity = Identity(res.data!, this);
       identitys.add(identity);
+      identity.sendIdentityChangeMsg(OperateType.create, subTarget: metadata);
       return identity;
     }
     return null;
@@ -261,17 +265,17 @@ abstract class Target extends Team implements ITarget {
   Future<void> notifySession(bool pull, List<XTarget> member) async {
     if (id != userId) {
       for (var member in members) {
-        if (member.typeName == TargetType.person) {
+        if (member.typeName == TargetType.person.label) {
           if (pull) {
             await session.sendMessage(
               MessageType.notify,
-              '${user.name} 邀请 ${member.name} 加入群聊',
+              '${user?.name} 邀请 ${member.name} 加入群聊',
               [],
             );
           } else {
             await session.sendMessage(
               MessageType.notify,
-              '${user.name} 将 ${member.name} 移出群聊',
+              '${user?.name} 将 ${member.name} 移出群聊',
               [],
             );
           }
@@ -302,7 +306,7 @@ abstract class Target extends Team implements ITarget {
       case '创建':
         message = '${data.operater?.name}新增身份【${data.identity?.name}】.';
         if (identitys.every((q) => q.id != data.identity?.id)) {
-          identitys.add(Identity(data.identity as ITarget, this as XIdentity));
+          identitys.add(Identity(data.identity!, this));
         }
         break;
       case '删除':
@@ -341,11 +345,11 @@ abstract class Target extends Team implements ITarget {
         break;
     }
     //日志
-    // if (message.isNotEmpty) {
-    //   if (data.operater?.id != user.id) {
-    //     logger.info(message);
-    //   }
-    //   directory.structCallback();
-    // }
+    if (message.isNotEmpty) {
+      if (data.operater?.id != user?.id) {
+        // logger.info(message);
+      }
+      directory.structCallback();
+    }
   }
 }

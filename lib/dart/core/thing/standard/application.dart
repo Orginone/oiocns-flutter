@@ -162,7 +162,7 @@ class Application extends StandardFileInfo<XApplication>
     if (mode == 2 && directory.target.hasRelationAuth()) {
       operates.add(OperateModel.fromJson(DirectoryOperates.newModule.toJson()));
       operates.add(OperateModel.fromJson(DirectoryOperates.newWork.toJson()));
-      if (directory.target.user.copyFiles.isNotEmpty) {
+      if (directory.target.user?.copyFiles.isNotEmpty ?? false) {
         operates.add(OperateModel.fromJson(FileOperates.parse.toJson()));
       }
     }

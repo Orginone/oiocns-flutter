@@ -198,7 +198,7 @@ class Identity extends Entity<XIdentity> implements IIdentity {
     return [];
   }
 
-  Future<void> _sendIdentityChangeMsg(OperateType operate,
+  Future<void> sendIdentityChangeMsg(OperateType operate,
       {XTarget? subTarget}) async {
     await current.sendIdentityChangeMsg({
       operate,

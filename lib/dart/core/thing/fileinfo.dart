@@ -11,6 +11,12 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 
 abstract class IFileInfo<T extends XEntity> extends IEntity<T> {
+  IFileInfo(this.metadata, this.directory) : super(metadata);
+
+  @override
+  final T metadata;
+  final IDirectory directory;
+
   /// 缓存
   late XCache cache;
 
@@ -24,7 +30,6 @@ abstract class IFileInfo<T extends XEntity> extends IEntity<T> {
 
   /// 是否为容器
   late bool isContainer;
-  final IDirectory directory;
 
   /// 路径Key
   late String locationKey;
@@ -50,7 +55,6 @@ abstract class IFileInfo<T extends XEntity> extends IEntity<T> {
 
   /// 缓存用户数据
   Future<bool> cacheUserData({bool? notify});
-  IFileInfo(this.directory);
 }
 
 /// 文件类抽象实现
@@ -110,14 +114,14 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
   Future<bool> move(IDirectory destination);
 
   Future<void> loadUserData() async {
-    final data = await target.user.cacheObj.get<XCache>(cachePath);
+    final data = await target.user?.cacheObj.get<XCache>(cachePath);
     if (data?.fullId == cache.fullId) {
       cache = data!;
     }
-    target.user.cacheObj.subscribe(cachePath, (XCache data) {
+    target.user?.cacheObj.subscribe(cachePath, (XCache data) {
       if (data.fullId == cache.fullId) {
         cache = data;
-        target.user.cacheObj.setValue(cachePath, data);
+        target.user?.cacheObj.setValue(cachePath, data);
         directory.changCallback();
         command.emitterFlag(flag: cacheFlag);
       }
@@ -126,9 +130,9 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
 
   @override
   Future<bool> cacheUserData({bool? notify = true}) async {
-    final success = await target.user.cacheObj.set(cachePath, cache);
-    if (success && notify!) {
-      await target.user.cacheObj
+    final success = await target.user?.cacheObj.set(cachePath, cache);
+    if (success! && notify!) {
+      await target.user?.cacheObj
           .notity(cachePath, cache, onlyTarget: true, ignoreSelf: false);
     }
     return success;
@@ -150,7 +154,7 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
   List<OperateModel> operates({int? mode = 0}) {
     final operates = super.operates(mode: mode);
     if (mode! % 2 == 0) {
-      if (target.space.hasRelationAuth()) {
+      if (target.space!.hasRelationAuth()) {
         operates.insert(0, OperateModel.fromJson(FileOperates.copy.toJson()));
       }
       if (target.hasRelationAuth()) {
@@ -170,11 +174,15 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
 /// 系统文件接口
 abstract class ISysFileInfo extends IFileInfo<XEntity> {
   /// 文件系统项对应的目标
-  late FileItemModel filedata;
+  final FileItemModel filedata;
+
+  @override
+  final IDirectory directory;
 
   /// 分享信息
   FileItemShare shareInfo();
-  ISysFileInfo(super.directory);
+  ISysFileInfo(this.filedata, this.directory)
+      : super(filedata as XEntity, directory);
 }
 
 /// 文件转实体

@@ -16,18 +16,20 @@ import 'package:orginone/main.dart';
 
 import '../person.dart';
 
+const mTypes = [TargetType.person];
+
 abstract class ITeam implements IEntity<XTarget> {
   //当前用户
-  late IPerson user;
+  late IPerson? user;
   //加载归属组织
-  late IBelong space;
+  late IBelong? space;
   //当前目录
   late IDirectory directory;
   //成员
   late List<XTarget> members;
 
   //限定成员类型
-  late List<TargetType> memberTypes;
+  late List<TargetType>? memberTypes;
   //成员会话
   late List<ISession> memberChats;
 
@@ -81,7 +83,7 @@ abstract class Team extends Entity<XTarget> implements ITeam {
   final XTarget metadata;
   final List<String> relations;
   @override
-  final List<TargetType> memberTypes;
+  final List<TargetType>? memberTypes;
   //其他参数
   @override
   List<XTarget> members = [];
@@ -91,18 +93,18 @@ abstract class Team extends Entity<XTarget> implements ITeam {
   late IDirectory directory;
   bool _memberLoaded = false;
   @override
-  abstract IBelong space;
+  abstract IBelong? space;
   @override
-  abstract IPerson user;
-  static const mTypes = [TargetType.person];
-  bool get isInherited => metadata.belongId != space.id;
+  abstract IPerson? user;
+
+  bool get isInherited => metadata.belongId != space?.id;
 
   @override
   Future<List<XTarget>> loadMembers({bool? reload = false}) async {
     if (!_memberLoaded || reload!) {
       var res = await kernel.querySubTargetById(GetSubsModel(
         id: metadata.id,
-        subTypeNames: memberTypes.map((e) => e.label).toList(),
+        subTypeNames: memberTypes?.map((e) => e.label).toList() ?? [],
         page: pageAll(),
       ));
       if (res.success) {
@@ -121,7 +123,8 @@ abstract class Team extends Entity<XTarget> implements ITeam {
   Future<bool> pullMembers(List<XTarget> members,
       {bool? notity = false}) async {
     var filterMembers = members
-        .where((i) => memberTypes.contains(TargetType.getType(i.typeName!)))
+        .where((i) =>
+            memberTypes?.contains(TargetType.getType(i.typeName!)) ?? false)
         .toList();
     members = filterMembers.where((element) {
       return this.members.where((m) => m.id == element.id).isEmpty;
@@ -146,13 +149,15 @@ abstract class Team extends Entity<XTarget> implements ITeam {
   Future<bool> removeMembers(List<XTarget> members,
       {bool? notity = false}) async {
     var filterMembers = members
-        .where((i) => memberTypes.contains(TargetType.getType(i.typeName!)))
+        .where((i) =>
+            memberTypes?.contains(TargetType.getType(i.typeName!)) ?? false)
         .toList();
     members = filterMembers.where((element) {
       return this.members.where((m) => m.id == element.id).isEmpty;
     }).toList();
     for (var member in members) {
-      if (memberTypes.contains(TargetType.getType(member.typeName!))) {
+      if (memberTypes?.contains(TargetType.getType(member.typeName!)) ??
+          false) {
         if (!notity!) {
           var res = await kernel
               .removeOrExitOfTeam(GainModel(id: id, subId: member.id));
@@ -169,12 +174,12 @@ abstract class Team extends Entity<XTarget> implements ITeam {
   }
 
   Future<XTarget?> create(TargetModel data) async {
-    data.belongId = space.id;
+    data.belongId = space?.id;
     data.teamCode = data.teamCode ?? data.code;
     data.teamName = data.teamName ?? data.name;
     var res = await kernel.createTarget(data);
     if (res.success && res.data?.id != null) {
-      await space.user.loadGivedIdentitys(reload: true);
+      await space?.user?.loadGivedIdentitys(reload: true);
       return res.data;
     }
     return null;
@@ -247,9 +252,9 @@ abstract class Team extends Entity<XTarget> implements ITeam {
 
   @override
   bool hasAuthoritys(List<String> authIds) {
-    authIds = space.superAuth?.loadParentAuthIds(authIds) ?? authIds;
+    authIds = space?.superAuth?.loadParentAuthIds(authIds) ?? authIds;
     var orgIds = [metadata.belongId!, id];
-    return user.authenticate(orgIds, authIds);
+    return user?.authenticate(orgIds, authIds) ?? false;
   }
 
   @override
@@ -260,7 +265,7 @@ abstract class Team extends Entity<XTarget> implements ITeam {
         operate,
         metadata,
         sub,
-        user.metadata,
+        user?.metadata ?? '',
       },
       targetId: id,
       ignoreSelf: false,
@@ -280,7 +285,8 @@ abstract class Team extends Entity<XTarget> implements ITeam {
       case 'Add':
         if (data.subTarget != null) {
           if (id == data.target?.id) {
-            if (memberTypes.contains(data.subTarget?.typeName as TargetType)) {
+            if (memberTypes?.contains(data.subTarget?.typeName as TargetType) ??
+                false) {
               message =
                   '${data.operater?.name}把${data.subTarget?.name}与${data.target?.name}建立关系.';
               await pullMembers([data.subTarget!], notity: true);
@@ -294,8 +300,9 @@ abstract class Team extends Entity<XTarget> implements ITeam {
         break;
       case 'Remove':
         if (data.subTarget != null) {
-          if (id == data.target?.id && data.subTarget?.id != space.id) {
-            if (memberTypes.contains(data.subTarget?.typeName as TargetType)) {
+          if (id == data.target?.id && data.subTarget?.id != space?.id) {
+            if (memberTypes?.contains(data.subTarget?.typeName as TargetType) ??
+                false) {
               message =
                   '${data.operater?.name}把${data.subTarget?.name}从${data.target?.name}移除.';
               await removeMembers([data.subTarget!], notity: true);
@@ -315,10 +322,10 @@ abstract class Team extends Entity<XTarget> implements ITeam {
         break;
     }
     if (message.isNotEmpty) {
-      if (data.operater?.id != user.id) {
+      if (data.operater?.id != user?.id) {
         final Logger log = Logger('Team');
       }
-      space.directory.structCallback();
+      space?.directory.structCallback();
       Command command = Command();
       command.emitterFlag();
     }

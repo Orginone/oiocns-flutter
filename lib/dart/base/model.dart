@@ -111,7 +111,7 @@ class DataNotityType {
     required this.belongId,
     required this.onlyTarget,
     required this.onlineOnly,
-    required this.subTargetId,
+    this.subTargetId,
   });
 }
 

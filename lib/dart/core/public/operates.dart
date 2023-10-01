@@ -186,7 +186,7 @@ enum TeamOperates {
 
 /// 用户的操作
 enum TargetOperates {
-  refresnewCohorth(32, 'newCohort', '设立群组', '群组'),
+  newCohort(32, 'newCohort', '设立群组', '群组'),
   newStorage(33, 'newStorage', '设立存储资源', '存储资源'),
   newCompany(34, 'newCompany', '设立单位', '单位'),
   newGroup(35, 'newGroup', '设立集群', '组织群'),
