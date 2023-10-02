@@ -25,15 +25,12 @@ enum OrgAuth {
 }
 
 ///数据存储集合名称
-class StoreCollName {
-  static const workTask = 'work-task';
-  static const workInstance = 'work-instances';
-  static const chatMessage = 'chat-message';
-
-  static const mostUsed = 'most-used';
-
-  static const storeOpen = 'store-open';
-}
+const storeCollName = {
+  'workTask': 'work-task',
+  'workInstance': 'work-instances',
+  'chatMessage': 'chat-message',
+  'transfer': 'standard-transfer',
+};
 
 ///支持的单位类型
 const companyTypes = [

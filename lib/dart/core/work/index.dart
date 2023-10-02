@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:flutter/src/material/popup_menu.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
@@ -12,6 +12,8 @@ import 'package:orginone/main.dart';
 import 'apply.dart';
 
 abstract class IWork extends IFileInfo<XWorkDefine> {
+  IWork(super.metadata, super.directory);
+
   /// 主表
   late List<IForm> primaryForms;
 
@@ -52,23 +54,45 @@ XWorkDefine fullDefineRule(XWorkDefine data) {
 
 class Work extends FileInfo<XWorkDefine> implements IWork {
   Work(
-    XWorkDefine metadata,
+    this.metadata,
     this.application,
   ) : super(fullDefineRule(metadata), application.directory) {
-    forms = [];
+    isContainer = application.isInherited;
   }
 
   @override
-  late IApplication application;
-
+  final XWorkDefine metadata;
   @override
-  late List<IForm> forms;
+  final IApplication application;
 
   @override
   bool isLoaded = false;
 
   @override
   WorkNodeModel? node;
+
+  @override
+  String get locationKey => application.locationKey;
+  @override
+  String get cacheFlag => 'works';
+  List<IForm> get forms => [...primaryForms, ...detailForms];
+  @override
+  Future<bool> delete() async {
+    final res = await kernel.deleteWorkDefine(IdModel(id));
+    if (res.success) {
+      application.works.removeWhere((a) => a.id == id);
+    }
+    return res.success;
+  }
+
+  @override
+  Future<bool> rename(String name) async {
+    final node = await loadWorkNode();
+    var data = WorkDefineModel.fromJson(metadata.toJson());
+    data.name = name;
+    data.resource = node;
+    return await update(data);
+  }
 
   @override
   Future<bool> copy(IDirectory destination) async {
@@ -85,83 +109,6 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
       }
     }
     return false;
-  }
-
-  @override
-  Future<IWorkApply?> createApply() async {
-    if (node != null && forms.isNotEmpty) {
-      final InstanceDataModel data = InstanceDataModel(
-        node: node!,
-        allowAdd: metadata.allowAdd,
-        allowEdit: metadata.allowEdit,
-        allowSelect: metadata.allowSelect,
-      );
-      return WorkApply(
-        directory.target.space,
-        WorkInstanceModel(
-          hook: '',
-          taskId: '0',
-          title: metadata.name,
-          defineId: id,
-        ),
-        data,
-      );
-    }
-    return null;
-  }
-
-  @override
-  Future<bool> delete() async {
-    final res = await kernel.deleteWorkDefine(IdReq(id: id));
-    if (res.success) {
-      application.works.removeWhere((a) => a.id == id);
-    }
-    return res.success;
-  }
-
-  @override
-  Future<List<IForm>> loadWorkForms({bool reload = false}) async {
-    final List<IForm> forms = [];
-    if (!reload) {
-      await loadWorkNode(reload: true);
-    }
-    if (node != null) {
-      recursionForms(WorkNodeModel node) async {
-        for (var item in node.forms ?? []) {
-          final form = Form(
-            item..id = "${item.id!}",
-            directory,
-          );
-          await form.loadContent();
-          forms.add(form);
-        }
-        if (node.children != null) {
-          await recursionForms(node.children!);
-        }
-        if (node.branches != null) {
-          for (final branch in node.branches!) {
-            if (branch.children != null) {
-              await recursionForms(branch.children!);
-            }
-          }
-        }
-      }
-
-      await recursionForms(node!);
-    }
-    this.forms = forms;
-    return forms;
-  }
-
-  @override
-  Future<WorkNodeModel?> loadWorkNode({bool reload = false}) async {
-    if (node == null || reload) {
-      final res = await kernel.queryWorkNodes(IdReq(id: id));
-      if (res.success) {
-        node = res.data;
-      }
-    }
-    return node;
   }
 
   @override
@@ -186,41 +133,120 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
   }
 
   @override
-  // TODO: implement popupMenuItem
-  List<PopupMenuItem> get popupMenuItem => [];
-
-  @override
-  Future<bool> rename(String name) async {
-    final node = await loadWorkNode();
-    var data = WorkDefineModel.fromJson(metadata.toJson());
-    data.name = name;
-    data.resource = node;
-    return await update(data);
+  List<IFileInfo<XEntity>> content({int? mode}) {
+    if (node != null) {
+      return forms
+          .where(
+            (a) => node!.forms!.indexWhere((s) => s.id == a.id) > -1,
+          )
+          .toList();
+    }
+    return [];
   }
 
   @override
-  Future<bool> update(WorkDefineModel req) async {
-    req.id = id;
-    req.applicationId = metadata.applicationId;
-    var res = await kernel.createWorkDefine(req);
+  Future<bool> loadContent({bool reload = false}) async {
+    await loadWorkNode();
+    return forms.isNotEmpty;
+  }
+
+  @override
+  Future<bool> update(WorkDefineModel data) async {
+    data.id = id;
+    data.applicationId = metadata.applicationId;
+    var res = await kernel.createWorkDefine(data);
     if (res.success && res.data != null) {
-      node = req.resource;
+      node = data.resource;
+      await recursionForms(node!);
     }
     return res.success;
   }
 
   @override
-  Future<bool> loadContent({bool reload = false}) async {
-    await loadWorkForms();
-    return forms.isNotEmpty;
+  Future<WorkNodeModel?> loadWorkNode({bool reload = false}) async {
+    if (node == null || reload) {
+      final res = await kernel.queryWorkNodes(IdReq(id: id));
+      if (res.success) {
+        node = res.data;
+        await recursionForms(node!);
+      }
+    }
+    return node;
   }
 
   @override
-  List<IFileInfo<XEntity>> content(int mode) {
-    return forms;
+  Future<IWorkApply?> createApply() async {
+    await loadWorkNode();
+    if (node != null && forms.isNotEmpty) {
+      final InstanceDataModel data = InstanceDataModel(
+        node: node!,
+        allowAdd: metadata.allowAdd,
+        allowEdit: metadata.allowEdit,
+        allowSelect: metadata.allowSelect,
+      );
+      await Future.wait(
+        forms.map((form) async {
+          await form.loadContent();
+          data.fields?[form.id] = form.fields;
+        }).toList(),
+      );
+      return WorkApply(
+        WorkInstanceModel(
+          hook: '',
+          taskId: '0',
+          title: metadata.name,
+          defineId: id,
+        ),
+        data,
+        directory.target.space!,
+        forms,
+      );
+    }
+    return null;
   }
 
   @override
-  // TODO: implement locationKey
-  String get locationKey => application.locationKey;
+  List<OperateModel> operates({int? mode}) {
+    return super
+        .operates(mode: mode)
+        .where(
+          (a) => ![FileOperates.copy, FileOperates.move, FileOperates.download]
+              .contains(a),
+        )
+        .toList();
+  }
+
+  recursionForms(WorkNodeModel node) async {
+    // node.detailForms = await directory.resource.formColl.where(
+    //   node.forms?.where((a) => a.typeName == '子表').toList().map((s) => s.id),
+    // );
+    // node.primaryForms = await directory.resource.formColl.where(
+    //   node.forms?.where((a) => a.typeName == '主表').toList().map((s) => s.id),
+    // );
+    node.primaryForms?.forEach((a) async {
+      a.id = '${a.id}_';
+      final form = Form(a, directory);
+      primaryForms.add(form);
+      await form.loadFields();
+    });
+    node.detailForms?.forEach((a) async {
+      a.id = '${a.id}_';
+      final form = Form(a, directory);
+      detailForms.add(form);
+      await form.loadFields();
+    });
+    if (node.children != null) {
+      await recursionForms(node.children!);
+    }
+    if (node.branches != null) {
+      for (var branch in node.branches!) {
+        if (branch.children != null) {
+          recursionForms(branch.children!);
+        }
+      }
+    }
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

@@ -1,4 +1,3 @@
-
 import 'package:orginone/dart/base/model.dart';
 
 // 异常消息常量
@@ -9,17 +8,7 @@ const notFoundError = '抱歉,未找到该数据.';
 const isJoinedError = '抱歉,您已加入该组织.';
 const functionNotFoundError = '抱歉,未找到该方法.';
 
-class StoreCollName {
-  static const workTask = 'work-task';
-  static const workInstance = 'work-instances';
-  static const chatMessage = 'chat-message';
-
-  static const mostUsed = 'most-used';
-
-  static const storeOpen = 'store-open';
-}
-
-enum OrgAuth{
+enum OrgAuth {
   // 超管权限
   superAuthId("361356410044420096"),
   // 关系管理权限

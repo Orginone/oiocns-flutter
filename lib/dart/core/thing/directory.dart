@@ -486,7 +486,7 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
     for (final child in directory.children) {
       await operateDirectoryResource(child, resource, action, move: move);
     }
-//TODO 以下代码看不懂，不会翻译
+//TODO 以下代码使用时翻译
     // await resource.directoryColl[action](
     //     directory.children.map((a) => a.metadata).toList());
     // await resource

@@ -1635,12 +1635,12 @@ class InstanceDataModel {
   bool? allowAdd; // 允许新增
   bool? allowEdit; // 允许变更
   bool? allowSelect; // 允许选择
-  Map<String, List<FieldModel>> fields = {};
+  Map<String, List<FieldModel>>? fields;
   /** 表单字段 */ /// 表单id
-  Map<String, List<FormEditData>> data = {};
+  Map<String, List<FormEditData>>? data;
 
   /// 提交的表单数据 // 表单id
-  Map<String, dynamic> primary = {};
+  Map<String, dynamic>? primary;
 
   /// 填写的主表信息
 
@@ -1649,6 +1649,9 @@ class InstanceDataModel {
     this.allowAdd,
     this.allowEdit,
     this.allowSelect,
+    this.fields,
+    this.data,
+    this.primary,
   });
 
   InstanceDataModel.fromJson(Map<String, dynamic> json) {
@@ -1660,7 +1663,7 @@ class InstanceDataModel {
             fieldList.add(FieldModel.fromJson(fieldJson));
           }
         }
-        fields[key] = fieldList;
+        fields?[key] = fieldList;
       });
     }
 
@@ -1672,7 +1675,7 @@ class InstanceDataModel {
             formDataList.add(FormEditData.fromJson(formDataJson));
           }
         }
-        data[key] = formDataList;
+        data?[key] = formDataList;
       });
     }
 
@@ -1692,9 +1695,9 @@ class InstanceDataModel {
     data['allowAdd'] = allowAdd;
     data['allowEdit'] = allowEdit;
     data['allowSelect'] = allowSelect;
-    data['fields'] = fields.map(
+    data['fields'] = fields?.map(
         (key, value) => MapEntry(key, value.map((e) => e.toJson()).toList()));
-    data['data'] = this.data.map(
+    data['data'] = this.data?.map(
         (key, value) => MapEntry(key, value.map((e) => e.toJson()).toList()));
     data['primary'] = primary;
     return data;

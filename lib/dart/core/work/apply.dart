@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/main.dart';
 
 abstract class IWorkApply {
@@ -14,6 +15,10 @@ abstract class IWorkApply {
   /// 实例携带的数据
   late InstanceDataModel instanceData;
 
+//TODO 需要新增
+  /// 业务规则触发器
+  // late WorkFormRulesType ruleService;
+
   /// 发起申请
   Future<bool> createApply(
     String applyId,
@@ -22,46 +27,39 @@ abstract class IWorkApply {
   );
 }
 
-class WorkApply implements IWorkApply{
-
-
-  WorkApply(this.belong,this.metadata,this.instanceData);
-
-  @override
-  late IBelong belong;
-
-  @override
-  late InstanceDataModel instanceData;
+class WorkApply implements IWorkApply {
+  WorkApply(
+    this.metadata,
+    this.instanceData,
+    this.belong,
+    this.forms,
+  );
 
   @override
   late WorkInstanceModel metadata;
+  @override
+  late InstanceDataModel instanceData;
+  @override
+  late IBelong belong;
+
+  final List<IForm> forms;
 
   @override
-  Future<bool> createApply(String applyId, String content, Map<String, FormEditData> fromData) async{
+  Future<bool> createApply(String applyId, String content,
+      Map<String, FormEditData> fromData) async {
     fromData.forEach((key, data) {
-      instanceData.data[key] = [data];
+      instanceData.data?[key] = [data];
     });
 
-    // String data = jsonEncode(instanceData.toJson());
-    // print(data);
-    // return data==null;
-    final res = await kernel.createWorkInstance(
-      WorkInstanceModel(
-        defineId: metadata.defineId,
-        content: content,
-        title: metadata.title,
-        contentType: 'Text',
-        data: jsonEncode(instanceData.toJson()),
-        childrenData: '',
-        applyId: applyId,
-        hook: metadata.hook,
-        taskId: metadata.taskId,
+    WorkInstanceModel workInstanceModel =
+        WorkInstanceModel.fromJson(metadata.toJson());
 
-      ),
-    );
+    workInstanceModel.applyId = applyId;
+    workInstanceModel.content = content;
+    workInstanceModel.contentType = 'Text';
+    workInstanceModel.data = jsonEncode(instanceData.toJson());
+    final res = await kernel.createWorkInstance(workInstanceModel);
 
-    print(jsonEncode(instanceData.toJson()));
     return res.success;
   }
-
 }
