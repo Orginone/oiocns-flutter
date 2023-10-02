@@ -51,11 +51,12 @@ abstract class IEntity<T> extends Emitter {
 
 ///实体类实现
 abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
-  T _metadata;
+  @override
+  T metadata;
   @override
   late String key;
 
-  Entity(this._metadata) : super() {
+  Entity(this.metadata) : super() {
     this.key = super.id;
 
     shareIdSet[metadata.id] = metadata;
@@ -63,35 +64,42 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
 
   @override
   String get id {
-    return this.metadata.id;
+    return _metadata.id;
   }
 
   @override
   String get name {
-    return metadata.name ?? '';
+    return _metadata.name ?? '';
   }
 
   @override
   String get code {
-    return metadata.code ?? '';
+    return _metadata.code ?? '';
   }
 
   @override
   String get typeName {
-    return metadata.typeName ?? '';
+    return _metadata.typeName ?? '';
   }
 
   @override
   String get remark {
-    return metadata.remark ?? '';
+    return _metadata.remark ?? '';
   }
 
-  @override
-  T get metadata {
-    if (shareIdSet.containsKey(this._metadata.id)) {
+  T get _metadata {
+    if (shareIdSet.containsKey(metadata.id)) {
       return shareIdSet.values as T;
     }
-    return this._metadata;
+    return this.metadata;
+  }
+
+  void setMetadata(T metadata) {
+    if (metadata.id == id) {
+      metadata = metadata;
+      shareIdSet[id] = metadata;
+      changCallback();
+    }
   }
 
   @override
@@ -101,7 +109,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
 
   @override
   String get belongId {
-    return metadata.belongId!;
+    return _metadata.belongId!;
   }
 
   @override
@@ -111,25 +119,17 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
 
   @override
   ShareIcon get creater {
-    return this.findShare(metadata.createUser ?? '');
+    return this.findShare(_metadata.createUser ?? '');
   }
 
   @override
   ShareIcon get updater {
-    return this.findShare(metadata.updateUser ?? '');
+    return this.findShare(_metadata.updateUser ?? '');
   }
 
   @override
   ShareIcon get belong {
-    return findShare(metadata.belongId!);
-  }
-
-  void setMetadata(T metadata) {
-    if (metadata.id == id) {
-      _metadata = metadata;
-      shareIdSet[id] = metadata;
-      changCallback();
-    }
+    return findShare(_metadata.belongId!);
   }
 
   @override
@@ -141,7 +141,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
   }
 
   @override
-  void updateMetadata<U extends XEntity>(U data) {
+  void updateMetadata<T extends XEntity>(T data) {
     shareIdSet[data.id] = data;
   }
 

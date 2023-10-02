@@ -231,6 +231,15 @@ class PersonJoins {
     Menu(42, 'joinCompany', '加入单位', 'joinCompany'),
     Menu(43, 'joinStorage', '加入存储资源群', '存储资源'),
   ];
+  Map<String, dynamic> toJson() {
+    return {
+      "cmd": cmd,
+      "sort": sort,
+      "label": label,
+      "iconType": iconType,
+      'menus': menus.map((e) => e.toJson()).toList()
+    };
+  }
 }
 
 ///单位的申请

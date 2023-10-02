@@ -229,7 +229,7 @@ class Company extends Belong implements ICompany {
   Future<bool> delete({bool? notity}) async {
     final success = await super.delete(notity: notity);
     if (success) {
-      user.companys.value = user.companys.where((i) => i.key != key).toList();
+      user.companys = user.companys.where((i) => i.key != key).toList();
     }
     return success;
   }

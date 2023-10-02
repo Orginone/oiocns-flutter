@@ -241,29 +241,6 @@ enum TodoType {
   }
 }
 
-const companyTypes = [
-  TargetType.company,
-  TargetType.hospital,
-  TargetType.university,
-];
-
-const targetDepartmentTypes = [
-  TargetType.office,
-  TargetType.section,
-  TargetType.research,
-  TargetType.laboratory,
-  TargetType.jobCohort,
-  TargetType.department,
-];
-
-const subDepartmentTypes = [
-  TargetType.office,
-  TargetType.section,
-  TargetType.laboratory,
-  TargetType.jobCohort,
-  TargetType.research,
-];
-
 enum SpaceEnum {
   directory("文件夹"),
   species("分类"),
@@ -335,19 +312,3 @@ enum PopupMenuKey {
 
   const PopupMenuKey(this.label);
 }
-
-List<PopupMenuKey> createPopupMenuKey = [
-  PopupMenuKey.createDir,
-  PopupMenuKey.createApplication,
-  PopupMenuKey.createSpecies,
-  PopupMenuKey.createDict,
-  PopupMenuKey.createAttr,
-  PopupMenuKey.createThing,
-  PopupMenuKey.createWork,
-];
-
-List<PopupMenuKey> defaultPopupMenuKey = [
-  PopupMenuKey.upload,
-  PopupMenuKey.openChat,
-  PopupMenuKey.shareQr,
-];

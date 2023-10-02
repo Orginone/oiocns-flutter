@@ -3,17 +3,20 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/public/operates.dart';
+import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/util/logger.dart';
 
 import '../person.dart';
 
+//岗位接口
 abstract class IStation extends ITeam {
   /// 设立岗位的单位
-  late ICompany companyspace;
+  @override
+  late IBelong? space;
 
   /// 岗位下的角色
   late List<XIdentity> identitys;
@@ -22,38 +25,32 @@ abstract class IStation extends ITeam {
   Future<List<XIdentity>> loadIdentitys({bool? reload = false});
 
   /// 用户拉入新身份(角色)
-  Future<bool> pullIdentitys(List<XIdentity> identitys, {bool? notity});
+  Future<bool> pullIdentitys(List<XIdentity> identitys);
 
   /// 用户移除身份(角色)
   Future<bool> removeIdentitys(List<XIdentity> identitys, {bool? notity});
 }
 
 class Station extends Team implements IStation {
-  Station(XTarget metadata, ICompany space)
+  Station(this.metadata, this.space)
       : super([space.key], metadata, [space.id]) {
-    companyspace = space;
-    user = space.user;
-    identitys = [];
-    directory = companyspace.directory;
+    user = space.user!;
+
+    directory = space.directory;
   }
-
   @override
-  late ICompany companyspace;
-
+  final XTarget metadata;
   @override
-  late IPerson user;
-
+  final ICompany space;
+  @override
+  late IPerson? user;
   @override
   late IDirectory directory;
 
   @override
-  late List<XIdentity> identitys;
+  List<XIdentity> identitys = [];
 
-  late bool _identityLoaded = false;
-
-  // @override
-  // // TODO: implement chats
-  // List<IMsgChat> get chats => [this];
+  bool _identityLoaded = false;
 
   @override
   Future<List<XIdentity>> loadIdentitys({bool? reload = false}) async {
@@ -88,9 +85,9 @@ class Station extends Team implements IStation {
             .forEach((a) async => await _sendTargetNotity(OperateType.add, a));
       }
       if (members.any((a) => a.id == userId)) {
-        user.giveIdentity(
+        user?.giveIdentity(
           identitys,
-          identity: id,
+          teamId: id,
         );
       }
       this.identitys.addAll(identitys);
@@ -114,7 +111,7 @@ class Station extends Team implements IStation {
           if (!res.success) return false;
           _sendTargetNotity(OperateType.remove, identity);
         }
-        companyspace.user.removeGivedIdentity(
+        space.user?.removeGivedIdentity(
           identitys.map((a) => a.id).toList(),
           teamId: id,
         );
@@ -129,9 +126,8 @@ class Station extends Team implements IStation {
   Future<bool> delete({bool? notity = false}) async {
     final success = await super.delete(notity: notity);
     if (success) {
-      companyspace.stations =
-          companyspace.stations.where((i) => i.key != key).toList();
-      companyspace.user.removeGivedIdentity(
+      space.stations = space.stations.where((i) => i.key != key).toList();
+      space.user?.removeGivedIdentity(
         identitys.map((e) => e.id).toList(),
         teamId: id,
       );
@@ -149,6 +145,7 @@ class Station extends Team implements IStation {
 
   @override
   Future<ITeam?> createTarget(TargetModel data) async {
+    //未实现
     return null;
   }
 
@@ -156,7 +153,8 @@ class Station extends Team implements IStation {
   List<OperateModel> operates({int? mode}) {
     var operates = super.operates();
     if (hasRelationAuth()) {
-      operates.insert(0, TeamOperates.pullIdentity as OperateModel);
+      operates.insert(
+          0, OperateModel.fromJson(TeamOperates.pullIdentity.toJson()));
     }
     return operates;
   }
@@ -165,7 +163,7 @@ class Station extends Team implements IStation {
   Future<bool> pullMembers(List<XTarget> members, {bool? notity}) async {
     if (await super.pullMembers(members, notity: notity)) {
       if (members.where((a) => a.id == userId).toList() != []) {
-        user.giveIdentity(identitys, identity: id);
+        user?.giveIdentity(identitys, teamId: id);
       }
       return true;
     }
@@ -176,7 +174,7 @@ class Station extends Team implements IStation {
   Future<bool> removeMembers(List<XTarget> members, {bool? notity}) async {
     if (await super.removeMembers(members, notity: notity)) {
       if (members.where((a) => a.id == userId).toList() != []) {
-        user.removeGivedIdentity(
+        user?.removeGivedIdentity(
           identitys.map((e) => e.id).toList(),
           teamId: id,
         );
@@ -199,7 +197,7 @@ class Station extends Team implements IStation {
         'operate': operate as String,
         'station': metadata,
         'identity': identity,
-        'operater': user.metadata,
+        'operater': user?.metadata,
       },
       targetId: targetId ?? id,
       ignoreSelf: ignoreSelf == true,
@@ -215,12 +213,12 @@ class Station extends Team implements IStation {
 
   Future<void> _receiveIdentity(IdentityOperateModel data) async {
     var message = '';
-    switch (data.operate) {
-      case '删除':
+    switch (OperateType.getType(data.operate ?? '')) {
+      case OperateType.delete:
         message = '${data.operater?.name}将身份【${data.identity?.name}】删除.';
         await removeIdentitys([data.identity!], notity: true);
         break;
-      case '更新':
+      case OperateType.update:
         message = '${data.operater?.name}将身份【${data.identity?.name}】信息更新.';
         var index = identitys
             .indexOf(identitys.firstWhere((a) => a.id == data.identity?.id));
@@ -228,12 +226,12 @@ class Station extends Team implements IStation {
           identitys[index] = data.identity!;
         }
         break;
-      case '移除':
+      case OperateType.remove:
         message =
             '${data.operater?.name}移除岗位【$name】中的身份【${data.identity?.name}】.';
         await removeIdentitys([data.identity!], notity: true);
         break;
-      case '新增':
+      case OperateType.add:
         if (identitys.every((a) => a.id == data.identity?.id)) {
           message =
               '${data.operater?.name}向岗位【$name】添加身份【${data.identity?.name}】.';
@@ -241,15 +239,16 @@ class Station extends Team implements IStation {
         }
         break;
       default:
+        message;
         return;
     }
     //日志
-    // if (message.isNotEmpty) {
-    //   if (data.operater?.id != this.user.id) {
-    //     logger.info(message);
-    //   }
-    //   this.directory.structCallback();
-    // }
+    if (message.isNotEmpty) {
+      if (data.operater?.id != user?.id) {
+        logger.info(message);
+      }
+      directory.structCallback();
+    }
   }
 
   @override

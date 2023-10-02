@@ -8,6 +8,8 @@ import '../../thing/directory.dart';
 
 ///权限结构
 abstract class IAuthority extends IEntity<XAuthority> {
+  IAuthority(super.metadata);
+
   /// 加载权限的自归属用户
   late IBelong space;
 
@@ -50,28 +52,28 @@ abstract class IAuthority extends IEntity<XAuthority> {
 
 ///权限实现类
 class Authority extends Entity<XAuthority> implements IAuthority {
+  Authority(this.metadata, this.space, {this.parent}) : super(metadata) {
+    for (var node in metadata.nodes ?? []) {
+      children.add(Authority(node, space, parent: this));
+    }
+    directory = space.directory;
+  }
   @override
-  late IBelong space;
+  final XAuthority metadata;
+  @override
+  final IBelong space;
+  @override
+  final IAuthority? parent;
+  late Authority authority;
 
   @override
   List<XTarget> members = [];
 
   @override
-  IAuthority? parent;
-  @override
   List<IAuthority> children = [];
   late IDirectory directory;
 
   bool _memberLoaded = false;
-
-  Authority(XAuthority metadata, this.space, Authority authority, {this.parent})
-      : super(metadata) {
-    for (var node in metadata.nodes ?? []) {
-      children.add(Authority(node, space, this));
-    }
-    directory = space.directory;
-  }
-
   @override
   Future<List<XTarget>> loadMembers({bool? reload = false}) async {
     if (!_memberLoaded || reload!) {
@@ -103,9 +105,9 @@ class Authority extends Entity<XAuthority> implements IAuthority {
       if (!res.success) return null;
       data = res.data!;
       await space.sendAuthorityChangeMsg(
-          OperateType.create as String, res.data!); //operate操作未实现
+          OperateType.create.label, res.data!); //operate操作未实现
     }
-    var authority = Authority(data, space, this);
+    var authority = Authority(data, space, parent: this);
     children.add(authority);
     return authority;
   }
@@ -122,11 +124,9 @@ class Authority extends Entity<XAuthority> implements IAuthority {
     final res = await kernel.updateAuthority(data);
     if (res.success && res.data?.id != null) {
       metadata = res.data!;
-      share = ShareIcon(
-        name: metadata.name ?? "",
-        typeName: '权限',
-        avatar: FileItemShare.parseAvatar(metadata.icon),
-      );
+      res.data?.typeName = '权限';
+      setMetadata(res.data!);
+      await space.sendAuthorityChangeMsg(OperateType.update.label, res.data!);
     }
     return res.success;
   }
@@ -134,10 +134,9 @@ class Authority extends Entity<XAuthority> implements IAuthority {
   @override
   Future<bool> delete({bool? notity = false}) async {
     if (!notity!) {
-      final res = await kernel.deleteAuthority(IdReq(id: id));
+      final res = await kernel.deleteAuthority(IdModel(id));
       if (!res.success) return false;
-      await space.sendAuthorityChangeMsg(
-          OperateType.delete as String, metadata);
+      await space.sendAuthorityChangeMsg(OperateType.delete.label, metadata);
     }
     if (parent != null) {
       parent?.children.removeWhere((i) => i != this);
@@ -187,7 +186,7 @@ class Authority extends Entity<XAuthority> implements IAuthority {
     if (metadata.shareId != null && metadata.shareId != null) {
       orgIds.add(metadata.shareId!);
     }
-    return space.user.authenticate(orgIds, authIds);
+    return space.user?.authenticate(orgIds, authIds) ?? false;
   }
 
   void _appendParentId(IAuthority auth, List<String> authIds) {
@@ -198,15 +197,6 @@ class Authority extends Entity<XAuthority> implements IAuthority {
       _appendParentId(auth.parent!, authIds);
     }
   }
-
-  // @override
-  // List<IMsgChat> get chats {
-  //   final chats = <IMsgChat>[this];
-  //   for (final item in children) {
-  //     chats.addAll(item.chats);
-  //   }
-  //   return chats;
-  // }
 
   @override
   Future<bool> receiveAuthority(AuthorityOperateModel data) async {
@@ -226,6 +216,7 @@ class Authority extends Entity<XAuthority> implements IAuthority {
           updateMetadata<XAuthority>(data.authority!);
           break;
         default:
+          message;
           break;
       }
     } else {
@@ -235,13 +226,7 @@ class Authority extends Entity<XAuthority> implements IAuthority {
         }
       }
     }
-    //日志
-    // if (message.length > 0) {
-    //   if (data.operater?.id != this.space.user.id) {
-    //     logger.info(message);
-    //   }
-    //   return true;
-    // }
+
     return false;
   }
 

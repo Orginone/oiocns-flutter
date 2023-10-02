@@ -66,6 +66,38 @@ const valueType = [
   ValueType.file,
 ];
 
+const targetDepartmentTypes = [
+  TargetType.office,
+  TargetType.section,
+  TargetType.research,
+  TargetType.laboratory,
+  TargetType.jobCohort,
+  TargetType.department,
+];
+
+const subDepartmentTypes = [
+  TargetType.office,
+  TargetType.section,
+  TargetType.laboratory,
+  TargetType.jobCohort,
+  TargetType.research,
+];
+List<PopupMenuKey> createPopupMenuKey = [
+  PopupMenuKey.createDir,
+  PopupMenuKey.createApplication,
+  PopupMenuKey.createSpecies,
+  PopupMenuKey.createDict,
+  PopupMenuKey.createAttr,
+  PopupMenuKey.createThing,
+  PopupMenuKey.createWork,
+];
+
+List<PopupMenuKey> defaultPopupMenuKey = [
+  PopupMenuKey.upload,
+  PopupMenuKey.openChat,
+  PopupMenuKey.shareQr,
+];
+
 ///表达弹框支持的类型
 enum FormModalType {
   // ignore: constant_identifier_names

@@ -98,14 +98,13 @@ abstract class Belong extends Target implements IBelong {
   IAuthority? superAuth;
   @override
   Future<IAuthority?> loadSuperAuth({bool reload = false}) async {
-    if (superAuth == null || reload) {
+    if (superAuth != null || reload) {
       var res = await kernel.queryAuthorityTree(IdPageModel(
         id: metadata.id,
         page: pageAll,
       ));
       if (res.success) {
-        superAuth =
-            Authority(res.data as XAuthority, space!, this as Authority);
+        superAuth = Authority(res.data as XAuthority, this);
       }
     }
     return superAuth;

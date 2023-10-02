@@ -1,9 +1,11 @@
 import 'package:logging/logging.dart';
 
 class Log {
-  static final Logger _log = Logger("logger");
+  static final Logger logger = Logger("logger");
 
   static info(dynamic msg) {
-    _log.info(msg);
+    logger.info(msg);
   }
 }
+
+final logger = Log.logger;

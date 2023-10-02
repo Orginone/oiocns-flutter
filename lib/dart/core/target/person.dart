@@ -1,37 +1,35 @@
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/src/material/popup_menu.dart';
-import 'package:get/get.dart';
-import 'package:orginone/dart/base/common/entity.dart';
 import 'package:orginone/dart/base/index.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/consts.dart';
+import 'package:orginone/dart/core/chat/activity.dart';
+import 'package:orginone/dart/core/chat/session.dart';
+import 'package:orginone/dart/core/public/consts.dart';
+import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/outTeam/cohort.dart';
+import 'package:orginone/dart/core/target/outTeam/storage.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/target/team/hospital.dart';
+import 'package:orginone/dart/core/target/team/university.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/util/local_store.dart';
 
 import '../../base/model.dart';
 import '../../base/schema.dart';
 import '../public/enums.dart';
 import '../public/objects.dart';
-import '../public/entity.dart';
-import '../thing/fileinfo.dart';
 import 'base/belong.dart';
-import 'team/hospital.dart';
-import 'team/university.dart';
 
 abstract class IPerson extends IBelong {
+  IPerson(super.metadata, super.relations, super.directory);
   //加入/管理的单位
-  late RxList<ICompany> companys;
+  late List<ICompany> companys;
   //赋予人的身份(角色)实体
   late List<XIdProof> givedIdentitys;
   //用户缓存对象
   late XObject<Xbase> cacheObj;
   //拷贝的文件
   late Map<String, IFileInfo<XEntity>> copyFiles;
+
   //根据ID查询共享信息
   Future<ShareIcon> findShareById(String id);
   //根据Id查询共享信息
@@ -41,7 +39,7 @@ abstract class IPerson extends IBelong {
   // 加载赋予人的身份(角色)实体
   Future<List<XIdProof>> loadGivedIdentitys({bool reload = false});
   //赋予身份
-  void giveIdentity(List<XIdentity> identitys, {String? identity});
+  void giveIdentity(List<XIdentity> identitys, {String? teamId});
   //移除赋予人的身份（角色）实体
   void removeGivedIdentity(List<String> identityIds, {String? teamId});
   // //加载单位
@@ -54,28 +52,29 @@ abstract class IPerson extends IBelong {
 
 //人员类型实现
 class Person extends Belong implements IPerson {
+  Person(this.metadata) : super(metadata, []) {
+    cacheObj = XObject(metadata, 'target-cache', [], [key]);
+
+    ///TODO:FriendsActivity类需创建
+// friendsActivity = FriendsActivity(this);
+  }
   @override
-  late RxList<ICompany> companys;
+  final XTarget metadata;
   @override
-  late List<XIdProof> givedIdentitys;
+  late List<ICompany> companys;
+  late IActivity friendsActivity;
   @override
   late XObject<Xbase> cacheObj;
   @override
-  late Map<String, IFileInfo<XEntity>> copyFiles;
-  final bool _cohortloaded = false;
-  bool _givedIdentityLoaded = false;
-
-  Person(XTarget _metadata, XObject<Xbase> cacheObj)
-      : super(_metadata, [], null) {
-    cacheObj = XObject(_metadata, 'target-cache', [], [key]);
-    copyFiles = {};
-    companys = <ICompany>[].obs;
-    givedIdentitys = [];
-  }
+  late List<XIdProof> givedIdentitys;
 
   @override
+  Map<String, IFileInfo<XEntity>> copyFiles = {};
+  bool _cohortLoaded = false;
+  bool _givedIdentityLoaded = false;
+  @override
   Future<List<XIdProof>> loadGivedIdentitys({bool reload = false}) async {
-    if (givedIdentitys.isEmpty || reload) {
+    if (!_givedIdentityLoaded || reload) {
       var res = await kernel.queryGivedIdentitys();
       if (res.success) {
         _givedIdentityLoaded = true;
@@ -86,21 +85,19 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  void giveIdentity(List<XIdentity> identitys, {String teamId = ''}) {
+  void giveIdentity(List<XIdentity> identitys, {String? teamId = ''}) {
     for (var identity in identitys) {
-      if (
-        !givedIdentitys.any(
-          (a) => a.identityId == identity.id && a.teamId == teamId,
-        )
-      ) {
-        givedIdentitys.add({
-          ...identity,
-          identity: identity,
-          teamId: teamId || '',
-          identityId: identity.id,
-          targetId: id,
-          target: metadata,
-        });
+      if (!givedIdentitys.any(
+        (a) => a.identityId == identity.id && a.teamId == teamId,
+      )) {
+        XIdProof xIdProof = XIdProof.fromJson(identity.toJson());
+        xIdProof.identity = identity;
+        xIdProof.teamId = teamId;
+        xIdProof.identityId = identity.id;
+        xIdProof.targetId = id;
+        xIdProof.target = metadata;
+
+        givedIdentitys.add(xIdProof);
       }
     }
   }
@@ -119,36 +116,64 @@ class Person extends Belong implements IPerson {
         .removeWhere((a) => idProofs.every((i) => i.id != a.identity?.id));
   }
 
-  @override
   Future<List<ICohort>> loadCohorts({bool reload = false}) async {
-    if (cohorts.isEmpty || reload) {
+    if (!_cohortLoaded || reload) {
       var res = await kernel.queryJoinedTargetById(GetJoinedModel(
         id: metadata.id,
-        typeNames: [TargetType.cohort.label],
-        page: PageRequest(offset: 0, limit: 9999, filter: ''),
+        typeNames: [
+          TargetType.cohort.label,
+          TargetType.storage.label,
+          TargetType.company.label,
+          TargetType.hospital.label,
+          TargetType.university.label,
+        ],
+        page: pageAll,
       ));
       if (res.success) {
-        cohorts.clear();
-        res.data?.result?.forEach((element) {
-          cohorts.add(Cohort(this, element));
-        });
+        _cohortLoaded = true;
+        cohorts = [];
+        storages = [];
+        companys = [];
+        for (var i in res.data?.result ?? []) {
+          switch (i.typeName) {
+            case TargetType.cohort:
+              cohorts.add(Cohort(i, this, i.id));
+              break;
+            case TargetType.storage:
+              storages.add(Storage(i, [], this));
+              break;
+            default:
+              companys.add(_createCompany(i, this));
+          }
+        }
       }
     }
     return cohorts;
   }
 
+  Company _createCompany(XTarget metadata, IPerson user) {
+    switch (TargetType.getType(metadata.typeName ?? '')) {
+      case TargetType.hospital:
+        return Hospital(metadata, user);
+      case TargetType.university:
+        return University(metadata, user);
+      default:
+        return Company(metadata, user);
+    }
+  }
+
   @override
   Future<ICompany?> createCompany(TargetModel data) async {
-    if (!companyTypes.contains(TargetType.getType(data.typeName))) {
+    if (!companyTypes.contains(TargetType.getType(metadata.typeName ?? ''))) {
       data.typeName = TargetType.company.label;
     }
     data.public = false;
     data.teamCode = data.teamCode ?? data.code;
     data.teamName = data.teamName ?? data.name;
-    var res = await kernel.createTarget(data);
-    if (res.success && res.data != null) {
-      res.data!.belong = metadata;
-      var company = createCompanyForTarget(res.data!);
+    var res = await create(data);
+    if (res != null) {
+      var company = _createCompany(res, this);
+      await company.deepLoad();
       companys.add(company);
       await company.pullMembers([metadata]);
       return company;
@@ -156,15 +181,14 @@ class Person extends Belong implements IPerson {
     return null;
   }
 
-  @override
   Future<IStorage?> createStorage(TargetModel data) async {
-    data.typeName = TargetType.storage;
+    data.typeName = TargetType.storage.label;
     var metadata = await create(data);
-    if(metadata != null){
-      var storage = Storage(metadata,[],this);
+    if (metadata != null) {
+      var storage = Storage(metadata, [], this);
       await storage.deepLoad();
-      storages.push(storage);
-      await storage.pullMembers([user.metadata]);
+      storages.add(storage);
+      await storage.pullMembers(user == null ? [] : [user!.metadata]);
       return storage;
     }
     return null;
@@ -192,15 +216,19 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  Future<bool> pullMembers(List<XTarget> members)async{
+  Future<bool> pullMembers(List<XTarget> members, {bool? notity}) async {
     return await applyJoin(members);
   }
 
   @override
   Future<bool> applyJoin(List<XTarget> members) async {
     var filter = members.where((element) {
-      return [TargetType.person, TargetType.cohort,TargetType.storage, ...companyTypes]
-          .contains(TargetType.getType(element.typeName!));
+      return [
+        TargetType.person,
+        TargetType.cohort,
+        TargetType.storage,
+        ...companyTypes
+      ].contains(TargetType.getType(element.typeName!));
     }).toList();
     for (var value in filter) {
       if (TargetType.getType(value.typeName!) == TargetType.person) {
@@ -217,10 +245,10 @@ class Person extends Belong implements IPerson {
   @override
   Future<List<XTarget>> searchTargets(
       String filter, List<String> typeNames) async {
-    var res = await kernel.searchTargets(NameTypeModel(
-      name: filter,
-      typeNames: typeNames,
-      page: PageRequest(offset: 0, limit: 9999, filter: ''),
+    var res = await kernel.searchTargets(SearchModel(
+      filter,
+      typeNames,
+      page: pageAll,
     ));
     if (res.success) {
       return res.data?.result ?? [];
@@ -230,18 +258,17 @@ class Person extends Belong implements IPerson {
 
   @override
   Future<bool> exit() async {
-    // TODO: implement exit
     return false;
   }
 
   @override
-  Future<bool> delete() async {
-    if(notify){
-      //TODO 退出
+  Future<bool> delete({bool? notity = false}) async {
+    if (notity == null || !notity) {
       return false;
-    }else{
-      await sendTargetNotity(OperateType.remove, metadata, id);
-      var res = await kernel.deleteTarget(IdReq(id: metadata.id));
+    } else {
+      await sendTargetNotity(OperateType.remove,
+          sub: metadata, subTargetId: id);
+      var res = await kernel.deleteTarget(IdModel(metadata.id));
       return res.success;
     }
   }
@@ -252,53 +279,43 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  // TODO: implement shareTarget
   List<ITarget> get shareTarget => [this, ...cohorts];
 
   @override
-  List<ITarget> get parentTarget => [...cohorts,...companys];
+  List<ITarget> get parentTarget => [...cohorts, ...companys];
 
   @override
-  List<ITarget> get content({int? mode})=>[...cohorts,...storages];
-
-  @override
-  // TODO: implement chats
-  List<IMsgChat> get chats {
-    List<IMsgChat> chats = [this];
+  List<ISession> get chats {
+    List<ISession> chats = [session];
     chats.addAll(cohortChats);
     chats.addAll(memberChats);
     return chats;
   }
 
   @override
-  // TODO: implement cohortChats
   List<ISession> get cohortChats {
     List<ISession> chats = [];
     var companyChatIds = <String>[];
     for (var company in companys) {
       for (var item in company.cohorts) {
-        companyChatIds.add(item.chatdata.value.fullId);
+        companyChatIds.add(item.session.chatdata.fullId);
       }
     }
     for (var value in cohorts) {
-      if (!companyChatIds.contains(value.chatdata.value.fullId)) {
+      if (!companyChatIds.contains(value.session.chatdata.fullId)) {
         chats.addAll(value.chats);
       }
     }
-    for(var item in storages){
+    for (var item in storages) {
       chats.addAll(item.chats);
     }
     return chats;
   }
 
-  
   @override
-  // TODO: implement targets
   List<ITarget> get targets {
-    List<ITarget> targets = [this,...storages];
-    // for (var item in companys) {
-    //   targets.addAll(item.targets);
-    // }
+    List<ITarget> targets = [this, ...storages];
+
     for (var item in cohorts) {
       targets.addAll(item.targets);
     }
@@ -306,14 +323,14 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  Future<void> deepLoad({bool reload =false}) async {
+  Future<void> deepLoad({bool? reload = false}) async {
     await cacheObj.all();
     await Future.wait([
-      loadCohorts(reload: reload),
+      loadCohorts(reload: reload!),
       loadMembers(reload: reload),
       loadSuperAuth(reload: reload),
       loadGivedIdentitys(reload: reload),
-      //directory.loadDirectoryResource(reload:reload),////////thing文件夹中
+      directory.loadDirectoryResource(reload: reload), ////////thing文件夹中
     ]);
     for (var company in companys) {
       await company.deepLoad(reload: reload);
@@ -326,24 +343,35 @@ class Person extends Belong implements IPerson {
     }
     superAuth?.deepLoad(reload: reload);
   }
+
   ///操作类未实现
-  // @override
-  // List<OperateModel> operates() {
-  //   var operates = super.operates();
-  //   operates.unshift(personJoins, targetOperates.NewCompany, targetOperates.NewStorage);
-  //   return operates;
-  // }
+  @override
+  List<OperateModel> operates({int? mode}) {
+    var operates = super.operates();
+    OperateModel.fromJson(PersonJoins().toJson());
+    OperateModel.fromJson(TargetOperates.newCompany.toJson());
+    OperateModel.fromJson(TargetOperates.newStorage.toJson());
+
+    operates.insert(0, OperateModel.fromJson(PersonJoins().toJson()));
+    operates.insert(
+        0, OperateModel.fromJson(TargetOperates.newCompany.toJson()));
+    operates.insert(
+        0, OperateModel.fromJson(TargetOperates.newStorage.toJson()));
+
+    return operates;
+  }
 
   @override
+  List<ITarget> content({int? mode}) => [...cohorts, ...storages];
+  @override
   Future<XEntity?> findEntityAsync(String id) async {
-    Entity entity = Entity();///////
-    var metadata = entity.findMetadata<XEntity>(id);
-    var res = await kernel.queryEntityById(IdReq(id: id));
+////
+    var metadata = findMetadata<XEntity>(id);
+    if (metadata != null) return metadata;
+
+    var res = await kernel.queryEntityById(IdModel(id));
     if (res.success && res.data != null) {
-      var shareIcon = res.data!.shareIcon();
-      if (shareIcon != null) {
-        ShareIdSet[id] = shareIcon;
-      }
+      updateMetadata(res.data!);
       return res.data;
     }
     return null;
@@ -351,53 +379,54 @@ class Person extends Belong implements IPerson {
 
   @override
   Future<ShareIcon> findShareById(String id) async {
-    var metadata =findMetadata<XEntity>(id);
-    var share = ShareIcon(name: '未知', typeName: "未知");
+    var metadata = findMetadata<XEntity>(id);
     if (metadata == null) {
       findEntityAsync(id);
     }
     return ShareIcon(
-      name: metadata?.name ?? '请稍后...', 
+      name: metadata?.name ?? '请稍后...',
       typeName: metadata?.typeName ?? '未知',
       avatar: parseAvatar(metadata?.icon),
     );
   }
 
-  @override
   Future<String> _removeJoinTarget(XTarget target) async {
-    var find = [...cohorts,...companys,...storages].find();
-    if(find){
-      await find.delete(true);
+    var index = [...cohorts, ...companys, ...storages]
+        .indexWhere((i) => i.id == target.id);
+    var find = [...cohorts, ...companys, ...storages]
+        .firstWhere((i) => i.id == target.id);
+    if (index < 0) {
+      await find.delete(notity: true);
       return '您已被从${target.name}移除';
     }
     return '';
   }
 
   @override
-  Future<String> _addJoinTarget(XTarget target) async{
-    switch (target.typeName) {
+  Future<String> _addJoinTarget(XTarget target) async {
+    switch (TargetType.getType(target.typeName ?? '')) {
       case TargetType.cohort:
         if (cohorts.every((i) => i.id != target.id)) {
-          const cohort = Cohort(target, this, target.id);
+          final cohort = Cohort(target, this, target.id);
           await cohort.deepLoad();
-          cohorts.push(cohort);
+          cohorts.add(cohort);
           return '您已成功加入到${target.name}.';
         }
         break;
       case TargetType.storage:
         if (storages.every((i) => i.id != target.id)) {
-          const storage = Storage(target, [], this);
+          final storage = Storage(target, [], this);
           await storage.deepLoad();
-          storages.push(storage);
+          storages.add(storage);
           return '您已成功加入到${target.name}.';
         }
         break;
       default:
-        if (companyTypes.contains(target.typeName as TargetType)) {
+        if (companyTypes.contains(TargetType.getType(target.typeName ?? ''))) {
           if (companys.every((i) => i.id != target.id)) {
-            const company = createCompany(target, this);
+            final company = _createCompany(target, this);
             await company.deepLoad();
-            companys.addAll(company);
+            companys.add(company);
             return '您已成功加入到${target.name}.';
           }
         }
@@ -406,27 +435,6 @@ class Person extends Belong implements IPerson {
     return '';
   }
 
-
-
-  // @override
-  // // TODO: implement popupMenuItem
-  // List<PopupMenuItem> get popupMenuItem {
-  //   List<PopupMenuKey> key = [];
-  //   if (hasRelationAuth()) {
-  //     key.addAll([
-  //       ...createPopupMenuKey,
-  //       PopupMenuKey.createCohort,
-  //       PopupMenuKey.createCompany,
-  //       PopupMenuKey.updateInfo
-  //     ]);
-  //   }
-  //   key.addAll(defaultPopupMenuKey);
-
-  //   return key
-  //       .map((e) => PopupMenuItem(
-  //             value: e,
-  //             child: Text(e.label),
-  //           ))
-  //       .toList();
-  // }
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

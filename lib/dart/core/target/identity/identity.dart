@@ -1,4 +1,4 @@
-import 'package:flutter/src/material/popup_menu.dart';
+import 'package:orginone/dart/core/public/consts.dart';
 import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -10,6 +10,8 @@ import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
 abstract class IIdentity extends IFileInfo<XIdentity> {
+  IIdentity(super.metadata, super.directory);
+
   /// 设置身份（角色）的用户
   late ITarget current;
 
@@ -34,28 +36,27 @@ abstract class IIdentity extends IFileInfo<XIdentity> {
 }
 
 class Identity extends Entity<XIdentity> implements IIdentity {
-  @override
-  late List<XTarget> members;
+  Identity(this.metadata, this.current) : super(metadata) {
+    metadata.typeName = '角色';
+    super.metadata = metadata;
 
+    isInherited = false;
+
+    directory = current.directory;
+  }
   @override
-  late ITarget current;
+  final XIdentity metadata;
+  @override
+  final ITarget current;
+  @override
+  late List<XTarget> members = [];
+
   @override
   late bool isInherited;
   @override
   late IDirectory directory;
 
-  final bool _memberLoade = false;
-
-  Identity(XIdentity _metadata, ITarget current)
-      : super(
-          _metadata,
-        ) {
-    typeName = '角色';
-    isInherited = false;
-    members = [];
-    directory = current.directory;
-  }
-
+  bool _memberLoaded = false;
   @override
   Future<bool> rename(String name) async {
     return await update(IdentityModel(
@@ -69,29 +70,28 @@ class Identity extends Entity<XIdentity> implements IIdentity {
   }
 
   @override
-  Future<List<XTarget>> loadMembers({bool? reload = false}) async {
-    if (members.isEmpty || reload == true) {
-      final res = await kernel.queryIdentityTargets(IdReq(
-        id: id,
-        // page: pageAll,
-      ));
-      if (res.success) {
-        members = res.data?.result ?? [];
-      }
-    }
-    return members;
-  }
-
-  @override
   Future<bool> copy(IDirectory destination) {
-    // TODO: implement copy
     throw UnimplementedError();
   }
 
   @override
   Future<bool> move(IDirectory destination) {
-    // TODO: implement move
     throw UnimplementedError();
+  }
+
+  @override
+  Future<List<XTarget>> loadMembers({bool? reload = false}) async {
+    if (!_memberLoaded || reload == true) {
+      final res = await kernel.queryIdentityTargets(IdPageModel(
+        id: id,
+        page: pageAll,
+      ));
+      if (res.success) {
+        _memberLoaded = true;
+        members = res.data?.result ?? [];
+      }
+    }
+    return members;
   }
 
   @override
@@ -100,20 +100,23 @@ class Identity extends Entity<XIdentity> implements IIdentity {
     var filter = members.where((i) {
       return this.members.where((m) => m.id == i.id).isEmpty;
     }).toList();
-    if (!notity!) {
-      final res = await kernel.giveIdentity(GiveModel(
-          id: metadata.id, subIds: members.map((i) => i.id).toList()));
-      if (res.success) {
-        return false;
-      }
-      for (var a in members) {
-        _sendIdentityChangeMsg(OperateType.add, subTarget: a);
+    if (filter.isNotEmpty) {
+      if (!notity!) {
+        final res = await kernel.giveIdentity(GiveModel(
+          id: metadata.id,
+          subIds: members.map((i) => i.id).toList(),
+        ));
+        if (!res.success) return false;
+        for (var a in members) {
+          sendIdentityChangeMsg(OperateType.add, subTarget: a);
+        }
+        this.members.addAll(members);
+        if (members.indexWhere((a) => a.id == userId) < 0) {
+          current.user?.giveIdentity([metadata]);
+        }
       }
     }
-    this.members.addAll(members);
-    if (members.where((a) => a.id == userId).isNotEmpty) {
-      current.user.giveIdentity([metadata]);
-    }
+
     return true;
   }
 
@@ -131,11 +134,11 @@ class Identity extends Entity<XIdentity> implements IIdentity {
         ));
         if (!res.success) return false;
         for (var i in members) {
-          _sendIdentityChangeMsg(OperateType.remove, subTarget: i);
+          sendIdentityChangeMsg(OperateType.remove, subTarget: i);
         }
       }
       if (members.where((a) => a.id == userId).isNotEmpty) {
-        current.user.removeGivedIdentity([id]);
+        current.user?.removeGivedIdentity([id]);
       }
       this.members = this
           .members
@@ -157,7 +160,7 @@ class Identity extends Entity<XIdentity> implements IIdentity {
     if (res.success && res.data?.id != null) {
       res.data?.typeName = '角色';
       setMetadata(res.data!);
-      _sendIdentityChangeMsg(OperateType.update);
+      sendIdentityChangeMsg(OperateType.update);
     }
     return res.success;
   }
@@ -166,13 +169,13 @@ class Identity extends Entity<XIdentity> implements IIdentity {
   Future<bool> delete({bool? notity = false}) async {
     if (!notity!) {
       if (current.hasRelationAuth()) {
-        _sendIdentityChangeMsg(OperateType.delete);
+        sendIdentityChangeMsg(OperateType.delete);
       }
       final res =
           await kernel.deleteIdentity(IdReqModel(id: id, typeName: typeName));
       if (!res.success) return false;
     }
-    current.user.removeGivedIdentity([metadata.id]);
+    current.user?.removeGivedIdentity([metadata.id]);
     current.identitys = current.identitys.where((i) => i.key != key).toList();
     return true;
   }
@@ -203,40 +206,10 @@ class Identity extends Entity<XIdentity> implements IIdentity {
     await current.sendIdentityChangeMsg({
       operate,
       subTarget,
-      XIdentity(authId: metadata.authId, id: metadata.id),
-      XTarget(
-        thingId: current.user.metadata.thingId,
-        idProofs: current.user.metadata.idProofs,
-        identitys: current.user.metadata.identitys,
-        things: current.user.metadata.things,
-        relations: current.user.metadata.relations,
-        team: current.user.metadata.team,
-        attributes: current.user.metadata.attributes,
-        authority: current.user.metadata.authority,
-        relTeams: current.user.metadata.relTeams,
-        givenIdentitys: current.user.metadata.givenIdentitys,
-        targets: current.user.metadata.targets,
-        thing: current.user.metadata.thing,
-        id: current.user.metadata.id,
-      ),
+      metadata,
+      current.user?.metadata,
     });
   }
-
-  @override
-  // TODO: implement belongId
-  String get belongId => metadata.belongId!;
-
-  @override
-  // TODO: implement id
-  String get id => metadata.id;
-
-  @override
-  // TODO: implement popupMenuItem
-  List<PopupMenuItem> get popupMenuItem => [];
-
-  @override
-  // TODO: implement locationKey
-  String get locationKey => '';
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

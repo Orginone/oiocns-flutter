@@ -1,19 +1,13 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 // import 'package:flutter_cache_manager/file.dart'; //导入file.dart文件得时候要注意千万不能错 实际使用得是import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/model/file_model.dart';
+import 'package:orginone/util/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
-
-///枚举类型类
-Logger logger = Logger('PDFReaderController');
 
 class PDFReaderController extends GetxController {
   PDFReaderController();
@@ -45,11 +39,6 @@ class PDFReaderController extends GetxController {
       update(["pdf_reader_page"]);
     });
     update(["pdf_reader_page"]);
-  }
-
-  @override
-  void onReady() {
-    super.onReady();
   }
 
   ///pdf加载完成

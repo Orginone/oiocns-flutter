@@ -5,12 +5,11 @@ import 'package:orginone/util/event_bus_helper.dart';
 
 import 'base_get_state.dart';
 
-abstract class BaseController<S extends BaseGetState> extends GetxController{
-
+abstract class BaseController<S extends BaseGetState> extends GetxController {
   late BuildContext context;
   late S state;
 
-  late Logger log;
+  late Logger logger;
 
   String? tag;
 
@@ -19,12 +18,12 @@ abstract class BaseController<S extends BaseGetState> extends GetxController{
   @override
   void onInit() {
     super.onInit();
-    log = Logger(this.toString());
+    logger = Logger(toString());
     EventBusHelper.register(this, onReceivedEvent);
   }
 
   @override
-  void onReady() async{
+  void onReady() async {
     // TODO: implement onReady
     super.onReady();
 
@@ -37,11 +36,7 @@ abstract class BaseController<S extends BaseGetState> extends GetxController{
     EventBusHelper.unregister(this);
   }
 
-  Future<void> loadData() async{
-
-  }
-
+  Future<void> loadData() async {}
 
   void onReceivedEvent(event) {}
-
 }
