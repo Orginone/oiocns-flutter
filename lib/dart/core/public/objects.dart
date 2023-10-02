@@ -115,8 +115,7 @@ class XObject<T extends Xbase> {
     return res.success;
   }
 
-  void subscribe(dynamic data, Null Function(XCache data) param1,
-      {String? id}) {
+  void subscribe(dynamic data, Function(XCache data) param1, {String? id}) {
     var kernel = KernelApi();
     kernel.on(
       '${this._target.belongId}-${id != '' || this._target.id != ''}-${this._objName}',

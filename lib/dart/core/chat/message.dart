@@ -1,3 +1,4 @@
+import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/base/common/format.dart';
@@ -24,12 +25,10 @@ abstract class IMessageLabel {
 }
 
 class MessageLabel implements IMessageLabel {
-  MessageLabel(CommentType matedata, IPerson user) {
-    user = user;
-    metadata = matedata;
-  }
-  late IPerson user;
-  late CommentType metadata;
+  MessageLabel(this.metadata, this.user);
+  final CommentType metadata;
+  final IPerson user;
+
   @override
   String get label {
     return metadata.label;
@@ -117,11 +116,10 @@ abstract class IMessage {
 }
 
 class Message implements IMessage {
-  Message(ChatMessageType metadata, ISession chat) {
-    _chat = chat;
-    user = chat.target.user;
+  Message(this.metadata, this.chat) {
+    user = chat.target.user!;
     metadata.comments = metadata.comments ?? [];
-    var txt = StringPako.inflate(metadata.content);
+    var txt = StringGzip.inflate(metadata.content);
     if (txt.startsWith('[obj]')) {
       var content = json.decode(txt.substring(5));
       _msgBody = content.body;
@@ -132,21 +130,21 @@ class Message implements IMessage {
     } else {
       _msgBody = txt;
     }
-    metadata = metadata;
+
     metadata.comments.map((tag) => labels.add(MessageLabel(tag, user)));
   }
-
+  @override
+  final ChatMessageType metadata;
+  final ISession chat;
   @override
   IMessage? cite;
   @override
   List<String> mentions = [];
   late IPerson user;
-  late ISession _chat;
   late String _msgBody;
   @override
   List<IMessageLabel> labels = [];
-  @override
-  late ChatMessageType metadata;
+
   @override
   String get id {
     return metadata.id;
@@ -179,7 +177,7 @@ class Message implements IMessage {
 
   @override
   bool get isReaded {
-    return (_chat.isBelongPerson ||
+    return (chat.isBelongPerson ||
         isMySend ||
         labels.any((i) => i.userId == user.id));
   }
@@ -187,10 +185,10 @@ class Message implements IMessage {
   @override
   String get readedinfo {
     var ids = readedIds;
-    if (_chat.metadata.typeName == TargetType.person) {
+    if (chat.metadata.typeName == TargetType.person.label) {
       return ids.length == 1 ? '已读' : '未读';
     }
-    var mCount = _chat.members.where((i) => i.id != metadata.fromId).length;
+    var mCount = chat.members.where((i) => i.id != metadata.fromId).length;
     mCount = mCount > 0 ? mCount : 1;
     if (ids.length == mCount) {
       return '全部已读';
@@ -211,7 +209,7 @@ class Message implements IMessage {
   @override
   List<IMessageLabel> get unreadInfo {
     var ids = readedIds;
-    return _chat.members
+    return chat.members
         .where((m) => !ids.contains(m.id) && m.id != user.id)
         .map(
           (m) => MessageLabel(
@@ -233,7 +231,7 @@ class Message implements IMessage {
 
   @override
   bool get allowRecall {
-    return (msgType != MessageType.recall &&
+    return (msgType != MessageType.recall.label &&
         metadata.fromId == user.id &&
         DateTime.now().millisecondsSinceEpoch -
                 DateTime.parse(createTime).millisecondsSinceEpoch <
@@ -248,27 +246,29 @@ class Message implements IMessage {
   @override
   String get msgTitle {
     var header = '';
-    if (_chat.metadata.typeName != TargetType.person) {
+    if (chat.metadata.typeName != TargetType.person.label) {
       header += '${from.name}: ';
     }
-    switch (MessageType.getType(msgType)) {
+    switch (MessageType.getType(msgType ?? '')) {
       case MessageType.text:
       case MessageType.notify:
       case MessageType.recall:
         return '$header${msgBody.substring(0, 50)}';
       case MessageType.voice:
         return '$header[${MessageType.voice}]';
+
+      default:
     }
-    FileItemShare file = parseAvatar(msgBody);
-    if (file) {
-      return '$header[$msgType]:${file.name}(${formatSize(file.size)})';
+    FileItemShare file = FileItemShare.fromJson(parseAvatar(msgBody));
+    if (file.shareLink != null || file.name != null) {
+      return '$header[$msgType]:${file.name}(${formatSize(file.size!)})';
     }
     return '$header[$msgType]:解析异常';
   }
 
   @override
   String get msgBody {
-    if (msgType == MessageType.recall) {
+    if (msgType == MessageType.recall.label) {
       return '${isMySend ? '我' : from.name}撤回了一条消息';
     }
     return _msgBody;

@@ -1,3 +1,4 @@
+import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/entity.dart';
@@ -5,8 +6,103 @@ import 'package:orginone/dart/core/public/collection.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 
+/// 动态消息接口
+abstract class IActivityMessage extends Emitter {
+  /// 消息主体
+  late IActivity activity;
+
+  /// 消息实体
+  late ActivityType metadata;
+
+  /// 更新元数据
+  void update(ActivityType data);
+
+  /// 删除消息
+  void delete();
+
+  /// 点赞
+  Future<bool> like();
+
+  /// 评论
+  Future<bool> comment(String txt, {String? replyTo});
+}
+
+/// 动态消息实现
+class ActivityMessage extends Emitter implements IActivityMessage {
+  @override
+  final IActivity activity;
+  @override
+  final ActivityType metadata;
+
+  ActivityMessage(
+    this.metadata,
+    this.activity,
+  );
+
+  @override
+  void delete() {
+    changCallback();
+    activity.activityList.removeWhere((i) => i.metadata.id != metadata.id);
+  }
+
+  @override
+  void update(ActivityType data) {
+    if (data.id == metadata.id) {
+      metadata = data;
+      changCallback();
+    }
+  }
+
+  @override
+  Future<bool> like() async {
+    ActivityType? newData;
+    if (metadata.likes.contains(activity.userId)) {
+      newData = await activity.coll.update(metadata.id, {
+        '_pull_': {'likes': activity.userId},
+      });
+    } else {
+      newData = await activity.coll.update(metadata.id, {
+        '_push_': {'likes': activity.userId},
+      });
+    }
+    if (newData != null) {
+      return await activity.coll.notity({
+        'data': newData,
+        'update': true,
+      });
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> comment(String label, {String? replyTo}) async {
+    final newData = await activity.coll.update(metadata.id, {
+      '_push_': {
+        'comments': {
+          'label': label,
+          'userId': activity.userId,
+          'time': 'sysdate()',
+          'replyTo': replyTo,
+        },
+      },
+    });
+    if (newData != null) {
+      return await activity.coll.notity({
+        'data': newData,
+        'update': true,
+      });
+    }
+    return false;
+  }
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 /// 动态接口类
 abstract class IActivity extends IEntity<XTarget> {
+  IActivity(super.metadata);
+
   /// 会话对象
   late ISession session;
 
@@ -14,7 +110,8 @@ abstract class IActivity extends IEntity<XTarget> {
   late bool allPublish;
 
   /// 动态数据
-  late List<ActivityType> activityList;
+  late List<IActivityMessage> activityList;
+  late XCollection<ActivityType> coll;
 
   /// 发布动态
   Future<bool> send(
@@ -23,28 +120,14 @@ abstract class IActivity extends IEntity<XTarget> {
     List<String> tags,
   );
 
-  /// 点赞
-  Future<bool> like(ActivityType data);
-
-  /// 评论
-  Future<bool> comment(ActivityType data, String txt, String? replyTo);
-
   /// 加载动态
-  Future<List<ActivityType>> load(int take, String? beforeTime);
+  Future<List<IActivityMessage>> load(int take, String? beforeTime);
 }
 
 /// 动态实现
 class Activity extends Entity<XTarget> implements IActivity {
-  @override
-  late ISession session;
-  @override
-  late List<ActivityType> activityList;
-  late XCollection<ActivityType> coll;
-
-  Activity(XTarget metadata, ISession session) : super(metadata) {
-    this.session = session;
-    activityList = [];
-    if (this.session.target.id == this.session.sessionId) {
+  Activity(this.metadata, this.session) : super(metadata) {
+    if (session.target.id == session.sessionId) {
       coll = session.target.resource.genColl('resource-activity');
     } else {
       coll = XCollection<ActivityType>(
@@ -57,13 +140,23 @@ class Activity extends Entity<XTarget> implements IActivity {
     subscribeNotify();
   }
   @override
+  final XTarget metadata;
+  @override
+  final ISession session;
+
+  @override
+  List<IActivityMessage> activityList = [];
+  @override
+  late XCollection<ActivityType> coll;
+
+  @override
   bool get allPublish {
     return (session.target.id == session.sessionId &&
         session.target.hasRelationAuth());
   }
 
   @override
-  Future<List<ActivityType>> load(int take, [String? beforeTime]) async {
+  Future<List<IActivityMessage>> load(int take, [String? beforeTime]) async {
     var data = await coll.load({
       take: take,
       "options": {
@@ -79,48 +172,9 @@ class Activity extends Entity<XTarget> implements IActivity {
         },
       },
     });
-    activityList.addAll(data);
-    return data;
-  }
-
-  @override
-  Future<bool> like(ActivityType data) async {
-    ActivityType? newData;
-    if (data.likes.any((i) => i == userId)) {
-      newData = await coll.update(data.id, {
-        "_pull_": {"likes": userId},
-      });
-    } else {
-      newData = await coll.update(data.id, {
-        "_push_": {"likes": userId},
-      });
-    }
-    if (newData != null) {
-      return await coll.notity(newData);
-    }
-    return false;
-  }
-
-  @override
-  Future<bool> comment(
-    ActivityType data,
-    String label,
-    String? replyTo,
-  ) async {
-    var newData = await coll.update(data.id, {
-      "_push_": {
-        "comments": {
-          "label": label,
-          "userId": userId,
-          "time": 'sysdate()',
-          "replyTo": replyTo,
-        } as CommentType,
-      },
-    });
-    if (newData != null) {
-      return await coll.notity(newData);
-    }
-    return false;
+    final messages = data.map((i) => ActivityMessage(i, this));
+    activityList.addAll(messages);
+    return activityList;
   }
 
   @override
@@ -130,15 +184,16 @@ class Activity extends Entity<XTarget> implements IActivity {
     List<String> tags,
   ) async {
     if (allPublish) {
-      var data = await coll.insert({
+      var data = await coll.insert(ActivityType(
         tags: tags,
-        "comments": [],
+        comments: [],
         content: content,
-        "resource": resources,
-        "typeName": MessageType.text,
-        "likes": [],
-        "forward": [],
-      } as ActivityType);
+        resource: resources,
+        typeName: MessageType.text.label,
+        likes: [],
+        forward: [],
+        id: '',
+      ));
       if (data != null) {
         await coll.notity(data, onlineOnly: false);
       }
@@ -148,15 +203,14 @@ class Activity extends Entity<XTarget> implements IActivity {
   }
 
   subscribeNotify() {
-    coll.subscribe(key, ({required bool update, required ActivityType data}) {
+    coll.subscribe([key], ({required bool update, required ActivityType data}) {
       if (update) {
         var index = activityList.indexWhere((i) => i.id == data.id);
-        if (activityList.indexWhere((i) => i.id == data.id) > -1) {
-          activityList[index] = data;
-          changCallback();
+        if (index > -1) {
+          activityList[index].update(data);
         }
       } else {
-        activityList = [data, ...activityList];
+        activityList = [ActivityMessage(data, this), ...activityList];
         changCallback();
       }
     });

@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
+import 'package:orginone/dart/base/common/format.dart';
 import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -20,6 +22,8 @@ var msgChatNotify = Emitter();
 
 /// 会话接口类
 abstract class ISession extends IEntity<XEntity> {
+  ISession(super.metadata);
+
   /// 是否归属人员
   late bool isBelongPerson;
 
@@ -91,44 +95,50 @@ abstract class ISession extends IEntity<XEntity> {
 
 /// 会话实现
 class Session extends Entity<XEntity> implements ISession {
+  Session(this.sessionId, this.target, this.metadata, {this.tags})
+      : super(metadata) {
+    sessionId = id;
+    if (tags == null) {
+      tags = [metadata.typeName!];
+      if (metadata.belong != null) {
+        tags?.insert(0, metadata.belong!.name ?? "");
+      }
+    }
+    chatdata = MsgChatData(
+      fullId: '${target.id}_$id',
+      chatName: metadata.name ?? '',
+      chatRemark: metadata.remark ?? '',
+      isToping: false,
+      noReadCount: 0,
+      lastMsgTime: 0, //nullTime,
+      mentionMe: false,
+      labels: id == userId ? ['本人'] : tags ?? [],
+      lastMessage: null,
+    );
+    activity = Activity(metadata, this);
+    subscribeOperations();
+    if (id != userId) {
+      loadCacheChatData();
+    }
+  }
+
   @override
-  late String sessionId;
+  final String sessionId;
   @override
-  late ITarget target;
+  final ITarget target;
   @override
-  late IActivity activity;
+  final XTarget metadata;
+
+  List<String>? tags;
+
   @override
   late MsgChatData chatdata;
+  @override
+  late IActivity activity;
   @override
   List<IMessage> messages = [];
   Function(List<IMessage> messages)? messageNotify;
 
-  Session(String id, ITarget target, XTarget metadata, [List<String>? tags])
-      : super(metadata) {
-    sessionId = id;
-    this.target = target;
-    if (tags == null) {
-      tags = [metadata.typeName!];
-      if (metadata.belong != null) {
-        tags.insert(0, metadata.belong!.name ?? "");
-      }
-    }
-    chatdata = {
-      "fullId": '${target.id}_$id',
-      "chatName": metadata.name,
-      "chatRemark": metadata.remark,
-      "isToping": false,
-      "noReadCount": 0,
-      "lastMsgTime": nullTime,
-      "mentionMe": false,
-      "labels": id == userId ? ['本人'] : tags,
-    } as MsgChatData;
-    activity = Activity(metadata, this);
-    subscribeOperations();
-    if (this.id != userId) {
-      loadCacheChatData();
-    }
-  }
   XCollection<ChatMessageType> get coll {
     return target.resource.messageColl;
   }
@@ -163,15 +173,15 @@ class Session extends Entity<XEntity> implements ISession {
 
   @override
   bool get isMyChat {
-    return (metadata.typeName == TargetType.person ||
+    return (metadata.typeName == TargetType.person.label ||
         members.any((i) => i.id == userId) ||
         chatdata.noReadCount > 0);
   }
 
   @override
   bool get isFriend {
-    return (metadata.typeName != TargetType.person ||
-        target.user.members.any((i) => i.id == sessionId));
+    return (metadata.typeName != TargetType.person.label ||
+        target.user!.members.any((i) => i.id == sessionId));
   }
 
   String? get copyId {
@@ -187,7 +197,7 @@ class Session extends Entity<XEntity> implements ISession {
       var msg = Message(chatdata.lastMessage!, this);
       return msg.msgTitle;
     }
-    return metadata.remark.substring(0, 60);
+    return metadata.remark!.substring(0, 60);
   }
 
   String get cachePath {
@@ -263,7 +273,7 @@ class Session extends Entity<XEntity> implements ISession {
         "fromId": userId,
         "toId": sessionId,
         "comments": [],
-        "content": StringPako.deflate(
+        "content": StringGzip.deflate(
           '[obj]${json.encode({
                 "body": text,
                 mentions: mentions,
@@ -271,7 +281,6 @@ class Session extends Entity<XEntity> implements ISession {
               })}',
         ),
       } as ChatMessageType,
-      copyId,
     );
     if (data != null) {
       await notify('insert', [data], false);
@@ -341,7 +350,7 @@ class Session extends Entity<XEntity> implements ISession {
         messages = [];
         chatdata.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
         messageNotify?.call(messages);
-        sendMessage(MessageType.notify, '${target.user.name} 清空了消息', []);
+        sendMessage(MessageType.notify, '${target.user?.name} 清空了消息', []);
         return true;
       }
     }
@@ -351,14 +360,14 @@ class Session extends Entity<XEntity> implements ISession {
   Future<void> subscribeOperations() async {
     if (isGroup) {
       coll.subscribe(
-        key,
+        [key],
         ({required String operate, required List<ChatMessageType> data}) {
           data.map((item) => receiveMessage(operate, item));
         },
       );
     } else {
       coll.subscribe(
-        key,
+        [key],
         ({required String operate, required List<ChatMessageType> data}) {
           for (var item in data) {
             if ([item.fromId, item.toId].contains(sessionId) &&
@@ -415,32 +424,29 @@ class Session extends Entity<XEntity> implements ISession {
   }
 
   Future<void> loadCacheChatData() async {
-    var data = await target.user.cacheObj.get<MsgChatData>(cachePath);
-    if (data.fullId == chatdata.fullId) {
-      chatdata = data;
+    var data = await target.user?.cacheObj.get<MsgChatData>(cachePath);
+    if (data?.fullId == chatdata.fullId) {
+      chatdata = data!;
       msgChatNotify.changCallback();
     }
-    target.user.cacheObj.subscribe(
-      chatdata.fullId,
-      (MsgChatData data) {
-        if (data.fullId == chatdata.fullId) {
-          chatdata = data;
-          target.user.cacheObj.setValue(cachePath, data);
-          msgChatNotify.changCallback();
-        }
-      },
-    );
+    target.user?.cacheObj.subscribe(chatdata.fullId, (data) {
+      if (data.fullId == chatdata.fullId) {
+        chatdata = data as MsgChatData;
+        target.user?.cacheObj.setValue(cachePath, data);
+        command.emitterFlag(flag: 'session');
+      }
+    });
   }
 
   @override
   Future<bool> cacheChatData([bool? notify = false]) async {
-    var success = await target.user.cacheObj.set(cachePath, chatdata);
-    if (success && notify!) {
-      await target.user.cacheObj.notity(
+    var success = await target.user?.cacheObj.set(cachePath, chatdata);
+    if (success! && notify!) {
+      await target.user?.cacheObj.notity(
         chatdata.fullId,
         chatdata,
-        true,
-        true,
+        onlyTarget: true,
+        ignoreSelf: true,
       );
     }
     return success;

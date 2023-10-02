@@ -31,7 +31,7 @@ abstract class IPerson extends IBelong {
   late Map<String, IFileInfo<XEntity>> copyFiles;
 
   //根据ID查询共享信息
-  Future<ShareIcon> findShareById(String id);
+  ShareIcon findShareById(String id);
   //根据Id查询共享信息
   Future<XEntity?> findEntityAsync(String id);
   //判断是否拥有某些用户的权限
@@ -378,7 +378,7 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  Future<ShareIcon> findShareById(String id) async {
+  ShareIcon findShareById(String id) {
     var metadata = findMetadata<XEntity>(id);
     if (metadata == null) {
       findEntityAsync(id);

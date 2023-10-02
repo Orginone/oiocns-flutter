@@ -143,7 +143,7 @@ abstract class Belong extends Target implements IBelong {
       var labels = id == user?.id ? ['好友'] : [name, '同事'];
       for (var i in newmembers) {
         if (!memberChats.any((a) => a.id == i.id)) {
-          memberChats.add(Session(i.id, this, i, labels));
+          memberChats.add(Session(i.id, this, i, tags: labels));
         }
       }
     } else {
