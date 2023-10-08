@@ -1,9 +1,6 @@
+import 'package:orginone/dart/core/chat/message.dart';
 
-
-
-import 'package:orginone/dart/core/chat/message/message.dart';
-
-class JumpSpecifyMessage{
+class JumpSpecifyMessage {
   late IMessage message;
 
   JumpSpecifyMessage(this.message);

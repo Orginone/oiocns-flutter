@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
@@ -52,8 +53,8 @@ class ListAdapter {
     this.popupMenuItems = const [],
   });
 
-  ListAdapter.chat(IMsgChat chat) {
-    labels = chat.labels;
+  ListAdapter.chat(ISession chat) {
+    labels = chat.chatdata.labels;
     bool isTop = labels.contains("置顶");
     isUserLabel = false;
     typeName = chat.share.typeName;
@@ -70,27 +71,27 @@ class ListAdapter {
     onSelected = (key) async {
       switch (key) {
         case PopupMenuKey.cancelTopping:
-          chat.labels.remove('置顶');
-          await chat.cache();
-          settingCtrl.provider.refreshChat();
+          chat.chatdata.labels.remove('置顶');
+          await chat.cacheChatData();
+          settingCtrl.provider.refresh();
           break;
         case PopupMenuKey.topping:
-          chat.labels.add('置顶');
-          await chat.cache();
-          settingCtrl.provider.refreshChat();
+          chat.chatdata.labels.add('置顶');
+          await chat.cacheChatData();
+          settingCtrl.provider.refresh();
           break;
         case PopupMenuKey.delete:
-          settingCtrl.chat.allChats.remove(chat);
-          settingCtrl.provider.refreshChat();
+          settingCtrl.chats.remove(chat);
+          settingCtrl.provider.refresh();
           break;
       }
     };
     circularAvatar = chat.share.typeName == TargetType.person.label;
-    noReadCount = chat.chatdata.value.noReadCount;
-    title = chat.chatdata.value.chatName ?? "";
-    dateTime = chat.chatdata.value.lastMessage?.createTime;
+    noReadCount = chat.chatdata.noReadCount;
+    title = chat.chatdata.chatName ?? "";
+    dateTime = chat.chatdata.lastMessage?.createTime;
     content = '';
-    var lastMessage = chat.chatdata.value.lastMessage;
+    var lastMessage = chat.chatdata.lastMessage;
     if (lastMessage != null) {
       if (lastMessage.fromId != settingCtrl.user.metadata.id) {
         if (chat.share.typeName != TargetType.person.label) {
@@ -102,14 +103,15 @@ class ListAdapter {
         }
       }
       content = content +
-          StringUtil.msgConversion(lastMessage, settingCtrl.user.userId);
+          StringUtil.msgConversion(MsgSaveModel.fromJson(lastMessage.toJson()),
+              settingCtrl.user.userId);
     }
 
     image = chat.share.avatar?.thumbnailUint8List ??
         chat.share.avatar?.defaultAvatar;
 
     callback = () {
-      chat.onMessage();
+      chat.onMessage((messages) => null);
       Get.toNamed(
         Routers.messageChat,
         arguments: chat,
