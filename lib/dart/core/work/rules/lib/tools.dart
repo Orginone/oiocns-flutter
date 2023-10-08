@@ -4,6 +4,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/work/rules/base/ruleBase.dart';
 import 'package:orginone/dart/core/work/rules/base/ruleClass.dart';
 import 'package:orginone/dart/core/work/rules/lib/const.dart';
+import 'package:orginone/main.dart';
 
 // import { DataType } from 'typings/globelType';
 // import { RuleTypes } from '../type';
@@ -225,9 +226,9 @@ var fixedCharacterResolver = (String ruleStr) async {
       case '「单位编码」':
         return company.id;
       case '「使用人名称」':
-        return OrgCtrl.user.metadata.name;
+        return settingCtrl.user.metadata.name!;
       case '「使用人编码」':
-        return OrgCtrl.user.metadata.id;
+        return settingCtrl.user.metadata.id;
       case '「系统时间」':
         return '${DateTime.new}';
       default:

@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
@@ -7,6 +8,7 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/work/rules/base/enum.dart';
 import 'package:orginone/dart/core/work/rules/lib/tools.dart';
 import 'package:orginone/dart/core/work/rules/type.dart';
+import 'package:orginone/main.dart';
 
 // import OrgCtrl from '../../../controller';
 
@@ -50,20 +52,20 @@ abstract class WorkFormRulesType {
   // ) handleSubmit;
 }
 
-class WorkFormRules implements WorkFormRulesType {
+class WorkFormRules extends Emitter implements WorkFormRulesType {
   WorkFormRules() {
     companyMeta = {} as XEntity;
     currentMainFormId = '';
   }
   // 当前主表id
   @override
-  String currentMainFormId;
+  late String currentMainFormId;
   // 是否所有规则都已加载完毕
   @override
   bool isReady = false;
   // 单位信息
   @override
-  XEntity companyMeta;
+  late XEntity companyMeta;
   // 所有表单规则
   Map<String, MapType> _AllFormRules = {};
   // 所有表单id，对应的主子表信息
@@ -221,10 +223,12 @@ class WorkFormRules implements WorkFormRulesType {
       formData.putIfAbsent(
           currentMainFormId,
           {
-            ...changedForm,
-            "after": [
-              {...changedForm.after[0], ...subValues}
-            ],
+            changedForm,
+            {
+              "after": [
+                {changedForm.after[0], subValues}
+              ]
+            },
           } as FormEditData Function());
     }
     return {
@@ -256,12 +260,12 @@ class WorkFormRules implements WorkFormRulesType {
       try {
         // 执行该规则，并将规则返回的数据保存到 res 中
         var res = await R.dealRule({
-          "$formData": formData.data, //主表数据
-          "$attrs": formData.attrs, //主表所有特性
-          "$things": formData.things ?? [], //子表数据
-          "$company": companyMeta, //单位信息
-          "$user": OrgCtrl.user.metadata, //用户信息
-          "tools": Tools, //方法库
+          "#formData": formData.data, //主表数据
+          "#attrs": formData.attrs, //主表所有特性
+          "#things": formData.things ?? [], //子表数据
+          "#company": companyMeta, //单位信息
+          "#user": settingCtrl.user.metadata, //用户信息
+          "tools": {} //Tools, //方法库
         });
 
         // 如果规则执行成功，则将规则返回的数据合并到 resultObj 中

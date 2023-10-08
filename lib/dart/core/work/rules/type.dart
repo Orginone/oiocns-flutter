@@ -73,3 +73,10 @@ class RuleTypes {
 /* 表单变化时，返回类型 */
   late CallBackType callBackType;
 }
+
+class FormData {
+  late String id;
+  late RuleTypes data;
+  late List<RuleTypes>? attrs;
+  late List<AnyThingModel>? things;
+}

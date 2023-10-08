@@ -8,8 +8,17 @@ final List<String> FixedCharacters = [
   '「系统时间」',
   '「」',
 ];
+
 // 定义规则类型常量
-final Map<String, String> RuleType = {
-  "FORMULA": 'formula',
-  "METHOD": 'method',
-};
+enum RuleType {
+  FORMULA('formula'),
+  METHOD('method');
+
+  const RuleType(this.name);
+
+  final String name;
+
+  static String getName(RuleType opreate) {
+    return opreate.name;
+  }
+}
