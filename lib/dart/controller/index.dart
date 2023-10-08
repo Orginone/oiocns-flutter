@@ -6,13 +6,11 @@ import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/provider.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
-import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/dart/core/thing/store/provider.dart';
+import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/dart/core/work/provider.dart';
 import 'package:orginone/event/home_data.dart';
@@ -89,6 +87,30 @@ class IndexController extends GetxController {
 
   late CustomPopupMenuController settingMenuController;
 
+  /// 数据提供者
+  UserProvider get provider => _provider;
+
+  /// 当前用户
+  IPerson get user => provider.user!;
+
+  /// 办事提供者
+  IWorkProvider get work => provider.work!;
+
+  /// 所有相关的用户
+  List<ITarget> get targets => provider.targets;
+
+  /// 所有相关会话
+  List<ISession> get chats {
+    List<ISession> chats = [];
+    if (provider.user != null) {
+      chats.addAll(provider.user?.chats ?? []);
+      for (var company in provider.user?.companys ?? []) {
+        chats.addAll(company.chats);
+      }
+    }
+    return chats;
+  }
+
   var menuItems = [
     ShortcutData(
       Shortcut.addPerson,
@@ -108,18 +130,18 @@ class IndexController extends GetxController {
     super.onInit();
     functionMenuController = CustomPopupMenuController();
     settingMenuController = CustomPopupMenuController();
-    _provider = UserProvider();
+    // _provider = UserProvider(e);
     _userSub = XEventBus.instance.on<UserLoaded>().listen((event) async {
       EventBusHelper.fire(ShowLoading(true));
-      await _provider.loadData();
-      EventBusHelper.fire(ShowLoading(false));
-      await Future.wait([
-        _provider.loadChatData(),
-        _provider.loadWorkData(),
-        _provider.loadStoreData(),
-        _provider.loadContent(),
-      ]);
-      _provider.loadApps();
+      // await _provider.loadData();
+      // EventBusHelper.fire(ShowLoading(false));
+      // await Future.wait([
+      //   _provider.loadChatData(),
+      //   _provider.loadWorkData(),
+      //   _provider.loadStoreData(),
+      //   _provider.loadContent(),
+      // ]);
+      // _provider.loadApps();
       EventBusHelper.fire(InitDataDone());
     });
   }
@@ -130,40 +152,16 @@ class IndexController extends GetxController {
     super.onClose();
   }
 
-  /// 数据提供者
-  UserProvider get provider {
-    return _provider;
-  }
-
-  /// 当前用户
-  IPerson get user {
-    return _provider.user!;
-  }
-
-  IChatProvider get chat {
-    return _provider.chat!;
-  }
-
-  /// 办事提供者
-  IWorkProvider get work {
-    return _provider.work!;
-  }
-
-  IStoreProvider get store {
-    return _provider.store!;
-  }
-
-  /// 组织树
-  Future<List<ITarget>> getTeamTree(IBelong space,
-      [bool isShare = true]) async {
-    var result = <ITarget>[];
-    result.add(space);
-    if (space == user) {
-      result.addAll([...(await user.loadCohorts(reload: false)) ?? []]);
-    } else if (isShare) {
-      result.addAll([...(await (space as ICompany).loadGroups(reload: false))]);
+  Future<List<IApplication>> loadApplications() async {
+    List<IApplication> apps = [];
+    for (var directory in targets
+        .where((i) => i.session.isMyChat)
+        .toList()
+        .map((a) => a.directory)
+        .toList()) {
+      apps.addAll((await directory.loadAllApplication()));
     }
-    return result;
+    return apps;
   }
 
   void setHomeEnum(HomeEnum value) {
