@@ -33,9 +33,7 @@ class Storage extends Target implements IStorage {
               TargetType.hospital,
               TargetType.university,
               TargetType.person,
-            ]) {
-    recent = RxList();
-  }
+            ]);
 
   @override
   final XTarget metadata;
