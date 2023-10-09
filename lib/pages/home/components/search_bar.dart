@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/index.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/dart/core/work/task.dart';
@@ -63,7 +64,7 @@ class SearchBar<T> extends SearchDelegate {
     for (var element in data) {
       switch (homeEnum) {
         case HomeEnum.chat:
-          if ((element as IMsgChat).chatdata.value.chatName?.contains(query) ??
+          if ((element as ISession).chatdata.chatName.contains(query) ??
               false) {
             searchData.add(element);
           }
@@ -98,7 +99,7 @@ class SearchBar<T> extends SearchDelegate {
           switch (homeEnum) {
             case HomeEnum.chat:
               return ListItem(
-                adapter: ListAdapter.chat(item as IMsgChat),
+                adapter: ListAdapter.chat(item as ISession),
               );
             case HomeEnum.work:
               return ListItem(adapter: ListAdapter.work(item as IWorkTask));
