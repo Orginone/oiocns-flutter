@@ -2,11 +2,9 @@ import 'dart:convert';
 
 import 'package:orginone/dart/base/model.dart' hide ThingModel;
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_state.dart';
-import 'package:orginone/dart/core/thing/store/provider.dart';
 import 'package:orginone/model/thing_model.dart';
 
-class StoreState
-    extends BaseSubmenuState<StoreFrequentlyUsed> {
+class StoreState extends BaseSubmenuState<StoreFrequentlyUsed> {
   @override
   // TODO: implement tag
   String get tag => "存储";
@@ -60,7 +58,8 @@ class RecentlyUseModel {
     createTime = json['createTime'];
     type = json['type'];
     id = json['id'];
-    thing = json['thing'] != null ? AnyThingModel.fromJson(json['thing']) : null;
+    thing =
+        json['thing'] != null ? AnyThingModel.fromJson(json['thing']) : null;
     file = json['file'] != null ? FileItemModel.fromJson(json['file']) : null;
     loadAvatar();
   }
@@ -80,4 +79,6 @@ class RecentlyUseModel {
       'file': file?.toJson(),
     };
   }
+
+  getFileAvatar(FileItemModel fileItemModel) {} //////
 }

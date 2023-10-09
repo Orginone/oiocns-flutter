@@ -37,7 +37,6 @@ abstract class ITarget extends IFileInfo<XTarget> with ITeam {
   //所有相关用户
   late List<ITarget> targets;
   //用户相关的所有会话
-  @override
   late List<ISession> chats;
   //成员目录
   late IDirectory memberDirectory;

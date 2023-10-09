@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
@@ -6,9 +7,12 @@ import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/store/state.dart';
 
 /// 存储资源接口
 abstract class IStorage implements ITarget {
+  late RxList<RecentlyUseModel> recent;
+
   /// 是否处于激活状态
   bool get isActivate;
 
@@ -29,7 +33,9 @@ class Storage extends Target implements IStorage {
               TargetType.hospital,
               TargetType.university,
               TargetType.person,
-            ]);
+            ]) {
+    recent = RxList();
+  }
 
   @override
   final XTarget metadata;

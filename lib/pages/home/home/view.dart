@@ -107,9 +107,9 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
       if (homeEnum == HomeEnum.work) {
         mgsCount = settingCtrl.provider.work?.todos.length ?? 0;
       } else if (homeEnum == HomeEnum.chat) {
-        var chats = settingCtrl.provider.chat?.allChats;
-        chats?.forEach((element) {
-          mgsCount += element.chatdata.value.noReadCount;
+        var chats = settingCtrl.chats;
+        chats.forEach((element) {
+          mgsCount += element.chatdata.noReadCount;
         });
       }
       return BadgeTabWidget(

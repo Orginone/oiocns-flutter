@@ -5,7 +5,8 @@ import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/controller/index.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/session.dart';
+import 'package:orginone/dart/core/target/outTeam/storage.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/extension/ex_list.dart';
 import 'package:orginone/extension/ex_widget.dart';
@@ -204,17 +205,17 @@ class UserBar extends GetView<IndexController> {
         SearchBar? search;
         switch (controller.homeEnum.value) {
           case HomeEnum.chat:
-            search = SearchBar<IMsgChat>(
-                homeEnum: HomeEnum.chat, data: controller.chat.allChats);
+            search = SearchBar<ISession>(
+                homeEnum: HomeEnum.chat, data: controller.chats);
             break;
           case HomeEnum.work:
             search = SearchBar<IWorkTask>(
                 homeEnum: HomeEnum.work, data: controller.work.todos);
             break;
-          case HomeEnum.store:
-            search = SearchBar<RecentlyUseModel>(
-                homeEnum: HomeEnum.store, data: controller.store.recent);
-            break;
+          // case HomeEnum.store:
+          //   search = SearchBar<RecentlyUseModel>(
+          //       homeEnum: HomeEnum.store, data: controller.storage.recent);
+          // break;
           case HomeEnum.setting:
             search = SearchBar<int>(homeEnum: HomeEnum.setting, data: []);
             break;
