@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/dart/core/thing/species.dart';
+import 'package:orginone/dart/core/thing/standard/species.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
@@ -13,7 +13,7 @@ import 'package:orginone/widget/unified.dart';
 import '../../dart/core/target/authority/authority.dart';
 import '../../dart/core/target/base/target.dart';
 import '../../dart/core/target/identity/identity.dart';
-import 'config.dart';
+import 'config.dart' as config;
 
 typedef CreateDictChangeCallBack = Function(
     String name, String code, String remark);
@@ -55,7 +55,7 @@ typedef CreateSpeciesCallBack = Function(
 Future<void> showCreateIdentityDialog(
     BuildContext context, List<IAuthority> authority,
     {CreateIdentityCallBack? onCreate, IIdentity? identity}) async {
-  List<IAuthority> allAuth = getAllAuthority(authority);
+  List<IAuthority> allAuth = config.getAllAuthority(authority);
 
   TextEditingController name =
       TextEditingController(text: identity?.metadata.name);
@@ -662,7 +662,7 @@ Future<void> showCreateAttributeDialog(BuildContext context,
                     CommonWidget.commonChoiceTile("属性类型", type ?? "",
                         showLine: true, required: true, onTap: () {
                       PickerUtils.showListStringPicker(Get.context!,
-                          titles: ValueType, callback: (str) {
+                          titles: config.ValueType, callback: (str) {
                         state(() {
                           type = str;
                         });

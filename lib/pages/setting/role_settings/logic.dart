@@ -34,26 +34,28 @@ class RoleSettingsController extends BaseController<RoleSettingsState>
     initTabController();
   }
 
-  void initTabController(){
+  void initTabController() {
     state.tabController =
         TabController(length: state.identitys.length, vsync: this);
   }
 
-  void createIdentity() async{
+  void createIdentity() async {
+    IAuthority? auth = await state.target.space!.loadSuperAuth();
 
-    IAuthority? auth = await state.target.space.loadSuperAuth();
-
-    showCreateIdentityDialog(context,auth!=null?getAllAuthority([auth]):[],onCreate: (String name, String code, String authID,String remark) async{
-     var model = IdentityModel(name: name,code: code,authId: authID,remark: remark);
-     IIdentity? identity = await state.target.createIdentity(model);
-     if(identity!=null){
-       ToastUtils.showMsg(msg: "创建成功");
-       await initRole();
-     }else{
-       ToastUtils.showMsg(msg: "创建失败");
-     }
+    // ignore: use_build_context_synchronously
+    showCreateIdentityDialog(
+        context, auth != null ? getAllAuthority([auth]) : [], onCreate:
+            (String name, String code, String authID, String remark) async {
+      var model =
+          IdentityModel(name: name, code: code, authId: authID, remark: remark);
+      IIdentity? identity = await state.target.createIdentity(model);
+      if (identity != null) {
+        ToastUtils.showMsg(msg: "创建成功");
+        await initRole();
+      } else {
+        ToastUtils.showMsg(msg: "创建失败");
+      }
     });
-
   }
 
   void deleteIdentity(IIdentity identity) async {

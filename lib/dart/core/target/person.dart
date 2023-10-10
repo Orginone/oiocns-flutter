@@ -48,6 +48,8 @@ abstract class IPerson extends IBelong {
   Future<ICompany?> createCompany(TargetModel data);
   //搜索用户
   Future<List<XTarget>> searchTargets(String filter, List<String> typeNames);
+  //加载群组
+  Future<List<ICohort>> loadCohorts({bool? reload});
 }
 
 //人员类型实现
@@ -116,8 +118,9 @@ class Person extends Belong implements IPerson {
         .removeWhere((a) => idProofs.every((i) => i.id != a.identity?.id));
   }
 
-  Future<List<ICohort>> loadCohorts({bool reload = false}) async {
-    if (!_cohortLoaded || reload) {
+  @override
+  Future<List<ICohort>> loadCohorts({bool? reload = false}) async {
+    if (!_cohortLoaded || reload!) {
       var res = await kernel.queryJoinedTargetById(GetJoinedModel(
         id: metadata.id,
         typeNames: [

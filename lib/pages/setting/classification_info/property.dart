@@ -9,7 +9,7 @@ import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
-import '../../../dart/base/model.dart';
+import '../../../dart/base/model.dart' as model;
 import 'logic.dart';
 
 class PropertyPage extends BaseGetPageView<PropertyController, PropertyState> {
@@ -22,7 +22,6 @@ class PropertyPage extends BaseGetPageView<PropertyController, PropertyState> {
             Obx(() {
               List<List<String>> content = [];
 
-
               for (var element in state.propertys) {
                 content.add([
                   element.code ?? "",
@@ -30,8 +29,8 @@ class PropertyPage extends BaseGetPageView<PropertyController, PropertyState> {
                   element.valueType ?? "",
                   element.unit ?? "",
                   element.directory?.name ?? "",
-                  element.belong?.name??"",
-                  element.species?.name??"",
+                  element.belong?.name ?? "",
+                  element.species?.name ?? "",
                   element.remark ?? ""
                 ]);
               }
@@ -57,9 +56,10 @@ class PropertyPage extends BaseGetPageView<PropertyController, PropertyState> {
                       value: "delete",
                       child: Text("删除属性"),
                     ),
-                  ],onOperation: (operation,code){
-                controller.onOperation(operation,code);
-              });
+                  ],
+                  onOperation: (operation, code) {
+                    controller.onOperation(operation, code);
+                  });
             }),
           ],
         ),
@@ -87,7 +87,7 @@ class PropertyController extends BaseController<PropertyState> {
   dynamic get species => info.state.species;
 
   @override
-  void onReady() async{
+  void onReady() async {
     // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
@@ -98,13 +98,12 @@ class PropertyController extends BaseController<PropertyState> {
   void onOperation(operation, String code) async {
     try {
       var property =
-      state.propertys.firstWhere((element) => element.code == code);
+          state.propertys.firstWhere((element) => element.code == code);
 
       if (operation == "edit") {
         createProperty(property: property);
       } else if (operation == 'delete') {
-        bool success =
-        await species.deleteProperty(property);
+        bool success = await species.deleteProperty(property);
         if (success) {
           state.propertys.remove(property);
           state.propertys.refresh();
@@ -114,39 +113,40 @@ class PropertyController extends BaseController<PropertyState> {
     } catch (e) {}
   }
 
-  void createProperty({XProperty? property}) async{
+  void createProperty({XProperty? property}) async {
     showCreateAttributeDialog(context,
-        onCreate: (name, code, type,info, remark,[unit,dict]) async {
-          var model = PropertyModel(
-            name: name,
-            code: code,
-            valueType: type,
-            remark: remark,
-            unit: unit,
-            directoryId: dict?.id,
-          );
-          if(property!=null){
-            model.id = property.id;
-            await species.updateProperty(model);
-          }else{
-            await species.createProperty(model);
-          }
-          await loadPropertys(reload: true);
-        },
+        onCreate: (name, code, type, info, remark, [unit, dict]) async {
+      var models = model.PropertyModel(
+        name: name,
+        code: code,
+        valueType: type,
+        remark: remark,
+        unit: unit,
+        directoryId: dict?.id,
+      );
+      if (property != null) {
+        models.id = property.id;
+        await species.updateProperty(models);
+      } else {
+        await species.createProperty(models);
+      }
+      await loadPropertys(reload: true);
+    },
         name: property?.name ?? "",
         code: property?.code ?? "",
         remark: property?.remark ?? "",
         valueType: property?.valueType ?? "",
-        unit: property?.unit??"",
+        unit: property?.unit ?? "",
         dictId: property?.id,
-        isEdit: true,dictList: info.state.data.space!.directory.specieses??[]);
+        isEdit: true,
+        dictList: info.state.data.space!.directory.specieses ?? []);
   }
 
-  Future<void> loadPropertys({bool reload = false}) async{
-    state.propertys.value = await species.loadPropertys(reload:reload);
+  Future<void> loadPropertys({bool reload = false}) async {
+    state.propertys.value = await species.loadPropertys(reload: reload);
   }
 }
 
 class PropertyState extends BaseGetState {
-  var  propertys = <XProperty>[].obs;
+  var propertys = <XProperty>[].obs;
 }

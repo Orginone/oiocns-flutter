@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
@@ -53,7 +53,6 @@ class AttrsPage extends BaseGetPageView<AttrsController, AttrsState> {
         ),
       ),
     );
-    ;
   }
 
   @override
@@ -85,8 +84,8 @@ class AttrsController extends BaseController<AttrsState> {
   IForm get species => info.state.species;
 
   Future<void> loadAttrs({bool reload = false}) async {
-    state.attrs.value = await settingCtrl.provider.work!
-        .loadAttributes(species.metadata.id!, species.metadata.belongId!);
+    state.attrs.value = (await settingCtrl.provider.work!.loadInstanceDetail(
+        species.metadata.id!, species.metadata.belongId!)) as List<XAttribute>;
   }
 
   void onAttrOperation(operation, String code) async {

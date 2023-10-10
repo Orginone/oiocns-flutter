@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/routers.dart';
@@ -27,8 +27,7 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
   }
 
   Future<void> init() async {
-    var users = await state.company
-        .loadMembers();
+    var users = await state.company.loadMembers();
     var group = await state.company.loadGroups(reload: true);
     state.unitMember.clear();
     state.joinGroup.clear();
@@ -45,8 +44,7 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
   void companyOperation(CompanyFunction function) {
     switch (function) {
       case CompanyFunction.roleSettings:
-        Get.toNamed(Routers.roleSettings,
-            arguments: {"target": state.company});
+        Get.toNamed(Routers.roleSettings, arguments: {"target": state.company});
         break;
       // case CompanyFunction.addUser:
       //   showSearchDialog(context, TargetType.person,
@@ -81,7 +79,7 @@ class CompanyInfoController extends BaseController<CompanyInfoState>
     }
   }
 
-  void removeMember(String data) async{
+  void removeMember(String data) async {
     var user = state.unitMember.firstWhere((element) => element.code == data);
     bool success = await state.company.removeMembers([user]);
     if (success) {

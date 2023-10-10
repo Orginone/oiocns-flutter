@@ -15,12 +15,10 @@ import 'package:orginone/widget/unified.dart';
 import 'package:orginone/widget/widgets/loading_widget.dart';
 import 'package:orginone/widget/widgets/progress_dialog.dart';
 import 'package:orginone/config/enum.dart';
-import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/util/string_util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-
-import '../../main.dart';
 
 class VersionPage extends GetView<VersionController> {
   const VersionPage({Key? key}) : super(key: key);
@@ -220,8 +218,8 @@ class VersionController extends BaseListController {
         update();
         return;
       }
-      PageResp<VersionVersionMes> pageResp =
-          PageResp(versionList.length, versionList.length, versionList);
+      model.PageResp<VersionVersionMes> pageResp =
+          model.PageResp(versionList.length, versionList.length, versionList);
       state.dataList.add(pageResp);
       mLoadStatus.value = LoadStatusX.success;
       update();
@@ -243,21 +241,23 @@ class VersionBinding extends Bindings {
 }
 
 class UpdateController extends GetxController {
-  Future<Map<String, dynamic>> apkDetail() async {
+  Future<Map<String, dynamic>?> apkDetail() async {
+    ///问号要去掉
     var key = "apkFile";
     var domain = "all";
-    ResultType resp = await kernel.anystore.get(key, domain);
+    // model.ResultType resp = await kernel.anystore.get(key, domain);
 
-    return resp.data["apk"];
+    // return resp.data["apk"];
+    return null;
   }
 
   Future<VersionEntity?> versionList() async {
     var key = "version";
     var domain = "all";
-    ResultType resp = await kernel.anystore.get(key, domain);
-    if (resp.success) {
-      return VersionEntity.fromJson(resp.data);
-    }
+    // model.ResultType resp = await kernel.anystore.get(key, domain);
+    // if (resp.success) {
+    //   return VersionEntity.fromJson(resp.data);
+    // }
     return null;
   }
 }

@@ -6,6 +6,7 @@ import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
@@ -19,7 +20,7 @@ import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/dart/core/thing/standard/property.dart';
-import 'package:orginone/dart/core/thing/species.dart';
+import 'package:orginone/dart/core/thing/standard/species.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/pages/setting/home/state.dart';
 import 'package:orginone/routers.dart';
@@ -594,7 +595,8 @@ void createDir(SettingNavModel item,
           break;
         case SpaceEnum.user:
         case SpaceEnum.company:
-          dir = await item.space!.directory.create(model);
+          dir = (await item.space!.directory.create(model as XDirectory))
+              as IDirectory?;
           break;
         case SpaceEnum.person:
         case SpaceEnum.departments:
@@ -644,7 +646,7 @@ void uploadFile(SettingNavModel item,
     LoadingDialog.showLoading(Get.context!, msg: "上传中");
     var file = await dir.createFile(
       File(result.files.first.path!),
-      progress: (progress) {
+      (progress) {
         if (progress == 1) {
           ToastUtils.showMsg(msg: "上传成功");
           LoadingDialog.dismiss(Get.context!);
@@ -697,7 +699,8 @@ void createSpecies(SettingNavModel item, String typeName,
           break;
         case SpaceEnum.user:
         case SpaceEnum.company:
-          species = await item.space!.directory.createSpecies(model);
+          species = (await item.space!.directory
+              .createSpecies(model as XSpecies)) as ISpecies?;
           break;
         case SpaceEnum.person:
         case SpaceEnum.departments:
@@ -875,7 +878,7 @@ void createAttr(SettingNavModel item,
         unit: unit,
         speciesId: dict?.id);
     if (isEdit) {
-      var success = await (item.source as IProperty).update(data);
+      var success = await (item.source as IProperty).update(data as XProperty);
       if (success) {
         item.source.metadata.name = name;
         item.source.metadata.code = code;
@@ -895,7 +898,8 @@ void createAttr(SettingNavModel item,
           break;
         case SpaceEnum.user:
         case SpaceEnum.company:
-          property = await item.space!.directory.createProperty(data);
+          property = (await item.space!.directory
+              .createProperty(data as XProperty)) as IProperty?;
           break;
         case SpaceEnum.person:
         case SpaceEnum.departments:
@@ -950,7 +954,8 @@ void createApplication(SettingNavModel item,
         resource: resource,
         typeName: typeName);
     if (isEdit) {
-      var success = await (item.source as IApplication).update(data);
+      var success =
+          await (item.source as IApplication).update(data as XApplication);
       if (success) {
         item.source.metadata.name = name;
         item.source.metadata.code = code;
@@ -969,7 +974,8 @@ void createApplication(SettingNavModel item,
           break;
         case SpaceEnum.user:
         case SpaceEnum.company:
-          application = await item.space!.directory.createApplication(data);
+          application = (await item.space!.directory
+              .createApplication(data as XApplication)) as IApplication?;
           break;
         case SpaceEnum.person:
         case SpaceEnum.departments:
@@ -1013,9 +1019,10 @@ void shareQr(SettingNavModel item) {
   );
 }
 
+//暂时不知道怎么改
 void openChat(SettingNavModel item) {
   if (item.spaceEnum == SpaceEnum.user || item.spaceEnum == SpaceEnum.company) {
-    item.space!.onMessage();
+    // item.space!.onMessage();
     Get.toNamed(
       Routers.messageChat,
       arguments: item.space!,

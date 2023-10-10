@@ -13,12 +13,10 @@ import 'state.dart';
 
 class DepartmentInfoPage
     extends BaseGetView<DepartmentInfoController, DepartmentInfoState> {
-
-
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.depart.value.metadata.name??"",
+      titleName: state.depart.value.metadata.name ?? "",
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -31,22 +29,26 @@ class DepartmentInfoPage
               child: Row(
                 children: [
                   Expanded(
-                    child: CommonWidget.commonNonIndicatorTabBar(state.tabController, tabTitle,onTap: (index){
+                    child: CommonWidget.commonNonIndicatorTabBar(
+                        state.tabController, tabTitle, onTap: (index) {
                       controller.changeView(index);
                     }),
                   ),
-                  CommonWidget.commonPopupMenuButton(items: const [
-                    PopupMenuItem(
-                      value: CompanyFunction.roleSettings,
-                      child: Text("角色设置"),
-                    ),
-                    PopupMenuItem(
-                      value: CompanyFunction.addUser,
-                      child: Text("添加成员"),
-                    ),
-                  ],onSelected: (CompanyFunction function){
-                    controller.companyOperation(function);
-                  },),
+                  CommonWidget.commonPopupMenuButton(
+                    items: const [
+                      PopupMenuItem(
+                        value: CompanyFunction.roleSettings,
+                        child: Text("角色设置"),
+                      ),
+                      PopupMenuItem(
+                        value: CompanyFunction.addUser,
+                        child: Text("添加成员"),
+                      ),
+                    ],
+                    onSelected: (CompanyFunction function) {
+                      controller.companyOperation(function);
+                    },
+                  ),
                 ],
               ),
             ),
@@ -57,7 +59,7 @@ class DepartmentInfoPage
     );
   }
 
-  Widget info(){
+  Widget info() {
     return Column(
       children: [
         CommonWidget.commonHeadInfoWidget("基本信息"),
@@ -71,16 +73,15 @@ class DepartmentInfoPage
           CommonWidget.commonFormItem(
               title: "团队标识", content: state.depart.value.metadata.code!),
           CommonWidget.commonFormItem(
-              title: "所属单位",
-              content: state.depart.value.space.metadata.name??"",
+            title: "所属单位",
+            content: state.depart.value.space?.metadata.name ?? "",
           ),
           CommonWidget.commonFormItem(
-              title: "创建人",
-              userId: state.depart.value.metadata.createUser!),
+              title: "创建人", userId: state.depart.value.metadata.createUser!),
           CommonWidget.commonFormItem(
               title: "创建时间",
               content: DateTime.tryParse(
-                  state.depart.value.metadata.createTime ?? "")!
+                      state.depart.value.metadata.createTime ?? "")!
                   .format()),
           CommonWidget.commonFormItem(
               title: "简介", content: state.depart.value.metadata.remark ?? ""),
@@ -89,19 +90,20 @@ class DepartmentInfoPage
     );
   }
 
-  Widget body(){
+  Widget body() {
     return Obx(() {
       if (state.index.value == 1) {
         return Container();
       }
       return UserDocument(
-          popupMenus: const [
-            PopupMenuItem(value: 'out', child: Text("踢出")),
-          ],
-          onOperation: (type,data) {
-            controller.removeMember(data);
-          }, unitMember: state.depart.value.members,);
+        popupMenus: const [
+          PopupMenuItem(value: 'out', child: Text("踢出")),
+        ],
+        onOperation: (type, data) {
+          controller.removeMember(data);
+        },
+        unitMember: state.depart.value.members,
+      );
     });
   }
-
 }
