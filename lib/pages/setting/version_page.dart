@@ -242,9 +242,9 @@ class VersionBinding extends Bindings {
 
 class UpdateController extends GetxController {
   Future<Map<String, dynamic>?> apkDetail() async {
-    ///问号要去掉
     var key = "apkFile";
     var domain = "all";
+    //TODO:如何用objectGet替换anystore的get，方法头返回值的问号和return null要去掉.
     // model.ResultType resp = await kernel.anystore.get(key, domain);
 
     // return resp.data["apk"];
@@ -254,6 +254,7 @@ class UpdateController extends GetxController {
   Future<VersionEntity?> versionList() async {
     var key = "version";
     var domain = "all";
+    //TODO:如何用objectGet替换anystore的get
     // model.ResultType resp = await kernel.anystore.get(key, domain);
     // if (resp.success) {
     //   return VersionEntity.fromJson(resp.data);
