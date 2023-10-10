@@ -1,6 +1,4 @@
-import 'dart:math';
-
-import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
 
 class ThingModel {
@@ -17,30 +15,34 @@ class ThingModel {
   Map<String, dynamic> propertys = {};
   Map<String, dynamic> species = {};
   ThingModel(
-      {this.id, this.creater, this.createTime, this.modifiedTime, this.status,this.eidtInfo =const {}});
+      {this.id,
+      this.creater,
+      this.createTime,
+      this.modifiedTime,
+      this.status,
+      this.eidtInfo = const {}});
 
   ThingModel.fromJson(Map<String, dynamic> json) {
     id = json['Id'];
     creater = json['Creater'];
 
-    settingCtrl.user.findShareById(creater??"").then((value){
-      createrName = value.name;
-    });
+    ShareIcon shareIcon = settingCtrl.user.findShareById(creater ?? "");
+    createrName = shareIcon.name;
     createTime = json['CreateTime'];
     modifiedTime = json['ModifiedTime'];
     status = json['Status'];
-    species = json['Species']??{};
-    propertys = json['Propertys']??{};
-    eidtInfo = json['EDIT_INFO']??{};
-    json.keys.forEach((element) {
-      if(element.length>15){
+    species = json['Species'] ?? {};
+    propertys = json['Propertys'] ?? {};
+    eidtInfo = json['EDIT_INFO'] ?? {};
+    for (var element in json.keys) {
+      if (element.length > 15) {
         eidtInfo[element] = json[element];
       }
-    });
+    }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['Id'] = id;
     data['Creater'] = creater;
     data['CreateTime'] = createTime;

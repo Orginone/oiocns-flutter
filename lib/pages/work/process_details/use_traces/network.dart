@@ -4,16 +4,31 @@ import 'package:orginone/main.dart';
 
 class UseTracesNetWork {
   static Future<XThingArchives?> getThingArchives(String id) async {
-    ResultType result = await kernel.anystore.loadThingArchives({
-      "options": {
-        "match": {
-          "_id": {
-            "_eq_": id,
+    //TODO:IForm没有这个loadThingArchives  用到时候要研究一下逻辑
+    // ResultType result = await kernel.loadThingArchives({
+    //   "options": {
+    //     "match": {
+    //       "_id": {
+    //         "_eq_": id,
+    //       },
+    //     },
+    //   },
+    //   "userData": [],
+    // }, settingCtrl.user.metadata.id);
+    ResultType result = await kernel.loadThing(
+      settingCtrl.user.metadata.id,
+      [],
+      {
+        "options": {
+          "match": {
+            "_id": {
+              "_eq_": id,
+            },
           },
         },
+        "userData": [],
       },
-      "userData": [],
-    }, settingCtrl.user.metadata.id!);
+    );
     if (result.success) {
       return XThingArchives.fromJson(result.data['data'][0]);
     }

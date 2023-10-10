@@ -30,17 +30,17 @@ class TeamAvatar extends StatefulWidget {
   final bool circular;
 
   TeamAvatar({
+    super.key,
     required this.info,
     double? size,
     this.circular = false,
-  })  : size = size ?? 66.w;
+  }) : size = size ?? 66.w;
 
   @override
   State<TeamAvatar> createState() => _TeamAvatarState();
 }
 
 class _TeamAvatarState extends State<TeamAvatar> {
-
   ShareIcon? cache;
 
   late TeamTypeInfo info;
@@ -65,17 +65,18 @@ class _TeamAvatarState extends State<TeamAvatar> {
   void didUpdateWidget(covariant TeamAvatar oldWidget) {
     // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
-    if(widget.info!=oldWidget.info){
+    if (widget.info != oldWidget.info) {
       info = widget.info;
     }
   }
+
   @override
   Widget build(BuildContext context) {
     if (info.share != null) {
       return avatar(info.share!);
     }
 
-    if(ShareIdSet.containsKey(info.userId!)){
+    if (ShareIdSet.containsKey(info.userId!)) {
       return avatar(ShareIdSet[info.userId!]!);
     }
 
@@ -85,14 +86,15 @@ class _TeamAvatarState extends State<TeamAvatar> {
           cache = shot.data!;
           return avatar(shot.data!);
         }
-      return cache != null ? avatar(cache!) : const SizedBox();
-      },future: settingCtrl.user.findShareById(info.userId!),);
+        return cache != null ? avatar(cache!) : const SizedBox();
+      },
+      future: Future(() => settingCtrl.user.findShareById(info.userId!)),
+    );
   }
 
-
-  Widget avatar(ShareIcon share){
+  Widget avatar(ShareIcon share) {
     var avatar = share.avatar;
-    dynamic image = avatar?.thumbnailUint8List??avatar?.defaultAvatar;
+    dynamic image = avatar?.thumbnailUint8List ?? avatar?.defaultAvatar;
     return ImageWidget(
       image,
       size: size,

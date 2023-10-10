@@ -9,13 +9,14 @@ import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 import 'state.dart';
 
-class ProcessDetailsController extends BaseController<ProcessDetailsState> with GetTickerProviderStateMixin{
+class ProcessDetailsController extends BaseController<ProcessDetailsState>
+    with GetTickerProviderStateMixin {
+  @override
   final ProcessDetailsState state = ProcessDetailsState();
 
-  ProcessDetailsController(){
+  ProcessDetailsController() {
     state.tabController = TabController(length: tabTitle.length, vsync: this);
   }
-
 
   @override
   void onReady() async {
@@ -29,7 +30,6 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
   void showAllProcess() {
     state.hideProcess.value = false;
   }
-
 
   WorkNodeModel? getNodeByNodeId(String id, {WorkNodeModel? node}) {
     if (node != null) {
@@ -45,22 +45,31 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
   }
 
   Future<void> loadDataInfo() async {
-    state.node = getNodeByNodeId(state.todo.instanceData?.node?.id??"", node: state.todo.instanceData?.node);
-    if(state.node!=null){
-      state.mainForm.value = state.node!.forms?.where((element) => element.typeName == "主表").toList()??[];
-      state.mainTabController = TabController(length: state.mainForm.length, vsync: this);
+    state.node = getNodeByNodeId(state.todo.instanceData?.node?.id ?? "",
+        node: state.todo.instanceData?.node);
+    if (state.node != null) {
+      state.mainForm.value = state.node!.forms
+              ?.where((element) => element.typeName == "主表")
+              .toList() ??
+          [];
+      state.mainTabController =
+          TabController(length: state.mainForm.length, vsync: this);
       for (var element in state.mainForm) {
-        element.data = getFormData(element.id!);
-        element.fields = state.todo.instanceData!.fields[element.id]??[];
+        element.data = getFormData(element.id);
+        element.fields = state.todo.instanceData!.fields![element.id] ?? [];
         for (var field in element.fields) {
           field.field = await initFields(field);
         }
       }
-      state.subForm.value = state.node!.forms?.where((element) => element.typeName == "子表").toList()??[];
-      state.subTabController = TabController(length: state.subForm.length, vsync: this);
+      state.subForm.value = state.node!.forms
+              ?.where((element) => element.typeName == "子表")
+              .toList() ??
+          [];
+      state.subTabController =
+          TabController(length: state.subForm.length, vsync: this);
       for (var element in state.subForm) {
-        element.data = getFormData(element.id!);
-        element.fields = state.todo.instanceData!.fields[element.id]??[];
+        element.data = getFormData(element.id);
+        element.fields = state.todo.instanceData!.fields![element.id] ?? [];
         for (var field in element.fields) {
           field.field = await initFields(field);
         }
@@ -76,8 +85,8 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
     String? router;
     String? regx;
     Map<dynamic, String> select = {};
-    Map rule = jsonDecode(field.rule??"{}");
-    String widget = rule['widget']??"";
+    Map rule = jsonDecode(field.rule ?? "{}");
+    String widget = rule['widget'] ?? "";
     switch (field.valueType) {
       case "描述型":
         type = "input";
@@ -88,9 +97,9 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
         break;
       case "选择型":
       case "分类型":
-        if(widget == 'switch'){
+        if (widget == 'switch') {
           type = "switch";
-        }else{
+        } else {
           type = "select";
         }
         break;
@@ -98,20 +107,20 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
         type = "selectDate";
         break;
       case "时间型":
-        if(widget == "dateRange"){
+        if (widget == "dateRange") {
           type = "selectDateRange";
-        } else  if(widget == "timeRange"){
+        } else if (widget == "timeRange") {
           type = "selectTimeRange";
         } else {
           type = "selectTime";
         }
         break;
       case "用户型":
-        if(widget.isEmpty){
+        if (widget.isEmpty) {
           type = "selectPerson";
-        }else if(widget== 'group'){
+        } else if (widget == 'group') {
           type = "selectGroup";
-        }else if(widget == 'dept'){
+        } else if (widget == 'dept') {
           type = "selectDepartment";
         }
         break;
@@ -130,16 +139,18 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
       select: select,
       router: router,
       regx: regx,
-      readOnly:  true,
+      readOnly: true,
     );
   }
 
   FormEditData getFormData(String id) {
     final source = <AnyThingModel>[];
-    if (state.todo.instanceData?.data != null && state.todo.instanceData?.data[id] != null) {
-      final beforeData = state.todo.instanceData!.data[id]!;
+    if (state.todo.instanceData?.data != null &&
+        state.todo.instanceData?.data![id] != null) {
+      final beforeData = state.todo.instanceData!.data![id]!;
       if (beforeData.isNotEmpty) {
-        final nodeData = beforeData.where((i) => i.nodeId == state.node?.id).toList();
+        final nodeData =
+            beforeData.where((i) => i.nodeId == state.node?.id).toList();
         if (nodeData.isNotEmpty) {
           return nodeData.last;
         }
@@ -149,9 +160,10 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState> with 
       nodeId: state.node?.id,
       // creator: belong.userId,
       createTime: DateTime.now().format(format: 'yyyy-MM-dd hh:mm:ss.S'),
+      before: [], after: [],
     );
     data.before = List.from(source);
-    data.after =  List.from(source);
+    data.after = List.from(source);
     return data;
   }
 }

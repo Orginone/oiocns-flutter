@@ -109,7 +109,6 @@ import 'pages/setting/user_info/view.dart';
 import 'pages/store/application_details/binding.dart';
 import 'pages/store/application_details/view.dart';
 import 'pages/store/bindings.dart';
-import 'pages/store/state.dart';
 import 'pages/store/store_tree/binding.dart';
 import 'pages/store/store_tree/view.dart';
 import 'pages/work/bindings.dart';
@@ -346,12 +345,12 @@ class Routers {
           binding: RegisterBinding()),
       GetPage(
         name: Routers.forgotPassword,
-        page: () => ForgotPasswordPage(),
+        page: () => const ForgotPasswordPage(),
         binding: ForgotPasswordBinding(),
       ),
       GetPage(
         name: Routers.logintrans,
-        page: () => LoginTransPage(),
+        page: () => const LoginTransPage(),
       ),
       GetPage(
         name: Routers.home,
@@ -501,17 +500,17 @@ class Routers {
       ),
       GetPage(
         name: Routers.mark,
-        page: () => MarkPage(),
+        page: () => const MarkPage(),
         binding: MarkBinding(),
       ),
       GetPage(
         name: Routers.dynamic,
-        page: () => DynamicPage(),
+        page: () => const DynamicPage(),
         binding: DynamicBinding(),
       ),
       GetPage(
         name: Routers.security,
-        page: () => SecurityPage(),
+        page: () => const SecurityPage(),
         binding: SecurityBinding(),
       ),
       GetPage(
@@ -550,12 +549,12 @@ class Routers {
           binding: MessageFileBinding()),
       GetPage(
         name: Routers.messageRecords,
-        page: () => MessageRecordsPage(),
+        page: () => const MessageRecordsPage(),
         binding: MessageRecordsBinding(),
       ),
       GetPage(
         name: Routers.personListPage,
-        page: () => PersonListPage(),
+        page: () => const PersonListPage(),
       ),
       GetPage(
         name: Routers.pdfReader,
@@ -611,7 +610,7 @@ class Routers {
       ),
       GetPage(
         name: Routers.bagDetails,
-        page: () => BagDetailsPage(),
+        page: () => const BagDetailsPage(),
       ),
       GetPage(
         name: Routers.walletDetails,
@@ -620,7 +619,7 @@ class Routers {
       ),
       GetPage(
         name: Routers.transferAccounts,
-        page: () => TransferAccounts(),
+        page: () => const TransferAccounts(),
       ),
       GetPage(
         name: Routers.searchCoin,
@@ -661,11 +660,12 @@ class Routers {
 
   static void jumpFile({required FileItemShare file, String type = 'chat'}) {
     var extension = file.extension?.toLowerCase() ?? "";
-    if (type == "store") {
-      settingCtrl.store.onRecordRecent(RecentlyUseModel(
-          type: StoreEnum.file.label,
-          file: FileItemModel.fromJson(file.toJson())));
-    }
+    //TODO:react分支 无此方法  具体调试看这个业务是什么
+    // if (type == "store") {
+    //   settingCtrl.store.onRecordRecent(RecentlyUseModel(
+    //       type: StoreEnum.file.label,
+    //       file: FileItemModel.fromJson(file.toJson())));
+    // }
     if (ImageUtils.isPdf(extension)) {
       Get.toNamed(Routers.pdfReader, arguments: {"file": file});
     } else if (ImageUtils.isImage(extension)) {

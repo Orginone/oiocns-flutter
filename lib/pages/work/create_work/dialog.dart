@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/main.dart';
@@ -8,7 +8,8 @@ import 'package:orginone/widget/mapping_components.dart';
 
 Future<void> showCreateAuthDialog(
     BuildContext context, IForm form, ITarget target,
-    {AnyThingModel? thing, Function(AnyThingModel model)? onSuceess}) async {
+    {model.AnyThingModel? thing,
+    Function(model.AnyThingModel model)? onSuceess}) async {
   return showDialog(
     context: context,
     builder: (context) {
@@ -38,20 +39,21 @@ Future<void> showCreateAuthDialog(
                   CommonWidget.commonMultipleSubmitWidget(onTap1: () {
                     Navigator.pop(context);
                   }, onTap2: () async {
-                    late AnyThingModel newModel;
+                    late model.AnyThingModel newModel;
                     if (thing == null) {
                       var res =
-                          await kernel.anystore.createThing('', target.id);
+                          // await kernel.anystore.createThing('', target.id);
+                          await kernel.createThing(target.id, [], '');
                       if (res.data != null) {
                         newModel = res.data!;
                       }
                     } else {
                       newModel = thing;
                     }
+                    //TODO:IForm 没有下面这两个方法  做到的时候看这里的逻辑
+                    // form.setThing(newModel);
 
-                    form.setThing(newModel);
-
-                    form.reset();
+                    // form.reset();
                     if (onSuceess != null) {
                       onSuceess(newModel);
                     }

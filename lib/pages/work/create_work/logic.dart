@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
@@ -26,41 +25,51 @@ class CreateWorkController extends BaseController<CreateWorkState>
     await loadSubTable();
     state.apply = await state.work.createApply();
     ResultType<AnyThingModel> result =
-        await kernel.anystore.createThing('', state.target.id);
+        // await kernel.createThing('', state.target.id);
+        await kernel.createThing(
+      state.target.id,
+      [],
+      '',
+    );
     if (result.data != null) {
       for (var element in state.mainForm) {
-        element.things.add(result.data!);
+        //TODO:IForm没有这个数据 things  用到时候要研究一下逻辑
+        // element.things.add(result.data!);
       }
     }
     LoadingDialog.dismiss(context);
   }
 
   Future<void> loadMainTable() async {
-    var forms = (await state.work.loadWorkForms());
-    state.mainForm.value =
-        forms.where((element) => element.metadata.typeName == "主表").toList();
+    //TODO:IForm没有这个数据 用到时候要研究一下逻辑
+    // var forms = (await state.work.loadWorkForms());
+    // state.mainForm.value =
+    //     forms.where((element) => element.metadata.typeName == "主表").toList();
     state.mainTabController =
         TabController(length: state.mainForm.length, vsync: this);
     for (var form in state.mainForm) {
-      await form.loadAttributes();
-      await form.loadItems();
-      await form.createFields();
+      //TODO:IForm没有这个数据 用到时候要研究一下逻辑
+      // await form.loadAttributes();
+      // await form.loadItems();
+      // await form.createFields();
     }
 
     state.mainForm.refresh();
   }
 
   Future<void> loadSubTable() async {
-    var forms = (await state.work.loadWorkForms());
-    state.subForm.value =
-        forms.where((element) => element.metadata.typeName == "子表").toList();
+    //TODO:IForm没有这个数据 用到时候要研究一下逻辑
+    // var forms = (await state.work.loadWorkForms());
+    // state.subForm.value =
+    //     forms.where((element) => element.metadata.typeName == "子表").toList();
 
     state.subTabController =
         TabController(length: state.subForm.length, vsync: this);
     for (var form in state.subForm) {
-      await form.loadAttributes();
-      await form.loadItems();
-      await form.createFields();
+      //TODO:IForm没有这个数据 用到时候要研究一下逻辑
+      // await form.loadAttributes();
+      // await form.loadItems();
+      // await form.createFields();
     }
     state.subForm.refresh();
   }
@@ -77,31 +86,38 @@ class CreateWorkController extends BaseController<CreateWorkState>
 
     if (state.apply != null) {
       for (var form in state.mainForm) {
-        state.apply!.instanceData.fields[form.id] = form.fields;
+        state.apply!.instanceData.fields![form.id] = form.fields;
       }
 
       for (var form in state.subForm) {
-        state.apply!.instanceData.fields[form.id] = form.fields;
+        state.apply!.instanceData.fields![form.id] = form.fields;
       }
       Map<String, FormEditData> fromData = {};
       for (var element in state.mainForm) {
         var main = FormEditData(
-            createTime: DateTime.now().toString(),
-            nodeId: state.work.node?.id,
-            creator: settingCtrl.user.id);
-        main.after = element.things;
-        element.setThing(main.after[0]);
+          createTime: DateTime.now().toString(),
+          nodeId: state.work.node?.id,
+          creator: settingCtrl.user.id,
+          after: [],
+          before: [],
+        );
+        //TODO:IForm没有这个数据 things setThing 用到时候要研究一下逻辑
+        // main.after = element.things;
+        // element.setThing(main.after[0]);
         fromData[element.id] = main;
-        state.apply!.instanceData.primary.addAll(main.after[0].otherInfo);
+        state.apply!.instanceData.primary?.addAll(main.after[0].otherInfo);
       }
       for (var element in state.subForm) {
         var sub = FormEditData(
             createTime: DateTime.now().toString(),
             nodeId: state.work.node?.id,
-            creator: settingCtrl.user.id);
-        sub.after = element.things;
-        sub.before =
-            element.things.where((element) => element.isSelected).toList();
+            creator: settingCtrl.user.id,
+            before: [],
+            after: []);
+        //TODO:IForm没有这个数据 things  用到时候要研究一下逻辑
+        // sub.after = element.things;
+        // sub.before =
+        //     element.things.where((element) => element.isSelected).toList();
         fromData[element.id] = sub;
       }
       bool success = await state.apply!
@@ -117,26 +133,27 @@ class CreateWorkController extends BaseController<CreateWorkState>
   Future<List<List<String>>> loadSubFieldData(
       IForm form, List<FieldModel> fields) async {
     List<List<String>> content = [];
-    for (var thing in form.things) {
-      List<String> data = [
-        thing.id ?? "",
-        thing.status ?? "",
-        ShareIdSet[thing.creater]?.name ?? "",
-      ];
-      for (var field in fields) {
-        dynamic value = thing.otherInfo[field.id];
-        if (value == null) {
-          data.add('');
-        } else {
-          try {
-            data.add(await _converField(field, thing.otherInfo[field.id]));
-          } catch (e) {
-            print('');
-          }
-        }
-      }
-      content.add(data);
-    }
+    //TODO:IForm没有这个数据 things  用到时候要研究一下逻辑
+    // for (var thing in form.things) {
+    //   List<String> data = [
+    //     thing.id ?? "",
+    //     thing.status ?? "",
+    //     ShareIdSet[thing.creater]?.name ?? "",
+    //   ];
+    //   for (var field in fields) {
+    //     dynamic value = thing.otherInfo[field.id];
+    //     if (value == null) {
+    //       data.add('');
+    //     } else {
+    //       try {
+    //         data.add(await _converField(field, thing.otherInfo[field.id]));
+    //       } catch (e) {
+    //         print('');
+    //       }
+    //     }
+    //   }
+    //   content.add(data);
+    // }
     return content;
   }
 
@@ -148,7 +165,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
         case "selectPerson":
         case "selectDepartment":
         case "selectGroup":
-          var share = await settingCtrl.user.findShareById(value);
+          var share = settingCtrl.user.findShareById(value);
           return share.name;
         case "select":
         case 'switch':
@@ -172,7 +189,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
 
   void jumpEntity(IForm form) async {
     Get.toNamed(Routers.choiceThing,
-            arguments: {"form": form, 'belongId': state.target.belong.id})
+            arguments: {"form": form, 'belongId': state.target.belongId})
         ?.then((value) {
       state.subForm.refresh();
     });
@@ -186,7 +203,8 @@ class CreateWorkController extends BaseController<CreateWorkState>
       jumpEntity(form);
     } else {
       showCreateAuthDialog(context, form, state.target, onSuceess: (model) {
-        form.things.add(model);
+        //TODO:IForm没有这个数据 things  用到时候要研究一下逻辑
+        // form.things.add(model);
         state.subForm.refresh();
       });
     }
@@ -195,16 +213,18 @@ class CreateWorkController extends BaseController<CreateWorkState>
   void subTableFormOperation(String function, String key) {
     int subTableIndex = state.subTabController.index;
     IForm form = state.subForm[subTableIndex];
-    var thing = form.things.firstWhere((element) => element.id == key);
+    //TODO:IForm没有这个数据 things  用到时候要研究一下逻辑
+    // var thing = form.things.firstWhere((element) => element.id == key);
     if (function == 'delete') {
-      form.things.remove(thing);
+      // form.things.remove(thing);
       state.subForm.refresh();
     }
     if (function == 'edit') {
-      showCreateAuthDialog(context, form, state.target, onSuceess: (model) {
-        thing = model;
-        state.subForm.refresh();
-      }, thing: thing);
+      // showCreateAuthDialog(context, form, state.target, onSuceess: (model) {
+      // thing = model;
+      //   state.subForm.refresh();
+
+      // }, thing: thing);
     }
   }
 

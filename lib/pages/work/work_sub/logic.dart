@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
+import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/initiate_work/state.dart';
@@ -55,7 +57,7 @@ class WorkSubController extends BaseListController<WorkSubState> {
       organization.add(
         WorkBreadcrumbNav(
           name: value.metadata.name ?? "",
-          id: value.metadata.id!,
+          id: value.metadata.id,
           space: value,
           spaceEnum: SpaceEnum.company,
           children: [
@@ -165,7 +167,7 @@ class WorkSubController extends BaseListController<WorkSubState> {
     }
 
     List<WorkBreadcrumbNav> works = [];
-    var applications = await dir.loadAllApplications();
+    var applications = dir.applications;
     for (var element in applications) {
       works.add(WorkBreadcrumbNav(
           children: [],
@@ -211,11 +213,20 @@ class WorkSubController extends BaseListController<WorkSubState> {
   }
 
   loadDones() async {
-    state.list.value = await settingCtrl.work.loadDones(settingCtrl.user.id);
+    PageResult<IWorkTask> pageResult =
+        await settingCtrl.work.loadDones(IdPageModel(
+      id: settingCtrl.user.id,
+    ));
+
+    state.list.value = pageResult.result;
   }
 
   loadApply() async {
-    state.list.value = await settingCtrl.work.loadApply(settingCtrl.user.id);
+    PageResult<IWorkTask> pageResult =
+        await settingCtrl.work.loadApply(IdPageModel(
+      id: settingCtrl.user.id,
+    ));
+    state.list.value = pageResult.result;
   }
 
   @override
@@ -230,11 +241,13 @@ class WorkSubController extends BaseListController<WorkSubState> {
       await loadApply();
     }
     if (type == "common") {
-      await settingCtrl.work.loadMostUsed();
+      //TODO:没有这个loadMostUsed 用到时候要研究一下逻辑
+      // await settingCtrl.work.loadMostUsed();
     }
   }
 
   void onSelected(key, WorkFrequentlyUsed app) {
-    settingCtrl.work.removeMostUsed(app.define);
+    //TODO:没有这个removeMostUsed 用到时候要研究一下逻辑
+    // settingCtrl.work.removeMostUsed(app.define);
   }
 }

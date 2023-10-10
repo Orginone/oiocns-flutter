@@ -10,19 +10,33 @@ class ProductionOrderUtils {
     String ymd = DateTime.now().format(format: "yyyyMMdd");
     String key = '${type}_$ymd';
 
-    ResultType result = await kernel.anystore.get(key, "company");
+    // ResultType result = await kernel.anystore.get(key, "company");
+    // if (result.success) {
+    //   int latestCount = (result.data["count"] ?? _count) + 1;
+
+    //   ResultType result1 = await kernel.anystore.set(
+    //       key,
+    //       {
+    //         "operation": "replaceAll",
+    //         "data": {
+    //           "count": latestCount,
+    //         }
+    //       },
+    //       "company");
+    ResultType result = await kernel.objectGet(key, [], "company");
     if (result.success) {
       int latestCount = (result.data["count"] ?? _count) + 1;
 
-      ResultType result1 = await kernel.anystore.set(
+      ResultType result1 = await kernel.objectSet(
           key,
+          [],
+          "company",
           {
             "operation": "replaceAll",
             "data": {
               "count": latestCount,
             }
-          },
-          "company");
+          });
       if (result1.success) {
         String countStr = '$latestCount ';
         return type +

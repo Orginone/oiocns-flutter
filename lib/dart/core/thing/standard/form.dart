@@ -5,14 +5,14 @@ import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 
 abstract class IForm implements IStandardFileInfo<XForm> {
+  ///构造函数
+  IForm(this.attributes, this.fields);
+
   ///表单特性
   final List<XAttribute> attributes;
 
   ///表单字段
   final List<FieldModel> fields;
-
-  ///构造函数
-  IForm(this.attributes, this.fields);
 
   ///新建表单特性
   Future<XAttribute?> createAttribute(XAttribute data, {XProperty? property});
