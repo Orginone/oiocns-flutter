@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/index.dart';
-import 'package:orginone/dart/core/enum.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/getx/base_get_list_state.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/pages/setting/home/state.dart';

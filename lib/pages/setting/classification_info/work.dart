@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
@@ -114,7 +114,7 @@ class WorkController extends BaseController<WorkState> {
   Future<void> createWork({IWork? work}) async {
     showCreateWorkDialog(context, info.state.data.space!.directory.specieses,
         isEdit: work != null,
-        share: species.directory.target.space.shareTarget,
+        share: species.directory.target.space!.shareTarget,
         name: work?.metadata.name ?? "",
         remark: work?.metadata.remark ?? "",
         allowAdd: work?.metadata.allowAdd ?? true,
@@ -122,12 +122,12 @@ class WorkController extends BaseController<WorkState> {
         allowSelect: work?.metadata.allowSelect ?? true,
         code: work?.metadata.code ?? '', onCreate: (name, code, remark,
             allowAdd, allowEdit, allowSelect, share) async {
-      var model = WorkDefineModel();
-      model.remark = remark;
-      model.name = name;
-      model.code = code;
-      model.shareId = share.id;
-      model.rule = jsonEncode({
+      var models = model.WorkDefineModel();
+      models.remark = remark;
+      models.name = name;
+      models.code = code;
+      models.shareId = share.id;
+      models.rule = jsonEncode({
         "allowAdd": allowAdd,
         "allowEdit": allowEdit,
         "allowSelect": allowSelect
@@ -135,7 +135,7 @@ class WorkController extends BaseController<WorkState> {
       if (work != null) {
         // await work.updateDefine(model);
       } else {
-        await species.createWork(model);
+        await species.createWork(models);
       }
       await loadWork(reload: true);
     });

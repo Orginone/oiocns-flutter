@@ -25,13 +25,14 @@ class UserInfoController extends BaseController<UserInfoState>
     await init();
   }
 
+  ///大概有问题
   Future<void> init() async {
-    var users = await settingCtrl.user.loadMembers();
-    var company = await settingCtrl.user.loadCompanys(reload: true);
+    await settingCtrl.user.deepLoad(reload: true);
+    var users = await settingCtrl.user.loadMembers(reload: true);
     state.unitMember.clear();
     state.joinCompany.clear();
     state.unitMember.addAll(users ?? []);
-    state.joinCompany.addAll(company ?? []);
+    state.joinCompany.addAll(settingCtrl.user.companys ?? []);
   }
 
   void changeView(int index) {

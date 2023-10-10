@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/dart/core/thing/species.dart';
+import 'package:orginone/dart/core/thing/standard/species.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -114,15 +114,15 @@ class SpeciesController extends BaseController<SpeciesState> {
         name: xspecies?.name ?? "",
         info: xspecies?.info ?? "",
         remark: xspecies?.remark ?? "", callBack: (name, info, remark) async {
-      SpeciesItemModel model = SpeciesItemModel();
-      model.remark = remark;
-      model.info = info;
-      model.name = name;
+      model.SpeciesItemModel models = model.SpeciesItemModel();
+      models.remark = remark;
+      models.info = info;
+      models.name = name;
       if (xspecies != null) {
-        model.id = xspecies.id;
-        await species.updateItem(model);
+        models.id = xspecies.id;
+        await species.updateItem(models as XSpeciesItem);
       } else {
-        await species.createItem(model);
+        await species.createItem(models as XSpeciesItem);
       }
       await loadSpecies(reload: true);
     });

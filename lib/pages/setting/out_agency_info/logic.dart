@@ -59,7 +59,7 @@ class OutAgencyInfoController extends BaseController<OutAgencyInfoState>
             hint: "请输入集团的编码", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {
             try {
-              await state.group.company.applyJoin(list);
+              // await state.group.company.applyJoin(list);
               ToastUtils.showMsg(msg: "发送成功");
             } catch (e) {
               ToastUtils.showMsg(msg: "发送失败");
