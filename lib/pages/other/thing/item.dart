@@ -1,16 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/main.dart';
-import 'package:orginone/model/thing_model.dart';
-import 'package:orginone/routers.dart';
+import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/target_text.dart';
 
 class Item extends StatelessWidget {
-  final AnyThingModel item;
+  final model.AnyThingModel item;
   final PopupMenuItemSelected? onSelected;
 
   const Item({
@@ -22,8 +19,7 @@ class Item extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-      },
+      onTap: () {},
       child: Container(
           margin: EdgeInsets.only(top: 10.h, right: 16.w, left: 16.w),
           child: LayoutBuilder(
@@ -34,7 +30,7 @@ class Item extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4.w),
                 ),
                 padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
-                child:  Row(
+                child: Row(
                   children: [
                     Expanded(
                       child: Column(
@@ -50,21 +46,25 @@ class Item extends StatelessWidget {
                           SizedBox(
                             height: 10.h,
                           ),
-                          Text.rich(TextSpan(
-                              children: [
-                                TextSpan(text: "创建人:",
-                                  style: TextStyle(fontSize: 18.sp),),
-                                WidgetSpan(child: TargetText(
-                                  userId: item.creater ?? "",
-                                  style: TextStyle(fontSize: 18.sp),),alignment: PlaceholderAlignment.middle)
-                              ]
-                          ),),
+                          Text.rich(
+                            TextSpan(children: [
+                              TextSpan(
+                                text: "创建人:",
+                                style: TextStyle(fontSize: 18.sp),
+                              ),
+                              WidgetSpan(
+                                  child: TargetText(
+                                    userId: item.creater ?? "",
+                                    style: TextStyle(fontSize: 18.sp),
+                                  ),
+                                  alignment: PlaceholderAlignment.middle)
+                            ]),
+                          ),
                           SizedBox(
                             height: 10.h,
                           ),
                           Text(
-                            "创建时间:${DateTime.tryParse(item.createTime ?? "")
-                                ?.format(format: "yyyy-MM-dd HH:mm")}",
+                            "创建时间:${DateTime.tryParse(item.createTime ?? "")?.format(format: "yyyy-MM-dd HH:mm")}",
                             style: TextStyle(
                                 color: Colors.black54, fontSize: 16.sp),
                           ),
@@ -94,21 +94,22 @@ class Item extends StatelessWidget {
         ),
       ];
 
-      if (settingCtrl.store.isMostUsed(item.id!)) {
-        items.add(
-          const PopupMenuItem(
-            value: "delete",
-            child: Text("移除常用"),
-          ),
-        );
-      } else {
-        items.add(
-          const PopupMenuItem(
-            value: "set",
-            child: Text("设为常用"),
-          ),
-        );
-      }
+//TODO:isMostUsed方法不存在 使用时要梳理逻辑
+      // if (settingCtrl.store.isMostUsed(item.id!)) {
+      //   items.add(
+      //     const PopupMenuItem(
+      //       value: "delete",
+      //       child: Text("移除常用"),
+      //     ),
+      //   );
+      // } else {
+      //   items.add(
+      //     const PopupMenuItem(
+      //       value: "set",
+      //       child: Text("设为常用"),
+      //     ),
+      //   );
+      // }
 
       return CommonWidget.commonPopupMenuButton(
         onSelected: onSelected,

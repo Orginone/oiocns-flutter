@@ -22,7 +22,10 @@ class Item extends BaseBreadcrumbNavItem<GeneralBreadcrumbNav> {
       return super.popupItems();
     }
     PopupMenuItem<PopupMenuKey> popupMenuItem;
-    if (settingCtrl.work.isMostUsed(item.source!)) {
+    //TODO:isMostUsed 字段不存在 用到看逻辑改
+    // bool isMostUsed = settingCtrl.work.isMostUsed(item.source!);
+    bool isMostUsed = settingCtrl.work.todos.isEmpty; //临时解决报错
+    if (isMostUsed) {
       popupMenuItem = const PopupMenuItem(
         value: PopupMenuKey.removeCommon,
         child: Text("移除常用"),

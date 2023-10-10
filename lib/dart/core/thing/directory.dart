@@ -78,7 +78,7 @@ abstract class IDirectory implements IStandardFileInfo<XDirectory> {
   Future<List<ISysFileInfo>> loadFiles({bool reload});
 
   /// 上传文件
-  Future<ISysFileInfo?> createFile(File file, [OnProgress? p]);
+  Future<ISysFileInfo?> createFile(File file, {OnProgress? p});
 
   /// 新建表单
   Future<XForm?> createForm(XForm data);
@@ -290,7 +290,7 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  Future<ISysFileInfo?> createFile(File file, [OnProgress? p]) async {
+  Future<ISysFileInfo?> createFile(File file, {OnProgress? p}) async {
     while (taskList.where((i) => i.finished < i.size).length > 2) {
       sleep(const Duration(milliseconds: 1000));
     }

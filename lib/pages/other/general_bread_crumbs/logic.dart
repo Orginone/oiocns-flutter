@@ -3,7 +3,6 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
 
@@ -48,10 +47,11 @@ class GeneralBreadCrumbsController
   void operation(PopupMenuKey key, GeneralBreadcrumbNav item) {
     switch (key) {
       case PopupMenuKey.setCommon:
-        settingCtrl.work.setMostUsed(item.source);
+        //TODO:isMostUsed  removeMostUsed字段不存在 用到看逻辑改
+        // settingCtrl.work.setMostUsed(item.source);
         break;
       case PopupMenuKey.removeCommon:
-        settingCtrl.work.removeMostUsed(item.source);
+        // settingCtrl.work.removeMostUsed(item.source);
         break;
       default:
     }

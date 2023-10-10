@@ -9,6 +9,7 @@ import 'package:orginone/routers.dart';
 import 'state.dart';
 
 class ThingController extends BaseListController<ThingState> {
+  @override
   final ThingState state = ThingState();
 
   @override
@@ -26,10 +27,11 @@ class ThingController extends BaseListController<ThingState> {
             arguments: {"thing": item, 'form': state.form});
         break;
       case "set":
-        settingCtrl.store.setMostUsed(thing: item, storeEnum: StoreEnum.thing);
+        //TODO:setMostUsed removeMostUsed方法不存在 使用时要看逻辑
+        // settingCtrl.store.setMostUsed(thing: item, storeEnum: StoreEnum.thing);
         break;
       case "delete":
-        settingCtrl.store.removeMostUsed(item.id!);
+        // settingCtrl.store.removeMostUsed(item.id!);
         break;
     }
   }

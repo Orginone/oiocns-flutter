@@ -1,12 +1,11 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/pages/other/choice_thing/network.dart';
-import 'package:orginone/widget/loading_dialog.dart';
 
-import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
 class ChoiceThingController extends BaseListController<ChoiceThingState> {
+  @override
   final ChoiceThingState state = ChoiceThingState();
 
   @override
@@ -22,11 +21,11 @@ class ChoiceThingController extends BaseListController<ChoiceThingState> {
 
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
-    List<String> ids =
-        state.form.things.map((element) => element.id ?? "").toList() ?? [];
+    List<String> ids = [];
+    //TODO:things 字段不存在 用到看逻辑改
+    // state.form.things.map((element) => element.id ?? "").toList() ?? [];
 
-   var data = await ChoiceThingNetWork.getThing(
-        state.form.id, state.belongId,
+    var data = await ChoiceThingNetWork.getThing(state.form.id, state.belongId,
         index: state.page);
 
     state.dataList.addAll(data);
@@ -46,11 +45,12 @@ class ChoiceThingController extends BaseListController<ChoiceThingState> {
     var selected = state.dataList.where((element) => element.isSelected);
     if (selected.isNotEmpty) {
       for (var element in selected) {
-        if (state.form.things
-            .where((element1) => element.id == element1.id)
-            .isEmpty) {
-          state.form.things.add(element);
-        }
+        //TODO：同上
+        // if (state.form.things
+        //     .where((element1) => element.id == element1.id)
+        //     .isEmpty) {
+        //   state.form.things.add(element);
+        // }
       }
     }
     Get.back();

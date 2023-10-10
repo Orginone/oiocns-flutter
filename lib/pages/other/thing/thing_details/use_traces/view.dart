@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/config/color.dart';
-import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/target_text.dart';
 import 'package:orginone/widget/unified.dart';
@@ -12,14 +12,14 @@ import '../../../../../dart/core/getx/base_get_page_view.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
-
+class UseTracesPage
+    extends BaseGetPageView<UseTracesController, UseTracesState> {
+  UseTracesPage({super.key});
 
   @override
   Widget buildView() {
     return _timeLine();
   }
-
 
   Widget _timeLine() {
     return Container(
@@ -41,7 +41,7 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
     );
   }
 
-  Widget _buildTimelineTile(int index, Archives archive) {
+  Widget _buildTimelineTile(int index, model.Archives archive) {
     bool isLast = index == state.archives.length - 1 ? true : false;
     return TimelineTile(
       isFirst: index == 0 ? true : false,
@@ -102,12 +102,11 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
                 ),
               ],
             ),
-            ),
           ),
         ),
+      ),
     );
   }
-
 
   @override
   UseTracesController getController() {
@@ -116,7 +115,6 @@ class UseTracesPage extends BaseGetPageView<UseTracesController,UseTracesState>{
 
   @override
   String tag() {
-    // TODO: implement tag
     return "UseTraces";
   }
 }

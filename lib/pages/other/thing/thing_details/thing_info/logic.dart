@@ -7,6 +7,7 @@ import '../../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
 class ThingInfoController extends BaseController<ThingInfoState> {
+  @override
   final ThingInfoState state = ThingInfoState();
 
   @override
@@ -14,7 +15,7 @@ class ThingInfoController extends BaseController<ThingInfoState> {
     // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
-    state.attr.value = await state.form.loadAttributes();
+    state.attr.value = state.form.attributes;
     // for (var element in state.attr) {
     //   if (element.valueType == "附件型") {
     //   if (false) {

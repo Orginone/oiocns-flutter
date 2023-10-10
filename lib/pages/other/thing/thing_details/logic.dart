@@ -8,6 +8,7 @@ import 'state.dart';
 
 class ThingDetailsController extends BaseController<ThingDetailsState>
     with GetTickerProviderStateMixin {
+  @override
   final ThingDetailsState state = ThingDetailsState();
 
   ThingDetailsController() {
@@ -16,10 +17,10 @@ class ThingDetailsController extends BaseController<ThingDetailsState>
 
   @override
   void onInit() {
-    // TODO: implement onInit
+    // TODO: onRecordRecent 方法不存在 使用时看逻辑
     super.onInit();
-    settingCtrl.store.onRecordRecent(
-        RecentlyUseModel(type: StoreEnum.thing.label, thing: state.thing));
+    // settingCtrl.store.onRecordRecent(
+    //     RecentlyUseModel(type: StoreEnum.thing.label, thing: state.thing));
   }
 
   @override

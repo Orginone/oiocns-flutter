@@ -7,7 +7,6 @@ import 'package:get/get.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/index.dart';
-import 'package:orginone/dart/core/enum.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
@@ -42,7 +41,7 @@ class ShareQrCodeController extends BaseController<ShareQrCodeState> {
       var docDir = settingCtrl.user.directory;
       var item = await docDir.createFile(
         File(file.path),
-        progress: (progress) {},
+        p: (progress) {},
       );
 
       if (item != null) {

@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/model/thing_model.dart';
+import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/target_text.dart';
 
 class Item extends StatelessWidget {
-  final AnyThingModel item;
+  final model.AnyThingModel item;
   final ValueChanged? changed;
   final bool showSelectButton;
   final bool showDelete;
@@ -20,10 +18,9 @@ class Item extends StatelessWidget {
       required this.item,
       this.changed,
       this.showSelectButton = true,
-      this.showDelete = false, this.delete})
+      this.showDelete = false,
+      this.delete})
       : super(key: key);
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -58,16 +55,16 @@ class Item extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4.w),
                 ),
                 padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
-                child:  Column(
+                child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Row(
                       children: [
                         showSelectButton
                             ? CommonWidget.commonMultipleChoiceButtonWidget(
-                          isSelected: item.isSelected,
-                          changed: changed,
-                        )
+                                isSelected: item.isSelected,
+                                changed: changed,
+                              )
                             : Container(),
                         SizedBox(
                           width: 10.w,
@@ -90,8 +87,12 @@ class Item extends StatelessWidget {
                           "创建人:",
                           style: TextStyle(fontSize: 18.sp),
                         ),
-                        TargetText(userId: item.creater??"",style: TextStyle(fontSize: 18.sp)),
-                        SizedBox(width: 10.w,),
+                        TargetText(
+                            userId: item.creater ?? "",
+                            style: TextStyle(fontSize: 18.sp)),
+                        SizedBox(
+                          width: 10.w,
+                        ),
                         statusWidget,
                       ],
                     ),
@@ -103,13 +104,13 @@ class Item extends StatelessWidget {
                       children: [
                         Text(
                           "创建时间:${DateTime.tryParse(item.createTime ?? "")?.format(format: "yyyy-MM-dd HH:mm")}",
-                          style: TextStyle(
-                              color: Colors.black54, fontSize: 16.sp),
+                          style:
+                              TextStyle(color: Colors.black54, fontSize: 16.sp),
                         ),
                         Text(
                           "更新时间:${DateTime.tryParse(item.modifiedTime ?? "")?.format(format: "yyyy-MM-dd HH:mm")}",
-                          style: TextStyle(
-                              color: Colors.black54, fontSize: 16.sp),
+                          style:
+                              TextStyle(color: Colors.black54, fontSize: 16.sp),
                         ),
                       ],
                     ),
@@ -127,7 +128,7 @@ class Item extends StatelessWidget {
                         foregroundColor: Colors.white,
                         label: "删除",
                         onPressed: (BuildContext context) {
-                          if(delete!=null){
+                          if (delete != null) {
                             delete!();
                           }
                         },
