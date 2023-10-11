@@ -33,7 +33,7 @@ class StoreSubController extends BaseListController<StoreSubState> {
         organization.add(
           StoreTreeNav(
             name: value.metadata.name ?? "",
-            id: value.metadata.id!,
+            id: value.metadata.id,
             space: value,
             spaceEnum: SpaceEnum.company,
             children: [],
@@ -111,9 +111,8 @@ class StoreSubController extends BaseListController<StoreSubState> {
         function.addAll(
             await loadDir(company.space!.directory.children, company.space!));
         function.addAll(await loadTargets(
-            (company.space!.targets.where(
-                    (element) => element.isMyChat && element.id != company.id))
-                .toList(),
+            (company.space!.targets.where((element) =>
+                element.session.isMyChat && element.id != company.id)).toList(),
             company.space!));
         function.addAll(await loadGroup(
             (company.space! as Company).groups, company.space!));
@@ -144,13 +143,13 @@ class StoreSubController extends BaseListController<StoreSubState> {
       case SpaceEnum.form:
         Get.toNamed(Routers.thing, arguments: {
           'form': nav.form ?? nav.source,
-          "belongId": nav.space!.belong.id
+          "belongId": nav.space!.belongId
         });
         break;
       case SpaceEnum.species:
         Get.toNamed(Routers.thing, arguments: {
           'form': nav.form ?? nav.source,
-          "belongId": nav.space!.belong.id
+          "belongId": nav.space!.belongId
         });
         break;
       case SpaceEnum.applications:
@@ -212,9 +211,10 @@ class StoreSubController extends BaseListController<StoreSubState> {
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     if (type != "all") {
       if (type == 'common') {
-        await settingCtrl.store.loadMostUsed();
+        //TODO 没有这个方法 用到梳理逻辑
+        // await settingCtrl.store.loadMostUsed();
       } else {
-        await settingCtrl.store.loadRecentList();
+        // await settingCtrl.store.loadRecentList();
       }
     }
   }
@@ -226,6 +226,7 @@ class StoreSubController extends BaseListController<StoreSubState> {
     } else {
       id = store.thing?.id ?? "";
     }
-    settingCtrl.store.removeMostUsed(id);
+    //TODO：同上
+    // settingCtrl.store.removeMostUsed(id);
   }
 }

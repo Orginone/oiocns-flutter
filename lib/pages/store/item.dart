@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/unified.dart';
 
@@ -87,39 +83,40 @@ class StoreItem extends StatelessWidget {
               }
             },
           ),
-          Obx(() {
-            PopupMenuItem popupMenuItem;
-            if (settingCtrl.store.isMostUsed(item.id)) {
-              popupMenuItem = PopupMenuItem(
-                value: PopupMenuKey.removeCommon,
-                child: Text(PopupMenuKey.removeCommon.label),
-              );
-            } else {
-              popupMenuItem = PopupMenuItem(
-                value: PopupMenuKey.setCommon,
-                child: Text(PopupMenuKey.setCommon.label),
-              );
-            }
-            return CommonWidget.commonPopupMenuButton(
-                items: [
-                  popupMenuItem,
-                ],
-                onSelected: (key) {
-                  switch (key) {
-                    case PopupMenuKey.removeCommon:
-                      settingCtrl.store.removeMostUsed(item.id);
-                      break;
-                    case PopupMenuKey.setCommon:
-                      settingCtrl.store.setMostUsed(
-                          thing: item.thing,
-                          file: item.file,
-                          storeEnum: item.type == "thing"
-                              ? StoreEnum.thing
-                              : StoreEnum.file);
-                      break;
-                  }
-                });
-          })
+          // Obx(() {
+          //   //TODO：无此方法 用到需要看逻辑
+          //   PopupMenuItem popupMenuItem;
+          //   if (settingCtrl.store.isMostUsed(item.id)) {
+          //     popupMenuItem = PopupMenuItem(
+          //       value: PopupMenuKey.removeCommon,
+          //       child: Text(PopupMenuKey.removeCommon.label),
+          //     );
+          //   } else {
+          //     popupMenuItem = PopupMenuItem(
+          //       value: PopupMenuKey.setCommon,
+          //       child: Text(PopupMenuKey.setCommon.label),
+          //     );
+          //   }
+          //   return CommonWidget.commonPopupMenuButton(
+          //       items: [
+          //         popupMenuItem,
+          //       ],
+          //       onSelected: (key) {
+          //         switch (key) {
+          //           case PopupMenuKey.removeCommon:
+          //             settingCtrl.store.removeMostUsed(item.id);
+          //             break;
+          //           case PopupMenuKey.setCommon:
+          //             settingCtrl.store.setMostUsed(
+          //                 thing: item.thing,
+          //                 file: item.file,
+          //                 storeEnum: item.type == "thing"
+          //                     ? StoreEnum.thing
+          //                     : StoreEnum.file);
+          //             break;
+          //         }
+          //       });
+          // })
         ],
       ),
     );

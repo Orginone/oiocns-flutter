@@ -4,10 +4,7 @@ import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_contr
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/outTeam/group.dart';
-import 'package:orginone/dart/core/thing/fileinfo.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/pages/store/config.dart';
-import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
@@ -68,9 +65,8 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
         function.addAll(
             await loadDir(company.space!.directory.children, company.space!));
         function.addAll(await loadTargets(
-            (company.space!.targets.where(
-                    (element) => element.isMyChat && element.id != company.id))
-                .toList(),
+            (company.space!.targets.where((element) =>
+                element.session.isMyChat && element.id != company.id)).toList(),
             company.space!));
         function.addAll(await loadGroup(
             (company.space! as Group).children, company.space!));
@@ -113,13 +109,13 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
       case SpaceEnum.form:
         Get.toNamed(Routers.thing, arguments: {
           'form': nav.form ?? nav.source,
-          "belongId": nav.space!.belong.id
+          "belongId": nav.space!.belongId
         });
         break;
       case SpaceEnum.species:
         Get.toNamed(Routers.thing, arguments: {
           'form': nav.form ?? nav.source,
-          "belongId": nav.space!.belong.id
+          "belongId": nav.space!.belongId
         });
         break;
       case SpaceEnum.work:
@@ -146,7 +142,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
       case SpaceEnum.filter:
         Get.toNamed(Routers.thing, arguments: {
           'form': nav.form ?? nav.source,
-          "belongId": nav.space!.belong.id,
+          "belongId": nav.space!.belongId,
           'filter':
               (nav.source is FieldModel) ? nav.source?.code : nav.source?.value,
         });
@@ -183,13 +179,14 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
         );
         break;
       case PopupMenuKey.setCommon:
-        settingCtrl.store.setMostUsed(
-            file: FileItemModel.fromJson(
-                (item.source as ISysFileInfo).shareInfo().toJson()),
-            storeEnum: StoreEnum.file);
+        //TODO:无此方法 用到是要看逻辑
+        // settingCtrl.store.setMostUsed(
+        //     file: FileItemModel.fromJson(
+        //         (item.source as ISysFileInfo).shareInfo().toJson()),
+        //     storeEnum: StoreEnum.file);
         break;
       case PopupMenuKey.removeCommon:
-        settingCtrl.store.removeMostUsed(item.id);
+        // settingCtrl.store.removeMostUsed(item.id);
         break;
       default:
     }

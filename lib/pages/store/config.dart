@@ -132,8 +132,9 @@ Future<List<StoreTreeNav>> loadForm(List<IForm> forms, ITarget target) async {
       name: form.metadata.name!,
       space: target,
       onNext: (nav) async {
-        await form.loadAttributes();
-        await form.loadItems();
+        form.attributes;
+        //TODO:无此方法  用到需要看逻辑
+        // await form.loadItems();
         var filter =
             form.fields.where((element) => element.valueType == "选择型").toList();
         nav.children = loadFilterItem(filter, target, form);
