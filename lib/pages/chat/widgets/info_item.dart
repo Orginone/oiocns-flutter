@@ -10,11 +10,11 @@ import 'package:flutter_link_previewer/flutter_link_previewer.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/index.dart';
-import 'package:orginone/dart/core/chat/message/message.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/message.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
@@ -50,7 +50,7 @@ enum DetailFunc {
 double defaultWidth = 10.w;
 
 class DetailItemWidget extends GetView<IndexController> {
-  final IMsgChat chat;
+  final ISession chat;
   final IMessage msg;
   const DetailItemWidget({
     Key? key,
@@ -180,7 +180,7 @@ class DetailItemWidget extends GetView<IndexController> {
           isSelf ? CrossAxisAlignment.end : CrossAxisAlignment.start,
       children: [
         body,
-        msg.body?.cite == null
+        msg.cite == null
             ? const SizedBox()
             : _replyBody(Get.context!, textDirection),
       ],
@@ -227,7 +227,8 @@ class DetailItemWidget extends GetView<IndexController> {
                       ),
                     ),
                     onTap: () {
-                      msg.chatController.hideMenu();
+                      //TODO:没有此方法
+                      // msg.chatController.hideMenu();
                       switch (item) {
                         case DetailFunc.recall:
                           chat.recallMessage(msg.id);
@@ -236,17 +237,20 @@ class DetailItemWidget extends GetView<IndexController> {
                           chat.deleteMessage(msg.id);
                           break;
                         case DetailFunc.forward:
-                          chatController.forward(msg.msgType, msg.body!);
+                          //TODO:没有此方法
+                          // chatController.forward(msg.msgType, msg.body!);
                           break;
                         case DetailFunc.reply:
                           ChatBoxController controller =
                               Get.find<ChatBoxController>();
-                          controller.reply.value = msg.metadata;
+                          //TODO:没有此方法
+                          // controller.reply.value = msg.metadata;
                           break;
                         case DetailFunc.copy:
-                          Clipboard.setData(ClipboardData(
-                              text:
-                                  StringUtil.msgConversion(msg.metadata, '')));
+                          ////TODO:没有此方法
+                          // Clipboard.setData(ClipboardData(
+                          //     text:
+                          //         StringUtil.msgConversion(msg.metadata, '')));
                           break;
                       }
                     },
@@ -260,7 +264,8 @@ class DetailItemWidget extends GetView<IndexController> {
 
     content.add(
       CustomPopupMenu(
-        controller: msg.chatController,
+        //TODO:无此方法
+        // controller: msg.chatController,
         position: PreferredPosition.bottom,
         menuBuilder: _buildLongPressMenu,
         barrierColor: Colors.transparent,
@@ -278,7 +283,8 @@ class DetailItemWidget extends GetView<IndexController> {
     try {
       IMessageLabel? tag;
       if (chat.share.typeName == TargetType.person.label) {
-        tag = msg.labels.firstWhere((element) => element.userId == chat.chatId);
+        tag = msg.labels
+            .firstWhere((element) => element.userId == chat.chatdata.fullId);
         isRead = tag != null;
       } else {
         for (var member in chat.members) {
@@ -350,27 +356,27 @@ class DetailItemWidget extends GetView<IndexController> {
     if (msg.msgType == MessageType.text.label) {
       body = TextDetail(
         isSelf: isSelf,
-        message: msg.metadata,
+        message: msg.metadata as MsgSaveModel,
       );
     } else if (msg.msgType == MessageType.image.label) {
       body = ImageDetail(
         isSelf: isSelf,
-        message: msg.metadata,
+        message: msg.metadata as MsgSaveModel,
       );
     } else if (msg.msgType == MessageType.voice.label) {
       body = VoiceDetail(
         isSelf: isSelf,
-        message: msg.metadata,
+        message: msg.metadata as MsgSaveModel,
       );
     } else if (msg.msgType == MessageType.file.label) {
       body = FileDetail(
         isSelf: isSelf,
-        message: msg.metadata,
+        message: msg.metadata as MsgSaveModel,
       );
     } else if (msg.msgType == MessageType.uploading.label) {
       body = UploadingDetail(
         isSelf: isSelf,
-        message: msg.metadata,
+        message: msg.metadata as MsgSaveModel,
       );
     } else {
       body = Container();
@@ -381,31 +387,31 @@ class DetailItemWidget extends GetView<IndexController> {
 
   Widget _replyBody(BuildContext context, TextDirection textDirection) {
     Widget? body;
-    if (msg.body?.cite?.msgType == MessageType.text.label) {
+    if (msg.cite?.msgType == MessageType.text.label) {
       body = TextDetail(
         isSelf: isSelf,
-        message: msg.body!.cite!,
+        message: msg.cite as MsgSaveModel,
         bgColor: Colors.black.withOpacity(0.1),
         isReply: true,
         chat: chat,
       );
-    } else if (msg.body?.cite?.msgType == MessageType.image.label) {
+    } else if (msg.cite?.msgType == MessageType.image.label) {
       body = ImageDetail(
-        message: msg.body!.cite!,
+        message: msg.cite! as MsgSaveModel,
         bgColor: Colors.black.withOpacity(0.1),
         isSelf: isSelf,
         chat: chat,
       );
-    } else if (msg.body?.cite?.msgType == MessageType.voice.label) {
+    } else if (msg.cite?.msgType == MessageType.voice.label) {
       body = VoiceDetail(
-        message: msg.body!.cite!,
+        message: msg.cite! as MsgSaveModel,
         bgColor: Colors.black.withOpacity(0.1),
         isSelf: isSelf,
         chat: chat,
       );
-    } else if (msg.body?.cite?.msgType == MessageType.file.label) {
+    } else if (msg.cite?.msgType == MessageType.file.label) {
       body = FileDetail(
-        message: msg.body!.cite!,
+        message: msg.cite! as MsgSaveModel,
         bgColor: Colors.black.withOpacity(0.1),
         isSelf: isSelf,
         chat: chat,

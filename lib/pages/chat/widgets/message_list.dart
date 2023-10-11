@@ -1,14 +1,8 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/chat/message/message.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
-import 'package:orginone/dart/core/getx/base_controller.dart';
-import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/dart/core/chat/message.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/util/date_util.dart';
 import 'package:orginone/widget/unified.dart';
@@ -16,15 +10,12 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'info_item.dart';
 
-
 class MessageList extends StatelessWidget {
-
   const MessageList({Key? key}) : super(key: key);
-
 
   MessageChatController get controller => Get.find();
 
-  IMsgChat get chat => controller.state.chat;
+  ISession get chat => controller.state.chat;
   @override
   Widget build(BuildContext context) {
     return NotificationListener<ScrollNotification>(
@@ -40,7 +31,7 @@ class MessageList extends StatelessWidget {
         return true;
       },
       child: RefreshIndicator(
-        onRefresh: ()=>controller.state.chat.moreMessage(),
+        onRefresh: () => controller.state.chat.moreMessage(),
         child: Obx(() {
           return ScrollablePositionedList.builder(
             padding: EdgeInsets.only(left: 10.w, right: 10.w),
@@ -61,11 +52,14 @@ class MessageList extends StatelessWidget {
     );
   }
 
-
   Widget _item(int index) {
     IMessage msg = chat.messages[index];
     Widget currentWidget = DetailItemWidget(
-      msg: msg, chat: chat, key: msg.metadata.key,);
+      msg: msg,
+      chat: chat,
+      //TODO:没有此方法
+      // key: msg.metadata.key,
+    );
     var time = _time(msg.createTime);
     var item = Column(children: [currentWidget]);
     if (index == 0) {

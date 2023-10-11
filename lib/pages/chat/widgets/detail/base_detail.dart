@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/session.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/widget/target_text.dart';
 import 'package:orginone/widget/unified.dart';
@@ -10,7 +11,7 @@ double defaultWidth = 10.w;
 
 abstract class BaseDetail extends StatelessWidget {
   final MsgSaveModel message;
-  final IMsgChat? chat;
+  final ISession? chat;
   final BoxConstraints? constraints;
   final Clip? clipBehavior;
   final EdgeInsets? padding;

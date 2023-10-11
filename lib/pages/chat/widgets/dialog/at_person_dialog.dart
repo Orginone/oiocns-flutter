@@ -7,7 +7,7 @@ import 'package:get/get.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/extension/ex_list.dart';
 import 'package:orginone/extension/ex_widget.dart';
 import 'package:orginone/widget/buttons.dart';
@@ -18,7 +18,7 @@ import 'package:orginone/widget/widgets/team_avatar.dart';
 
 class AtPersonDialog {
   static Future<List<XTarget>?> showDialog(
-      BuildContext context, IMsgChat chat) {
+      BuildContext context, ISession chat) {
     // FocusScope.of(context).requestFocus(FocusNode());
     // SystemChannels.textInput.invokeMethod('TextInput.hide');
     // FocusManager.instance.primaryFocus?.unfocus();

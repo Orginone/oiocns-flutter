@@ -16,10 +16,10 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/base/schema.dart' hide Rule;
-import 'package:orginone/dart/core/chat/message/message.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/message.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/images.dart';
 import 'package:orginone/main.dart';
@@ -43,7 +43,7 @@ double defaultBottomHeight = 300.h;
 
 class ChatBox extends StatelessWidget with WidgetsBindingObserver {
   final RxDouble bottomHeight = defaultBottomHeight.obs;
-  final IMsgChat chat;
+  final ISession chat;
   final ChatBoxController controller;
 
   ChatBox({
@@ -282,12 +282,12 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
 
           if (path?.isNotEmpty ?? false) {
             chat.sendMessage(
-              MessageType.voice,
-              jsonEncode({
-                "milliseconds": time,
-                "bytes": File(path!).readAsBytesSync(),
-              }),
-            );
+                MessageType.voice,
+                jsonEncode({
+                  "milliseconds": time,
+                  "bytes": File(path!).readAsBytesSync(),
+                }),
+                []);
           }
         } else if (recordStatus == RecordStatus.pausing) {
           // 停止记录
@@ -679,7 +679,7 @@ class ChatBoxController with WidgetsBindingObserver {
   }
 
   /// 事件触发器
-  eventFire(BuildContext context, InputEvent inputEvent, IMsgChat chat) async {
+  eventFire(BuildContext context, InputEvent inputEvent, ISession chat) async {
     switch (inputEvent) {
       case InputEvent.clickInput:
       case InputEvent.inputText:
@@ -719,8 +719,11 @@ class ChatBoxController with WidgetsBindingObserver {
         break;
       case InputEvent.clickSendBtn:
         String message = inputController.text;
-        await chat.sendMessage(MessageType.text, message,
-            rules.map((e) => e.target?.id ?? "").toList(), reply.value);
+        await chat.sendMessage(
+          MessageType.text,
+          message,
+          rules.map((e) => e.target?.id ?? "").toList(),
+        );
         inputController.clear();
         atKey.currentState?.clearRules();
         reply.value = null;
@@ -743,30 +746,31 @@ class ChatBoxController with WidgetsBindingObserver {
     }
   }
 
-  void imagePicked(XFile pickedImage, IMsgChat chat) async {
+  void imagePicked(XFile pickedImage, ISession chat) async {
     var docDir = settingCtrl.user.directory;
     String ext = pickedImage.name.split('.').last;
 
     var save = MsgSaveModel.fromFileUpload(
         settingCtrl.user.id, pickedImage.name, pickedImage.path, ext);
-    chat.messages.insert(0, Message(chat, save));
+    chat.messages.insert(0, Message(chat.chatdata.lastMessage!, chat));
 
     var item = await docDir.createFile(
       File(pickedImage.path),
-      progress: (progress) {
+      p: (progress) {
         var msg = chat.messages
             .firstWhere((element) => element.metadata.id == pickedImage.name);
-        msg.metadata.body!.progress = progress;
-        chat.messages.refresh();
+        //TODO:无此方法
+        // msg.metadata.body!.progress = progress;
+        // chat.messages.refresh();
       },
     );
     if (item != null) {
       chat.sendMessage(
-          MessageType.image, jsonEncode(item.shareInfo().toJson()));
+          MessageType.image, jsonEncode(item.shareInfo().toJson()), []);
     }
   }
 
-  Future<void> filePicked(PlatformFile file, IMsgChat chat) async {
+  Future<void> filePicked(PlatformFile file, ISession chat) async {
     var docDir = settingCtrl.user.directory;
 
     String ext = file.name.split('.').last;
@@ -774,27 +778,29 @@ class ChatBoxController with WidgetsBindingObserver {
     var file1 = File(file.path!);
     var save = MsgSaveModel.fromFileUpload(
         settingCtrl.user.id, file.name, file.path!, ext, file1.lengthSync());
-    chat.messages.insert(0, Message(chat, save));
+    chat.messages.insert(0, Message(chat.chatdata.lastMessage!, chat));
 
     var item = await docDir.createFile(
       file1,
-      progress: (progress) {
+      p: (progress) {
         var msg = chat.messages
             .firstWhere((element) => element.metadata.id == file.name);
-        msg.metadata.body!.progress = progress;
-        chat.messages.refresh();
+        //TODO:无此方法
+        // msg.metadata.body!.progress = progress;
+        // chat.messages.refresh();
       },
     );
     if (item != null) {
       var msg = chat.messages
-          .firstWhere((element) => element.body?.name == save.body?.name);
-      msg.body!.name = item.shareInfo().name;
-      chat.sendMessage(MessageType.file, jsonEncode(item.shareInfo().toJson()));
+          .firstWhere((element) => element.from.name == save.body?.name);
+      msg.from.name = item.shareInfo().name!;
+      chat.sendMessage(MessageType.file, jsonEncode(item.shareInfo().toJson()),
+          msg.mentions);
     }
   }
 
   execute(
-      MoreFunction moreFunction, BuildContext context, IMsgChat chat) async {
+      MoreFunction moreFunction, BuildContext context, ISession chat) async {
     switch (moreFunction) {
       case MoreFunction.photo:
         var gallery = ImageSource.gallery;

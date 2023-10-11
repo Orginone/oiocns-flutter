@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
@@ -30,18 +30,18 @@ class MessageSubController extends BaseListController<MessageSubState> {
       companyItems.add(
         createNav(
             company.id,
-            company,
+            settingCtrl.chats.last,
             [
               createNav(
                 "${company.id}0",
-                company,
+                settingCtrl.chats.last,
                 company.memberChats
-                    .map((item) => createNav(item.chatId, item, []))
+                    .map((item) => createNav(item.sessionId, item, []))
                     .toList(),
               ),
               ...company.cohortChats
                   .where((i) => i.isMyChat)
-                  .map((item) => createNav(item.chatId, item, [],
+                  .map((item) => createNav(item.sessionId, item, [],
                       spaceEnum: SpaceEnum.departments))
                   .toList(),
             ],
@@ -52,29 +52,29 @@ class MessageSubController extends BaseListController<MessageSubState> {
     state.nav = ChatBreadcrumbNav(children: [
       createNav(
           settingCtrl.user.id,
-          settingCtrl.user,
+          settingCtrl.chats.last,
           [
             createNav(
               "${settingCtrl.user.id}0",
-              settingCtrl.user,
+              settingCtrl.chats.last,
               settingCtrl.user.memberChats
-                  .map((chat) => createNav(chat.chatId, chat, [],
+                  .map((chat) => createNav(chat.sessionId, chat, [],
                       spaceEnum: SpaceEnum.person))
                   .toList(),
             ),
             ...settingCtrl.user.cohortChats
                 .where((i) => i.isMyChat)
-                .map((item) => createNav(item.chatId, item, [],
+                .map((item) => createNav(item.sessionId, item, [],
                     spaceEnum: SpaceEnum.departments))
                 .toList(),
           ],
           type: ChatType.list),
       ...companyItems,
-    ], name: "沟通");
+    ], name: "沟通", target: settingCtrl.chats.last);
   }
 
   ChatBreadcrumbNav createNav(
-      String id, IMsgChat target, List<ChatBreadcrumbNav> children,
+      String id, ISession target, List<ChatBreadcrumbNav> children,
       {ChatType type = ChatType.chat, SpaceEnum? spaceEnum}) {
     dynamic image = target.share.avatar?.thumbnailUint8List ??
         target.share.avatar?.defaultAvatar;
@@ -83,7 +83,7 @@ class MessageSubController extends BaseListController<MessageSubState> {
         type: type,
         spaceEnum: spaceEnum,
         children: children,
-        name: target.chatdata.value.chatName ?? "",
+        name: target.chatdata.chatName ?? "",
         target: target,
         image: image);
   }
@@ -99,12 +99,12 @@ class MessageSubController extends BaseListController<MessageSubState> {
 
   void jumpDetails(ChatBreadcrumbNav chat) {
     if (chat.type == ChatType.chat) {
-      chat.target?.onMessage();
+      chat.target.onMessage((messages) {});
       Get.toNamed(Routers.messageChat, arguments: chat.target);
     } else {
       Get.toNamed(Routers.messageChatsList, arguments: {
         "chats": (chat.target as ITeam)
-            .chats
+            .memberChats
             .where((element) => element.isMyChat)
             .toList()
       });
@@ -124,14 +124,16 @@ class MessageSubController extends BaseListController<MessageSubState> {
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     if (type != 'all') {
       if (type == "common") {
-        await settingCtrl.chat.loadMostUsed();
+        //TODO:无此方法
+        // await settingCtrl.chat.loadMostUsed();
       } else {
-        await settingCtrl.provider.reloadChats();
+        settingCtrl.chats;
       }
     }
   }
 
-  void onSelected(key, IMsgChat chat) {
-    settingCtrl.chat.removeMostUsed(chat);
+  void onSelected(key, ISession chat) {
+    //TODO:无此方法
+    // settingCtrl.chat.removeMostUsed(chat);
   }
 }

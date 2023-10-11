@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/message/message.dart';
+import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/util/date_util.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/unified.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/images.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
@@ -15,18 +15,17 @@ import 'shadow_widget.dart';
 class FileDetail extends BaseDetail {
   final bool showShadow;
 
-  FileDetail({
-    this.showShadow = false,
-    required super.isSelf,
-    required super.message,
-    super.constraints,
-    super.clipBehavior = Clip.hardEdge,
-    super.padding = EdgeInsets.zero,
-    super.bgColor,
-    super.isReply = false,
-    super.chat
-  });
-
+  const FileDetail(
+      {super.key,
+      this.showShadow = false,
+      required super.isSelf,
+      required super.message,
+      super.constraints,
+      super.clipBehavior = Clip.hardEdge,
+      super.padding = EdgeInsets.zero,
+      super.bgColor,
+      super.isReply = false,
+      super.chat});
 
   @override
   Widget build(BuildContext context) {
@@ -42,8 +41,6 @@ class FileDetail extends BaseDetail {
 
   @override
   Widget body(BuildContext context) {
-
-
     /// 限制大小
     BoxConstraints boxConstraints = BoxConstraints(
         minWidth: 200.w, minHeight: 70.h, maxWidth: 250.w, maxHeight: 100.h);
@@ -93,6 +90,7 @@ class FileDetail extends BaseDetail {
 
   @override
   void onTap(BuildContext context) {
-    Routers.jumpFile(file: FileItemShare.fromJson(message.body!.toJson()));
+    Routers.jumpFile(
+        file: model.FileItemShare.fromJson(message.body!.toJson()));
   }
 }

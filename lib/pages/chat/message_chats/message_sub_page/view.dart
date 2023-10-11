@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
@@ -53,8 +53,9 @@ class MessageSubPage
       return GridView.builder(
         controller: state.scrollController,
         itemBuilder: (BuildContext context, int index) {
-          var item = settingCtrl.chat.messageFrequentlyUsed[index];
-          var adapter = ListAdapter.chat(item.chat);
+          // var item = settingCtrl.chat.messageFrequentlyUsed[index];
+          var item = settingCtrl.chats[index];
+          var adapter = ListAdapter.chat(item);
           adapter.popupMenuItems = [
             PopupMenuItem(
               value: PopupMenuKey.removeCommon,
@@ -62,11 +63,12 @@ class MessageSubPage
             )
           ];
           adapter.onSelected = (key) {
-            controller.onSelected(key, item.chat);
+            controller.onSelected(key, item);
           };
           return GridItem(adapter: adapter);
         },
-        itemCount: settingCtrl.chat.messageFrequentlyUsed.length,
+        // itemCount: settingCtrl.chat.messageFrequentlyUsed.length,
+        itemCount: settingCtrl.chats.length,
         gridDelegate:
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
       );
@@ -75,10 +77,10 @@ class MessageSubPage
 
   Widget messageWidget() {
     return Obx(() {
-      List<IMsgChat> chats = state.chats;
+      List<ISession> chats = state.chats;
       if (type == "unread") {
         chats = chats
-            .where((element) => element.chatdata.value.noReadCount != 0)
+            .where((element) => element.chatdata.noReadCount != 0)
             .toList();
       }
       if (type == "single") {

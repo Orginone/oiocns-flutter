@@ -33,7 +33,7 @@ class ImageDetail extends BaseDetail {
     }
 
     Map<String, String> headers = {
-      "Authorization": kernel.anystore.accessToken,
+      "Authorization": kernel.accessToken,
     };
 
     Widget child = ImageWidget(link, httpHeaders: headers);

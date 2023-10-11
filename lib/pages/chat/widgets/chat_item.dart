@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/controller/index.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/date_util.dart';
@@ -16,7 +16,7 @@ import 'package:orginone/widget/widgets/text_tag.dart';
 
 class MessageItemWidget extends GetView<IndexController> {
   // 用户信息
-  final IMsgChat chat;
+  final ISession chat;
 
   final bool enabledSlidable;
 
@@ -28,10 +28,10 @@ class MessageItemWidget extends GetView<IndexController> {
 
   @override
   Widget build(BuildContext context) {
-    bool isTop = chat.labels.contains("置顶");
+    bool isTop = chat.chatdata.labels.contains("置顶");
     return GestureDetector(
       onTap: () {
-        chat.onMessage();
+        chat.onMessage((messages) => null);
         Get.toNamed(
           Routers.messageChat,
           arguments: chat,
@@ -49,12 +49,12 @@ class MessageItemWidget extends GetView<IndexController> {
               label: isTop ? "取消置顶" : "置顶",
               onPressed: (BuildContext context) async {
                 if (isTop) {
-                  chat.labels.remove('置顶');
+                  chat.chatdata.labels.remove('置顶');
                 } else {
-                  chat.labels.add('置顶');
+                  chat.chatdata.labels.add('置顶');
                 }
-                await chat.cache();
-                controller.provider.refreshChat();
+                await chat.cacheChatData();
+                controller.provider.refresh();
               },
             ),
             SlidableAction(
@@ -63,8 +63,8 @@ class MessageItemWidget extends GetView<IndexController> {
               icon: Icons.delete,
               label: "删除",
               onPressed: (BuildContext context) {
-                controller.chat.allChats.remove(chat);
-                controller.provider.refreshChat();
+                controller.chats.remove(chat);
+                controller.provider.refresh();
               },
             ),
           ],
@@ -97,7 +97,7 @@ class MessageItemWidget extends GetView<IndexController> {
 
   Widget get _avatarContainer {
     return Obx(() {
-      var noRead = chat.chatdata.value.noReadCount;
+      var noRead = chat.chatdata.noReadCount;
       Widget child = TeamAvatar(
         info: TeamTypeInfo(share: chat.share),
         size: 65.w,
@@ -127,7 +127,7 @@ class MessageItemWidget extends GetView<IndexController> {
   Widget get _content {
     var target = chat.chatdata;
     var labels = <Widget>[];
-    for (var item in chat.labels) {
+    for (var item in chat.chatdata.labels) {
       if (item.isNotEmpty) {
         bool isTop = item == "置顶";
         labels.add(TextTag(
@@ -149,7 +149,7 @@ class MessageItemWidget extends GetView<IndexController> {
           children: [
             Expanded(
               child: Text(
-                target.value.chatName ?? "",
+                target.chatName ?? "",
                 style: TextStyle(
                   color: XColors.chatTitleColor,
                   fontWeight: FontWeight.w500,
@@ -161,7 +161,7 @@ class MessageItemWidget extends GetView<IndexController> {
             ),
             Text(
               CustomDateUtil.getSessionTime(
-                  chat.chatdata.value.lastMessage?.createTime),
+                  chat.chatdata.lastMessage?.createTime),
               style: TextStyle(color: Colors.grey, fontSize: 18.sp),
               textAlign: TextAlign.right,
             ),
@@ -182,7 +182,7 @@ class MessageItemWidget extends GetView<IndexController> {
   }
 
   Widget _showTxt() {
-    var lastMessage = chat.chatdata.value.lastMessage;
+    var lastMessage = chat.chatdata.lastMessage;
     if (lastMessage == null) {
       return SizedBox(
         height: 30.h,
@@ -202,7 +202,8 @@ class MessageItemWidget extends GetView<IndexController> {
       }
 
       showTxt = showTxt +
-          StringUtil.msgConversion(lastMessage, controller.user.userId);
+          StringUtil.msgConversion(
+              lastMessage as MsgSaveModel, controller.user.userId);
 
       return Text(
         showTxt,

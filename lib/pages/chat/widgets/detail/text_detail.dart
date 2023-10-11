@@ -146,7 +146,7 @@ class TextDetail extends BaseDetail {
 
   Widget imageWidget(dynamic url) {
     Map<String, String> headers = {
-      "Authorization": kernel.anystore.accessToken,
+      "Authorization": kernel.accessToken,
     };
 
     return GestureDetector(

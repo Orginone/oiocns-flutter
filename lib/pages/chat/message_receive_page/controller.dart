@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/message/message.dart';
+import 'package:orginone/dart/core/chat/message.dart';
 
 class MessageReceiveController extends GetxController
     with GetSingleTickerProviderStateMixin {

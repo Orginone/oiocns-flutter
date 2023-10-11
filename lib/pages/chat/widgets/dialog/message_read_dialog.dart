@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/message/message.dart';
+import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/util/date_util.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
@@ -96,7 +96,11 @@ class _MessageReadState extends State<MessageRead>
             labelColor: XColors.black,
             labelStyle: TextStyle(fontSize: 23.sp),
           ),
-          Container(height: 10.h,width: double.infinity,color: Colors.grey.shade100,),
+          Container(
+            height: 10.h,
+            width: double.infinity,
+            color: Colors.grey.shade100,
+          ),
           Expanded(
             child: TabBarView(
               controller: controller,
