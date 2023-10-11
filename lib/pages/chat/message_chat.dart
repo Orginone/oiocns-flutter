@@ -3,18 +3,16 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/chat/message/message.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/message.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/event/message.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
-import 'package:orginone/pages/chat/widgets/dialog/message_read_dialog.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
@@ -25,6 +23,8 @@ import 'widgets/message_list.dart';
 
 class MessageChatPage
     extends BaseGetView<MessageChatController, MessageChatState> {
+  const MessageChatPage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(
@@ -47,11 +47,11 @@ class MessageChatPage
   }
 
   Widget _title() {
-    String name = state.chat.chatdata.value.chatName ?? "";
-    if (state.chat.memberChats.length > 1) {
-      name += "(${state.chat.memberChats.length})";
+    String name = state.chat.chatdata.chatName ?? "";
+    if (state.chat.members.length > 1) {
+      name += "(${state.chat.members.length})";
     }
-    var spaceName = state.chat.chatdata.value.labels.join(" | ");
+    var spaceName = state.chat.chatdata.labels.join(" | ");
     return Column(
       children: [
         Text(name, style: XFonts.size24Black3),
@@ -78,6 +78,7 @@ class MessageChatPage
 }
 
 class MessageChatController extends BaseController<MessageChatState> {
+  @override
   final MessageChatState state = MessageChatState();
 
   @override
@@ -116,20 +117,22 @@ class MessageChatController extends BaseController<MessageChatState> {
           .localToGlobal(renderObject.size.bottomRight(Offset.zero));
       final Rect bounds = Rect.fromPoints(topLeft, bottomRight);
       for (var message in state.chat.messages) {
-        if (isMessageVisible(bounds, message.metadata.key)) {
-          bool isRead = false;
-          try {
-            var tag = message.labels
-                .firstWhere((element) => element.userId == settingCtrl.user.id);
-            isRead = tag != null;
-          } catch (e) {
-            isRead = false;
-          }
+        ////TODO:无此方法
+        // if (isMessageVisible(bounds, message.metadata.key)) {
+        //   bool isRead = false;
+        //   try {
+        //     var tag = message.labels
+        //         .firstWhere((element) => element.userId == settingCtrl.user.id);
+        //     isRead = tag != null;
+        //   } catch (e) {
+        //     isRead = false;
+        //   }
 
-          if (!isRead) {
-            state.chat.tagHasReadMsg([message.metadata]);
-          }
-        }
+        //   if (!isRead) {
+        //     //TODO:无此方法
+        //     // state.chat.tagHasReadMsg([message.metadata]);
+        //   }
+        // }
       }
     }
   }
@@ -157,7 +160,8 @@ class MessageChatController extends BaseController<MessageChatState> {
   @override
   void onClose() {
     // TODO: implement onClose
-    settingCtrl.chat.currentChat = null;
+    //TODO:无此方法
+    // settingCtrl.chat.currentChat = null;
     super.onClose();
   }
 
@@ -173,7 +177,7 @@ class MessageChatController extends BaseController<MessageChatState> {
 }
 
 class MessageChatState extends BaseGetState {
-  late IMsgChat chat;
+  late ISession chat;
 
   ChatBoxController get chatBoxCtrl => Get.find();
 

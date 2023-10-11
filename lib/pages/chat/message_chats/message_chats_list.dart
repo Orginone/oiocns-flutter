@@ -1,9 +1,6 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/pages/chat/widgets/chat_item.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
@@ -34,7 +31,7 @@ class MessageChatsList extends GetView<MessageChatsListController> {
 }
 
 class MessageChatsListController extends GetxController {
-  late List<IMsgChat> chats;
+  late List<ISession> chats;
 
   @override
   void onInit() {
@@ -42,7 +39,7 @@ class MessageChatsListController extends GetxController {
     super.onInit();
     chats = Get.arguments['chats'];
     chats.sort((f, s) {
-      return (s.chatdata.value.lastMsgTime) - (f.chatdata.value.lastMsgTime);
+      return (s.chatdata.lastMsgTime) - (f.chatdata.lastMsgTime);
     });
   }
 }

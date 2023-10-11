@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/base/model.dart' hide Column;
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/toast_utils.dart';
@@ -40,10 +40,10 @@ class _MessageForwardState extends State<MessageForward> {
       companyItems.add(
         Hierarchy(
           type: ChatType.list,
-          msg: company,
+          msg: settingCtrl.chats.last,
           children: [
             Hierarchy(
-              msg: company,
+              msg: settingCtrl.chats.last,
               children: company.memberChats
                   .map((item) => Hierarchy(msg: item, children: []))
                   .toList(),
@@ -58,10 +58,10 @@ class _MessageForwardState extends State<MessageForward> {
     }
     list = [
       Hierarchy(
-          msg: settingCtrl.user,
+          msg: settingCtrl.chats.last,
           children: [
             Hierarchy(
-              msg: settingCtrl.user,
+              msg: settingCtrl.chats.last,
               children: settingCtrl.user.memberChats
                   .map((chat) => Hierarchy(msg: chat, children: []))
                   .toList(),
@@ -107,8 +107,7 @@ class _MessageForwardState extends State<MessageForward> {
                       context: context,
                       builder: (context) {
                         return CupertinoAlertDialog(
-                          title:
-                              Text("发送给${item.msg.chatdata.value.chatName}?"),
+                          title: Text("发送给${item.msg.chatdata.chatName}?"),
                           actions: <Widget>[
                             CupertinoDialogAction(
                               child: const Text('取消'),
@@ -125,7 +124,8 @@ class _MessageForwardState extends State<MessageForward> {
                                     msgType!,
                                     msgType == MessageType.text
                                         ? widget.msgBody.text!
-                                        : jsonEncode(widget.msgBody.toJson()));
+                                        : jsonEncode(widget.msgBody.toJson()),
+                                    []);
                                 if (success) {
                                   ToastUtils.showMsg(msg: "转发成功");
                                 }
@@ -187,7 +187,7 @@ class _MessageForwardState extends State<MessageForward> {
 }
 
 class Hierarchy {
-  late IMsgChat msg;
+  late ISession msg;
   late ChatType type;
   bool isOpen = false;
   bool isSelected = false;

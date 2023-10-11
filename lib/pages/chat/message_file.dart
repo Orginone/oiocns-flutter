@@ -2,7 +2,7 @@ import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
@@ -12,9 +12,10 @@ import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
 
-
 class MessageFilePage
     extends BaseGetView<MessageFileController, MessageFileState> {
+  const MessageFilePage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(
@@ -44,7 +45,8 @@ class MessageFilePage
                 return CircularProgressIndicator(
                   value: state.downloadProgress.value,
                   backgroundColor: XColors.statisticsBoxColor,
-                  valueColor: const AlwaysStoppedAnimation<Color>(XColors.blueTextColor),
+                  valueColor: const AlwaysStoppedAnimation<Color>(
+                      XColors.blueTextColor),
                 );
               }
               return CommonWidget.commonSubmitWidget(
@@ -66,8 +68,6 @@ class MessageFilePage
       ),
     );
   }
-
-
 }
 
 class MessageFileBinding extends BaseBindings<MessageFileController> {
@@ -78,6 +78,7 @@ class MessageFileBinding extends BaseBindings<MessageFileController> {
 }
 
 class MessageFileController extends BaseController<MessageFileState> {
+  @override
   final MessageFileState state = MessageFileState();
   @override
   void onInit() {

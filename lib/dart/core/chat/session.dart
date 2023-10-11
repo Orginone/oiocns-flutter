@@ -73,9 +73,10 @@ abstract class ISession extends IEntity<XEntity> {
   Future<bool> sendMessage(
     MessageType type,
     String text,
-    List<String> mentions, [
-    IMessage cite,
-  ]);
+    List<String> mentions, {
+    IMessage? cite,
+    List<IMessage>? forward,
+  });
 
   /// 撤回消息
   Future<void> recallMessage(String id);
@@ -261,9 +262,10 @@ class Session extends Entity<XEntity> implements ISession {
   Future<bool> sendMessage(
     MessageType type,
     String text,
-    List<String> mentions, [
+    List<String> mentions, {
     IMessage? cite,
-  ]) async {
+    List<IMessage>? forward,
+  }) async {
     if (cite != null) {
       cite.metadata.comments = [];
     }

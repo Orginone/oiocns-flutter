@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/core/chat/message/message.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/message.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
@@ -72,7 +72,8 @@ class MessageRecordsPage
                     ),
                     title: Text(snapshot.data?.name ?? ""),
                     subtitle: Text(
-                      StringUtil.msgConversion(item.metadata, ''),
+                      StringUtil.msgConversion(
+                          item.metadata as MsgSaveModel, ''),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -83,7 +84,7 @@ class MessageRecordsPage
                     },
                   );
                 },
-                future: item.from,
+                future: Future(() => item.from),
               ),
             );
           },
@@ -116,7 +117,7 @@ class MessageRecordsController extends BaseController<MessageRecordsState> {
     state.searchMsg.clear();
     if (str.isNotEmpty) {
       state.searchMsg.value = state.chat.messages.where((p0) {
-        String text = p0.body?.text ?? "";
+        String text = p0.msgBody ?? "";
 
         text = text.replaceAll(StringUtil.imgReg, '');
 
@@ -140,7 +141,7 @@ class MessageRecordsBinding extends BaseBindings<MessageRecordsController> {
 }
 
 class MessageRecordsState extends BaseGetState {
-  late IMsgChat chat;
+  late ISession chat;
   var searchMsg = <IMessage>[].obs;
   var isSearchState = false.obs;
 

@@ -12,6 +12,8 @@ import 'state.dart';
 
 class MessageChatInfoPage
     extends BaseGetView<MessageChatInfoController, MessageChatInfoState> {
+  const MessageChatInfoPage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(
@@ -25,84 +27,87 @@ class MessageChatInfoPage
             tileWidget(
                 title: "动态",
                 trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: List.generate(4, (index){
-                    return Container(
-                      margin: EdgeInsets.only(right: 15.w),
-                      child: ImageWidget(
-                        Images.empty,
-                        size: 60.w,
-                        fit: BoxFit.fill,
-                      ),
-                    );
-                  }).toList()
-                )),
-            tileWidget(title: "共享", trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: List.generate(4, (index){
-                  return Container(
-                    margin: EdgeInsets.only(right: 15.w),
-                    child: ImageWidget(
-                      Images.empty,
-                      size: 60.w,
-                      fit: BoxFit.fill,
-                    ),
-                  );
-                }).toList()
-            )),
-            tileWidget(title: "交易", trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: List.generate(4, (index){
-                  return Container(
-                    margin: EdgeInsets.only(right: 15.w),
-                    child: ImageWidget(
-                      Images.empty,
-                      size: 60.w,
-                      fit: BoxFit.fill,
-                    ),
-                  );
-                }).toList()
-            )),
-            tileWidget(title: "群应用", trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: List.generate(4, (index){
-                  return Container(
-                    margin: EdgeInsets.only(right: 15.w),
-                    child: ImageWidget(
-                      Images.empty,
-                      size: 60.w,
-                      fit: BoxFit.fill,
-                    ),
-                  );
-                }).toList()
-            )),
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(4, (index) {
+                      return Container(
+                        margin: EdgeInsets.only(right: 15.w),
+                        child: ImageWidget(
+                          Images.empty,
+                          size: 60.w,
+                          fit: BoxFit.fill,
+                        ),
+                      );
+                    }).toList())),
+            tileWidget(
+                title: "共享",
+                trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(4, (index) {
+                      return Container(
+                        margin: EdgeInsets.only(right: 15.w),
+                        child: ImageWidget(
+                          Images.empty,
+                          size: 60.w,
+                          fit: BoxFit.fill,
+                        ),
+                      );
+                    }).toList())),
+            tileWidget(
+                title: "交易",
+                trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(4, (index) {
+                      return Container(
+                        margin: EdgeInsets.only(right: 15.w),
+                        child: ImageWidget(
+                          Images.empty,
+                          size: 60.w,
+                          fit: BoxFit.fill,
+                        ),
+                      );
+                    }).toList())),
+            tileWidget(
+                title: "群应用",
+                trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(4, (index) {
+                      return Container(
+                        margin: EdgeInsets.only(right: 15.w),
+                        child: ImageWidget(
+                          Images.empty,
+                          size: 60.w,
+                          fit: BoxFit.fill,
+                        ),
+                      );
+                    }).toList())),
           ],
         ),
       ),
       bottomNavigationBar: SizedBox(
         height: 120.h,
-        child: Builder(
-          builder: (context) {
-            List<Widget> children = [
-              circle(
-                  icon: Ionicons.chatbubble_sharp,
-                  lable: "发消息",
-                  callback: () {
-                    controller.jumpMessage();
-                  }),
-              circle(icon: Ionicons.call_sharp, lable: "打电话"),
-            ];
-            if(!state.isFriend){
-              children.add(circle(icon: Ionicons.person_add_sharp, lable: "加好友",callback: (){
-                controller.addPerson();
-              }));
-            }
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: children,
-            );
+        child: Builder(builder: (context) {
+          List<Widget> children = [
+            circle(
+                icon: Ionicons.chatbubble_sharp,
+                lable: "发消息",
+                callback: () {
+                  controller.jumpMessage();
+                }),
+            circle(icon: Ionicons.call_sharp, lable: "打电话"),
+          ];
+          if (!state.isFriend) {
+            children.add(circle(
+                icon: Ionicons.person_add_sharp,
+                lable: "加好友",
+                callback: () {
+                  controller.addPerson();
+                }));
           }
-        ),
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: children,
+          );
+        }),
       ),
     );
   }
@@ -137,7 +142,7 @@ class MessageChatInfoPage
                   height: 5.w,
                 ),
                 Text(
-                  state.chat.chatdata.value.chatRemark,
+                  state.chat.chatdata.chatRemark,
                   style: TextStyle(fontSize: 16.sp),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
@@ -177,7 +182,7 @@ class MessageChatInfoPage
           Container(
             width: 50.w,
             height: 50.w,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: XColors.themeColor,
               shape: BoxShape.circle,
             ),
@@ -204,7 +209,7 @@ class MessageChatInfoPage
     return GestureDetector(
       onTap: callback,
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 20.h,horizontal: 20.w),
+        padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
         decoration: BoxDecoration(
             color: Colors.white,
             border: Border(
@@ -217,10 +222,10 @@ class MessageChatInfoPage
             ),
             Expanded(
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
               children: [
-                trailing ?? SizedBox(),
-                Icon(Ionicons.chevron_forward),
+                trailing ?? const SizedBox(),
+                const Icon(Ionicons.chevron_forward),
               ],
             )),
           ],

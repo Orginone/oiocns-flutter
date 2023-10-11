@@ -4,7 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/index.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
@@ -33,7 +33,7 @@ class MessageSetting extends GetView<IndexController> {
     );
   }
 
-  Widget _body(BuildContext context, IMsgChat chat) {
+  Widget _body(BuildContext context, ISession chat) {
     List<Widget> children = [];
     if (chat.share.typeName == TargetType.person.label) {
       children = [
@@ -51,7 +51,7 @@ class MessageSetting extends GetView<IndexController> {
         Obx(() {
           return Avatars(
             showCount: 15,
-            persons: chat.members.value,
+            persons: chat.members,
             hasAdd: true,
             addCallback: () {
               var target =
@@ -120,16 +120,16 @@ class MessageSetting extends GetView<IndexController> {
   }
 
   /// 头像相关
-  Widget _avatar(IMsgChat chat) {
+  Widget _avatar(ISession chat) {
     var messageItem = chat.chatdata;
-    String name = messageItem.value.chatName ?? "";
-    if (messageItem.value.labels.contains(TargetType.person.label) ?? false) {
+    String name = messageItem.chatName ?? "";
+    if (messageItem.labels.contains(TargetType.person.label) ?? false) {
       name += "(${chat.members.length})";
     }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        TeamAvatar(info: TeamTypeInfo(userId: chat.chatId)),
+        TeamAvatar(info: TeamTypeInfo(userId: chat.sessionId)),
         Padding(padding: EdgeInsets.only(left: 10.w)),
         Expanded(
           child: Column(
@@ -137,7 +137,7 @@ class MessageSetting extends GetView<IndexController> {
             children: [
               Text(name, style: XFonts.size22Black3W700),
               Text(
-                messageItem.value.chatRemark ?? "",
+                messageItem.chatRemark ?? "",
                 style: XFonts.size16Black6,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -177,7 +177,7 @@ class MessageSetting extends GetView<IndexController> {
   }
 
   /// 查找聊天记录
-  Widget _searchChat(IMsgChat chat) {
+  Widget _searchChat(ISession chat) {
     return ChooseItem(
       func: () {
         Get.toNamed(Routers.messageRecords, arguments: {"chat": chat});
@@ -194,7 +194,7 @@ class MessageSetting extends GetView<IndexController> {
     );
   }
 
-  Widget _file(IMsgChat chat) {
+  Widget _file(ISession chat) {
     return ChooseItem(
       func: () async {
         List<GeneralBreadcrumbNav> navs = [];
@@ -204,7 +204,7 @@ class MessageSetting extends GetView<IndexController> {
           navs = await _buildNav([dir], settingCtrl.user);
         } else {
           dir = (chat as ITarget).directory;
-          navs = await _buildNav([dir], chat);
+          navs = await _buildNav([dir], chat.target);
         }
         Get.toNamed(Routers.generalBreadCrumbs,
             arguments: {"data": navs.first});
@@ -222,14 +222,14 @@ class MessageSetting extends GetView<IndexController> {
   }
 
   /// 清空聊天记录
-  Widget _clear(BuildContext context, IMsgChat chat) {
+  Widget _clear(BuildContext context, ISession chat) {
     return GestureDetector(
       onTap: () {
         showCupertinoDialog(
           context: context,
           builder: (context) {
             return CupertinoAlertDialog(
-              title: Text("您确定清空与${chat.chatdata.value.chatName}的聊天记录吗?"),
+              title: Text("您确定清空与${chat.chatdata.chatName}的聊天记录吗?"),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: const Text('取消'),
@@ -264,14 +264,14 @@ class MessageSetting extends GetView<IndexController> {
   }
 
   /// 删除好友
-  Widget _exitTarget(BuildContext context, IMsgChat chat) {
+  Widget _exitTarget(BuildContext context, ISession chat) {
     String remark = "";
     String btnName = "";
-    if (chat.chatdata.value.labels.contains(TargetType.person.label) ?? false) {
-      remark = "您确定删除好友${chat.chatdata.value.chatName}吗?";
+    if (chat.chatdata.labels.contains(TargetType.person.label) ?? false) {
+      remark = "您确定删除好友${chat.chatdata.chatName}吗?";
       btnName = "删除好友";
     } else {
-      remark = "您确定退出${chat.chatdata.value.chatName}吗?";
+      remark = "您确定退出${chat.chatdata.chatName}吗?";
       btnName = "退出群聊";
     }
     return ElevatedButton(
@@ -312,7 +312,7 @@ class MessageSetting extends GetView<IndexController> {
       List<IDirectory> dirs, ITarget target) async {
     List<GeneralBreadcrumbNav> navs = [];
     for (var dir in dirs) {
-      await Future.wait([dir.loadSubDirectory(), dir.loadFiles()]);
+      await Future.wait([dir.loadDirectoryResource(), dir.loadFiles()]);
       var nav = GeneralBreadcrumbNav(
         id: dir.metadata.id ?? "",
         name: dir.metadata.name ?? "",
@@ -326,7 +326,7 @@ class MessageSetting extends GetView<IndexController> {
                 id: e.metadata.id ?? "",
                 name: e.metadata.name ?? "",
                 spaceEnum: SpaceEnum.file,
-                image: (e as SysFileInfo).getThumbnail(),
+                image: (e as SysFileInfo).shareInfo().thumbnail,
                 space: target,
                 source: e,
                 children: [],

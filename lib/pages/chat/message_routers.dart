@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/index.dart';
-import 'package:orginone/dart/core/chat/message/msgchat.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
@@ -40,7 +40,7 @@ class MessageRouters
           controller.jumpDetails(child);
         },
         onSelected: (key) {
-          controller.operation(key, child.target!);
+          controller.operation(key, child.target);
         },
       ));
     }
@@ -72,18 +72,18 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
       companyItems.add(
         createNav(
             company.id,
-            company,
+            settingCtrl.chats.last,
             [
               createNav(
                 "${company.id}0",
-                company,
+                settingCtrl.chats.last,
                 company.memberChats
-                    .map((item) => createNav(item.chatId, item, []))
+                    .map((item) => createNav(item.sessionId, item, []))
                     .toList(),
               ),
               ...company.cohortChats
                   .where((i) => i.isMyChat)
-                  .map((item) => createNav(item.chatId, item, [],
+                  .map((item) => createNav(item.sessionId, item, [],
                       spaceEnum: SpaceEnum.departments))
                   .toList(),
             ],
@@ -94,30 +94,30 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
     state.model.value = ChatBreadcrumbNav(children: [
       createNav(
           settingCtrl.user.id,
-          settingCtrl.user,
+          settingCtrl.chats.last,
           [
             createNav(
               "${settingCtrl.user.id}0",
-              settingCtrl.user,
+              settingCtrl.chats.last,
               settingCtrl.user.memberChats
-                  .map((chat) => createNav(chat.chatId, chat, [],
+                  .map((chat) => createNav(chat.sessionId, chat, [],
                       spaceEnum: SpaceEnum.person))
                   .toList(),
             ),
             ...settingCtrl.user.cohortChats
                 .where((i) => i.isMyChat)
-                .map((item) => createNav(item.chatId, item, [],
+                .map((item) => createNav(item.sessionId, item, [],
                     spaceEnum: SpaceEnum.departments))
                 .toList(),
           ],
           type: ChatType.list),
       ...companyItems,
-    ], name: "沟通");
+    ], name: "沟通", target: settingCtrl.chats.last);
     print('');
   }
 
   ChatBreadcrumbNav createNav(
-      String id, IMsgChat target, List<ChatBreadcrumbNav> children,
+      String id, ISession target, List<ChatBreadcrumbNav> children,
       {ChatType type = ChatType.chat, SpaceEnum? spaceEnum}) {
     dynamic image = target.share.avatar?.thumbnailUint8List ??
         target.share.avatar?.defaultAvatar;
@@ -126,7 +126,7 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
         type: type,
         spaceEnum: spaceEnum,
         children: children,
-        name: target.chatdata.value.chatName ?? "",
+        name: target.chatdata.chatName ?? "",
         target: target,
         image: image);
   }
@@ -146,18 +146,20 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
     } else {
       Get.toNamed(Routers.messageChatsList, arguments: {
         "chats": (chat.target as ITeam)
-            .chats
+            .memberChats
             .where((element) => element.isMyChat)
             .toList()
       });
     }
   }
 
-  void operation(PopupMenuKey key, IMsgChat msg) {
+  void operation(PopupMenuKey key, ISession msg) {
     if (key == PopupMenuKey.setCommon) {
-      settingCtrl.chat.setMostUsed(msg);
+      //TODO:无此方法
+      // settingCtrl.chat.setMostUsed(msg);
     } else if (key == PopupMenuKey.removeCommon) {
-      settingCtrl.chat.removeMostUsed(msg);
+      //TODO:无此方法
+      // settingCtrl.chat.removeMostUsed(msg);
     }
   }
 }
@@ -179,9 +181,9 @@ class MessagesBinding extends BaseBindings<Controller> {
 }
 
 class ChatBreadcrumbNav extends BaseBreadcrumbNavModel<ChatBreadcrumbNav> {
-  IMsgChat? target;
+  ISession target;
   ChatType? type;
-  void Function(IMsgChat?, ChatBreadcrumbNav)? event;
+  void Function(ISession?, ChatBreadcrumbNav)? event;
 
   ChatBreadcrumbNav(
       {super.id = '',
@@ -190,7 +192,7 @@ class ChatBreadcrumbNav extends BaseBreadcrumbNavModel<ChatBreadcrumbNav> {
       super.image,
       super.source,
       super.spaceEnum,
-      this.target,
+      required this.target,
       this.event,
       this.type}) {
     this.children = children;
