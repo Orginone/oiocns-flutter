@@ -644,15 +644,12 @@ void uploadFile(SettingNavModel item,
       await FilePicker.platform.pickFiles(type: FileType.any);
   if (result != null) {
     LoadingDialog.showLoading(Get.context!, msg: "上传中");
-    var file = await dir.createFile(
-      File(result.files.first.path!),
-      (progress) {
-        if (progress == 1) {
-          ToastUtils.showMsg(msg: "上传成功");
-          LoadingDialog.dismiss(Get.context!);
-        }
-      },
-    );
+    var file = await dir.createFile(File(result.files.first.path!), p: (p) {
+      if (p == 1) {
+        ToastUtils.showMsg(msg: "上传成功");
+        LoadingDialog.dismiss(Get.context!);
+      }
+    });
     if (file != null) {
       SettingNavModel nav = SettingNavModel(
           id: file.id,
