@@ -95,6 +95,7 @@ class UserBar extends GetView<IndexController> {
                 child: Row(
                   children: [
                     TextWidget(
+                      //////这里开始的
                       text: controller.provider.user?.metadata.name ?? "",
                       style: GYTextStyles.titleSmall
                           ?.copyWith(fontWeight: FontWeight.w900),

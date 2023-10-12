@@ -23,15 +23,18 @@ void main() async {
   SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
+  //Hive数据库
   await HiveUtils.init();
 
+  // 初始化消息提示功能
   await NotificationUtil.initializeService();
 
   // 初始化通知配置
   await Storage.init();
 
+  // 后台运行
   ForegroundUtils().initForegroundTask();
-
+  // 钱包初始化
   WalletChannel().init();
   // 日志初始化
   Logger.root.level = Level.ALL;
@@ -45,12 +48,12 @@ void main() async {
   runApp(const ScreenInit());
 }
 
+//内核api
 KernelApi get kernel => KernelApi();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 final RouteObserver<PageRoute> routeObserver = RouteObserver();
-
 IndexController get settingCtrl => Get.find<IndexController>();
-
+//钱包控制器
 WalletController get walletCtrl => Get.find<WalletController>();
 
 const Size screenSize = Size(540, 1170);
@@ -93,6 +96,7 @@ class ScreenInit extends StatelessWidget {
     );
   }
 
+  // 自动登录
   Future<void> automaticLogon() async {
     Future<void> login() async {
       String accountName = account![0];
