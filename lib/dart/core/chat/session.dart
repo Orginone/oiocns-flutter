@@ -122,7 +122,7 @@ class Session extends Entity<XEntity> implements ISession {
   }
 
   @override
-  final String sessionId;
+  String sessionId;
   @override
   final ITarget target;
   @override

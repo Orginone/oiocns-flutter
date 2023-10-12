@@ -9,6 +9,7 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/util/local_store.dart';
+import 'package:orginone/util/logger.dart';
 import 'thing/standard/application.dart';
 import 'work/provider.dart';
 
@@ -92,8 +93,9 @@ class UserProvider {
   _loadUser(XTarget person) async {
     Storage.setJson(sessionUserName, person.toJson());
     kernel.userId = person.id;
-    //TODO:暂时注  初始化东西太多
+
     _user = Person(person);
+    logger.info(_user);
     // _work = WorkProvider(this);
     // refresh();
   }

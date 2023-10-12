@@ -34,10 +34,12 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
           toolbarHeight: 0,
           body: Column(
             children: [
-              Container(
-                height: 300,
-                width: 300,
-                color: Colors.red,
+              Center(
+                child: SizedBox(
+                  height: 300,
+                  width: 300,
+                  child: Text(settingCtrl.user.name),
+                ),
               ),
               //TODO:暂时注 用到细调
               // const UserBar(),

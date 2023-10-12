@@ -99,6 +99,14 @@ abstract class IDirectory implements IStandardFileInfo<XDirectory> {
   Future<void> loadDirectoryResource({bool? reload});
 }
 
+/// Director影子类  用来初始化避免直接在Directory 创建Directory 造成递归
+class MirrorDirectory implements IDirectory {
+  MirrorDirectory();
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 ///目录实现类
 class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   Directory(this.metadata, this.target,
@@ -106,10 +114,8 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
       : super(
             XDirectory.fromJson(
                 {...metadata.toJson(), 'typeName': metadata.typeName ?? '目录'}),
-            parent ?? target as IDirectory,
+            parent ?? MirrorDirectory(),
             target.resource.directoryColl) {
-    applications = [];
-
     isContainer = true;
     taskEmitter = Emitter();
     operater = DirectoryOperate(this, target.resource);
