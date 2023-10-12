@@ -22,8 +22,6 @@ var msgChatNotify = Emitter();
 
 /// 会话接口类
 abstract class ISession extends IEntity<XEntity> {
-  ISession(super.metadata);
-
   /// 是否归属人员
   late bool isBelongPerson;
 

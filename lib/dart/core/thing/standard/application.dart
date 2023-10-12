@@ -15,13 +15,10 @@ abstract class IApplication implements IStandardFileInfo<XApplication> {
   IApplication? parent;
 
   ///下级模块
-  final List<IApplication> children;
+  late final List<IApplication> children;
 
   ///流程定义
-  final List<IWork> works;
-
-  ///构造函数
-  IApplication(this.children, this.works);
+  late final List<IWork> works;
 
   ///加载办事
   Future<List<IWork>> loadWorks({bool reload = false});

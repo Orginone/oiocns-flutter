@@ -148,9 +148,9 @@ class KernelApi {
       raw = await _restRequest('login', req);
     }
 
-    var res = ResultType.fromJson(raw);
+    var res = raw is ResultType ? raw : ResultType.fromJson(raw);
     if (res.success) {
-      HiveUtils.putUser(UserModel.fromJson(raw['data']));
+      HiveUtils.putUser(UserModel.fromJson(res.data));
       setToken = res.data["accessToken"];
     }
     return res;
@@ -1240,13 +1240,14 @@ class KernelApi {
       data: args,
     );
 
-    if (res.data && (res.data is ResultType)) {
-      final result = res.data;
+    // if (res.data && (res.data is ResultType)) {
+    if (res['data'] != null) {
+      final result = ResultType.fromJson(res);
       if (!result.success) {
         if (result.code == 401) {
           settingCtrl.exitLogin(cleanUserLoginInfo: false);
         } else {
-          logger.warning('请求失败' + result.msg);
+          logger.warning('请求失败${result.msg}');
         }
       }
       return result;

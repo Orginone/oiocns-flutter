@@ -10,8 +10,6 @@ import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
 abstract class IIdentity extends IFileInfo<XIdentity> {
-  IIdentity(super.metadata, super.directory);
-
   /// 设置身份（角色）的用户
   late ITarget current;
 

@@ -101,12 +101,12 @@ abstract class IDirectory implements IStandardFileInfo<XDirectory> {
 
 ///目录实现类
 class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
-  Directory(XDirectory metadata, ITarget target, IDirectory l,
+  Directory(this.metadata, this.target,
       {this.parent, List<XDirectory>? directorys})
       : super(
-            {...metadata.toJson(), 'typeName': metadata.typeName ?? '目录'}
-                as XDirectory,
-            target as IDirectory,
+            XDirectory.fromJson(
+                {...metadata.toJson(), 'typeName': metadata.typeName ?? '目录'}),
+            parent ?? target as IDirectory,
             target.resource.directoryColl) {
     applications = [];
 
@@ -114,12 +114,17 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
     taskEmitter = Emitter();
     operater = DirectoryOperate(this, target.resource);
   }
+  // StandardFiles standard;
   @override
   late IDirectoryOperate operater;
   @override
   late Emitter taskEmitter;
   @override
   IDirectory? parent;
+  @override
+  final XDirectory metadata;
+  @override
+  final ITarget target;
   @override
   late List<TaskModel> taskList;
   @override

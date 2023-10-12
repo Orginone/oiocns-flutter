@@ -19,9 +19,11 @@ class LoginController extends BaseController<LoginState> {
       kernel.start();
     }
     var account = Storage.getList("account");
-    state.accountController.text = account[0];
-    state.phoneNumberController.text = account[0];
-    state.passWordController.text = account[1];
+    if (account.isNotEmpty) {
+      state.accountController.text = account.first;
+      state.phoneNumberController.text = account.first;
+      state.passWordController.text = account.last;
+    }
   }
 
   void showPassWord() {

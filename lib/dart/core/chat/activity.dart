@@ -101,8 +101,6 @@ class ActivityMessage extends Emitter implements IActivityMessage {
 
 /// 动态接口类
 abstract class IActivity extends IEntity<XTarget> {
-  IActivity(super.metadata);
-
   /// 会话对象
   late ISession session;
 

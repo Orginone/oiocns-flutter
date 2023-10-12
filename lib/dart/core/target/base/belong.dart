@@ -10,29 +10,9 @@ import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/outTeam/cohort.dart';
 import 'package:orginone/dart/core/target/outTeam/storage.dart';
 import 'package:orginone/dart/core/target/person.dart';
-import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/main.dart';
 
 abstract class IBelong extends ITarget {
-  IBelong(
-    this.metadata,
-    this.relations,
-    this.directory, {
-    this.user,
-    this.memberTypes = mTypes,
-  }) : super(metadata, directory, relations);
-
-  @override
-  final XTarget metadata;
-  @override
-  final List<String> relations;
-  @override
-  final IPerson? user;
-  @override
-  final List<TargetType>? memberTypes;
-
-  @override
-  final IDirectory directory;
   //超管权限，权限为树结构
   late IAuthority? superAuth;
   //加入/管理的群

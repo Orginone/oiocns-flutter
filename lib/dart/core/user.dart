@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
@@ -14,18 +15,18 @@ import 'work/provider.dart';
 const sessionUserName = 'sessionUser';
 
 class UserProvider {
-  UserProvider(Emitter emiter) {
+  UserProvider({Emitter? emiter}) {
     _emiter = emiter;
     final userJson = Storage.getString(sessionUserName);
     if (userJson.isNotEmpty) {
-      _loadUser(jsonDecode(userJson));
+      _loadUser(XTarget.fromJson(jsonDecode(userJson)));
     }
   }
 
   late IPerson? _user;
   late IWorkProvider? _work;
   bool _inited = false;
-  late Emitter _emiter;
+  late Emitter? _emiter;
   var myApps = <Map<IApplication, ITarget>>[].obs;
 
   /// 当前用户
@@ -89,11 +90,12 @@ class UserProvider {
 
   /// 加载用户
   _loadUser(XTarget person) async {
-    Storage.setJson(sessionUserName, jsonEncode(person.toJson()));
+    Storage.setJson(sessionUserName, person.toJson());
     kernel.userId = person.id;
+    //TODO:暂时注  初始化东西太多
     _user = Person(person);
-    _work = WorkProvider(this);
-    refresh();
+    // _work = WorkProvider(this);
+    // refresh();
   }
 
   /// 重载数据
@@ -102,7 +104,7 @@ class UserProvider {
     await _user?.deepLoad(reload: true);
     await work?.loadTodos(reload: true);
     _inited = true;
-    _emiter.changCallback();
+    _emiter?.changCallback();
     command.emitterFlag();
   }
 }

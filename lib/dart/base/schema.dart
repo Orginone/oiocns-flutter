@@ -181,9 +181,7 @@ class XStandard extends XEntity {
       super.version});
   XStandard.fromJson(Map<String, dynamic> json)
       : directoryId = json['directoryId'] ?? "",
-        super.fromJson(json) {
-    directoryId = json['directoryId'];
-  }
+        super.fromJson(json);
 }
 
 class XApplication extends XStandard {

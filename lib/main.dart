@@ -58,7 +58,7 @@ const Size screenSize = Size(540, 1170);
 class ScreenInit extends StatelessWidget {
   const ScreenInit({Key? key}) : super(key: key);
 
-  List<String>? get account => Storage.getList("account");
+  List<String> get account => Storage.getList("account");
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +85,7 @@ class ScreenInit extends StatelessWidget {
           ],
           darkTheme: ThemeData(useMaterial3: false),
           textDirection: TextDirection.ltr,
-          initialRoute: account != null ? Routers.home : Routers.login,
+          initialRoute: account.isNotEmpty ? Routers.home : Routers.login,
           defaultTransition: Transition.fadeIn,
           getPages: Routers.getInitRouters(),
         );
@@ -95,22 +95,25 @@ class ScreenInit extends StatelessWidget {
 
   Future<void> automaticLogon() async {
     Future<void> login() async {
-      String accountName = account![0];
-      String passWord = account![1];
+      // Storage.clear();
+      if (account.isEmpty) {
+        settingCtrl.exitLogin();
+        return;
+      }
+      String accountName = account.first;
+      String passWord = account.last;
       var login = await settingCtrl.provider.login(accountName, passWord);
       if (!login.success) {
         settingCtrl.exitLogin();
       }
     }
 
-    if (account != null) {
-      if (kernel.isOnline) {
-        await login();
-      } else {
-        Future.delayed(const Duration(milliseconds: 100), () async {
-          await automaticLogon();
-        });
-      }
+    if (kernel.isOnline) {
+      await login();
+    } else {
+      Future.delayed(const Duration(milliseconds: 100), () async {
+        await automaticLogon();
+      });
     }
   }
 }

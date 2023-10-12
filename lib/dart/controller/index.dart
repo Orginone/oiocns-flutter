@@ -130,7 +130,7 @@ class IndexController extends GetxController {
     super.onInit();
     functionMenuController = CustomPopupMenuController();
     settingMenuController = CustomPopupMenuController();
-    // _provider = UserProvider(e);
+    _provider = UserProvider();
     _userSub = XEventBus.instance.on<UserLoaded>().listen((event) async {
       EventBusHelper.fire(ShowLoading(true));
       // await _provider.loadData();

@@ -18,8 +18,6 @@ import 'package:orginone/main.dart';
 
 ///单位类型接口
 abstract class ICompany extends IBelong {
-  ///构造函数
-  ICompany(super.metadata, super.relations, super.directory);
   //加入/管理的组织集群
   late List<IGroup> groups;
 
