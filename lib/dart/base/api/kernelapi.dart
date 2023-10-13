@@ -26,7 +26,7 @@ class KernelApi {
   final Map<String, dynamic> _cacheData = {};
 
   // 订阅方法
-  final Map<String, List<Function()>> _methods;
+  final Map<String, List<Function>> _methods;
   // 订阅方法
   final Map<String, List> _subMethods;
 
@@ -1148,13 +1148,16 @@ class KernelApi {
   /// 监听服务端方法
   /// @param {string} methodName 方法名
   /// @returns {void} 无返回值
-  void on(String? methodName, List<dynamic>? newOperation) {
-    if (methodName == null || newOperation == null) {
+  void on(String? methodName, List<Function> newOperation) {
+    if (methodName == null) {
       return;
     }
 
     methodName = methodName.toLowerCase();
     _methods.putIfAbsent(methodName, () => []);
+    if (_methods[methodName] != null) {
+      _methods[methodName] = [];
+    }
 
     for (var element in newOperation) {
       if (_methods[methodName]!.contains(element)) {
@@ -1164,11 +1167,11 @@ class KernelApi {
       }
     }
 
-    List data = _cacheData[methodName] ?? [];
-    data.map((dynamic e) {
-      Function.apply(e, newOperation);
-    });
-    _cacheData[methodName] = [];
+    // List data = _cacheData[methodName] ?? [];
+    // data.map((dynamic e) {
+    //   Function.apply(e, newOperation);
+    // });
+    // _cacheData[methodName] = [];
   }
 
   /// 接收服务端消息

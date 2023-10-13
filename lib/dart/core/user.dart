@@ -96,7 +96,7 @@ class UserProvider {
 
     _user = Person(person);
     logger.info(_user);
-    // _work = WorkProvider(this);
+    _work = WorkProvider(this);
     // refresh();
   }
 

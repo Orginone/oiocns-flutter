@@ -99,7 +99,7 @@ abstract class IDirectory implements IStandardFileInfo<XDirectory> {
   Future<void> loadDirectoryResource({bool? reload});
 }
 
-/// Director影子类  用来初始化避免直接在Directory 创建Directory 造成递归
+///MirrorDirectory作为 Directory影子类  用来初始化避免直接在Directory 创建Directory 造成递归
 class MirrorDirectory implements IDirectory {
   MirrorDirectory();
 

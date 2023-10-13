@@ -16,15 +16,15 @@ abstract class IBelong extends ITarget {
   //超管权限，权限为树结构
   late IAuthority? superAuth;
   //加入/管理的群
-  late List<ICohort> cohorts;
+  List<ICohort> cohorts = [];
   //存储资源群
-  late List<IStorage> storages;
+  List<IStorage> storages = [];
   //上级用户
-  late List<ITarget> parentTarget;
+  List<ITarget> parentTarget = [];
   //群会话
-  late List<ISession> cohortChats;
+  List<ISession> cohortChats = [];
   //共享组织
-  late List<ITarget> shareTarget;
+  List<ITarget> shareTarget = [];
 
   /// 获取存储占用情况
   Future<DiskInfoType> getDiskInfo();
@@ -60,19 +60,19 @@ abstract class Belong extends Target implements IBelong {
   @override
   final XTarget metadata;
   @override
-  final List<String> relations;
+  List<String> relations = [];
   @override
   final IPerson? user;
   @override
-  final List<TargetType>? memberTypes;
+  List<TargetType>? memberTypes = [];
 
   @override
   IBelong? space;
   @override
-  late List<ICohort> cohorts;
+  List<ICohort> cohorts = [];
 
   @override
-  late List<IStorage> storages;
+  List<IStorage> storages = [];
 
   @override
   IAuthority? superAuth;

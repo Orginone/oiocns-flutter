@@ -62,12 +62,12 @@ class Person extends Belong implements IPerson {
   @override
   final XTarget metadata;
   @override
-  late List<ICompany> companys;
+  List<ICompany> companys = [];
   late IActivity friendsActivity;
   @override
   late XObject<Xbase> cacheObj;
   @override
-  late List<XIdProof> givedIdentitys;
+  List<XIdProof> givedIdentitys = [];
 
   @override
   Map<String, IFileInfo<XEntity>> copyFiles = {};

@@ -56,7 +56,10 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
               //     ],
               //   ),
               // ),
-              // bottomButton(),
+              Expanded(
+                child: Container(),
+              ),
+              bottomButton(),
             ],
           )),
     );

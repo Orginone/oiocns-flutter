@@ -21,7 +21,7 @@ abstract class IWorkProvider {
   /// 待办
   late List<IWorkTask> todos;
   late Emitter notity;
-  late List<WorkFrequentlyUsed> workFrequentlyUsed;
+  List<WorkFrequentlyUsed> workFrequentlyUsed = [];
 
   /// 加载待办任务
   Future<List<IWorkTask>> loadTodos({bool reload = false});
@@ -46,14 +46,17 @@ class WorkProvider implements IWorkProvider {
   WorkProvider(this.user) {
     kernel.on('RecvTask', [
       (data) {
-        if (!_todoLoaded) {}
-        var work = XWorkTask.fromJson(data);
-        updateTask(work);
+        if (_todoLoaded && data.approveType != '抄送') {
+          var work = XWorkTask.fromJson(data);
+          updateTask(work);
+        }
       }
     ]);
 
     workFrequentlyUsed = <WorkFrequentlyUsed>[].obs;
   }
+  @override
+  List<WorkFrequentlyUsed> workFrequentlyUsed = [];
   @override
   final UserProvider user;
   @override
