@@ -4,9 +4,7 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 
-abstract class ICohort extends ITarget {
-  ICohort(super.metadata, super.directory, super.relations);
-}
+abstract class ICohort extends ITarget {}
 
 class Cohort extends Target implements ICohort {
   Cohort(this.metadata, this.space, this.relationId)

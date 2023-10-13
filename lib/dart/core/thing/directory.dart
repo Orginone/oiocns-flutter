@@ -99,27 +99,38 @@ abstract class IDirectory implements IStandardFileInfo<XDirectory> {
   Future<void> loadDirectoryResource({bool? reload});
 }
 
+/// Director影子类  用来初始化避免直接在Directory 创建Directory 造成递归
+class MirrorDirectory implements IDirectory {
+  MirrorDirectory();
+
+  @override
+  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
 ///目录实现类
 class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
-  Directory(XDirectory metadata, ITarget target, IDirectory l,
+  Directory(this.metadata, this.target,
       {this.parent, List<XDirectory>? directorys})
       : super(
-            {...metadata.toJson(), 'typeName': metadata.typeName ?? '目录'}
-                as XDirectory,
-            target as IDirectory,
+            XDirectory.fromJson(
+                {...metadata.toJson(), 'typeName': metadata.typeName ?? '目录'}),
+            parent ?? MirrorDirectory(),
             target.resource.directoryColl) {
-    applications = [];
-
     isContainer = true;
     taskEmitter = Emitter();
     operater = DirectoryOperate(this, target.resource);
   }
+  // StandardFiles standard;
   @override
   late IDirectoryOperate operater;
   @override
   late Emitter taskEmitter;
   @override
   IDirectory? parent;
+  @override
+  final XDirectory metadata;
+  @override
+  final ITarget target;
   @override
   late List<TaskModel> taskList;
   @override

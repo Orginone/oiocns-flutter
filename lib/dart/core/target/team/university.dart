@@ -2,9 +2,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 
 import 'company.dart';
 
-abstract class IUniversity extends ICompany {
-  IUniversity(super.metadata, super.relations, super.directory);
-}
+abstract class IUniversity extends ICompany {}
 
 class University extends Company implements IUniversity {
   University(super.metadata, super.user) {

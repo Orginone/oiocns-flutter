@@ -22,8 +22,6 @@ var msgChatNotify = Emitter();
 
 /// 会话接口类
 abstract class ISession extends IEntity<XEntity> {
-  ISession(super.metadata);
-
   /// 是否归属人员
   late bool isBelongPerson;
 
@@ -124,7 +122,7 @@ class Session extends Entity<XEntity> implements ISession {
   }
 
   @override
-  final String sessionId;
+  String sessionId;
   @override
   final ITarget target;
   @override

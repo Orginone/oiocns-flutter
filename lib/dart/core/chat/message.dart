@@ -185,7 +185,7 @@ class Message implements IMessage {
   @override
   String get readedinfo {
     var ids = readedIds;
-    if (chat.metadata.typeName == TargetType.person.label) {
+    if (chat.typeName == TargetType.person.label) {
       return ids.length == 1 ? '已读' : '未读';
     }
     var mCount = chat.members.where((i) => i.id != metadata.fromId).length;
@@ -246,7 +246,7 @@ class Message implements IMessage {
   @override
   String get msgTitle {
     var header = '';
-    if (chat.metadata.typeName != TargetType.person.label) {
+    if (chat.typeName != TargetType.person.label) {
       header += '${from.name}: ';
     }
     switch (MessageType.getType(msgType ?? '')) {

@@ -20,6 +20,14 @@ abstract class ISpecies implements IStandardFileInfo<XSpecies> {
 }
 
 class Species extends StandardFileInfo<XSpecies> implements ISpecies {
+  ///构造函数
+  Species(
+    this.metadata,
+    this.directory,
+  ) : super(metadata, directory, directory.resource.speciesColl) {
+    items = [];
+  }
+
   @override
   final IDirectory directory;
   @override
@@ -29,14 +37,6 @@ class Species extends StandardFileInfo<XSpecies> implements ISpecies {
   bool _itemLoaded = false;
   @override
   String get cacheFlag => 'species';
-
-  ///构造函数
-  Species(
-    this.metadata,
-    this.directory,
-  ) : super(metadata, directory, directory.resource.speciesColl) {
-    items = [];
-  }
   @override
   Future<bool> delete() async {
     var success = true;
@@ -50,10 +50,8 @@ class Species extends StandardFileInfo<XSpecies> implements ISpecies {
 
   @override
   Future<bool> loadContent({bool reload = false}) async {
-    if (reload && !isLoaded) {
-      await loadItems(reload: reload);
-    }
-    isLoaded = true;
+    await loadItems(reload: reload);
+
     return true;
   }
 

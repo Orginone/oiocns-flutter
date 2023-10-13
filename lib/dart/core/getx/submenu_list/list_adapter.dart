@@ -142,11 +142,11 @@ class ListAdapter {
   }
 
   ListAdapter.application(IApplication application, ITarget target) {
-    labels = [target.metadata.name ?? ""];
+    labels = [target.name ?? ""];
     isUserLabel = false;
     circularAvatar = false;
     noReadCount = 0;
-    title = application.metadata.name ?? "";
+    title = application.name ?? "";
     dateTime = application.metadata.createTime ?? "";
     content = "应用说明:${application.metadata.remark ?? ""}";
     image = application.metadata.avatarThumbnail() ?? Ionicons.apps;

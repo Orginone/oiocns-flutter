@@ -10,8 +10,6 @@ import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
 abstract class IIdentity extends IFileInfo<XIdentity> {
-  IIdentity(super.metadata, super.directory);
-
   /// 设置身份（角色）的用户
   late ITarget current;
 
@@ -36,10 +34,11 @@ abstract class IIdentity extends IFileInfo<XIdentity> {
 }
 
 class Identity extends Entity<XIdentity> implements IIdentity {
-  Identity(this.metadata, this.current) : super(metadata) {
-    metadata.typeName = '角色';
-    super.metadata = metadata;
-
+  Identity(this.metadata, this.current)
+      : super(XIdentity.fromJson({
+          ...metadata.toJson(),
+          'typeName': '角色',
+        })) {
     isInherited = false;
 
     directory = current.directory;

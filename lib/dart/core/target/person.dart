@@ -20,7 +20,6 @@ import '../public/objects.dart';
 import 'base/belong.dart';
 
 abstract class IPerson extends IBelong {
-  IPerson(super.metadata, super.relations, super.directory);
   //加入/管理的单位
   late List<ICompany> companys;
   //赋予人的身份(角色)实体

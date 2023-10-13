@@ -16,15 +16,6 @@ import '../../public/operates.dart';
 import 'team.dart';
 
 abstract class ITarget extends IFileInfo<XTarget> with ITeam {
-  ///构造函数
-  ITarget(this.metadata, this.directory, this.relations)
-      : super(metadata, directory);
-
-  @override
-  final XTarget metadata;
-  @override
-  late IDirectory directory;
-  final List<String> relations;
   //会话
   late ISession session;
   //用户资源
@@ -68,26 +59,24 @@ abstract class Target extends Team implements ITarget {
     cache = XCache(fullId: '${metadata.belongId}_${metadata.id}');
     resource = DataResource(metadata, relations, [key]);
     directory = Directory(
-      {
+      XDirectory.fromJson({
         ...metadata.toJson(),
         'shareId': metadata.id,
         'id': '${metadata.id}_',
         'typeName': '目录',
-      } as XDirectory,
+      }),
       this,
-      this as IDirectory,
     );
     memberDirectory = Directory(
-      {
+      XDirectory.fromJson({
         ...directory.metadata.toJson(),
         'typeName': '成员目录',
         'id': '${metadata.id}__',
         'name': metadata.typeName == TargetType.person.label
             ? '我的好友'
             : '${metadata.typeName}成员',
-      } as XDirectory,
+      }),
       this,
-      this as IDirectory,
       parent: directory,
     );
     isContainer = true;

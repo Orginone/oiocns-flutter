@@ -53,7 +53,7 @@ class DirectoryOperate implements IDirectoryOperate {
       );
       _subscribe<XDirectory>(
         _resource.directoryColl,
-        (s, l) => Directory(s, directory.target, l),
+        (s, l) => Directory(s, directory.target),
       );
     }
   }
@@ -106,7 +106,7 @@ class DirectoryOperate implements IDirectoryOperate {
     // 加载子目录资源
     for (final child in _resource.directoryColl.cache
         .where((i) => i.directoryId == directory.id)) {
-      final subDir = Directory(child, directory.target, directory);
+      final subDir = Directory(child, directory.target);
       await subDir.loadDirectoryResource();
       standardFiles.add(subDir);
     }

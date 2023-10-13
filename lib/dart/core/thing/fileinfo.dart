@@ -11,25 +11,22 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 
 abstract class IFileInfo<T extends XEntity> extends IEntity<T> {
-  IFileInfo(this.metadata, this.directory) : super(metadata);
-
-  @override
-  final T metadata;
-  final IDirectory directory;
-
   /// 缓存
   late XCache cache;
 
   /// 空间ID
   late String spaceId;
-
-  late bool isLoaded;
-
+  //归属ID
+  @override
+  late String belongId;
   //是否为继承的类别
   late bool isInherited;
 
   /// 是否为容器
   late bool isContainer;
+
+  ///目录
+  late IDirectory directory;
 
   /// 路径Key
   late String locationKey;
@@ -174,15 +171,10 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
 /// 系统文件接口
 abstract class ISysFileInfo extends IFileInfo<XEntity> {
   /// 文件系统项对应的目标
-  final FileItemModel filedata;
-
-  @override
-  final IDirectory directory;
+  late FileItemModel filedata;
 
   /// 分享信息
   FileItemShare shareInfo();
-  ISysFileInfo(this.filedata, this.directory)
-      : super(filedata as XEntity, directory);
 }
 
 /// 文件转实体

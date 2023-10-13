@@ -8,8 +8,6 @@ import '../../thing/directory.dart';
 
 ///权限结构
 abstract class IAuthority extends IEntity<XAuthority> {
-  IAuthority(super.metadata);
-
   /// 加载权限的自归属用户
   late IBelong space;
 

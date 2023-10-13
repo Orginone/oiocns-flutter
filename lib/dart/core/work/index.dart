@@ -12,8 +12,6 @@ import 'package:orginone/main.dart';
 import 'apply.dart';
 
 abstract class IWork extends IFileInfo<XWorkDefine> {
-  IWork(super.metadata, super.directory);
-
   /// 主表
   late List<IForm> primaryForms;
 
