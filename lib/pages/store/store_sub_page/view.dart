@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/pages/store/store_tree/store_nav_item.dart';
 
 import 'logic.dart';
@@ -48,36 +50,65 @@ class StoreSubPage
   }
 
   Widget commonWidget() {
-    return Obx(() {
-      return GridView.builder(
-        controller: state.scrollController,
-        itemBuilder: (context, index) {
-          // var store = settingCtrl.store.storeFrequentlyUsed[index];
-          // var adapter = ListAdapter(
-          //   title: store.name ?? "",
-          //   image: store.fileItemShare?.thumbnailUint8List ??
-          //       Ionicons.clipboard_sharp,
-          //   labels: [store.storeEnum.label],
-          // );
-          // adapter.popupMenuItems = [
-          //   PopupMenuItem(
-          //     value: PopupMenuKey.removeCommon,
-          //     child: Text(PopupMenuKey.removeCommon.label),
-          //   )
-          // ];
-          // adapter.onSelected = (key) {
-          //   controller.onSelected(key, store);
-          // };
-          return GridItem(adapter: ListAdapter());
-        },
-        //TODO:没有这个字段 使用时查看逻辑
-        // itemCount: settingCtrl.store.storeFrequentlyUsed.length,
-        itemCount: 0,
-        gridDelegate:
-            const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
-      );
-    });
+    return GridView.builder(
+      controller: state.scrollController,
+      itemBuilder: (context, index) {
+        // var store = settingCtrl.store.storeFrequentlyUsed[index];
+        var adapter = ListAdapter(
+          title: '222', //store.name ?? "",
+          image: //store.fileItemShare?.thumbnailUint8List ??
+              Ionicons.clipboard_sharp,
+          labels: ['假数据'], //[store.storeEnum.label],
+        );
+        adapter.popupMenuItems = [
+          PopupMenuItem(
+            value: PopupMenuKey.removeCommon,
+            child: Text(PopupMenuKey.removeCommon.label),
+          )
+        ];
+        adapter.onSelected = (key) {
+          // controller.onSelected(key, store);
+        };
+        return GridItem(adapter: ListAdapter());
+      },
+      //TODO:没有这个字段 使用时查看逻辑
+      // itemCount: settingCtrl.store.storeFrequentlyUsed.length,
+      itemCount: 0,
+      gridDelegate:
+          const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+    );
   }
+  // Widget commonWidget() {
+  //   return Obx(() {
+  //     return GridView.builder(
+  //       controller: state.scrollController,
+  //       itemBuilder: (context, index) {
+  //         // var store = settingCtrl.store.storeFrequentlyUsed[index];
+  //         var adapter = ListAdapter(
+  //           title: '222', //store.name ?? "",
+  //           image: //store.fileItemShare?.thumbnailUint8List ??
+  //               Ionicons.clipboard_sharp,
+  //           labels: ['假数据'], //[store.storeEnum.label],
+  //         );
+  //         adapter.popupMenuItems = [
+  //           PopupMenuItem(
+  //             value: PopupMenuKey.removeCommon,
+  //             child: Text(PopupMenuKey.removeCommon.label),
+  //           )
+  //         ];
+  //         adapter.onSelected = (key) {
+  //           // controller.onSelected(key, store);
+  //         };
+  //         return GridItem(adapter: ListAdapter());
+  //       },
+  //       //TODO:没有这个字段 使用时查看逻辑
+  //       // itemCount: settingCtrl.store.storeFrequentlyUsed.length,
+  //       itemCount: 0,
+  //       gridDelegate:
+  //           const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+  //     );
+  //   });
+  // }
 
   Widget recentWidget({String type = "file"}) {
     return Obx(() {

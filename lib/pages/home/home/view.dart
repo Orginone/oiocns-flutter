@@ -5,9 +5,16 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/chat/message_chats/message_chats_page.dart';
+import 'package:orginone/pages/home/components/user_bar.dart';
+import 'package:orginone/pages/home/index/view.dart';
+import 'package:orginone/pages/setting/view.dart';
+import 'package:orginone/pages/store/view.dart';
+import 'package:orginone/pages/work/view.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/badge_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/widget/keep_alive_widget.dart';
 import 'package:orginone/widget/unified.dart';
 
 import 'logic.dart';
@@ -34,30 +41,19 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
           toolbarHeight: 0,
           body: Column(
             children: [
-              Center(
-                child: SizedBox(
-                  height: 300,
-                  width: 300,
-                  child: Text(settingCtrl.user.name),
-                ),
-              ),
-              //TODO:暂时注 用到细调
-              // const UserBar(),
-              // Expanded(
-              //   child: ExtendedTabBarView(
-              //     shouldIgnorePointerWhenScrolling: false,
-              //     controller: state.tabController,
-              //     children: [
-              //       KeepAliveWidget(child: MessageChats()),
-              //       KeepAliveWidget(child: WorkPage()),
-              //       KeepAliveWidget(child: IndexPage()),
-              //       KeepAliveWidget(child: StorePage()),
-              //       KeepAliveWidget(child: SettingPage()),
-              //     ],
-              //   ),
-              // ),
+              const UserBar(),
               Expanded(
-                child: Container(),
+                child: ExtendedTabBarView(
+                  shouldIgnorePointerWhenScrolling: false,
+                  controller: state.tabController,
+                  children: [
+                    KeepAliveWidget(child: MessageChats()),
+                    KeepAliveWidget(child: WorkPage()),
+                    KeepAliveWidget(child: IndexPage()),
+                    KeepAliveWidget(child: StorePage()),
+                    KeepAliveWidget(child: SettingPage()),
+                  ],
+                ),
               ),
               bottomButton(),
             ],

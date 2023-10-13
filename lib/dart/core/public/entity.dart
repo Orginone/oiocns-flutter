@@ -132,7 +132,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
   @override
   T? findMetadata<T>(String id) {
     if (shareIdSet.containsKey(id)) {
-      return shareIdSet.values as T;
+      return shareIdSet[id] as T;
     }
     return null;
   }
@@ -155,7 +155,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
     ShareIcon shareIcon = ShareIcon(
         name: metadata?.name ?? '加载中...',
         typeName: metadata?.typeName ?? '未知',
-        avatar: parseAvatar(metadata?.icon));
+        avatar: FileItemShare.fromJson(parseAvatar(metadata?.icon)));
     return shareIcon;
   }
 

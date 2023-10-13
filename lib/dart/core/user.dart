@@ -23,20 +23,22 @@ class UserProvider {
       _loadUser(XTarget.fromJson(jsonDecode(userJson)));
     }
   }
+  final Rxn<IPerson> _user = Rxn();
+  // late IPerson? _user;
 
-  late IPerson? _user;
-  late IWorkProvider? _work;
+  final Rxn<IWorkProvider> _work = Rxn();
+
   bool _inited = false;
   late Emitter? _emiter;
   var myApps = <Map<IApplication, ITarget>>[].obs;
 
   /// 当前用户
   IPerson? get user {
-    return _user;
+    return _user.value;
   }
 
   IWorkProvider? get work {
-    return _work;
+    return _work.value;
   }
 
   /// 是否完成初始化
@@ -46,11 +48,9 @@ class UserProvider {
 
   List<ITarget> get targets {
     final List<ITarget> targets = [];
-    if (_user != null) {
-      targets.addAll(_user!.targets);
-      for (final company in _user!.companys) {
-        targets.addAll(company.targets);
-      }
+    targets.addAll(_user.value!.targets);
+    for (final company in _user.value!.companys) {
+      targets.addAll(company.targets);
     }
     return targets;
   }
@@ -94,16 +94,16 @@ class UserProvider {
     Storage.setJson(sessionUserName, person.toJson());
     kernel.userId = person.id;
 
-    _user = Person(person);
+    _user.value = Person(person);
     logger.info(_user);
-    _work = WorkProvider(this);
+    _work.value = WorkProvider(this);
     // refresh();
   }
 
   /// 重载数据
   Future<void> refresh() async {
     _inited = false;
-    await _user?.deepLoad(reload: true);
+    await _user.value?.deepLoad(reload: true);
     await work?.loadTodos(reload: true);
     _inited = true;
     _emiter?.changCallback();
