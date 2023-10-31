@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/initiate_work/state.dart';
@@ -213,20 +211,21 @@ class WorkSubController extends BaseListController<WorkSubState> {
   }
 
   loadDones() async {
-    PageResult<IWorkTask> pageResult =
-        await settingCtrl.work.loadDones(IdPageModel(
-      id: settingCtrl.user.id,
-    ));
+    // PageResult<IWorkTask> pageResult =
+    //     await settingCtrl.work.loadDones(IdPageModel(
+    //   id: settingCtrl.user.id,
+    // ));
+    // PageResult<IWorkTask> pageResult = settingCtrl.work.todos;
 
-    state.list.value = pageResult.result;
+    // state.list.value = pageResult.result;
   }
 
   loadApply() async {
-    PageResult<IWorkTask> pageResult =
-        await settingCtrl.work.loadApply(IdPageModel(
-      id: settingCtrl.user.id,
-    ));
-    state.list.value = pageResult.result;
+    // PageResult<IWorkTask> pageResult =
+    //     await settingCtrl.work.loadApply(IdPageModel(
+    //   id: settingCtrl.user.id,
+    // ));
+    // state.list.value = pageResult.result;
   }
 
   @override

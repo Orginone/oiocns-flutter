@@ -6,13 +6,16 @@ import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/pages/work/work_list/state.dart';
 import 'logic.dart';
 
-class WorkListPage extends BaseGetListView<WorkListController,WorkListState>{
+class WorkListPage extends BaseGetListView<WorkListController, WorkListState> {
+  WorkListPage({super.key});
+
   @override
   Widget buildView() {
     return ListView.builder(
       padding: EdgeInsets.only(top: 10.h),
       itemBuilder: (context, index) {
-        return ListItem(adapter: ListAdapter.work(state.dataList[index]),
+        return ListItem(
+          adapter: ListAdapter.work(state.dataList[index]),
         );
       },
       itemCount: state.dataList.length,
@@ -20,6 +23,5 @@ class WorkListPage extends BaseGetListView<WorkListController,WorkListState>{
   }
 
   @override
-  // TODO: implement title
   String get title => state.work.name;
 }

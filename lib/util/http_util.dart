@@ -11,7 +11,7 @@ class HttpUtil {
   HttpUtil._();
 
   static final HttpUtil _instance = HttpUtil._();
-
+  late final Dio _dio;
   factory HttpUtil() {
     return _instance;
   }
@@ -24,12 +24,27 @@ class HttpUtil {
   ));
 
   void init() {
-    dio
-      ..interceptors.add(PrettyDioLogger(
-        requestHeader: true,
-        requestBody: true,
-      ))
-      ..interceptors.add(InterceptorsWrapper(onRequest: (options, handler) {
+    // 初始 dio
+    var options = BaseOptions(
+      baseUrl: Constant.host,
+      connectTimeout: const Duration(seconds: 5), // 5秒
+      receiveTimeout: const Duration(seconds: 5), // 5秒
+      headers: {},
+      contentType: 'application/json; charset=utf-8',
+      responseType: ResponseType.json,
+    );
+    var prettyDioLogger = PrettyDioLogger(
+      requestHeader: true,
+      requestBody: true,
+      responseBody: true,
+      responseHeader: false,
+      compact: true,
+    );
+    _dio = Dio(options);
+    // 拦截器
+    _dio.interceptors
+      ..add(prettyDioLogger)
+      ..add(InterceptorsWrapper(onRequest: (options, handler) {
         return handler.next(options); //continue
       }, onResponse: (response, handler) {
         return handler.next(response); // continue
@@ -80,9 +95,10 @@ class HttpUtil {
       return result.data!;
     } on DioException catch (error) {
       _onDioError(error, showError!);
+      // rethrow;
     } on Exception catch (error) {
       _onExceptionError(error, showError!);
-      rethrow;
+      // rethrow;
     } finally {
       log.info("================End Get Http Request================");
     }
@@ -122,10 +138,10 @@ class HttpUtil {
       return result.data!;
     } on DioException catch (error) {
       _onDioError(error, showError!);
-      rethrow;
+      // rethrow;
     } on Exception catch (error) {
       _onExceptionError(error, showError!);
-      rethrow;
+      // rethrow;
     } finally {
       log.info("================End Post Http Request================");
     }

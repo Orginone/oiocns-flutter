@@ -66,6 +66,7 @@ class XCollection<T extends Xbase> {
     var res = await kernel.collectionLoad(
       _target.belongId!,
       _relations,
+      _collName,
       options,
     );
     if (res.success && res.data != null) {

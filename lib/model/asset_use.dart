@@ -1,4 +1,3 @@
-
 import 'assets_info.dart';
 
 class AssetUse {
@@ -14,7 +13,6 @@ class AssetUse {
   String? oldUserId;
   String? keeperId;
   String? keeperOrgId;
-
 
   //资产交回
   String? submitterName;
@@ -50,49 +48,48 @@ class AssetUse {
   int? stockStatus;
   String? submitUserId;
 
-
-
   AssetUse(
       {this.billCode,
-        this.applyRemark,
-        this.type,
-        this.oldUserId,
-        this.keeperId,
-        this.keeperOrgId,
-        this.approvalDocument});
+      this.applyRemark,
+      this.type,
+      this.oldUserId,
+      this.keeperId,
+      this.keeperOrgId,
+      this.approvalDocument});
 
   AssetUse.fromJson(Map<String, dynamic> json) {
-    billCode = json['stockTaskCode']??json['BILL_CODE'];
-    applyRemark = json['APPLY_REMARK']??json['REMARK']??json['applyRemark'];
+    billCode = json['stockTaskCode'] ?? json['BILL_CODE'];
+    applyRemark = json['APPLY_REMARK'] ?? json['REMARK'] ?? json['applyRemark'];
     type = json['type'];
     oldUserId = json['OLD_USER_ID'];
     keeperId = json['KEEPER_ID'];
     keeperOrgId = json['KEEP_ORG_ID'];
     approvalDocument = json['approvalDocument'] != null
-        ? new ApprovalDocument.fromJson(json['approvalDocument'])
+        ? ApprovalDocument.fromJson(json['approvalDocument'])
         : null;
 
-    submitterName = json['submitterName']??json['SUBMITTER_NAME'];
+    submitterName = json['submitterName'] ?? json['SUBMITTER_NAME'];
     // submitUserName = json['submitUserName'];
     userName = json['USER_NAME'].toString();
     status = json['status'];
-    createTime = DateTime.tryParse(json['CREATE_TIME']??"");
-    updateTime = DateTime.tryParse(json['UPDATE_TIME']??"");
-    way = int.tryParse(json['way'].toString())??int.tryParse(json['DISPOSE_TYPE'].toString());
-    keepOrgName = json['ACC_UNIT']??json['keepOrgName'];
-    keepOrgType = json['IS_SYS_UNIT']??json['keepOrgType'];
-    evaluated = json['evaluated'] is int?json['evaluated']:null;
-    assetsTotal = json['SHEJIZCZZ']??json['assetsTotal'];
+    createTime = DateTime.tryParse(json['CREATE_TIME'] ?? "");
+    updateTime = DateTime.tryParse(json['UPDATE_TIME'] ?? "");
+    way = int.tryParse(json['way'].toString()) ??
+        int.tryParse(json['DISPOSE_TYPE'].toString());
+    keepOrgName = json['ACC_UNIT'] ?? json['keepOrgName'];
+    keepOrgType = json['IS_SYS_UNIT'] ?? json['keepOrgType'];
+    evaluated = json['evaluated'] is int ? json['evaluated'] : null;
+    assetsTotal = json['SHEJIZCZZ'] ?? json['assetsTotal'];
     keepOrgPhoneNumber = json['keepOrgPhoneNumber'];
-    depreciationTotal = json['LEIJIZJHJ']??json['depreciationTotal'];
-    netWorthTotal = json['JINGZHIHJ']??json['netWorthTotal'];
+    depreciationTotal = json['LEIJIZJHJ'] ?? json['depreciationTotal'];
+    netWorthTotal = json['JINGZHIHJ'] ?? json['netWorthTotal'];
     count = int.tryParse(json['count'].toString());
     editStatus = json['editStatus'];
     approvalEnd = int.tryParse(json['approvalEnd'].toString());
     approvalStatus = int.tryParse(json['APPROVAL_STATUS'].toString());
     verificationStatus = int.tryParse(json['verificationStatus'].toString());
     readStatus = json['readStatus'];
-    gmtCreate = DateTime.tryParse(json['gmtCreate']??"");
+    gmtCreate = DateTime.tryParse(json['gmtCreate'] ?? "");
     id = json['id'];
     verificationDate = json['verificationDate'];
     verificationDocumentsNumber = json['verificationDocumentsNumber'];
@@ -103,11 +100,11 @@ class AssetUse {
       json['detail'].forEach((v) {
         detail!.add(v);
       });
-      if(detail!.isNotEmpty){
+      if (detail!.isNotEmpty) {
         approvalDocument = ApprovalDocument()..detail = [];
         for (var value in detail!) {
-          var item = null;
-          if(item!=null){
+          var item;
+          if (item != null) {
             approvalDocument!.detail!.add(item);
           }
         }
@@ -116,58 +113,58 @@ class AssetUse {
     stockTaskName = json['stockTaskName'];
     stockMethod = json['stockMethod'];
     stockStatus = json['stockStatus'];
-    submitUserId = json['submitUserId']??json['SUBMITTER_ID'];
+    submitUserId = json['submitUserId'] ?? json['SUBMITTER_ID'];
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['BILL_CODE'] = this.billCode;
-    data['APPLY_REMARK'] = this.applyRemark;
-    data['REMARK'] = this.applyRemark;
-    data['applyRemark'] = this.applyRemark;
-    data['type'] = this.type;
-    data['OLD_USER_ID'] = this.oldUserId;
-    data['KEEPER_ID'] = this.keeperId;
-    data['KEEP_ORG_ID'] = this.keeperOrgId;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['BILL_CODE'] = billCode;
+    data['APPLY_REMARK'] = applyRemark;
+    data['REMARK'] = applyRemark;
+    data['applyRemark'] = applyRemark;
+    data['type'] = type;
+    data['OLD_USER_ID'] = oldUserId;
+    data['KEEPER_ID'] = keeperId;
+    data['KEEP_ORG_ID'] = keeperOrgId;
     // data['submitUserName'] = this.submitUserName;
-    data['SUBMITTER_NAME'] = this.submitterName;
-    data['USER_NAME'] = this.userName;
-    data['status'] = this.status;
-    data['CREATE_TIME'] = this.createTime;
-    data['UPDATE_TIME'] = this.updateTime;
-    data['way'] = this.way;
-    data['DISPOSE_TYPE'] = this.way;
-    data['evaluated'] = this.evaluated;
-    data['SHEJIZCZZ'] = this.assetsTotal;
-    data['LEIJIZJHJ'] = this.depreciationTotal;
-    data['JINGZHIHJ'] = this.netWorthTotal;
+    data['SUBMITTER_NAME'] = submitterName;
+    data['USER_NAME'] = userName;
+    data['status'] = status;
+    data['CREATE_TIME'] = createTime;
+    data['UPDATE_TIME'] = updateTime;
+    data['way'] = way;
+    data['DISPOSE_TYPE'] = way;
+    data['evaluated'] = evaluated;
+    data['SHEJIZCZZ'] = assetsTotal;
+    data['LEIJIZJHJ'] = depreciationTotal;
+    data['JINGZHIHJ'] = netWorthTotal;
     data['ACC_UNIT'] = keepOrgName;
     data['keepOrgName'] = keepOrgName;
-    data['IS_SYS_UNIT'] =  keepOrgType;
+    data['IS_SYS_UNIT'] = keepOrgType;
     data['keepOrgType'] = keepOrgType;
-    data['count'] = this.count;
-    data['keepOrgPhoneNumber'] =keepOrgPhoneNumber;
-    data['editStatus'] = this.editStatus;
-    data['approvalEnd'] = this.approvalEnd;
-    data['APPROVAL_STATUS'] = this.approvalStatus;
-    data['verificationStatus'] = this.verificationStatus;
-    data['readStatus'] = this.readStatus;
-    data['gmtCreate'] = this.gmtCreate;
-    data['id'] = this.id;
-    data['verificationDate'] = this.verificationDate;
-    data['verificationDocumentsNumber'] = this.verificationDocumentsNumber;
-    data['verificationManId'] = this.verificationManId;
-    data['verificationManName'] = this.verificationManName;
-    if (this.detail != null) {
-      data['detail'] = this.detail;
+    data['count'] = count;
+    data['keepOrgPhoneNumber'] = keepOrgPhoneNumber;
+    data['editStatus'] = editStatus;
+    data['approvalEnd'] = approvalEnd;
+    data['APPROVAL_STATUS'] = approvalStatus;
+    data['verificationStatus'] = verificationStatus;
+    data['readStatus'] = readStatus;
+    data['gmtCreate'] = gmtCreate;
+    data['id'] = id;
+    data['verificationDate'] = verificationDate;
+    data['verificationDocumentsNumber'] = verificationDocumentsNumber;
+    data['verificationManId'] = verificationManId;
+    data['verificationManName'] = verificationManName;
+    if (detail != null) {
+      data['detail'] = detail;
     }
-    if (this.approvalDocument != null) {
-      data['approvalDocument'] = this.approvalDocument!.toJson();
+    if (approvalDocument != null) {
+      data['approvalDocument'] = approvalDocument!.toJson();
     }
-    data['stockTaskName'] = this.stockTaskName;
-    data['stockMethod'] = this.stockMethod;
-    data['stockStatus'] = this.stockStatus;
-    data['submitUserId'] = this.submitUserId;
+    data['stockTaskName'] = stockTaskName;
+    data['stockMethod'] = stockMethod;
+    data['stockStatus'] = stockStatus;
+    data['submitUserId'] = submitUserId;
     return data;
   }
 }
@@ -187,16 +184,16 @@ class ApprovalDocument {
 
   ApprovalDocument(
       {this.oldUserId,
-        this.keeperId,
-        this.keepOrgId,
-        this.oldOrgId,
-        this.oldOrgName,
-        this.detail,
-        this.status,
-        this.createUser,
-        this.submitUserName,
-        this.createTime,
-        this.updateTime});
+      this.keeperId,
+      this.keepOrgId,
+      this.oldOrgId,
+      this.oldOrgName,
+      this.detail,
+      this.status,
+      this.createUser,
+      this.submitUserName,
+      this.createTime,
+      this.updateTime});
 
   ApprovalDocument.fromJson(Map<String, dynamic> json) {
     oldOrgId = json['OLD_USER_ID'];
@@ -207,37 +204,36 @@ class ApprovalDocument {
     detail = <AssetsInfo>[];
     if (json['detail'] != null) {
       json['detail'].forEach((v) {
-        detail!.add(new AssetsInfo.fromJson(v));
+        detail!.add(AssetsInfo.fromJson(v));
       });
     }
     if (json['details'] != null) {
       json['details'].forEach((v) {
-        detail!.add(new AssetsInfo.fromJson(v));
+        detail!.add(AssetsInfo.fromJson(v));
       });
     }
     createUser = json['CREATE_USER'];
     submitUserName = json['submitUserName'];
     status = json['status'];
-    createTime = DateTime.tryParse(json['CREATE_TIME']??"");
-    updateTime = DateTime.tryParse(json['UPDATE_TIME']??"");
+    createTime = DateTime.tryParse(json['CREATE_TIME'] ?? "");
+    updateTime = DateTime.tryParse(json['UPDATE_TIME'] ?? "");
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['OLD_USER_ID'] = this.oldOrgId;
-    data['KEEPER_ID'] = this.keeperId;
-    data['KEEP_ORG_ID'] = this.keeperId;
-    data['OLD_ORG_ID'] = this.oldOrgId;
-    data['OLD_ORG_NAME'] = this.oldOrgName;
-    if (this.detail != null) {
-      data['detail'] = this.detail!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['OLD_USER_ID'] = oldOrgId;
+    data['KEEPER_ID'] = keeperId;
+    data['KEEP_ORG_ID'] = keeperId;
+    data['OLD_ORG_ID'] = oldOrgId;
+    data['OLD_ORG_NAME'] = oldOrgName;
+    if (detail != null) {
+      data['detail'] = detail!.map((v) => v.toJson()).toList();
     }
-    data['CREATE_USER'] = this.createUser;
-    data['submitUserName'] = this.submitUserName;
-    data['status'] = this.status;
-    data['CREATE_TIME'] = this.createTime;
-    data['UPDATE_TIME'] = this.updateTime;
+    data['CREATE_USER'] = createUser;
+    data['submitUserName'] = submitUserName;
+    data['status'] = status;
+    data['CREATE_TIME'] = createTime;
+    data['UPDATE_TIME'] = updateTime;
     return data;
   }
 }
-

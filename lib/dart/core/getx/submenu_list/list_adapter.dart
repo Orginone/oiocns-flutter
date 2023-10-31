@@ -123,9 +123,9 @@ class ListAdapter {
     isUserLabel = true;
     circularAvatar = false;
     noReadCount = 0;
-    title = work.metadata.title ?? '';
+    title = work.taskdata.title ?? '';
     dateTime = work.metadata.createTime ?? "";
-    content = work.metadata.content ?? "";
+    content = work.taskdata.content ?? "";
     image = ShareIdSet[work.metadata.shareId]?.avatar?.thumbnailUint8List ??
         Images.iconWorkitem;
     if (work.targets.length == 2) {

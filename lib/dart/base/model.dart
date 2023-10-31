@@ -39,6 +39,7 @@ class ReqestType {
 
 // 请求数据核类型定义
 class DataProxyType {
+  String flag; // 标签
   String module; // 模块
   String action; // 方法
   String belongId; // 归属
@@ -47,6 +48,7 @@ class DataProxyType {
   List<String> relations; // 关系举证(用户鉴权[user=>relations=>target],最大支持2级关系)
 
   DataProxyType({
+    required this.flag,
     required this.module,
     required this.action,
     required this.belongId,
@@ -57,6 +59,7 @@ class DataProxyType {
 
   factory DataProxyType.fromJson(Map<String, dynamic> json) {
     return DataProxyType(
+      flag: json['flag'] as String, // 模块
       module: json['module'] as String, // 模块
       action: json['action'] as String, // 方法
       belongId: json['belongId'] as String, // 归属
@@ -68,6 +71,7 @@ class DataProxyType {
 
   Map<String, dynamic> toJson() {
     return {
+      'flag': flag, // 模块
       'module': module, // 模块
       'action': action, // 方法
       'belongId': belongId, // 归属
@@ -113,6 +117,20 @@ class DataNotityType {
     required this.onlineOnly,
     this.subTargetId,
   });
+  Map<String, dynamic> toJson() {
+    return {
+      'data': data,
+      'targetId': targetId,
+      'ignoreSelf': ignoreSelf,
+      'ignoreConnectionId': ignoreConnectionId,
+      'flag': flag,
+      'relations': relations,
+      'belongId': belongId,
+      'onlyTarget': onlyTarget,
+      'onlineOnly': onlineOnly,
+      'subTargetId': subTargetId,
+    };
+  }
 }
 
 // 代理请求类型定义
@@ -131,6 +149,15 @@ class HttpRequestType {
     required this.header,
     required this.content,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'uri': uri,
+      'method': method,
+      'header': header,
+      'content': content,
+    };
+  }
 }
 
 // Http请求响应类型定义

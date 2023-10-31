@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:get/get.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
@@ -698,6 +700,44 @@ class KernelApi {
     );
   }
 
+  /// 根据ID查询流程实例
+  /// @param  过滤参数
+  /// @returns {schema.XWorkInstance | undefined} 流程实例对象
+  Future<XWorkInstance?> findInstance(
+    String belongId,
+    String instanceId,
+  ) async {
+    var data = DataProxyType(
+      module: 'Collection',
+      action: 'Load',
+      belongId: belongId,
+      relations: [],
+      flag: '-work-instance-',
+      params: {
+        'options': {
+          'match': {
+            'id': instanceId,
+          },
+          'limit': 1,
+          'lookup': {
+            'from': 'work-task',
+            'localField': 'id',
+            'foreignField': 'instanceId',
+            'as': 'tasks',
+          },
+        },
+        'collName': 'work-instance',
+      },
+    );
+    var res = await dataProxy(data);
+    if (res.success && res.data != null && res.data.data != null) {
+      if (res.data.data is Array && res.data.data.length > 0) {
+        return res.data.data[0];
+      }
+    }
+    return null;
+  }
+
   /// 获取对象数据
   /// @param {string} belongId 对象所在的归属用户ID
   /// @param {string} key 对象名称（eg: rootName.person.name）
@@ -713,6 +753,7 @@ class KernelApi {
         belongId: belongId,
         relations: relations,
         params: {},
+        flag: 'diskInfo',
       ),
     );
   }
@@ -730,6 +771,7 @@ class KernelApi {
       DataProxyType(
         module: 'Object',
         action: 'Get',
+        flag: key,
         belongId: belongId,
         relations: relations,
         params: key,
@@ -752,6 +794,7 @@ class KernelApi {
       DataProxyType(
         module: 'Object',
         action: 'Set',
+        flag: key,
         belongId: belongId,
         relations: relations,
         params: {
@@ -775,6 +818,7 @@ class KernelApi {
       DataProxyType(
         module: 'Object',
         action: 'Delete',
+        flag: key,
         belongId: belongId,
         relations: relations,
         params: key,
@@ -801,6 +845,7 @@ class KernelApi {
         belongId: belongId,
         copyId: copyId,
         relations: relations,
+        flag: collName,
         params: {collName, data},
       ),
     );
@@ -825,6 +870,7 @@ class KernelApi {
         belongId: belongId,
         copyId: copyId,
         relations: relations,
+        flag: collName,
         params: {collName, collSet},
       ),
     );
@@ -849,6 +895,7 @@ class KernelApi {
         belongId: belongId,
         copyId: copyId,
         relations: relations,
+        flag: collName,
         params: {collName, replace},
       ),
     );
@@ -873,6 +920,7 @@ class KernelApi {
         belongId: belongId,
         copyId: copyId,
         relations: relations,
+        flag: collName,
         params: {collName, update},
       ),
     );
@@ -897,6 +945,7 @@ class KernelApi {
         belongId: belongId,
         copyId: copyId,
         relations: relations,
+        flag: collName,
         params: {collName, match},
       ),
     );
@@ -908,6 +957,7 @@ class KernelApi {
   Future<LoadResult<T>> collectionLoad<T>(
     String belongId,
     List<String> relations,
+    String collName,
     dynamic options,
   ) async {
     options['belongId'] = belongId;
@@ -917,6 +967,7 @@ class KernelApi {
         action: 'Load',
         belongId: belongId,
         relations: relations,
+        flag: '-$collName',
         params: options,
       ),
     );
@@ -942,6 +993,7 @@ class KernelApi {
       DataProxyType(
         module: 'Collection',
         action: 'Aggregate',
+        flag: collName,
         belongId: belongId,
         relations: relations,
         params: {collName, options},
@@ -963,7 +1015,10 @@ class KernelApi {
   ) async {
     var total =
         await collectionAggregate(belongId, relations, collName, options);
-    if (total.data && (total.data is List) && total.data.length > 0) {
+    if (total.success &&
+        total.data &&
+        (total.data is List) &&
+        total.data.length > 0) {
       options['skip'] = page.offset;
       options['limit'] = page.limit;
       var res =
@@ -1001,6 +1056,7 @@ class KernelApi {
         action: 'Operate',
         belongId: belongId,
         relations: relations,
+        flag: 'bucketOpreate',
         params: data,
       ),
     );
@@ -1022,6 +1078,7 @@ class KernelApi {
         action: 'Load',
         belongId: belongId,
         relations: relations,
+        flag: 'loadThing',
         params: options,
       ),
     );
@@ -1040,6 +1097,7 @@ class KernelApi {
       DataProxyType(
         module: 'Thing',
         action: 'Create',
+        flag: 'createThing',
         belongId: belongId,
         relations: relations,
         params: name,
@@ -1057,7 +1115,7 @@ class KernelApi {
       return await _storeHub.invoke('HttpForward', args: [req])
           as ResultType<HttpResponseType>;
     } else {
-      var res = await _restRequest('httpForward', req);
+      var res = await _restRequest('httpForward', req.toJson());
 
       return ResultType<HttpResponseType>(
           code: res.code, msg: res.msg, success: res.success, data: res.data);
@@ -1071,13 +1129,14 @@ class KernelApi {
     DataProxyType req,
   ) async {
     dynamic raw;
-    print('param:${req.toJson()}');
+    print('dataProxy param:${req.toJson()}');
     if (_storeHub.isConnected) {
       raw = await _storeHub.invoke('DataProxy', args: [req]);
     } else {
-      raw = await _restRequest('dataProxy', req);
+      var json = req.toJson();
+      raw = await _restRequest('dataProxy', json);
     }
-    print('raw:$raw');
+    logger.info('dataProxy raw:${raw.toString()}');
     if (!raw.success) {
       ToastUtils.showMsg(msg: raw.msg);
     }
@@ -1096,7 +1155,7 @@ class KernelApi {
       return await _storeHub.invoke('DataNotify', args: [req])
           as ResultType<bool>;
     } else {
-      var res = await _restRequest('dataNotify', req);
+      var res = await _restRequest('dataNotify', req.toJson());
       return res as ResultType<bool>;
     }
   }
@@ -1123,7 +1182,7 @@ class KernelApi {
     if (_storeHub.isConnected) {
       raw = await _storeHub.invoke('Request', args: [req]);
     } else {
-      raw = await _restRequest('request', req);
+      raw = await _restRequest('request', req.toJson());
     }
     if (!raw.success) {
       ToastUtils.showMsg(msg: raw.msg);
@@ -1150,7 +1209,7 @@ class KernelApi {
     if (_storeHub.isConnected) {
       raw = await _storeHub.invoke('Request', args: [req]);
     } else {
-      raw = await _restRequest('request', req);
+      raw = await _restRequest('request', req.toJson());
     }
     if (!raw.success) {
       ToastUtils.showMsg(msg: raw.msg);
@@ -1183,7 +1242,7 @@ class KernelApi {
     if (_storeHub.isConnected) {
       return await _storeHub.invoke('Requests', args: reqs);
     } else {
-      return await _restRequest('requests', reqs);
+      return await _restRequest('requests', reqs.map((e) => e.toJson()));
     }
   }
 
@@ -1327,7 +1386,7 @@ class KernelApi {
     );
 
     // if (res.data && (res.data is ResultType)) {
-    if (res['data'] != null) {
+    if (res != null && res['data'] != null) {
       final result = ResultType<T>.fromJson(res);
       if (!result.success) {
         if (result.code == 401) {

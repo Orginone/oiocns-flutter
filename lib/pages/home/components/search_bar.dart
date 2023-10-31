@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
@@ -70,7 +69,7 @@ class SearchBar<T> extends SearchDelegate {
           }
           break;
         case HomeEnum.work:
-          if ((element as IWorkTask).metadata.title!.contains(query)) {
+          if ((element as IWorkTask).taskdata.title!.contains(query)) {
             searchData.add(element);
           }
           break;

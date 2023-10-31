@@ -6,9 +6,9 @@ import 'package:orginone/config/enum.dart';
 import 'base_controller.dart';
 import 'base_get_list_state.dart';
 
-
-abstract class BaseListController<S extends BaseGetListState> extends BaseController<S>{
-
+abstract class BaseListController<S extends BaseGetListState>
+    extends BaseController<S> {
+  @override
   late BuildContext context;
 
   late Logger log;
@@ -17,31 +17,28 @@ abstract class BaseListController<S extends BaseGetListState> extends BaseContro
 
   @override
   void onInit() {
-    log = Logger(this.toString());
+    log = Logger(toString());
     super.onInit();
   }
 
-
-
-
   /// 下拉刷新使用
-  Future onRefresh() async{
+  Future onRefresh() async {
     state.page = 0;
     await loadData(isRefresh: true);
   }
 
   /// 加载更多使用
-  Future onLoadMore() async{
+  Future onLoadMore() async {
     state.page++;
     await loadData();
   }
 
-  void loadSuccess(){
+  void loadSuccess() {
     state.isSuccess.value = true;
     state.isLoading.value = false;
   }
 
-  void loadFailed(){
+  void loadFailed() {
     state.isSuccess.value = false;
     state.isLoading.value = false;
   }
@@ -50,7 +47,6 @@ abstract class BaseListController<S extends BaseGetListState> extends BaseContro
   void search(String value) {
     throw Exception("未实现的方法!");
   }
-
 
   void removeAt(int index) {
     if (index < state.dataList.length) {
@@ -67,11 +63,12 @@ abstract class BaseListController<S extends BaseGetListState> extends BaseContro
     super.onClose();
   }
 
-  Future<void> loadData({bool isRefresh = false,bool isLoad = false}) async{
+  @override
+  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     loadSuccess();
   }
 
-
+  @override
   void onReceivedEvent(event) {}
 
   updateLoadStatus(LoadStatusX status) {
@@ -80,6 +77,4 @@ abstract class BaseListController<S extends BaseGetListState> extends BaseContro
       state.loadStatus.value = status;
     }
   }
-
-
 }
