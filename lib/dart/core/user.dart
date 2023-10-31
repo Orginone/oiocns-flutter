@@ -97,7 +97,7 @@ class UserProvider {
     _user.value = Person(person);
     logger.info(_user);
     _work.value = WorkProvider(this);
-    // refresh();
+    refresh();
   }
 
   /// 重载数据

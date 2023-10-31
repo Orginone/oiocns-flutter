@@ -172,9 +172,9 @@ class LoadResult<T> {
 
   LoadResult.fromJson(Map<String, dynamic> json)
       : data = json["data"],
-        groupCount = json["groupCount"],
-        totalCount = json["totalCount"],
-        summary = json["summary"],
+        groupCount = json["groupCount"] ?? 0,
+        totalCount = json["totalCount"] ?? 0,
+        summary = json["summary"] ?? [],
         code = json["code"],
         msg = json["msg"],
         success = json["success"];
@@ -219,14 +219,19 @@ class ResultType<T> {
         code = json["code"],
         success = json["success"];
 
+  ResultType.fromObj(ResultType resultT, T this.data)
+      : msg = resultT.msg,
+        success = resultT.success,
+        code = resultT.code;
+
   ResultType.fromJsonSerialize(
-      Map<String, dynamic> json, T Function(Map<String, dynamic>) serialize)
-      : msg = json["msg"] ?? "",
-        data = (json["data"] != null && json["data"] is Map)
-            ? serialize(json["data"])
+      ResultType<dynamic> json, T Function(Map<String, dynamic>) serialize)
+      : msg = json.msg ?? "",
+        data = (json.data != null && json.data is Map)
+            ? serialize(json.data!)
             : null,
-        code = json["code"] ?? 400,
-        success = json["success"] ?? false;
+        code = json.code ?? 400,
+        success = json.success ?? false;
 
   Map<String, dynamic> toJson() {
     return {
@@ -321,12 +326,17 @@ class PageResult<T> {
     required this.result,
   });
 
-  factory PageResult.fromJson(Map<String, dynamic> json) {
+  factory PageResult.fromJson(Map<String, dynamic> json,
+      [List<T> Function(List<dynamic>)? resultCF]) {
     return PageResult(
-      total: json['total'] as int,
-      offset: json['offset'] as int,
-      limit: json['limit'] as int,
-      result: List<T>.from(json['result'] as List),
+      total: json.containsKey('total') ? json['total'] as int : 0,
+      offset: json.containsKey('offset') ? json['offset'] as int : 0,
+      limit: json.containsKey('limit') ? json['limit'] as int : 0,
+      result: json.containsKey('result')
+          ? null != resultCF
+              ? resultCF(json['result'])
+              : List<T>.from(json['result'] as List)
+          : [],
     );
   }
 
@@ -458,6 +468,10 @@ class IdModel {
   IdModel(
     this.id,
   );
+
+  Map<String, dynamic> toJson() {
+    return {'id': id};
+  }
 }
 
 class IdPageModel {
@@ -470,6 +484,15 @@ class IdPageModel {
     required this.id,
     this.page,
   });
+
+  factory IdPageModel.fromJson(Map<String, dynamic> json) {
+    return IdPageModel(
+        id: json['id'] as String, page: json['page'] as PageModel);
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'id': id, 'page': page};
+  }
 }
 
 class IdArrayModel {
@@ -3250,8 +3273,8 @@ class SchemaType {
   });
 }
 
-ResultType<bool> get badRequest {
-  return ResultType(success: false, msg: '请求失败', code: 400, data: false);
+ResultType get badRequest {
+  return ResultType(success: false, msg: '请求失败', code: 400);
 }
 
 class SubMethodsModel {

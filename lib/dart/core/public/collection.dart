@@ -58,27 +58,33 @@ class XCollection<T extends Xbase> {
 
   Future<List<T>> loadSpace(dynamic options) async {
     options = options ?? {};
-    options.userData = options.userData ?? [];
-    options.collName = _collName;
-    options.options = options.options ?? {};
-    options.options.match = options.options.match ?? {};
-    options.options.match.isDeleted = false;
+    options['userData'] = options['userData'] ?? [];
+    options['collName'] = _collName;
+    options['options'] = options['options'] ?? {};
+    options['options']['match'] = options['options']['match'] ?? {};
+    // options['options']['match']['isDeleted'] = false;
     var res = await kernel.collectionLoad(
       _target.belongId!,
       _relations,
       options,
     );
     if (res.success && res.data != null) {
-      return res.data as List<T>;
+      if (res.data.length > 0) {
+        return res.data.cast<T>();
+      } else {
+        return Future(() => []);
+      }
     }
     return [];
   }
 
   Future<List<T>> load(dynamic options) async {
     options = {};
-    options.options = {};
-    options.options.match = {};
-    options.options.match.shareId = _target.id;
+    options['options'] = {
+      "match": {"shareId": _target.id}
+    };
+    // options.options.match = {};
+    // options.options.match.shareId = _target.id;
     return await loadSpace(options);
   }
 

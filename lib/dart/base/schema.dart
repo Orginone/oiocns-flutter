@@ -5425,7 +5425,7 @@ class XWorkDefine extends XEntity {
     target = json['target'] != null ? XTarget.fromJson(json['target']) : null;
   }
 
-  static List<XWorkDefine> fromList(List<Map<String, dynamic>>? list) {
+  static List<XWorkDefine> fromList(List<dynamic>? list) {
     if (list == null) {
       return [];
     }
@@ -5838,6 +5838,20 @@ class XWorkTask extends Xbase {
     data['instance'] = instance?.toJson();
     return data;
   }
+
+  //通过动态数组解析成List
+  static List<XWorkTask> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<XWorkTask> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(XWorkTask.fromJson(item));
+      }
+    }
+    return retList;
+  }
 }
 
 //TODO:以下模型 可能不需要了  2023.09.18重构 ts to dart 最终确定会删除
@@ -6166,7 +6180,7 @@ class XStagingArray {
         result = XStaging.fromList(json["result"]);
 
   //通过动态数组解析成List
-  static List<XStagingArray> fromList(List<Map<String, dynamic>>? list) {
+  static List<XStagingArray> fromList(List<dynamic>? list) {
     if (list == null) {
       return [];
     }

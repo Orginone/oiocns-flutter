@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
 import 'package:orginone/dart/base/common/commands.dart';
@@ -48,7 +49,7 @@ class KernelApi {
     _storeHub.onConnected(() {
       if (accessToken.isNotEmpty) {
         _storeHub.invoke("TokenAuth", args: [accessToken]).then((value) {
-          ResultType res = ResultType.fromJson(value);
+          ResultType res = value;
           if (res.success) {
             logger.info('连接到内核成功!');
           }
@@ -169,14 +170,14 @@ class KernelApi {
       "password": password,
       "privateKey": privateKey
     };
-    var res;
+    ResultType res;
     if (_storeHub.isConnected) {
       res = await _storeHub.invoke('ResetPassword', args: [req]);
     } else {
       res = await _restRequest("resetpassword", req);
     }
 
-    return ResultType.fromJson(res);
+    return res;
   }
 
   /// 注册到后台核心获取accessToken
@@ -208,12 +209,13 @@ class KernelApi {
   /// 激活存储
   Future<ResultType<XEntity>> activateStorage(GainModel params) async {
     return await request(
-      ReqestType(
-        module: 'target',
-        action: 'ActivateStorage',
-        params: params,
-      ),
-    );
+        ReqestType(
+          module: 'target',
+          action: 'ActivateStorage',
+          params: params,
+        ), (data) {
+      return XEntity.fromJson(data);
+    });
   }
 
   /// 根据ID查询实体信息
@@ -221,12 +223,13 @@ class KernelApi {
   /// @returns {model.ResultType<schema.XEntity>} 请求结果
   Future<ResultType<XEntity>> queryEntityById(IdModel params) async {
     return await request(
-      ReqestType(
-        module: 'core',
-        action: 'QueryEntityById',
-        params: params,
-      ),
-    );
+        ReqestType(
+          module: 'core',
+          action: 'QueryEntityById',
+          params: params,
+        ), (data) {
+      return XEntity.fromJson(data);
+    });
   }
 
   /// 创建权限
@@ -234,12 +237,13 @@ class KernelApi {
   /// @returns {ResultType<XAuthority>} 请求结果
   Future<ResultType<XAuthority>> createAuthority(AuthorityModel params) async {
     return await request(
-      ReqestType(
-        module: 'target',
-        action: 'CreateAuthority',
-        params: params,
-      ),
-    );
+        ReqestType(
+          module: 'target',
+          action: 'CreateAuthority',
+          params: params,
+        ), (data) {
+      return XAuthority.fromJson(data);
+    });
   }
 
   /// 创建角色
@@ -247,12 +251,13 @@ class KernelApi {
   /// @returns {ResultType<XIdentity>} 请求结果
   Future<ResultType<XIdentity>> createIdentity(IdentityModel params) async {
     return await request(
-      ReqestType(
-        module: 'target',
-        action: 'CreateIdentity',
-        params: params,
-      ),
-    );
+        ReqestType(
+          module: 'target',
+          action: 'CreateIdentity',
+          params: params,
+        ), (data) {
+      return XIdentity.fromJson(data);
+    });
   }
 
   /// 创建组织/个人
@@ -260,12 +265,13 @@ class KernelApi {
   /// @returns {ResultType<XTarget>} 请求结果
   Future<ResultType<XTarget>> createTarget(TargetModel params) async {
     return await request(
-      ReqestType(
-        module: 'target',
-        action: 'CreateTarget',
-        params: params,
-      ),
-    );
+        ReqestType(
+          module: 'target',
+          action: 'CreateTarget',
+          params: params,
+        ), (data) {
+      return XTarget.fromJson(data);
+    });
   }
 
   /// 删除权限
@@ -312,12 +318,13 @@ class KernelApi {
   /// @returns {ResultType<XAuthority>} 请求结果
   Future<ResultType<XAuthority>> updateAuthority(AuthorityModel params) async {
     return await request(
-      ReqestType(
-        module: 'target',
-        action: 'UpdateAuthority',
-        params: params,
-      ),
-    );
+        ReqestType(
+          module: 'target',
+          action: 'UpdateAuthority',
+          params: params,
+        ), (data) {
+      return XAuthority.fromJson(data);
+    });
   }
 
   /// 更新角色
@@ -325,12 +332,13 @@ class KernelApi {
   /// @returns {ResultType<XIdentity>} 请求结果
   Future<ResultType<XIdentity>> updateIdentity(IdentityModel params) async {
     return await request(
-      ReqestType(
-        module: 'target',
-        action: 'UpdateIdentity',
-        params: params,
-      ),
-    );
+        ReqestType(
+          module: 'target',
+          action: 'UpdateIdentity',
+          params: params,
+        ), (data) {
+      return XIdentity.fromJson(data);
+    });
   }
 
   /// 更新用户
@@ -338,12 +346,13 @@ class KernelApi {
   /// @returns {ResultType<XTarget>} 请求结果
   Future<ResultType<XTarget>> updateTarget(TargetModel params) async {
     return await request(
-      ReqestType(
-        module: 'target',
-        action: 'UpdateTarget',
-        params: params.toJson(),
-      ),
-    );
+        ReqestType(
+          module: 'target',
+          action: 'UpdateTarget',
+          params: params.toJson(),
+        ), (data) {
+      return XTarget.fromJson(data);
+    });
   }
 
   /// 分配身份
@@ -416,13 +425,14 @@ class KernelApi {
   /// @returns {model.ResultType<model.PageResult<schema.XTarget>>} 请求结果
   Future<ResultType<PageResult<XTarget>>> queryTargetById(
       IdArrayModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryTargetById',
-        params: params,
-      ),
-    );
+    return await requestPageResult(
+        ReqestType(
+          module: 'target',
+          action: 'QueryTargetById',
+          params: params,
+        ), (data) {
+      return XTarget.fromList(data);
+    });
   }
 
   /// 模糊查找用户
@@ -430,13 +440,14 @@ class KernelApi {
   /// @returns {model.ResultType<model.PageResult<schema.XTarget>>} 请求结果
   Future<ResultType<PageResult<XTarget>>> searchTargets(
       SearchModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'SearchTargets',
-        params: params,
-      ),
-    );
+    return await requestPageResult(
+        ReqestType(
+          module: 'target',
+          action: 'SearchTargets',
+          params: params,
+        ), (data) {
+      return XTarget.fromList(data);
+    });
   }
 
   /// 根据ID查询子用户
@@ -444,13 +455,14 @@ class KernelApi {
   /// @returns {model.ResultType<model.PageResult<schema.XTarget>>} 请求结果
   Future<ResultType<PageResult<XTarget>>> querySubTargetById(
       GetSubsModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QuerySubTargetById',
-        params: params,
-      ),
-    );
+    return await requestPageResult(
+        ReqestType(
+          module: 'target',
+          action: 'QuerySubTargetById',
+          params: params,
+        ), (data) {
+      return XTarget.fromList(data);
+    });
   }
 
   /// 查询用户加入的用户
@@ -458,27 +470,28 @@ class KernelApi {
   /// @returns {model.ResultType<model.PageResult<schema.XTarget>>} 请求结果
   Future<ResultType<PageResult<XTarget>>> queryJoinedTargetById(
       GetJoinedModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryJoinedTargetById',
-        params: params,
-      ),
-    );
+    return await requestPageResult(
+        ReqestType(
+          module: 'target',
+          action: 'QueryJoinedTargetById',
+          params: params,
+        ), (data) {
+      return XTarget.fromList(data);
+    });
   }
 
   /// 查询组织权限树
   /// @param {model.IdPageModel} params 请求参数
   /// @returns {model.ResultType<schema.XAuthority>} 请求结果
-  Future<ResultType<PageResult<XAuthority>>> queryAuthorityTree(
-      IdPageModel params) async {
+  Future<ResultType<XAuthority>> queryAuthorityTree(IdPageModel params) async {
     return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryAuthorityTree',
-        params: params,
-      ),
-    );
+        ReqestType(
+          module: 'target',
+          action: 'QueryAuthorityTree',
+          params: params,
+        ), (data) {
+      return XAuthority.fromJson(data);
+    });
   }
 
   /// 查询拥有权限的成员
@@ -486,13 +499,14 @@ class KernelApi {
   /// @returns {model.ResultType<model.PageResult<schema.XTarget>>} 请求结果
   Future<ResultType<PageResult<XTarget>>> queryAuthorityTargets(
       GainModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryAuthorityTargets',
-        params: params,
-      ),
-    );
+    return await requestPageResult(
+        ReqestType(
+          module: 'target',
+          action: 'QueryAuthorityTargets',
+          params: params,
+        ), (data) {
+      return XTarget.fromList(data);
+    });
   }
 
   /// 查询组织身份
@@ -500,13 +514,14 @@ class KernelApi {
   /// @returns {model.ResultType<model.PageResult<schema.XIdentity>>} 请求结果
   Future<ResultType<PageResult<XIdentity>>> queryTargetIdentitys(
       IdPageModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryTargetIdentitys',
-        params: params,
-      ),
-    );
+    return await requestPageResult(
+        ReqestType(
+          module: 'target',
+          action: 'QueryTargetIdentitys',
+          params: params,
+        ), (data) {
+      return XIdentity.fromList(data);
+    });
   }
 
   /// 查询赋予身份的用户
@@ -514,13 +529,14 @@ class KernelApi {
   /// @returns {model.ResultType<model.PageResult<schema.XTarget>>} 请求结果
   Future<ResultType<PageResult<XTarget>>> queryIdentityTargets(
       IdPageModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryIdentityTargets',
-        params: params,
-      ),
-    );
+    return await requestPageResult(
+        ReqestType(
+          module: 'target',
+          action: 'QueryIdentityTargets',
+          params: params,
+        ), (data) {
+      return XTarget.fromList(data);
+    });
   }
 
   /// 查询在当前空间拥有权限的组织
@@ -528,25 +544,27 @@ class KernelApi {
   /// @returns {model.ResultType<model.PageResult<schema.XTarget>>} 请求结果
   Future<ResultType<PageResult<XTarget>>> queryTargetsByAuthority(
       IdPageModel params) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryTargetsByAuthority',
-        params: params,
-      ),
-    );
+    return await requestPageResult(
+        ReqestType(
+          module: 'target',
+          action: 'QueryTargetsByAuthority',
+          params: params,
+        ), (data) {
+      return XTarget.fromList(data);
+    });
   }
 
   /// 查询赋予的身份
   /// @returns {model.ResultType<model.PageResult<schema.XIdProof>>} 请求结果
   Future<ResultType<PageResult<XIdProof>>> queryGivedIdentitys() async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryGivedIdentitys',
-        params: {},
-      ),
-    );
+    return await requestPageResult(
+        ReqestType(
+          module: 'target',
+          action: 'QueryGivedIdentitys',
+          params: {},
+        ), (data) {
+      return XIdProof.fromList(data);
+    });
   }
 
   /// 查询组织身份集
@@ -555,13 +573,14 @@ class KernelApi {
   Future<ResultType<PageResult<XIdentity>>> queryTeamIdentitys(
     IdPageModel params,
   ) async {
-    return await request(
-      ReqestType(
-        module: 'target',
-        action: 'QueryTeamIdentitys',
-        params: params,
-      ),
-    );
+    return await requestPageResult(
+        ReqestType(
+          module: 'target',
+          action: 'QueryTeamIdentitys',
+          params: params,
+        ), (data) {
+      return XIdentity.fromList(data);
+    });
   }
 
   /// 创建办事定义
@@ -571,12 +590,13 @@ class KernelApi {
   Future<ResultType<XWorkDefine>> createWorkDefine(
       WorkDefineModel params) async {
     return await request(
-      ReqestType(
-        module: 'work',
-        action: 'CreateWorkDefine',
-        params: params,
-      ),
-    );
+        ReqestType(
+          module: 'work',
+          action: 'CreateWorkDefine',
+          params: params,
+        ), (data) {
+      return XWorkDefine.fromJson(data);
+    });
   }
 
   /// 创建办事实例(启动办事)
@@ -586,12 +606,13 @@ class KernelApi {
   Future<ResultType<XWorkInstance>> createWorkInstance(
       WorkInstanceModel params) async {
     return await request(
-      ReqestType(
-        module: 'work',
-        action: 'CreateWorkInstance',
-        params: params.toJson(),
-      ),
-    );
+        ReqestType(
+          module: 'work',
+          action: 'CreateWorkInstance',
+          params: params.toJson(),
+        ), (data) {
+      return XWorkInstance.fromJson(data);
+    });
   }
 
   /// 删除办事定义
@@ -625,13 +646,14 @@ class KernelApi {
   /// @returns {model.ResultType<model.PageResult<schema.XWorkDefine>>} 请求结果
   Future<ResultType<PageResult<XWorkDefine>>> queryWorkDefine(
       IdPageModel params) async {
-    return await request(
-      ReqestType(
-        module: 'work',
-        action: 'QueryWorkDefine',
-        params: params,
-      ),
-    );
+    return await requestPageResult(
+        ReqestType(
+          module: 'work',
+          action: 'QueryWorkDefine',
+          params: params,
+        ), (data) {
+      return XWorkDefine.fromList(data);
+    });
   }
 
   /// 查询办事节点
@@ -639,12 +661,13 @@ class KernelApi {
   /// @returns {model.ResultType<model.WorkNodeModel>} 请求结果
   Future<ResultType<WorkNodeModel>> queryWorkNodes(IdReq params) async {
     return await request(
-      ReqestType(
-        module: 'work',
-        action: 'QueryWorkNodes',
-        params: params,
-      ),
-    );
+        ReqestType(
+          module: 'work',
+          action: 'QueryWorkNodes',
+          params: params,
+        ), (data) {
+      return WorkNodeModel.fromJson(data);
+    });
   }
 
   /// 查询待审批任务、抄送
@@ -652,13 +675,14 @@ class KernelApi {
   /// @returns {model.ResultType<model.PageResult<schema.XWorkTask>>} 请求结果
   Future<ResultType<PageResult<XWorkTask>>> queryApproveTask(
       IdModel params) async {
-    return await request(
-      ReqestType(
-        module: 'work',
-        action: 'QueryApproveTask',
-        params: params,
-      ),
-    );
+    return await requestPageResult(
+        ReqestType(
+          module: 'work',
+          action: 'QueryApproveTask',
+          params: params,
+        ), (data) {
+      return XWorkTask.fromList(data);
+    });
   }
 
   /// 办事节点审批
@@ -897,6 +921,9 @@ class KernelApi {
       ),
     );
 
+    if (res.data is Map && res.data['data'] is List<T>) {
+      res.data = res.data['data'];
+    }
     return LoadResult.fromJson(res.toJson());
   }
 
@@ -1027,7 +1054,8 @@ class KernelApi {
     HttpRequestType req,
   ) async {
     if (_storeHub.isConnected) {
-      return await _storeHub.invoke('HttpForward', args: [req]);
+      return await _storeHub.invoke('HttpForward', args: [req])
+          as ResultType<HttpResponseType>;
     } else {
       var res = await _restRequest('httpForward', req);
 
@@ -1043,18 +1071,18 @@ class KernelApi {
     DataProxyType req,
   ) async {
     dynamic raw;
+    print('param:${req.toJson()}');
     if (_storeHub.isConnected) {
       raw = await _storeHub.invoke('DataProxy', args: [req]);
     } else {
       raw = await _restRequest('dataProxy', req);
     }
-    if (raw != null) {
-      if (!raw['success']) {
-        ToastUtils.showMsg(msg: raw['msg']);
-      }
+    print('raw:$raw');
+    if (!raw.success) {
+      ToastUtils.showMsg(msg: raw.msg);
     }
 
-    return ResultType.fromJson(raw);
+    return raw;
   }
 
   /// 数据变更通知
@@ -1065,7 +1093,8 @@ class KernelApi {
       req.ignoreConnectionId = _storeHub.connectionId;
     }
     if (_storeHub.isConnected) {
-      return await _storeHub.invoke('DataNotify', args: [req]);
+      return await _storeHub.invoke('DataNotify', args: [req])
+          as ResultType<bool>;
     } else {
       var res = await _restRequest('dataNotify', req);
       return res as ResultType<bool>;
@@ -1076,20 +1105,74 @@ class KernelApi {
   /// @param {ReqestType} reqs 请求体
   /// @returns 异步结果
 
-  Future<ResultType<T>> request<T>(ReqestType req) async {
+  Future<ResultType<PageResult<T>>> requestPageResult<T>(ReqestType req,
+      [List<T> Function(List<dynamic>)? cvt]) async {
+    return request(req, (data) {
+      return PageResult<T>.fromJson(data, cvt);
+    });
+  }
+
+  /// 请求一个内核方法
+  /// @param {ReqestType} reqs 请求体
+  /// @returns 异步结果
+
+  Future<ResultType<T>> request<T>(ReqestType req,
+      [T Function(Map<String, dynamic>)? cvt]) async {
     dynamic raw;
-    logger.info("====> req:${req.toJson()}");
+    print("===> req:${req.toJson()}");
     if (_storeHub.isConnected) {
       raw = await _storeHub.invoke('Request', args: [req]);
     } else {
       raw = await _restRequest('request', req);
     }
-    if (raw != null) {
-      if (!raw['success']) {
-        ToastUtils.showMsg(msg: raw['msg']);
-      }
+    if (!raw.success) {
+      ToastUtils.showMsg(msg: raw.msg);
     }
-    return ResultType.fromJson(raw);
+    try {
+      if (null != cvt) {
+        return ResultType<T>.fromJsonSerialize(raw ?? {}, cvt);
+      } else {
+        return ResultType<T>.fromJson(raw);
+      }
+    } catch (e) {
+      print('====err1:$e');
+      print('====err2:$cvt-$T');
+      e.printError();
+    }
+    return ResultType<T>.fromJson({});
+  }
+
+  Future<ResultType<T>> request_<T, R>(ReqestType req,
+      [T Function(Map<String, dynamic>, [Function(List<dynamic>)?])? dataCF,
+      List<T> Function(List<dynamic>)? resultCF]) async {
+    dynamic raw;
+    print("===> req:${req.toJson()}");
+    if (_storeHub.isConnected) {
+      raw = await _storeHub.invoke('Request', args: [req]);
+    } else {
+      raw = await _restRequest('request', req);
+    }
+    if (!raw.success) {
+      ToastUtils.showMsg(msg: raw.msg);
+    }
+    try {
+      if (null != dataCF && null != resultCF) {
+        return ResultType<T>.fromJsonSerialize(raw ?? {}, (e) {
+          return dataCF(e, resultCF);
+        });
+      } else if (null != dataCF) {
+        return ResultType<T>.fromJsonSerialize(raw ?? {}, (e) {
+          return dataCF(e);
+        });
+      } else {
+        return ResultType<T>.fromJson(raw);
+      }
+    } catch (e) {
+      print('====err1:$e');
+      // print('====err2:$cvt-$T');
+      e.printError();
+    }
+    return ResultType<T>.fromJson({});
   }
 
   /// 请求多个内核方法,使用同一个事务
@@ -1237,7 +1320,7 @@ class KernelApi {
   /// @param methodName 方法
   /// @param data 参数
   /// @returns 返回结果
-  Future<ResultType> _restRequest(String methodName, dynamic args) async {
+  Future<ResultType<T>> _restRequest<T>(String methodName, dynamic args) async {
     final res = await _http.post(
       '${Constant.rest}/$methodName',
       data: args,
@@ -1245,7 +1328,7 @@ class KernelApi {
 
     // if (res.data && (res.data is ResultType)) {
     if (res['data'] != null) {
-      final result = ResultType.fromJson(res);
+      final result = ResultType<T>.fromJson(res);
       if (!result.success) {
         if (result.code == 401) {
           settingCtrl.exitLogin(cleanUserLoginInfo: false);
@@ -1255,6 +1338,13 @@ class KernelApi {
       }
       return result;
     }
-    return badRequest;
+    return ResultType(success: false, msg: '请求失败', code: 400); //badRequest;
   }
+
+  // PageResult<R> Function(Map<String, dynamic> data) _pageResult<T, R>(
+  //     [List<R> Function(List<dynamic>)? cvt]) {
+  //   return (data) {
+  //     return PageResult<R>.fromJson(data, cvt);
+  //   };
+  // }
 }
