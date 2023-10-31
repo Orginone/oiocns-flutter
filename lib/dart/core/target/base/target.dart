@@ -44,7 +44,7 @@ abstract class ITarget extends IFileInfo<XTarget> with ITeam {
 ///用户基类实现
 abstract class Target extends Team implements ITarget {
   Target(this.keys, this.metadata, this.relations,
-      {this.space, this.user, this.memberTypes = mTypes})
+      {space, user, this.memberTypes = mTypes})
       : super(keys, metadata, relations, memberTypes: memberTypes) {
     if (space != null) {
       space = space;

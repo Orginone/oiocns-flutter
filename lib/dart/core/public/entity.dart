@@ -155,7 +155,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
     ShareIcon shareIcon = ShareIcon(
         name: metadata?.name ?? '加载中...',
         typeName: metadata?.typeName ?? '未知',
-        avatar: FileItemShare.fromJson(parseAvatar(metadata?.icon)));
+        avatar: parseAvatar(metadata?.icon));
     return shareIcon;
   }
 

@@ -6,7 +6,7 @@ import 'package:orginone/dart/base/model.dart';
 var parseAvatar = (String? avatar) {
   if (avatar != null) {
     try {
-      return jsonDecode(avatar);
+      return FileItemShare.fromJson(jsonDecode(avatar));
     } catch (error) {
       return null;
     }

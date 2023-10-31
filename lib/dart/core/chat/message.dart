@@ -259,7 +259,7 @@ class Message implements IMessage {
 
       default:
     }
-    FileItemShare file = FileItemShare.fromJson(parseAvatar(msgBody));
+    FileItemShare file = parseAvatar(msgBody)!;
     if (file.shareLink != null || file.name != null) {
       return '$header[$msgType]:${file.name}(${formatSize(file.size!)})';
     }
