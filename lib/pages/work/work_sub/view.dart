@@ -23,9 +23,10 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
     if (type == 'all') {
       return allWidget();
     }
-    if (type == 'create') {
-      return applicationWidget();
-    }
+
+    // if (type == 'create') {
+    //   return applicationWidget();
+    // }
     if (type == 'common') {
       return commonWidget();
     }

@@ -954,7 +954,7 @@ class KernelApi {
   /// 查询数据集数据
   /// @param  过滤参数
   /// @returns {model.ResultType<T>} 移除异步结果
-  Future<LoadResult<T>> collectionLoad<T>(
+  Future<LoadResult<List<XWorkTask>>> collectionLoad<T>(
     String belongId,
     List<String> relations,
     String collName,
@@ -966,16 +966,21 @@ class KernelApi {
         module: 'Collection',
         action: 'Load',
         belongId: belongId,
+        params: {
+          ...options,
+          'collName': collName,
+        },
         relations: relations,
         flag: '-$collName',
-        params: options,
       ),
     );
 
     if (res.data is Map && res.data['data'] is List<T>) {
       res.data = res.data['data'];
     }
-    return LoadResult.fromJson(res.toJson());
+    return LoadResult.fromJsonSerialize(res.toJson(), (data) {
+      return XWorkTask.fromList(data['data'] is List ? data['data'] : []);
+    });
   }
 
   /// 从数据集查询数据

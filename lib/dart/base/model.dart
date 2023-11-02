@@ -61,7 +61,7 @@ class DataProxyType {
 
   factory DataProxyType.fromJson(Map<String, dynamic> json) {
     return DataProxyType(
-      flag: json['flag'] as String, // 模块
+      flag: json['flag'] as String, // 标签
       module: json['module'] as String, // 模块
       action: json['action'] as String, // 方法
       belongId: json['belongId'] as String, // 归属
@@ -73,7 +73,7 @@ class DataProxyType {
 
   Map<String, dynamic> toJson() {
     return {
-      'flag': flag, // 模块
+      'flag': flag, // 标签
       'module': module, // 模块
       'action': action, // 方法
       'belongId': belongId, // 归属
@@ -210,12 +210,14 @@ class LoadResult<T> {
 
   LoadResult.fromJsonSerialize(
       Map<String, dynamic> json, T Function(Map<String, dynamic>) serialize)
-      : data = (json["data"] != null && json["data"] is Map)
-            ? serialize(json["data"])
+      : data = (json['data'] != null && json['data'] is Map)
+            ? serialize(json['data']!)
             : null,
         groupCount = json["groupCount"] ?? 0,
         totalCount = json["totalCount"] ?? 0,
-        summary = List<String>.from(json['summary'] as List),
+        summary = json['summary'] == null
+            ? []
+            : List<String>.from(json['summary'] as List),
         code = json["code"] ?? 400,
         msg = json["msg"] ?? "",
         success = json["success"] ?? false;

@@ -73,11 +73,11 @@ class XCollection<T extends Xbase> {
       options,
     );
     if (res.success && res.data != null) {
-      if (res.data.length > 0) {
+      if (res.data!.isNotEmpty) {
         if (null != cvt) {
-          return Lists.fromList(res.data, cvt);
+          return Lists.fromList(res.data!, cvt);
         } else {
-          return res.data.cast<T>();
+          return res.data!.cast<T>();
         }
       } else {
         return Future(() => []);

@@ -44,9 +44,8 @@ abstract class IWorkTask extends IFile {
 }
 
 class WorkTask extends FileInfo<XEntity> implements IWorkTask {
-  WorkTask(_metadata, this.user) : super(_metadata, user.user!.directory) {
-    taskdata = _metadata;
-  }
+  WorkTask(this.taskdata, this.user)
+      : super(XEntity.fromJson(taskdata.toJson()), user.user!.directory);
 
   @override
   late XWorkTask taskdata;

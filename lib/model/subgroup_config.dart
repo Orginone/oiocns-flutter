@@ -4,32 +4,32 @@ Map<String, dynamic> chatDefaultConfig = {
     {
       "label": "全部",
       "value": "all",
-      "allowEdit":true,
+      "allowEdit": true,
     },
     {
       "label": "常用",
       "value": "common",
-      "allowEdit":true,
+      "allowEdit": true,
     },
     {
       "label": "最近",
       "value": "recent",
-      "allowEdit":false,
+      "allowEdit": false,
     },
     {
       "label": "未读",
       "value": "unread",
-      "allowEdit":true,
+      "allowEdit": true,
     },
     {
       "label": "单聊",
       "value": "single",
-      "allowEdit":true,
+      "allowEdit": true,
     },
     {
       "label": "群聊",
       "value": "group",
-      "allowEdit":true,
+      "allowEdit": true,
     },
   ]
 };
@@ -40,33 +40,38 @@ Map<String, dynamic> workDefaultConfig = {
     {
       "label": "全部",
       "value": "all",
-      "allowEdit":true,
-    },
-    {
-      "label": "常用",
-      "value": "common",
-      "allowEdit":true,
-    },
-    {
-      "label": "发起",
-      "value": "create",
-      "allowEdit":true,
+      "allowEdit": true,
     },
     {
       "label": "待办",
       "value": "todo",
-      "allowEdit":false,
+      "allowEdit": false,
     },
     {
       "label": "已办",
       "value": "done",
-      "allowEdit":true,
+      "allowEdit": true,
     },
     {
-      "label": "已发起",
-      "value": "apply",
-      "allowEdit":true,
+      "label": "抄送",
+      "value": "alt",
+      "allowEdit": true,
     },
+    {
+      "label": "发起",
+      "value": "create",
+      "allowEdit": true,
+    },
+    // {
+    //   "label": "常用",
+    //   "value": "common",
+    //   "allowEdit": true,
+    // },
+    // {
+    //   "label": "已发起",
+    //   "value": "apply",
+    //   "allowEdit": true,
+    // },
   ]
 };
 
@@ -76,37 +81,37 @@ Map<String, dynamic> storeDefaultConfig = {
     {
       "label": "全部",
       "value": "all",
-      "allowEdit":true,
+      "allowEdit": true,
     },
     {
       "label": "常用",
       "value": "common",
-      "allowEdit":false,
+      "allowEdit": false,
     },
     {
       "label": "文件",
       "value": "file",
-      "allowEdit":true,
+      "allowEdit": true,
     },
     {
       "label": "数据",
       "value": "thing",
-      "allowEdit":true,
+      "allowEdit": true,
     },
     {
       "label": "应用",
       "value": "application",
-      "allowEdit":true,
+      "allowEdit": true,
     },
     {
       "label": "资源",
       "value": "resource",
-      "allowEdit":true,
+      "allowEdit": true,
     },
     {
       "label": "其他",
       "value": "other",
-      "allowEdit":true,
+      "allowEdit": true,
     },
   ]
 };
@@ -117,17 +122,17 @@ Map<String, dynamic> settingDefaultConfig = {
     {
       "label": "全部",
       "value": "all",
-      "allowEdit":true,
+      "allowEdit": true,
     },
     {
       "label": "常用",
       "value": "common",
-      "allowEdit":false,
+      "allowEdit": false,
     },
     {
       "label": "最近",
       "value": "recent",
-      "allowEdit":true,
+      "allowEdit": true,
     },
   ]
 };

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
+import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/initiate_work/state.dart';
@@ -31,8 +33,11 @@ class WorkSubController extends BaseListController<WorkSubState> {
     if (type == "done") {
       await loadDones();
     }
-    if (type == "apply") {
-      await loadApply();
+    if (type == "alt") {
+      await loadAlt();
+    }
+    if (type == "create") {
+      await loadCreate();
     }
     loadSuccess();
   }
@@ -210,38 +215,44 @@ class WorkSubController extends BaseListController<WorkSubState> {
     Get.toNamed(Routers.workList, arguments: {"data": work});
   }
 
+  ///加载已办数据
   loadDones() async {
-    // PageResult<IWorkTask> pageResult =
-    //     await settingCtrl.work.loadDones(IdPageModel(
-    //   id: settingCtrl.user.id,
-    // ));
-    // PageResult<IWorkTask> pageResult = settingCtrl.work.todos;
+    List<IWorkTask> tasks = await settingCtrl.work.loadContent(TaskType.done);
+    state.list.value = tasks;
+  }
 
-    // state.list.value = pageResult.result;
+  ///加载艾特
+  loadAlt() async {
+    List<IWorkTask> tasks = await settingCtrl.work.loadContent(TaskType.altMe);
+    state.list.value = tasks;
+  }
+
+  //加载发起
+  loadCreate() async {
+    List<IWorkTask> tasks = await settingCtrl.work.loadContent(TaskType.create);
+    state.list.value = tasks;
   }
 
   loadApply() async {
-    // PageResult<IWorkTask> pageResult =
-    //     await settingCtrl.work.loadApply(IdPageModel(
-    //   id: settingCtrl.user.id,
-    // ));
-    // state.list.value = pageResult.result;
+    List<IWorkTask> tasks = await settingCtrl.work.loadContent(TaskType.done);
+    state.list.value = tasks;
   }
 
+  ///办事tab 下拉刷新
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
+    //待办
     if (type == "todo") {
       await settingCtrl.work.loadTodos(reload: true);
     }
     if (type == "done") {
       await loadDones();
     }
-    if (type == "apply") {
-      await loadApply();
+    if (type == "alt") {
+      await loadAlt();
     }
-    if (type == "common") {
-      //TODO:没有这个loadMostUsed 用到时候要研究一下逻辑
-      // await settingCtrl.work.loadMostUsed();
+    if (type == "create") {
+      await loadCreate();
     }
   }
 

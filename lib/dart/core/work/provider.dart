@@ -38,7 +38,7 @@ abstract class IWorkProvider {
   Future<List<IWorkTask>> loadTodos({bool reload = false});
 
   /// 加载任务数量
-  Future<int> loadTaskCount(TaskType typeName);
+  Future<int> loadTaskCount(TaskType type);
 
   /// 加载任务事项
   Future<List<IWorkTask>> loadContent(TaskType type, {bool reload = false});
@@ -89,7 +89,7 @@ class WorkProvider implements IWorkProvider {
     if (type.label == '待办事项') {
       return await loadTodos(reload: reload);
     }
-    return loadTasks(type, reload: reload);
+    return await loadTasks(type, reload: reload);
   }
 
   @override
@@ -135,7 +135,8 @@ class WorkProvider implements IWorkProvider {
               {tasks.add(WorkTask(item, user))}
           });
     }
-    return tasks.where((i) => i.isTaskType(type)).toList();
+    var ts = tasks.where((i) => i.isTaskType(type)).toList();
+    return ts;
   }
 
   @override
