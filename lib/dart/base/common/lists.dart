@@ -16,5 +16,17 @@ class Lists {
     return arr;
   }
 
-
+  static List<T> fromList<T>(
+      List<dynamic> list, T Function(Map<String, dynamic>) fromJson) {
+    if (list.isEmpty) {
+      return [];
+    }
+    List<T> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(fromJson(item));
+      }
+    }
+    return retList;
+  }
 }

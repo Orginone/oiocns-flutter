@@ -34,7 +34,7 @@ class Xbase {
     status = json['status'];
     createUser = json['createUser'];
     updateUser = json['updateUser'];
-    version = json['version'];
+    version = json['version'].toString();
     createTime = json['createTime'];
     updateTime = json['updateTime'];
     shareId = json['shareId'];

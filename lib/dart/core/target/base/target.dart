@@ -47,14 +47,14 @@ abstract class Target extends Team implements ITarget {
       {space, user, this.memberTypes = mTypes})
       : super(keys, metadata, relations, memberTypes: memberTypes) {
     if (space != null) {
-      space = space;
+      this.space = space;
     } else {
-      space = this as IBelong;
+      this.space = this as IBelong;
     }
     if (user != null) {
-      user = user;
+      this.user = user;
     } else {
-      user = this as IPerson;
+      this.user = this as IPerson;
     }
     cache = XCache(fullId: '${metadata.belongId}_${metadata.id}');
     resource = DataResource(metadata, relations, [key]);
@@ -136,7 +136,7 @@ abstract class Target extends Team implements ITarget {
       keys,
       (dynamic data) => _receiveIdentity(data),
     );
-    final data = await user?.cacheObj.get<XCache>(cachePath);
+    final data = await user?.cacheObj.get<XCache>(cachePath, XCache.fromJson);
     if (data != null && data.fullId == cache.fullId) {
       cache = data;
     }

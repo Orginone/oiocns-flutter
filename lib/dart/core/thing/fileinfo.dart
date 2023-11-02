@@ -111,7 +111,8 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
   Future<bool> move(IDirectory destination);
 
   Future<void> loadUserData() async {
-    final data = await target.user?.cacheObj.get<XCache>(cachePath);
+    final data =
+        await target.user?.cacheObj.get<XCache>(cachePath, XCache.fromJson);
     if (data?.fullId == cache.fullId) {
       cache = data!;
     }
@@ -122,7 +123,7 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
         directory.changCallback();
         command.emitterFlag(flag: cacheFlag);
       }
-    }, id: data?.fullId);
+    }, data?.fullId);
   }
 
   @override

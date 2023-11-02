@@ -1,6 +1,7 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
 
+import '../../base/common/lists.dart';
 import '../../base/schema.dart';
 
 class XCollection<T extends Xbase> {
@@ -36,9 +37,10 @@ class XCollection<T extends Xbase> {
     ///
   }
 
-  Future<List<T>> all({bool reload = false}) async {
+  Future<List<T>> all(
+      {bool reload = false, T Function(Map<String, dynamic>)? fromJson}) async {
     if (!_loaded || reload) {
-      _cache = await load({});
+      _cache = await load({}, fromJson);
       _loaded = true;
     }
     return _cache;
@@ -56,7 +58,8 @@ class XCollection<T extends Xbase> {
     return [];
   }
 
-  Future<List<T>> loadSpace(dynamic options) async {
+  Future<List<T>> loadSpace(dynamic options,
+      [T Function(Map<String, dynamic>)? cvt]) async {
     options = options ?? {};
     options['userData'] = options['userData'] ?? [];
     options['collName'] = _collName;
@@ -70,7 +73,11 @@ class XCollection<T extends Xbase> {
     );
     if (res.success && res.data != null) {
       if (res.data.length > 0) {
-        return res.data.cast<T>();
+        if (null != cvt) {
+          return Lists.fromList(res.data, cvt);
+        } else {
+          return res.data.cast<T>();
+        }
       } else {
         return Future(() => []);
       }
@@ -78,14 +85,15 @@ class XCollection<T extends Xbase> {
     return [];
   }
 
-  Future<List<T>> load(dynamic options) async {
+  Future<List<T>> load(dynamic options,
+      [T Function(Map<String, dynamic>)? cvt]) async {
     options = {};
     options['options'] = {
       "match": {"shareId": _target.id}
     };
     // options.options.match = {};
     // options.options.match.shareId = _target.id;
-    return await loadSpace(options);
+    return await loadSpace(options, cvt);
   }
 
   Future<T?> insert(T data, {String? copyId}) async {

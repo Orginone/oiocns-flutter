@@ -58,12 +58,12 @@ class DataResource {
   Future<void> preLoad({bool reload = false}) async {
     if (!_proLoaded || reload) {
       await Future.wait([
-        formColl.all(reload: reload),
-        speciesColl.all(reload: reload),
-        propertyColl.all(reload: reload),
-        transferColl.all(reload: reload),
-        directoryColl.all(reload: reload),
-        applicationColl.all(reload: reload),
+        formColl.all(reload: reload, fromJson: XForm.fromJson),
+        speciesColl.all(reload: reload, fromJson: XSpecies.fromJson),
+        propertyColl.all(reload: reload, fromJson: XProperty.fromJson),
+        transferColl.all(reload: reload, fromJson: XTransfer.fromJson),
+        directoryColl.all(reload: reload, fromJson: XDirectory.fromJson),
+        applicationColl.all(reload: reload, fromJson: XApplication.fromJson),
       ]);
     }
     _proLoaded = true;

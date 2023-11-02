@@ -11,14 +11,14 @@ class XObject<T extends Xbase> {
   late String _objName;
   late XTarget _target;
   late List<String> _relations;
-  late Map<String, List<Function>> _method;
+  late Map<String, List<Function>> _methods;
   XObject(
       XTarget target, String name, List<String> relations, List<String> keys) {
     _loaded = false;
     _target = target;
     _relations = relations;
     _objName = name;
-    _method = {};
+    _methods = {};
     kernel.subscribe(this.subMethodName, keys, (i) => _objectCallback(i));
   }
 
@@ -59,11 +59,14 @@ class XObject<T extends Xbase> {
     return this._cache;
   }
 
-  Future<T?> get<T>(String path) async {
+  Future<T?> get<T>(String path,
+      [T Function(Map<String, dynamic>)? fromJson]) async {
     if (!this._loaded) {
       await this.all();
     }
-    return this.getValue<T>(path); //翻译getValue后再处理
+    return null != fromJson && null != getValue(path) && getValue(path) is! T
+        ? fromJson(getValue(path))
+        : this.getValue<T>(path); //翻译getValue后再处理
   }
 
   Future<bool> set(String path, dynamic data) async {
@@ -115,12 +118,17 @@ class XObject<T extends Xbase> {
     return res.success;
   }
 
-  void subscribe(dynamic data, Function(XCache data) param1, {String? id}) {
-    var kernel = KernelApi();
-    kernel.on(
-      '${this._target.belongId}-${id != '' || this._target.id != ''}-${this._objName}',
-      Function.apply(this.callback, [], null),
-    );
+  void subscribe(String flag, Function(XCache data) callback, [String? id]) {
+    if (flag.isEmpty) {
+      return;
+    }
+    if (!this._methods.containsKey(flag)) {
+      this._methods[flag] = [];
+    }
+    if (this._methods[flag]!.contains(callback)) {
+      return;
+    }
+    this._methods[flag]?.add(callback);
   }
 
   setValue(String path, dynamic data) {
@@ -142,12 +150,12 @@ class XObject<T extends Xbase> {
   }
 
   dynamic getValue<T>(String path) {
-    if (path == '') return cache();
+    if (path == '') return cache;
     var paths = path.split('.');
     paths.add("");
     var prop = paths[0];
     paths.removeAt(0);
-    var value = this.cache();
+    var value = cache;
     while (prop != '' && value != null) {
       value = value[prop];
       if (paths != []) {
@@ -167,7 +175,7 @@ class XObject<T extends Xbase> {
 
   ///暂时有错，能改的帅哥改一下
   _objectCallback(Res res) {
-    var methods = _method[res.flag];
+    var methods = _methods[res.flag];
     if (methods != {}) {
       try {
         methods?.forEach((m) => Function.apply(m, []));

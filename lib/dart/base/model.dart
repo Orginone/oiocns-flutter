@@ -11,6 +11,8 @@ import 'package:orginone/model/thing_model.dart' as thing;
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/string_util.dart';
 
+import 'common/lists.dart';
+
 /// 内核请求模型
 class ReqestType {
   // 模块
@@ -995,12 +997,12 @@ class MsgTagModel {
 
 /// 聊天消息类型
 class ChatMessageType extends Xbase {
-  String fromId; // 发起方Id
-  String toId; // 接收方Id
-  String sessionId; // 接收会话Id
-  String typeName; // 类型
-  String content; // 内容
-  List<CommentType> comments; // 评注
+  late String fromId; // 发起方Id
+  late String toId; // 接收方Id
+  late String sessionId; // 接收会话Id
+  late String typeName; // 类型
+  late String content; // 内容
+  late List<CommentType> comments; // 评注
 
   ChatMessageType({
     required this.fromId,
@@ -1011,18 +1013,33 @@ class ChatMessageType extends Xbase {
     required this.comments,
     required super.id,
   });
+  ChatMessageType.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    fromId = json['fromId'];
+    toId = json['toId'];
+    sessionId = json['sessionId'] ?? '';
+    typeName = json['typeName'];
+    content = json['content'];
+    comments = json['comments'] != null
+        ? Lists.fromList(json['comments'], CommentType.fromJson)
+        : [];
+  }
 }
 
 class CommentType {
-  String label; // 标签名称
-  String userId; // 人员Id
-  String time; // 时间
+  late String label; // 标签名称
+  late String userId; // 人员Id
+  late String time; // 时间
 
   CommentType({
     required this.label,
     required this.userId,
     required this.time,
   });
+  CommentType.fromJson(Map<String, dynamic> json) {
+    label = json['label'];
+    userId = json['userId'];
+    time = json['time'];
+  }
 }
 
 class PropertyModel {
@@ -2701,31 +2718,31 @@ class OperateModel {
 /// 会话元数据
 class MsgChatData {
   /// 消息类会话完整Id
-  String fullId;
+  late String fullId;
 
   /// 会话标签
-  List<String> labels;
+  late List<String> labels;
 
   /// 会话名称
-  String chatName;
+  late String chatName;
 
   /// 会话备注
-  String chatRemark;
+  late String chatRemark;
 
   /// 是否置顶
-  bool isToping;
+  late bool isToping;
 
   /// 会话未读消息数量
-  int noReadCount;
+  late int noReadCount;
 
   /// 最后一次消息时间
-  int lastMsgTime;
+  late int lastMsgTime;
 
   /// 最新消息
-  ChatMessageType? lastMessage;
+  late ChatMessageType? lastMessage;
 
   /// 提及我
-  bool mentionMe;
+  late bool mentionMe;
 
   MsgChatData({
     required this.fullId,
@@ -2738,6 +2755,20 @@ class MsgChatData {
     required this.lastMessage,
     required this.mentionMe,
   });
+
+  MsgChatData.fromJson(Map<String, dynamic> json) {
+    fullId = json['fullId'];
+    labels = json['labels'] != null ? List.castFrom(json["labels"]) : [];
+    chatName = json['chatName'];
+    chatRemark = json['chatRemark'];
+    isToping = json['isToping'];
+    noReadCount = json['noReadCount'];
+    lastMsgTime = json['lastMsgTime'];
+    lastMessage = json['lastMessage'] != null
+        ? ChatMessageType.fromJson(json['lastMessage'])
+        : null;
+    mentionMe = json['mentionMe'];
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -3167,19 +3198,19 @@ class Shift<T, S> {
 // 迁移配置
 class XTransfer extends XStandard {
   // 环境集合
-  List<Environment> envs;
+  late List<Environment> envs;
   // 当前环境
   String? curEnv;
   // 节点集合
-  List<Node> nodes;
+  late List<Node> nodes;
   // 边集合
-  List<Edge> edges;
+  late List<Edge> edges;
   // 图数据
   late dynamic graph;
   // 是否自循环
-  final bool isSelfCirculation;
+  late final bool isSelfCirculation;
   // 退出循环脚本
-  final String judge;
+  late final String judge;
   XTransfer({
     required this.envs,
     this.curEnv,
@@ -3192,6 +3223,18 @@ class XTransfer extends XStandard {
     required super.id,
     required super.typeName,
   });
+  XTransfer.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    envs = json['envs'];
+    curEnv = json['curEnv'];
+    nodes = json['nodes'];
+    edges = json['edges'];
+    graph = json['graph'];
+    isSelfCirculation = json['isSelfCirculation'];
+    judge = json['judge'];
+    directoryId = json['directoryId'];
+    id = json['id'];
+    typeName = json['typeName'];
+  }
 }
 
 // 任务

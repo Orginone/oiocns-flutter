@@ -424,7 +424,8 @@ class Session extends Entity<XEntity> implements ISession {
   }
 
   Future<void> loadCacheChatData() async {
-    var data = await target.user?.cacheObj.get<MsgChatData>(cachePath);
+    var data = await target.user?.cacheObj
+        .get<MsgChatData>(cachePath, MsgChatData.fromJson);
     if (data?.fullId == chatdata.fullId) {
       chatdata = data!;
       msgChatNotify.changCallback();
