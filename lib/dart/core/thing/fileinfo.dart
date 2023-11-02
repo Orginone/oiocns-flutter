@@ -10,6 +10,9 @@ import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 
+/// 默认文件接口
+abstract class IFile extends IFileInfo<XEntity> {}
+
 abstract class IFileInfo<T extends XEntity> extends IEntity<T> {
   /// 缓存
   late XCache cache;

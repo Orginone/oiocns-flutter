@@ -7,17 +7,11 @@ import 'package:orginone/util/hive_utils.dart';
 import 'state.dart';
 
 class WorkController extends BaseSubmenuController<WorkState> {
+  @override
   final WorkState state = WorkState();
 
   @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-  }
-
-  @override
   void initSubGroup() {
-    // TODO: implement initSubGroup
     super.initSubGroup();
     var work = HiveUtils.getSubGroup('work');
     if (work == null) {

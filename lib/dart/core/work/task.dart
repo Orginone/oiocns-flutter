@@ -1,31 +1,34 @@
 import 'dart:convert';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/public/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/dart/core/work/apply.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/main.dart';
 
-abstract class IWorkTask {
-  //唯一标识
-  late String id;
+abstract class IWorkTask extends IFile {
   //内容
-  late String content;
+  late String comment;
   //当前用户
   late UserProvider user;
-  //归属空间
-  late IBelong belong;
+  //归属空间  与父类IEntity中的belong冲突 更名为ibelong
+  late IBelong ibelong;
   //任务元数据
-  late XWorkTask metadata;
+  late XWorkTask taskdata;
   //流程实例
   XWorkInstance? instance;
   //实例携带的数据
   InstanceDataModel? instanceData;
   //加用户任务信息
   late List<XTarget> targets;
+
+  /// 是否为指定的任务类型
+  bool isTaskType(TaskType type);
   //是否满足条件
   bool isMatch(String filter);
   //任务更新
@@ -40,11 +43,13 @@ abstract class IWorkTask {
   Future<bool> approvalTask(int status, {String? comment});
 }
 
-class WorkTask implements IWorkTask {
-  WorkTask(this.metadata, this.user);
+class WorkTask extends FileInfo<XEntity> implements IWorkTask {
+  WorkTask(_metadata, this.user) : super(_metadata, user.user!.directory) {
+    taskdata = _metadata;
+  }
 
   @override
-  late XWorkTask metadata;
+  late XWorkTask taskdata;
 
   @override
   late UserProvider user;
@@ -55,20 +60,20 @@ class WorkTask implements IWorkTask {
   InstanceDataModel? instanceData;
 
   @override
-  String get id => metadata.id;
+  String get id => taskdata.id;
 
   @override
-  String get content {
+  String get comment {
     if (targets.length == 2) {
       return '${targets[0].name}[${targets[0].typeName}]申请加入${targets[1].name}[${targets[1].typeName}]';
     }
-    return metadata.content ?? '';
+    return taskdata.content ?? '';
   }
 
   @override
-  IBelong get belong {
+  IBelong get ibelong {
     for (final company in user.user!.companys) {
-      if (company.id == metadata.belongId) {
+      if (company.id == taskdata.belongId) {
         return company;
       }
     }
@@ -77,10 +82,10 @@ class WorkTask implements IWorkTask {
 
   @override
   List<XTarget> get targets {
-    if (metadata.taskType == '加用户') {
+    if (taskdata.taskType == '加用户') {
       try {
         final parsedContent =
-            jsonDecode(metadata.content ?? "[]") as List<dynamic>;
+            jsonDecode(taskdata.content ?? "[]") as List<dynamic>;
         return parsedContent.map((item) => XTarget.fromJson(item)).toList();
       } catch (ex) {
         return [];
@@ -91,13 +96,29 @@ class WorkTask implements IWorkTask {
 
   @override
   bool isMatch(String filter) {
-    return jsonEncode(metadata.toJson()).contains(filter);
+    return jsonEncode(taskdata.toJson()).contains(filter);
+  }
+
+  @override
+  bool isTaskType(TaskType type) {
+    switch (type.label) {
+      case '已办事项':
+        return taskdata.status! >= TaskStatus.approvalStart.status;
+      case '我发起的':
+        return taskdata.createUser == userId;
+      case '待办事项':
+        return taskdata.status! < TaskStatus.approvalStart.status;
+      case '抄送我的':
+        return taskdata.approveType == '抄送';
+      default:
+        return false;
+    }
   }
 
   @override
   Future<bool> updated(XWorkTask metadata) async {
-    if (this.metadata.id == metadata.id) {
-      this.metadata = metadata;
+    if (taskdata.id == metadata.id) {
+      taskdata = metadata;
       await loadInstance(reload: true);
       return true;
     }
@@ -108,12 +129,12 @@ class WorkTask implements IWorkTask {
   Future<bool> loadInstance({bool reload = false}) async {
     if (instanceData != null && !reload) return true;
     var res = await kernel.collectionAggregate(
-      metadata.belongId!,
-      [metadata.belongId!],
+      taskdata.belongId!,
+      [taskdata.belongId!],
       storeCollName['workInstance']!,
       {
         "match": {
-          "id": metadata.instanceId,
+          "id": taskdata.instanceId,
         },
         "limit": 1,
         "lookup": {
@@ -143,7 +164,7 @@ class WorkTask implements IWorkTask {
   @override
   Future<bool> recallApply() async {
     if (await loadInstance() && instance != null) {
-      if (instance?.createUser == belong.userId) {
+      if (instance?.createUser == ibelong.userId) {
         if ((await kernel.recallWorkInstance(IdModel(instance!.id))).success) {
           return true;
         }
@@ -154,13 +175,13 @@ class WorkTask implements IWorkTask {
 
   @override
   Future<bool> approvalTask(int status, {String? comment}) async {
-    if ((metadata.status!) < TaskStatus.approvalStart.status) {
+    if ((taskdata.status!) < TaskStatus.approvalStart.status) {
       if (status == -1) {
         return await recallApply();
       }
-      if (metadata.taskType == '加用户' || await loadInstance(reload: true)) {
+      if (taskdata.taskType == '加用户' || await loadInstance(reload: true)) {
         final res = await kernel.approvalTask(ApprovalTaskReq(
-          id: metadata.id,
+          id: taskdata.id,
           status: status,
           comment: comment,
           data: instanceData != null
@@ -184,8 +205,8 @@ class WorkTask implements IWorkTask {
 
   @override
   Future<IWorkApply?> createApply() async {
-    if (metadata.approveType == '子流程') {
-      var define = await findWorkById(metadata.defineId ?? '');
+    if (taskdata.approveType == '子流程') {
+      var define = await findWorkById(taskdata.defineId ?? '');
       if (define != null && (await define.loadWorkNode() != null)) {
         final data = InstanceDataModel(
           data: instanceData?.data,

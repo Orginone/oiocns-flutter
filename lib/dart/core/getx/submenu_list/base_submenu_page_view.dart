@@ -9,8 +9,8 @@ import 'base_submenu_controller.dart';
 import 'base_submenu_state.dart';
 
 abstract class BaseSubmenuPage<T extends BaseSubmenuController,
-S extends BaseSubmenuState> extends BaseGetView<T, S> {
-
+    S extends BaseSubmenuState> extends BaseGetView<T, S> {
+  const BaseSubmenuPage({super.key});
 
   @override
   Widget buildView() {
@@ -23,7 +23,6 @@ S extends BaseSubmenuState> extends BaseGetView<T, S> {
     );
   }
 
-
   Widget headWidget() {
     return Container(
       color: Colors.white,
@@ -31,40 +30,7 @@ S extends BaseSubmenuState> extends BaseGetView<T, S> {
         children: [
           Expanded(
             child: Obx(() {
-              return ExtendedTabBar(
-                controller: state.tabController,
-                tabs: state.subGroup.value.groups!.map((e) {
-                  var index = state.subGroup.value.groups!.indexOf(e);
-                  return ExtendedTab(
-                    scrollDirection: Axis.horizontal,
-                    height: 40.h,
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: EdgeInsets.symmetric(
-                          vertical: 5.h, horizontal: 15.w),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20.w),
-                        color: state.submenuIndex.value == index
-                            ? XColors.themeColor
-                            : Colors.grey[200],
-                      ),
-                      child: Text(
-                        e.label!,
-                        style: TextStyle(
-                            color: state.submenuIndex.value != index
-                                ? XColors.themeColor
-                                : Colors.white, fontSize: 18.sp),
-                      ),
-                    ),
-                  );
-                }).toList(),
-                indicatorColor: XColors.themeColor,
-                unselectedLabelColor: Colors.grey,
-                labelColor: XColors.themeColor,
-                isScrollable: true,
-                labelPadding: EdgeInsets.symmetric(horizontal: 5.w),
-                indicator: const UnderlineTabIndicator(),
-              );
+              return buildExtendedTabBar();
             }),
           ),
           IconButton(
@@ -77,9 +43,49 @@ S extends BaseSubmenuState> extends BaseGetView<T, S> {
               color: Colors.black,
             ),
             iconSize: 24.w,
-            padding: EdgeInsets.zero,)
+            padding: EdgeInsets.zero,
+          )
         ],
       ),
+    );
+  }
+
+//创建ExtendedTabBar
+  buildExtendedTabBar() {
+    return ExtendedTabBar(
+      controller: state.tabController,
+      tabs: state.subGroup.value.groups?.map((e) {
+            var index = state.subGroup.value.groups!.indexOf(e);
+            return ExtendedTab(
+              scrollDirection: Axis.horizontal,
+              height: 40.h,
+              child: Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 15.w),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.w),
+                  color: state.submenuIndex.value == index
+                      ? XColors.themeColor
+                      : Colors.grey[200],
+                ),
+                child: Text(
+                  e.label!,
+                  style: TextStyle(
+                      color: state.submenuIndex.value != index
+                          ? XColors.themeColor
+                          : Colors.white,
+                      fontSize: 18.sp),
+                ),
+              ),
+            );
+          }).toList() ??
+          [],
+      indicatorColor: XColors.themeColor,
+      unselectedLabelColor: Colors.grey,
+      labelColor: XColors.themeColor,
+      isScrollable: true,
+      labelPadding: EdgeInsets.symmetric(horizontal: 5.w),
+      indicator: const UnderlineTabIndicator(),
     );
   }
 
@@ -96,7 +102,6 @@ S extends BaseSubmenuState> extends BaseGetView<T, S> {
   }
 
   Widget buildPageView(String type);
-
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {

@@ -27,14 +27,12 @@ class AssetCreationConfig {
     }
   }
 
-
-
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['businessName'] = this.businessName;
-    data['businessCode'] = this.businessCode;
-    if (this.config != null) {
-      data['text1'] = this.config!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['businessName'] = businessName;
+    data['businessCode'] = businessCode;
+    if (config != null) {
+      data['text1'] = config!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -57,23 +55,26 @@ class Config {
     if (json['fields'] != null) {
       fields = <Fields>[];
       json['fields'].forEach((v) {
-        fields!.add(new Fields.fromJson(v));
+        fields!.add(Fields.fromJson(v));
       });
     }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['title'] = this.title;
-    data['sort'] = this.sort;
-    if (this.fields != null) {
-      data['fields'] = this.fields!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['title'] = title;
+    data['sort'] = sort;
+    if (fields != null) {
+      data['fields'] = fields!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 
-  bool hasFilled(){
-    return fields!.where((element) => element.required! && element.defaultData.value != null).isNotEmpty;
+  bool hasFilled() {
+    return fields!
+        .where(
+            (element) => element.required! && element.defaultData.value != null)
+        .isNotEmpty;
   }
 
   Config toNewConfig() {
@@ -123,7 +124,10 @@ class Fields {
       this.required,
       this.readOnly,
       this.regx,
-      this.hidden,this.router,this.hint,this.select}){
+      this.hidden,
+      this.router,
+      this.hint,
+      this.select}) {
     initData();
   }
 
@@ -146,41 +150,38 @@ class Fields {
     initData();
   }
 
-  initData(){
+  initData() {
     if (type == "input") {
       controller = TextEditingController();
     }
   }
 
+  Map<String, dynamic> toUploadJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
 
-
-  Map<String,dynamic> toUploadJson(){
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-
-    data[code!] = defaultData.value??"";
-    if(code!.contains("Number")){
-      data[code!] = int.tryParse(defaultData.value??"");
+    data[code!] = defaultData.value ?? "";
+    if (code!.contains("Number")) {
+      data[code!] = int.tryParse(defaultData.value ?? "");
     }
 
-    if(type == "select"){
+    if (type == "select") {
       data[code!] = defaultData.value?.keys.first;
     }
-    if(type == "selectDepartment" || type == 'selectDepartment'){
+    if (type == "selectDepartment" || type == 'selectDepartment') {
       data[code!] = defaultData.value.id;
     }
     return data;
   }
 
-
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['title'] = this.title;
-    data['code'] = this.code;
-    data['type'] = this.type;
-    data['required'] = this.required;
-    data['readOnly'] = this.readOnly;
-    data['regx'] = this.regx;
-    data['hidden'] = this.hidden;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['title'] = title;
+    data['code'] = code;
+    data['type'] = type;
+    data['required'] = required;
+    data['readOnly'] = readOnly;
+    data['regx'] = regx;
+    data['hidden'] = hidden;
     data['maxLine'] = maxLine;
     data['hint'] = hint;
     data['select'] = select;
@@ -194,7 +195,7 @@ class Fields {
     return data;
   }
 
-  void initDefaultData(Map<String,dynamic> assetsJson) {
+  void initDefaultData(Map<String, dynamic> assetsJson) {
     var value = assetsJson[code!];
     if (value != null) {
       defaultData.value = value;

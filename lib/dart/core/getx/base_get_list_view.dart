@@ -12,12 +12,16 @@ import 'base_list_controller.dart';
 
 abstract class BaseGetListView<T extends BaseListController,
     S extends BaseGetListState> extends BaseGetView<T, S> {
+  BaseGetListView({super.key});
+
+  @override
   S get state => controller.state as S;
+  @override
   BuildContext get context => controller.context;
 
   @override
   Widget build(BuildContext context) {
-    this.controller.context = context;
+    controller.context = context;
 
     Widget body = EasyRefresh(
       controller: state.refreshController,
@@ -79,11 +83,9 @@ abstract class BaseGetListView<T extends BaseListController,
     return [];
   }
 
-
   Widget bottomWidget() {
     return Container();
   }
 
   bool showAppBar = true;
-
 }

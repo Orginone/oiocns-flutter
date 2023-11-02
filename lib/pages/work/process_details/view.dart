@@ -10,20 +10,22 @@ import 'use_traces/view.dart';
 
 class ProcessDetailsPage
     extends BaseGetView<ProcessDetailsController, ProcessDetailsState> {
+  const ProcessDetailsPage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.todo.metadata.title,
+      titleName: state.todo.taskdata.title,
       body: Column(
         children: [
           tabBar(),
           Expanded(
             child: TabBarView(
+              controller: state.tabController,
               children: [
                 ProcessInfoPage(),
                 UseTracesPage(),
               ],
-              controller: state.tabController,
             ),
           )
         ],

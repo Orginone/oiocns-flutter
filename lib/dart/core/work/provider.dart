@@ -1,16 +1,17 @@
 import 'dart:async';
 
-import 'package:get/get.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/public/consts.dart';
+import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/work/state.dart';
 
 import 'task.dart';
+
+/// 任务集合名
+const TaskCollName = 'work-task';
 
 abstract class IWorkProvider {
   late String userId;
@@ -20,17 +21,9 @@ abstract class IWorkProvider {
 
   /// 待办
   late List<IWorkTask> todos;
+  // 所有
+  late List<IWorkTask> tasks;
   late Emitter notity;
-  List<WorkFrequentlyUsed> workFrequentlyUsed = [];
-
-  /// 加载待办任务
-  Future<List<IWorkTask>> loadTodos({bool reload = false});
-
-  /// 加载已办任务
-  Future<PageResult<IWorkTask>> loadDones(IdPageModel req);
-
-  /// 加载我发起的办事任务
-  Future<PageResult<IWorkTask>> loadApply(IdPageModel req);
 
   /// 任务更新
   void updateTask(XWorkTask task);
@@ -40,27 +33,34 @@ abstract class IWorkProvider {
     String id,
     String belongId,
   );
+
+  /// 加载待办任务
+  Future<List<IWorkTask>> loadTodos({bool reload = false});
+
+  /// 加载任务数量
+  Future<int> loadTaskCount(TaskType typeName);
+
+  /// 加载任务事项
+  Future<List<IWorkTask>> loadContent(TaskType type, {bool reload = false});
 }
 
 class WorkProvider implements IWorkProvider {
   WorkProvider(this.user) {
     kernel.on('RecvTask', [
-      (data) {
+      (XWorkTask data) {
         if (_todoLoaded && data.approveType != '抄送') {
-          var work = XWorkTask.fromJson(data);
-          updateTask(work);
+          // var work = XWorkTask.fromJson(data);
+          updateTask(data);
         }
       }
     ]);
-
-    workFrequentlyUsed = <WorkFrequentlyUsed>[].obs;
   }
-  @override
-  List<WorkFrequentlyUsed> workFrequentlyUsed = [];
   @override
   final UserProvider user;
   @override
   List<IWorkTask> todos = [];
+  @override
+  List<IWorkTask> tasks = [];
   @override
   Emitter notity = Emitter();
 
@@ -84,6 +84,15 @@ class WorkProvider implements IWorkProvider {
   }
 
   @override
+  Future<List<IWorkTask>> loadContent(TaskType type,
+      {bool reload = false}) async {
+    if (type.label == '待办事项') {
+      return await loadTodos(reload: reload);
+    }
+    return loadTasks(type, reload: reload);
+  }
+
+  @override
   Future<List<IWorkTask>> loadTodos({bool reload = false}) async {
     if (!_todoLoaded || reload) {
       final res = await kernel.queryApproveTask(IdModel('0'));
@@ -98,93 +107,89 @@ class WorkProvider implements IWorkProvider {
     return todos;
   }
 
-  @override
-  Future<PageResult<IWorkTask>> loadDones(IdPageModel req) async {
-    var res = await kernel.collectionPageRequest<XWorkTask>(
-        userId,
-        [userId],
-        storeCollName['workTask']!,
-        {
-          "match": {
-            "belongId": req.id,
-            "status": {
-              "_gte_": 100,
-            },
-            "records": {
-              "_exists_": true,
-            },
-          },
-          "sort": {
-            "createTime": -1,
-          },
-        },
-        pageAll);
-    List<WorkTask> result = (res.data?.result ?? [])
-        .where((i) => i.records != null && i.records!.isNotEmpty)
-        .toList()
-        .map((i) => WorkTask(i, user))
-        .toList();
-    return PageResult<IWorkTask>(
-        total: res.data!.total,
-        offset: res.data!.offset,
-        limit: res.data!.limit,
-        result: result);
-  }
-
-  @override
-  Future<PageResult<IWorkTask>> loadApply(IdPageModel req) async {
-    var res = await kernel.collectionPageRequest<XWorkTask>(
-        userId,
-        [userId],
-        storeCollName['workTask']!,
-        {
-          "match": {
-            "belongId": req.id,
-            "createUser": userId,
-            "nodeId": {
-              "_exists_": false,
-            },
-          },
-          "sort": {
-            "createTime": -1,
-          },
-        },
-        pageAll);
-    List<WorkTask> result =
-        (res.data?.result ?? []).map((task) => WorkTask(task, user)).toList();
-    return PageResult<IWorkTask>(
-        total: res.data!.total,
-        offset: res.data!.offset,
-        limit: res.data!.limit,
-        result: result);
-  }
-
-  @override
-  Future<XWorkInstance?> loadInstanceDetail(
-    String id,
-    String belongId,
-  ) async {
-    final res = await kernel.collectionAggregate(
-      belongId,
-      [belongId],
-      storeCollName['workInstance']!,
+  Future<List<IWorkTask>> loadTasks(TaskType type,
+      {bool reload = false}) async {
+    if (reload) {
+      tasks = [];
+    }
+    //
+    var skip = tasks.where((i) => i.isTaskType(type)).toList().length;
+    var result = await kernel.collectionLoad<List<XWorkTask>>(
+      userId,
+      [],
+      TaskCollName,
       {
-        'match': {
-          id: id,
+        'options': {
+          'match': _typeMatch(type),
+          'sort': {
+            'createTime': -1,
+          },
         },
-        'limit': 1,
-        'lookup': {
-          'from': storeCollName['workTask'],
-          'localField': 'id',
-          'foreignField': 'instanceId',
-          'as': 'tasks',
-        },
+        'skip': skip,
+        'take': 30,
       },
     );
-    if (res.data && res.data.length > 0) {
-      return res.data[0];
+    if (result.success && result.data != null && result.data!.isNotEmpty) {
+      result.data!.forEach((item) => {
+            if (tasks.every((i) => i.id != item.id))
+              {tasks.add(WorkTask(item, user))}
+          });
     }
-    return null;
+    return tasks.where((i) => i.isTaskType(type)).toList();
+  }
+
+  @override
+  Future<int> loadTaskCount(TaskType type) async {
+    var res = await kernel.collectionLoad(
+        userId,
+        [],
+        TaskCollName,
+        {
+          "options": {
+            "match": _typeMatch(type),
+          },
+          "isCountQuery": true,
+        });
+    if (res.success) {
+      return res.totalCount;
+    }
+    return 0;
+  }
+
+  @override
+  Future<XWorkInstance?> loadInstanceDetail(String id, String belongId) async {
+    return await kernel.findInstance(belongId, id);
+  }
+
+  _typeMatch(TaskType type) {
+    switch (type.label) {
+      case '已办事项':
+        return {
+          'status': {
+            '_gte_': 100,
+          },
+          'records': {
+            '_exists_': true,
+          },
+        };
+      case '我发起的':
+        return {
+          'createUser': userId,
+          'nodeId': {
+            '_exists_': false,
+          },
+        };
+      case '抄送我的':
+        return {
+          'approveType': '抄送',
+        };
+      default:
+        return {
+          'status': {
+            '_lt_': 100,
+          },
+        };
+    }
   }
 
   @override

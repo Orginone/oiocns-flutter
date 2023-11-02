@@ -73,12 +73,13 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
         controller: state.scrollController,
         itemBuilder: (context, index) {
-          var app = settingCtrl.work.workFrequentlyUsed[index];
+          //TODO:workFrequentlyUsed 方法删除  暂时用一个  后面再看逻辑
+          var app = settingCtrl.work.tasks[index];
 
           var adapter = ListAdapter(
-            title: app.define.metadata.name ?? "",
+            title: '222', // app.define.metadata.name ?? "",
             image: Ionicons.apps_sharp,
-            labels: [app.define.metadata.typeName ?? ""],
+            labels: [], //[app.define.metadata.typeName ?? ""],
           );
 
           adapter.popupMenuItems = [
@@ -88,12 +89,12 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
             )
           ];
           adapter.onSelected = (key) {
-            controller.onSelected(key, app);
+            // controller.onSelected(key, app);
           };
 
           return GridItem(adapter: adapter);
         },
-        itemCount: settingCtrl.work.workFrequentlyUsed.length,
+        itemCount: settingCtrl.work.todos.length,
       );
     });
   }

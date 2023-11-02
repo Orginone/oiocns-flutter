@@ -95,9 +95,10 @@ class HttpUtil {
       return result.data!;
     } on DioException catch (error) {
       _onDioError(error, showError!);
+      // rethrow;
     } on Exception catch (error) {
       _onExceptionError(error, showError!);
-      rethrow;
+      // rethrow;
     } finally {
       log.info("================End Get Http Request================");
     }
@@ -137,10 +138,10 @@ class HttpUtil {
       return result.data!;
     } on DioException catch (error) {
       _onDioError(error, showError!);
-      rethrow;
+      // rethrow;
     } on Exception catch (error) {
       _onExceptionError(error, showError!);
-      rethrow;
+      // rethrow;
     } finally {
       log.info("================End Post Http Request================");
     }

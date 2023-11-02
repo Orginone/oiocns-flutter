@@ -191,13 +191,14 @@ class StoreHub {
       log.info("==========$id storeHub-invoke-end =============");
       return ResultType.fromJson(res as Map<String, dynamic>);
     } catch (err) {
-      log.info("==========$id storeHub-invoke-start =============");
-      log.info("=====>$id url: ${_connection.baseUrl}");
-      log.info("=====>$id methodName: $methodName");
-      log.info("=====>$id args: ${toJson(args)}");
-      log.info("=====>$id res: ${toJson(res)}");
-      log.info("=====>$id err: $err");
-      log.info("==========$id storeHub-invoke-end =============");
+      log.warning("==========$id storeHub-invoke-start =============");
+      log.warning("=====>$id url: ${_connection.baseUrl}");
+      log.warning("=====>$id methodName: $methodName");
+      log.warning("=====>$id args: ${toJson(args)}");
+      log.warning("=====>$id res: ${toJson(res)}");
+      log.warning("=====>$id err: $err");
+      log.warning("==========$id storeHub-invoke-end =============");
+      ToastUtils.dismiss();
       return ResultType<T>.fromJson(
           {"code": 400, "msg": err.toString(), "success": false, "data": null});
     }
