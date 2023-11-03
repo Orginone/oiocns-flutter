@@ -2,7 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
 
-import '../config/color.dart';
+import '../index.dart';
 
 /// 手势 tap
 typedef GestureOnTapChangeCallback = void Function<T>(T val);
@@ -182,15 +182,15 @@ extension ExWidget on Widget {
   }) =>
       Container(
         decoration: BoxDecoration(
-          color: color ?? GYColors.backgroundColor,
+          color: color ?? AppColors.background,
           borderRadius: BorderRadius.all(
             Radius.circular(radius ?? 5),
           ),
           boxShadow: [
             BoxShadow(
               // x偏移量 | y偏移量
-              offset: const Offset(0, 1),
-              color: shadowColor ?? GYColors.gray_66.withOpacity(0.15),
+              offset: Offset(0, 1),
+              color: shadowColor ?? AppColors.outline.withOpacity(0.15),
               // 阴影模糊半径
               blurRadius: blurRadius ?? 4,
               // 阴影扩散半径

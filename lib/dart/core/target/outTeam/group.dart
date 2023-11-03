@@ -16,7 +16,7 @@ abstract class IGroup implements ITarget {
   IGroup? parent;
 
   /// 子单位群
-  late List<IGroup> children;
+  List<IGroup> children = [];
 
   /// 加载子单位群
   Future<List<IGroup>> loadChildren({bool reload = false});
@@ -50,18 +50,18 @@ class Group extends Target implements IGroup {
   }
 
   @override
-  List<String> keys;
+  List<String> keys = [];
   @override
   XTarget metadata;
   @override
-  List<String> relations;
+  List<String> relations = [];
   ICompany company;
 
   @override
   late IBelong? space;
 
   @override
-  late List<IGroup> children;
+  List<IGroup> children = [];
   @override
   IGroup? parent;
 

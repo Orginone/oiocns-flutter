@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/extension/index.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/extension/ex_list.dart';
-import 'package:orginone/extension/ex_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/image_widget.dart';
 import 'package:orginone/widget/text_widget.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
 class ShareQrCodePage
     extends BaseGetView<ShareQrCodeController, ShareQrCodeState> {
-  ShareQrCodePage();
+  const ShareQrCodePage({super.key});
 
   @override
   Widget buildView() {
@@ -76,7 +74,7 @@ class ShareQrCodePage
   ///二维码
   Align buildQRImageView() {
     var image = state.entity.avatarThumbnail();
-    return Align(
+    return const Align(
       alignment: Alignment.center,
       // child: QrImage(
       //   data: '${Constant.host}/${state.entity.id}',

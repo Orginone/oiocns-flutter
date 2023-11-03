@@ -1,16 +1,12 @@
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/material.dart' hide SearchBar;
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:orginone/common/index.dart' hide ImageWidget, TextWidget;
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/chat/session.dart';
-import 'package:orginone/dart/core/target/outTeam/storage.dart';
 import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/extension/ex_list.dart';
-import 'package:orginone/extension/ex_widget.dart';
-import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/icons.dart';
 import 'package:orginone/widget/image_widget.dart';

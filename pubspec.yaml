@@ -148,6 +148,16 @@ dependencies:
       ref: master
   dots_indicator: ^3.0.0
   encrypt: ^5.0.3
+  dropdown_button2: ^2.3.9
+  carousel_slider: ^4.2.1
+  another_xlider: ^3.0.1
+  pinput: ^3.0.1
+  flutter_picker: ^2.1.0
+  modal_bottom_sheet: ^3.0.0-pre
+  flutter_easyloading: ^3.0.5
+  wechat_assets_picker: ^8.6.3
+  wechat_camera_picker: ^4.0.2
+  flutter_xupdate: ^2.0.0
 
 dev_dependencies:
   flutter_test:

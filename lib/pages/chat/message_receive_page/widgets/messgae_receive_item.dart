@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/index.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/extension/ex_list.dart';
-import 'package:orginone/extension/ex_widget.dart';
 import 'package:orginone/widget/widgets/team_avatar.dart';
 
 class MessageReceiveItem extends StatelessWidget {

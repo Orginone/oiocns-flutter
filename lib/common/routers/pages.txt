@@ -1,0 +1,5 @@
+
+      GetPage(
+        name: RouteNames.recordShelfOffArtificial,
+        page: () => const ArtificialPage(),
+      ),

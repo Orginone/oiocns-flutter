@@ -1,15 +1,12 @@
 import 'package:azlistview/azlistview.dart';
-import 'package:common_utils/common_utils.dart';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:lpinyin/lpinyin.dart';
+import 'package:orginone/common/index.dart';
 import 'package:orginone/config/color.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
-import 'package:orginone/extension/ex_list.dart';
-import 'package:orginone/extension/ex_widget.dart';
 import 'package:orginone/widget/buttons.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
