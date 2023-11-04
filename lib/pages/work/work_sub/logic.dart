@@ -202,6 +202,7 @@ class WorkSubController extends BaseListController<WorkSubState> {
     return works;
   }
 
+  /// 全部办事 点击事件 跳转子页面
   void jumpNext(WorkBreadcrumbNav work) {
     if (work.children.isEmpty) {
       jumpWorkList(work);
@@ -243,7 +244,8 @@ class WorkSubController extends BaseListController<WorkSubState> {
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     //待办
     if (type == "todo") {
-      await settingCtrl.work.loadTodos(reload: true);
+      List<IWorkTask> todos = await settingCtrl.work.loadTodos(reload: true);
+      state.list.value = todos;
     }
     if (type == "done") {
       await loadDones();

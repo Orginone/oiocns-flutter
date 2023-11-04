@@ -10,8 +10,11 @@ import 'package:orginone/widget/unified.dart';
 import 'logic.dart';
 import 'state.dart';
 
+///基本信息 页面
 class ProcessInfoPage
     extends BaseGetPageView<ProcessInfoController, ProcessInfoState> {
+  ProcessInfoPage({super.key});
+
   @override
   Widget buildView() {
     return Column(
@@ -46,11 +49,11 @@ class ProcessInfoPage
         children: [
           CommonWidget.commonNonIndicatorTabBar(
               state.mainTabController,
-              state.mainForm
-                  .map((element) => element.name!)
-                  .toList(), onTap: (index) {
+              // state.mainForm.map((element) => element.name ?? '').toList(),
+              state.mainForm.map((element) => element.typeName ?? '').toList(),
+              onTap: (index) {
             controller.changeMainIndex(index);
-          },labelStyle: TextStyle(fontSize: 20.sp)),
+          }, labelStyle: TextStyle(fontSize: 20.sp)),
           Column(
             children: state.mainForm[state.mainIndex.value].fields.map((e) {
                   Map<String, dynamic> info = {};
@@ -72,7 +75,7 @@ class ProcessInfoPage
                     },
                     future: controller.loadMainFieldData(e, info),
                   );
-            }).toList() ??
+                }).toList() ??
                 [],
           ),
         ],
@@ -82,7 +85,7 @@ class ProcessInfoPage
 
   Widget _subTable() {
     return Obx(() {
-      if(state.subForm.isEmpty){
+      if (state.subForm.isEmpty) {
         return const SizedBox();
       }
       return Container(
@@ -90,9 +93,10 @@ class ProcessInfoPage
         child: Column(
           children: [
             CommonWidget.commonNonIndicatorTabBar(state.subTabController,
-                state.subForm.map((element) => element.name!).toList(),onTap: (index){
+                state.subForm.map((element) => element.name ?? '').toList(),
+                onTap: (index) {
               controller.changeSubIndex(index);
-                },labelStyle: TextStyle(fontSize: 20.sp)),
+            }, labelStyle: TextStyle(fontSize: 20.sp)),
             Obx(() {
               var sub = state.subForm[state.subIndex.value];
               List<String> title =
@@ -107,8 +111,7 @@ class ProcessInfoPage
                   }
                   return Container();
                 },
-                future:
-                controller.loadSubFieldData(sub, sub.fields),
+                future: controller.loadSubFieldData(sub, sub.fields),
               );
             }),
           ],
@@ -117,8 +120,9 @@ class ProcessInfoPage
     });
   }
 
+  ///审批
   Widget _approval() {
-    if (state.todo.metadata.status != 1) {
+    if (state.todo?.metadata.status != 1) {
       return Container();
     }
     return Container(
@@ -127,7 +131,7 @@ class ProcessInfoPage
       decoration: BoxDecoration(
           color: Colors.white,
           border:
-          Border(top: BorderSide(color: Colors.grey.shade300, width: 0.5))),
+              Border(top: BorderSide(color: Colors.grey.shade300, width: 0.5))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
@@ -151,7 +155,7 @@ class ProcessInfoPage
   }
 
   Widget _opinion() {
-    if (state.todo.metadata.status != 1) {
+    if (state.todo?.metadata.status != 1) {
       return Container();
     }
     return CommonWidget.commonTextTile(
@@ -163,11 +167,12 @@ class ProcessInfoPage
     );
   }
 
-  Widget _button({VoidCallback? onTap,
-    required String text,
-    Color? textColor,
-    Color? color,
-    BoxBorder? border}) {
+  Widget _button(
+      {VoidCallback? onTap,
+      required String text,
+      Color? textColor,
+      Color? color,
+      BoxBorder? border}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(

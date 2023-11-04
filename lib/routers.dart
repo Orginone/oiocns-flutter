@@ -354,7 +354,7 @@ class Routers {
       ),
       GetPage(
         name: Routers.home,
-        page: () => HomePage(),
+        page: () => const HomePage(),
         bindings: [
           HomeBinding(),
           MessageChatsControllerBinding(),
@@ -376,7 +376,7 @@ class Routers {
       ),
       GetPage(
         name: Routers.messageChat,
-        page: () => MessageChatPage(),
+        page: () => const MessageChatPage(),
         bindings: [PlayBinding(), ChatBoxBinding(), MessageChatBinding()],
       ),
       GetPage(
@@ -405,7 +405,7 @@ class Routers {
       ),
       GetPage(
         name: Routers.processDetails,
-        page: () => ProcessDetailsPage(),
+        page: () => const ProcessDetailsPage(),
         binding: ProcessDetailsBinding(),
       ),
       GetPage(
@@ -545,7 +545,7 @@ class Routers {
       ),
       GetPage(
           name: Routers.messageFile,
-          page: () => MessageFilePage(),
+          page: () => const MessageFilePage(),
           binding: MessageFileBinding()),
       GetPage(
         name: Routers.messageRecords,
@@ -562,7 +562,7 @@ class Routers {
       ),
       GetPage(
         name: Routers.shareQrCode,
-        page: () => ShareQrCodePage(),
+        page: () => const ShareQrCodePage(),
         binding: ShareQrCodeBinding(),
       ),
       GetPage(
@@ -592,7 +592,7 @@ class Routers {
       ),
       GetPage(
         name: Routers.messageChatInfo,
-        page: () => MessageChatInfoPage(),
+        page: () => const MessageChatInfoPage(),
         binding: MessageChatInfoBinding(),
       ),
       GetPage(

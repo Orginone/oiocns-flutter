@@ -1698,6 +1698,7 @@ class WorkInstanceModel {
 }
 
 class InstanceDataModel {
+  /// 流程节点
   WorkNodeModel? node;
 
   /// 流程节点
@@ -1724,6 +1725,8 @@ class InstanceDataModel {
   });
 
   InstanceDataModel.fromJson(Map<String, dynamic> json) {
+    fields = {};
+    data = {};
     if (json['fields'] != null) {
       json['fields'].forEach((key, value) {
         List<FieldModel> fieldList = [];
@@ -1930,9 +1933,8 @@ class WorkNodeModel {
   String? destId; // 节点审批目标Id
   String? destName; // 节点目标名称
   String? defineId; // 节点归属组织
-  List<XForm>? forms;
-  List<XForm>? primaryFormIds; // 主表Id集合
-  List<XForm>? detailFormIds; // 子表Id集合
+  List<FormInfo>? forms;
+
   List<XForm>? primaryForms; // 主表
   List<XForm>? detailForms; // 子表
 
@@ -1949,8 +1951,6 @@ class WorkNodeModel {
     required this.destName,
     required this.defineId,
     this.forms,
-    this.primaryFormIds,
-    this.detailFormIds,
     this.primaryForms,
     this.detailForms,
   });
@@ -1973,15 +1973,7 @@ class WorkNodeModel {
       destName: json['destName'],
       defineId: json['defineId'],
       forms: json['forms'] != null
-          ? List<XForm>.from(json['forms'].map((x) => XForm.fromJson(x)))
-          : null,
-      primaryFormIds: json['primaryFormIds'] != null
-          ? List<XForm>.from(
-              json['primaryFormIds'].map((x) => XForm.fromJson(x)))
-          : null,
-      detailFormIds: json['detailFormIds'] != null
-          ? List<XForm>.from(
-              json['detailFormIds'].map((x) => XForm.fromJson(x)))
+          ? List<FormInfo>.from(json['forms'].map((x) => FormInfo.fromJson(x)))
           : null,
       primaryForms: json['primaryForms'] != null
           ? List<XForm>.from(json['primaryForms'].map((x) => XForm.fromJson(x)))
@@ -2012,17 +2004,37 @@ class WorkNodeModel {
     if (forms != null) {
       data['forms'] = forms!.map((x) => x.toJson()).toList();
     }
-    if (primaryFormIds != null) {
-      data['primaryFormIds'] = forms!.map((x) => x.toJson()).toList();
-    }
-    if (detailFormIds != null) {
-      data['detailFormIds'] = forms!.map((x) => x.toJson()).toList();
-    }
+
     if (primaryForms != null) {
       data['primaryForms'] = forms!.map((x) => x.toJson()).toList();
     }
     if (detailForms != null) {
       data['detailForms'] = forms!.map((x) => x.toJson()).toList();
+    }
+    return data;
+  }
+}
+
+class FormInfo {
+  String? id;
+  String? typeName; // 节点名称
+
+  FormInfo({this.id, this.typeName});
+
+  factory FormInfo.fromJson(Map<String, dynamic> json) {
+    return FormInfo(
+      id: json['id'],
+      typeName: json['typeName'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = {};
+    if (id != null) {
+      data['id'] = id;
+    }
+    if (typeName != null) {
+      data['typeName'] = typeName;
     }
     return data;
   }

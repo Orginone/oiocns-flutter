@@ -49,20 +49,21 @@ abstract class BaseBreadcrumbNavController<S extends BaseBreadcrumbNavState>
 
   @override
   void onClose() {
-    // TODO: implement onClose
     BreadcrumbNavInstance().pop();
     super.onClose();
   }
 
   void pop(int index) {
     String routerName = state.bcNav[index].route;
+
     Get.until(
       (route) {
         if (route.settings.arguments == null) {
           return Get.currentRoute == routerName;
         }
-        var name = (route.settings.arguments as Map)['data']?.name ?? "";
-        var id = (route.settings.arguments as Map)['data']?.id ?? "";
+        var args = route.settings.arguments;
+        var name = args is Map ? args['data']?.name ?? '' : "";
+        var id = args is Map ? args['data']?.id ?? '' : "";
         if (name == '') {
           return Get.currentRoute == routerName;
         }

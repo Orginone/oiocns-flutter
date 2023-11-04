@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/util/date_utils.dart';
@@ -20,7 +21,6 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState>
 
   @override
   void onReady() async {
-    // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
     await loadDataInfo();
@@ -45,31 +45,43 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState>
   }
 
   Future<void> loadDataInfo() async {
-    state.node = getNodeByNodeId(state.todo.instanceData?.node?.id ?? "",
-        node: state.todo.instanceData?.node);
+    state.node = getNodeByNodeId(state.todo?.instanceData?.node?.id ?? "",
+        node: state.todo?.instanceData?.node);
     if (state.node != null) {
       state.mainForm.value = state.node!.forms
               ?.where((element) => element.typeName == "主表")
+              .toList()
+              .map((element) => XForm.fromJson(element.toJson()))
               .toList() ??
           [];
+      // state.mainForm.value = state.node!.forms
+      //         ?.where((element) => element.typeName == "主表")
+      //         .toList() ??
+      //     [];
       state.mainTabController =
           TabController(length: state.mainForm.length, vsync: this);
       for (var element in state.mainForm) {
         element.data = getFormData(element.id);
-        element.fields = state.todo.instanceData!.fields![element.id] ?? [];
+        element.fields = state.todo?.instanceData?.fields?[element.id] ?? [];
         for (var field in element.fields) {
           field.field = await initFields(field);
         }
       }
       state.subForm.value = state.node!.forms
               ?.where((element) => element.typeName == "子表")
+              .toList()
+              .map((element) => XForm.fromJson(element.toJson()))
               .toList() ??
           [];
+      // state.subForm.value = state.node!.forms
+      //         ?.where((element) => element.typeName == "子表")
+      //         .toList() ??
+      //     [];
       state.subTabController =
           TabController(length: state.subForm.length, vsync: this);
       for (var element in state.subForm) {
         element.data = getFormData(element.id);
-        element.fields = state.todo.instanceData!.fields![element.id] ?? [];
+        element.fields = state.todo?.instanceData?.fields?[element.id] ?? [];
         for (var field in element.fields) {
           field.field = await initFields(field);
         }
@@ -145,10 +157,10 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState>
 
   FormEditData getFormData(String id) {
     final source = <AnyThingModel>[];
-    if (state.todo.instanceData?.data != null &&
-        state.todo.instanceData?.data![id] != null) {
-      final beforeData = state.todo.instanceData!.data![id]!;
-      if (beforeData.isNotEmpty) {
+    if (state.todo?.instanceData?.data != null &&
+        state.todo?.instanceData?.data![id] != null) {
+      final beforeData = state.todo?.instanceData!.data![id]!;
+      if (beforeData != null) {
         final nodeData =
             beforeData.where((i) => i.nodeId == state.node?.id).toList();
         if (nodeData.isNotEmpty) {

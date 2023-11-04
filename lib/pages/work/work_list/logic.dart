@@ -22,7 +22,7 @@ class WorkListController extends BaseListController<WorkListState> {
 //群 办事列表
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
-    switch (state.work.workEnum!) {
+    switch (state.work.workEnum) {
       case WorkEnum.todo:
         var todos = await settingCtrl.work.loadTodos();
         state.dataList.value = todos

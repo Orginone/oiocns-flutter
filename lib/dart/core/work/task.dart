@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:orginone/common/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/consts.dart';
-import 'package:orginone/dart/core/public/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
@@ -127,30 +127,18 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
   @override
   Future<bool> loadInstance({bool reload = false}) async {
     if (instanceData != null && !reload) return true;
-    var res = await kernel.collectionAggregate(
-      taskdata.belongId!,
-      [taskdata.belongId!],
-      storeCollName['workInstance']!,
-      {
-        "match": {
-          "id": taskdata.instanceId,
-        },
-        "limit": 1,
-        "lookup": {
-          "from": storeCollName['workTask']!,
-          "localField": 'id',
-          "foreignField": 'instanceId',
-          "as": 'tasks',
-        },
-      },
+    var res = await kernel.findInstance(
+      taskdata.belongId ?? '',
+      taskdata.instanceId ?? '',
     );
 
-    if (res.data != null && res.data.length > 0) {
+    if (res != null) {
       try {
-        instance = XWorkInstance.fromJson(res.data[0]);
+        instance = res; //XWorkInstance.fromJson(res.data[0]);
+        LogUtil.d(res.toJson());
         Map<String, dynamic> json = jsonDecode(instance!.data ?? "");
         instanceData = instance != null && json.isNotEmpty
-            ? InstanceDataModel.fromJson(jsonDecode(instance!.data ?? ""))
+            ? InstanceDataModel.fromJson(json)
             : null;
         return instanceData != null;
       } catch (ex) {

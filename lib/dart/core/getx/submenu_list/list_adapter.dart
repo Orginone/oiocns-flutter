@@ -136,7 +136,9 @@ class ListAdapter {
     content = "内容:$content";
 
     callback = () async {
+      //加载流程实例数据
       await work.loadInstance();
+      //跳转办事详情
       Get.toNamed(Routers.processDetails, arguments: {"todo": work});
     };
   }

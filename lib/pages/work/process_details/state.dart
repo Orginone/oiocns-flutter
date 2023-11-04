@@ -5,11 +5,10 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/work/task.dart';
 
-class ProcessDetailsState extends BaseGetState{
-
+class ProcessDetailsState extends BaseGetState {
   var hideProcess = true.obs;
 
-  late IWorkTask todo;
+  IWorkTask? todo;
 
   WorkNodeModel? node;
 
@@ -19,14 +18,13 @@ class ProcessDetailsState extends BaseGetState{
 
   var subForm = <XForm>[].obs;
 
-
   late TabController subTabController;
 
   late TabController mainTabController;
 
   late TabController tabController;
 
-  ProcessDetailsState(){
+  ProcessDetailsState() {
     todo = Get.arguments?['todo'];
   }
 }

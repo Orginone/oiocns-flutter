@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:get/get.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
@@ -730,9 +728,9 @@ class KernelApi {
       },
     );
     var res = await dataProxy(data);
-    if (res.success && res.data != null && res.data.data != null) {
-      if (res.data.data is Array && res.data.data.length > 0) {
-        return res.data.data[0];
+    if (res.success && res.data != null && res.data['data'] != null) {
+      if (res.data['data'] is List && res.data['data'].length > 0) {
+        return XWorkInstance.fromJson(res.data['data'][0]);
       }
     }
     return null;

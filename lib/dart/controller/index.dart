@@ -105,7 +105,7 @@ class IndexController extends GetxController {
     if (provider.user != null) {
       chats.addAll(provider.user?.chats ?? []);
       for (var company in provider.user?.companys ?? []) {
-        chats.addAll(company.chats);
+        chats.addAll(company.chats ?? []);
       }
     }
     return chats;

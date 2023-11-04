@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/common/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/consts.dart';
@@ -9,13 +10,14 @@ import '../../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
 class ProcessInfoController extends BaseController<ProcessInfoState> {
+  @override
   final ProcessInfoState state = ProcessInfoState();
 
   void approval(int status) async {
     await WorkNetWork.approvalTask(
         status: status,
         comment: state.comment.text,
-        todo: state.todo,
+        todo: state.todo!,
         onSuccess: () {
           Get.back();
         });
@@ -40,8 +42,7 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
         case "selectPerson":
         case "selectDepartment":
         case "selectGroup":
-          field.field.defaultData.value =
-              await settingCtrl.user.findShareById(value);
+          field.field.defaultData.value = settingCtrl.user.findShareById(value);
           return field.field.defaultData.value.name;
         case "select":
         case 'switch':
@@ -49,10 +50,10 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
           for (var value in field.lookups ?? []) {
             field.field.select![value.value] = value.text ?? "";
           }
-          if(field.field.type == "select"){
-            field.field.defaultData.value = {value:field.field.select![value]};
-          }else{
-            field.field.defaultData.value = value??"";
+          if (field.field.type == "select") {
+            field.field.defaultData.value = {value: field.field.select![value]};
+          } else {
+            field.field.defaultData.value = value ?? "";
           }
           return field.field.select![value] ?? "";
         case "upload":
@@ -86,11 +87,11 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
         } else {
           try {
             if (field.name!.contains("是否启用")) {
-              print('');
+              LogUtil.d('');
             }
             data.add(await _buildField(field, thing.otherInfo[field.id]));
           } catch (e) {
-            print('');
+            LogUtil.d('');
           }
         }
       }
@@ -98,7 +99,6 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
     }
     return content;
   }
-
 
   void changeMainIndex(int index) {
     if (state.mainIndex.value != index) state.mainIndex.value = index;

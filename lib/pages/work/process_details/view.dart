@@ -8,6 +8,7 @@ import 'process_info/view.dart';
 import 'state.dart';
 import 'use_traces/view.dart';
 
+///办事 详情
 class ProcessDetailsPage
     extends BaseGetView<ProcessDetailsController, ProcessDetailsState> {
   const ProcessDetailsPage({super.key});
@@ -15,7 +16,7 @@ class ProcessDetailsPage
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.todo.taskdata.title,
+      titleName: state.todo?.taskdata.title,
       body: Column(
         children: [
           tabBar(),

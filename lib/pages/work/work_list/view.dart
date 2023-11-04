@@ -6,6 +6,7 @@ import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/pages/work/work_list/state.dart';
 import 'logic.dart';
 
+///办事列表页面
 class WorkListPage extends BaseGetListView<WorkListController, WorkListState> {
   WorkListPage({super.key});
 

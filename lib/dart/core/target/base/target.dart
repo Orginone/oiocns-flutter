@@ -21,14 +21,14 @@ abstract class ITarget extends IFileInfo<XTarget> with ITeam {
   //用户资源
   late DataResource resource;
   //用户设立的身份（角色）
-  late List<IIdentity> identitys;
+  List<IIdentity> identitys = [];
 
   //子用户
-  late List<ITarget> subTarget;
+  List<ITarget> subTarget = [];
   //所有相关用户
-  late List<ITarget> targets;
+  List<ITarget> targets = [];
   //用户相关的所有会话
-  late List<ISession> chats;
+  List<ISession> chats = [];
   //成员目录
   late IDirectory memberDirectory;
   //退出用户群
@@ -91,13 +91,13 @@ abstract class Target extends Team implements ITarget {
 
   ///构造函数使用的参数
   @override
-  final List<String> keys;
+  List<String> keys = [];
   @override
   final XTarget metadata;
   @override
-  final List<String> relations;
+  List<String> relations = [];
   @override
-  late List<TargetType>? memberTypes;
+  List<TargetType>? memberTypes = [];
   @override
   late IPerson? user;
   @override

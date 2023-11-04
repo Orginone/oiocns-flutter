@@ -13,6 +13,7 @@ import 'package:orginone/main.dart';
 import 'logic.dart';
 import 'state.dart';
 
+///办事tab页面
 class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
   final String type;
 
@@ -130,6 +131,7 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
             controller.jumpWorkList(item);
           },
           onNext: () {
+            ///全部办事 点击事件
             controller.jumpNext(item);
           },
         );
