@@ -2,14 +2,15 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:orginone/common/models/file/asserts/asset_creation_config.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/images.dart';
-import 'package:orginone/model/asset_creation_config.dart';
-import 'package:orginone/model/thing_model.dart' as thing;
+
 import 'package:orginone/util/encryption_util.dart';
 import 'package:orginone/util/string_util.dart';
+import 'package:orginone/common/models/thing/thing_model.dart' as thing;
 
 import 'common/lists.dart';
 

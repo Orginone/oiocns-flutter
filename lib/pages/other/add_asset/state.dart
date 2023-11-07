@@ -1,12 +1,10 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/model/assets_info.dart';
+import 'package:orginone/common/models/file/index.dart';
 
 import '../../../dart/core/getx/base_get_state.dart';
 
-class AddAssetState extends BaseGetState{
+class AddAssetState extends BaseGetState {
   TextEditingController searchController = TextEditingController();
 
   var selectCount = 0.obs;
@@ -17,7 +15,5 @@ class AddAssetState extends BaseGetState{
 
   var searchList = <AssetsInfo>[].obs;
 
-  AddAssetState(){
-
-  }
+  AddAssetState();
 }

@@ -53,7 +53,7 @@ class VersionPage extends GetView<VersionController> {
     );
   }
 
-  Widget itemInit(BuildContext context, int index, VersionVersionMes value) {
+  Widget itemInit(BuildContext context, int index, VersionMes value) {
     return Padding(
       padding: EdgeInsets.fromLTRB(20.w, 0.h, 20.w, 0.h),
       child: Stack(
@@ -205,7 +205,7 @@ class VersionController extends BaseListController {
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     var version = await fileCtrl.versionList();
     if (version != null) {
-      List<VersionVersionMes> versionList = [];
+      List<VersionMes> versionList = [];
       for (var element in (version.versionMes ?? [])) {
         if (Platform.isAndroid && element.platform.toLowerCase() == "android") {
           versionList.add(element);
@@ -218,7 +218,7 @@ class VersionController extends BaseListController {
         update();
         return;
       }
-      model.PageResp<VersionVersionMes> pageResp =
+      model.PageResp<VersionMes> pageResp =
           model.PageResp(versionList.length, versionList.length, versionList);
       state.dataList.add(pageResp);
       mLoadStatus.value = LoadStatusX.success;

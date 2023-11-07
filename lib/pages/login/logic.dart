@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
+import 'package:orginone/common/utils/index.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -18,7 +18,7 @@ class LoginController extends BaseController<LoginState> {
     if (!kernel.isOnline) {
       kernel.start();
     }
-    var account = Storage.getList("account");
+    var account = Storage().getList("account");
     if (account.isNotEmpty) {
       state.accountController.text = account.first;
       state.phoneNumberController.text = account.first;
@@ -57,7 +57,7 @@ class LoginController extends BaseController<LoginState> {
     if (res.success) {
       ToastUtils.showMsg(msg: "登录成功");
       [Permission.storage, Permission.notification].request();
-      Storage.setList("account",
+      Storage().setList("account",
           [state.accountController.text, state.passWordController.text]);
 
       Get.offAndToNamed(Routers.logintrans, arguments: true);

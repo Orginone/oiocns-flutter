@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/controller/wallet_controller.dart';
+import 'package:orginone/common/models/index.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/model/wallet_model.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
@@ -53,4 +52,3 @@ class _BagDetailsPageState extends State<BagDetailsPage> {
     );
   }
 }
-

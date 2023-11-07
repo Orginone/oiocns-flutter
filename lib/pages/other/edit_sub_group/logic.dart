@@ -1,12 +1,13 @@
 import 'package:get/get.dart';
+import 'package:orginone/common/models/index.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
-import 'package:orginone/model/subgroup.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/toast_utils.dart';
 
 import 'state.dart';
 
 class EditSubGroupController extends BaseController<EditSubGroupState> {
+  @override
   final EditSubGroupState state = EditSubGroupState();
 
   void changeGroupIndex(int oldIndex, int newIndex) {
@@ -48,8 +49,6 @@ class EditSubGroupController extends BaseController<EditSubGroupState> {
   }
 
   void back() {
-    Get.back(result: state.clickSave?state.subGroup.value:null);
+    Get.back(result: state.clickSave ? state.subGroup.value : null);
   }
-
-
 }

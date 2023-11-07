@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:orginone/dart/base/model.dart' hide ThingModel;
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_state.dart';
-import 'package:orginone/model/thing_model.dart';
 
 class StoreState extends BaseSubmenuState<StoreFrequentlyUsed> {
   @override

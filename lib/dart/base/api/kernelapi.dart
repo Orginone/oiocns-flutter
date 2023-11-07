@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/common/index.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
 import 'package:orginone/dart/base/common/commands.dart';
@@ -6,10 +7,8 @@ import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/model/user_model.dart';
 import 'package:orginone/util/hive_utils.dart';
 import 'package:orginone/util/http_util.dart';
-import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/logger.dart';
 import 'package:orginone/util/toast_utils.dart';
 
@@ -63,12 +62,12 @@ class KernelApi {
 
 // 获取accessToken
   String get accessToken {
-    return Storage.getString('accessToken');
+    return Storage().getString('accessToken');
   }
 
   // 设置accessToken
   set setToken(String val) {
-    Storage.setString('accessToken', val);
+    Storage().setString('accessToken', val);
   }
 
   /// 实时获取连接状态

@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/models/index.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_controller.dart';
-import 'package:orginone/model/subgroup.dart';
-import 'package:orginone/model/subgroup_config.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_state.dart';
 import 'package:orginone/util/hive_utils.dart';
 
-class MessageChatsController
-    extends BaseSubmenuController<MessageChatsState> {
+class MessageChatsController extends BaseSubmenuController<MessageChatsState> {
   @override
   final MessageChatsState state = MessageChatsState();
 
@@ -16,7 +14,6 @@ class MessageChatsController
     // TODO: implement onInit
     super.onInit();
   }
-
 
   @override
   void initSubGroup() {
@@ -29,8 +26,10 @@ class MessageChatsController
     }
     state.subGroup = Rx(chat);
     var index = chat.groups!.indexWhere((element) => element.value == "recent");
-    state.tabController = TabController(initialIndex: index,length: chat.groups!.length,vsync: this,animationDuration: Duration.zero);
+    state.tabController = TabController(
+        initialIndex: index,
+        length: chat.groups!.length,
+        vsync: this,
+        animationDuration: Duration.zero);
   }
-
-
 }

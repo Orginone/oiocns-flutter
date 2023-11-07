@@ -1,16 +1,14 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/models/index.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/model/wallet_model.dart';
 
-class WalletDetailsState extends BaseGetState{
+class WalletDetailsState extends BaseGetState {
   late TabController tabController;
 
   late Coin coin;
 
-  WalletDetailsState(){
+  WalletDetailsState() {
     coin = Get.arguments['coin'];
   }
 }

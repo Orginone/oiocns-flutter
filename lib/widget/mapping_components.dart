@@ -1,4 +1,3 @@
-
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
@@ -8,11 +7,11 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
+import 'package:orginone/common/models/file/index.dart' hide FileType;
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/bottom_sheet_dialog.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -20,7 +19,8 @@ import 'package:orginone/widget/unified.dart';
 
 import 'loading_dialog.dart';
 
-typedef MappingComponentsCallback = Widget Function(Fields data, ITarget target);
+typedef MappingComponentsCallback = Widget Function(
+    Fields data, ITarget target);
 
 Map<String, MappingComponentsCallback> testMappingComponents = {
   "text": mappingTextWidget,
@@ -38,9 +38,8 @@ Map<String, MappingComponentsCallback> testMappingComponents = {
   "upload": mappingUploadWidget,
 };
 
-
 MappingComponentsCallback mappingTextWidget = (Fields data, ITarget target) {
-  if(data.hidden??false){
+  if (data.hidden ?? false) {
     return Container();
   }
   return Obx(() {
@@ -67,7 +66,7 @@ MappingComponentsCallback mappingInputWidget = (Fields data, ITarget target) {
       FilteringTextInputFormatter.allow(RegExp(data.regx!)),
     ];
   }
-  if(data.hidden??false){
+  if (data.hidden ?? false) {
     return Container();
   }
   return Container(
@@ -90,17 +89,18 @@ MappingComponentsCallback mappingInputWidget = (Fields data, ITarget target) {
   );
 };
 
-MappingComponentsCallback mappingSelectBoxWidget = (Fields data,ITarget target) {
-  if(data.hidden??false){
+MappingComponentsCallback mappingSelectBoxWidget =
+    (Fields data, ITarget target) {
+  if (data.hidden ?? false) {
     return Container();
   }
   return Obx(() {
     String content = "";
-    if(data.defaultData.value!=null){
-      if(data.defaultData.value is String){
+    if (data.defaultData.value != null) {
+      if (data.defaultData.value is String) {
         content = data.defaultData.value;
-      }else{
-        content = data.defaultData.value?.values?.first.toString()??"";
+      } else {
+        content = data.defaultData.value?.values?.first.toString() ?? "";
       }
     }
     return Container(
@@ -110,8 +110,9 @@ MappingComponentsCallback mappingSelectBoxWidget = (Fields data,ITarget target) 
           top: (data.marginTop ?? 0).h,
           bottom: (data.marginBottom ?? 0).h),
       child: CommonWidget.commonChoiceTile(
-          data.title ?? "",content,
-          onTap: (){
+        data.title ?? "",
+        content,
+        onTap: () {
           if (!(data.readOnly ?? false)) {
             PickerUtils.showListStringPicker(Get.context!,
                 titles: data.select!.values.toList(), callback: (str) {
@@ -177,7 +178,9 @@ MappingComponentsCallback mappingSelectTimeRangeBoxWidget =
           right: (data.marginRight ?? 0).h,
           top: (data.marginTop ?? 0).h,
           bottom: (data.marginBottom ?? 0).h),
-      child: CommonWidget.commonChoiceTile(data.title ?? "", content,
+      child: CommonWidget.commonChoiceTile(
+        data.title ?? "",
+        content,
         onTap: () async {
           if (!(data.readOnly ?? false)) {
             List<DateTime>? dateTimeList = await showOmniDateTimeRangePicker(
@@ -247,8 +250,10 @@ MappingComponentsCallback mappingSelectDateRangeBoxWidget =
           right: (data.marginRight ?? 0).h,
           top: (data.marginTop ?? 0).h,
           bottom: (data.marginBottom ?? 0).h),
-      child: CommonWidget.commonChoiceTile(data.title ?? "", content,
-          onTap: () async {
+      child: CommonWidget.commonChoiceTile(
+        data.title ?? "",
+        content,
+        onTap: () async {
           if (!(data.readOnly ?? false)) {
             List<DateTime>? dateTimeList = await showOmniDateTimeRangePicker(
                 context: Get.context!, type: OmniDateTimePickerType.date);
@@ -303,13 +308,14 @@ MappingComponentsCallback mappingSelectPersonBoxWidget =
   });
 };
 
-MappingComponentsCallback mappingSelectDepartmentBoxWidget = (Fields data, ITarget target) {
-  if(data.hidden??false){
+MappingComponentsCallback mappingSelectDepartmentBoxWidget =
+    (Fields data, ITarget target) {
+  if (data.hidden ?? false) {
     return Container();
   }
   return Obx(() {
     String content = '';
-    content = data.defaultData.value?.name??"";
+    content = data.defaultData.value?.name ?? "";
     return Container(
       margin: EdgeInsets.only(
           left: (data.marginLeft ?? 0).h,
@@ -317,20 +323,21 @@ MappingComponentsCallback mappingSelectDepartmentBoxWidget = (Fields data, ITarg
           top: (data.marginTop ?? 0).h,
           bottom: (data.marginBottom ?? 0).h),
       child: CommonWidget.commonChoiceTile(
-          data.title ?? "",content,
-          onTap:(){
-            if(!(data.readOnly??false)){
-              List<ITarget> loadDepartments(List<IDepartment> departments) {
-                List<ITarget> team = [];
+        data.title ?? "",
+        content,
+        onTap: () {
+          if (!(data.readOnly ?? false)) {
+            List<ITarget> loadDepartments(List<IDepartment> departments) {
+              List<ITarget> team = [];
 
-                for (var value in departments) {
-                  team.add(value);
-                  if (value.children.isNotEmpty) {
-                    team.addAll(loadDepartments(value.children));
-                  }
+              for (var value in departments) {
+                team.add(value);
+                if (value.children.isNotEmpty) {
+                  team.addAll(loadDepartments(value.children));
                 }
-                return team;
               }
+              return team;
+            }
 
             List<ITarget> team =
                 loadDepartments((target as Company).departments);
@@ -351,14 +358,14 @@ MappingComponentsCallback mappingSelectDepartmentBoxWidget = (Fields data, ITarg
   });
 };
 
-
-MappingComponentsCallback mappingSelectGroupBoxWidget = (Fields data, ITarget target) {
-  if(data.hidden??false){
+MappingComponentsCallback mappingSelectGroupBoxWidget =
+    (Fields data, ITarget target) {
+  if (data.hidden ?? false) {
     return Container();
   }
   return Obx(() {
     String content = '';
-    content = data.defaultData.value?.name??"";
+    content = data.defaultData.value?.name ?? "";
     return Container(
       margin: EdgeInsets.only(
           left: (data.marginLeft ?? 0).h,
@@ -366,7 +373,8 @@ MappingComponentsCallback mappingSelectGroupBoxWidget = (Fields data, ITarget ta
           top: (data.marginTop ?? 0).h,
           bottom: (data.marginBottom ?? 0).h),
       child: CommonWidget.commonChoiceTile(
-          data.title ?? "",content,
+        data.title ?? "",
+        content,
         onTap: () {
           if (!(data.readOnly ?? false)) {
             List<ITarget> parentTarget = (target as IBelong).parentTarget;
@@ -387,9 +395,8 @@ MappingComponentsCallback mappingSelectGroupBoxWidget = (Fields data, ITarget ta
   });
 };
 
-
 MappingComponentsCallback mappingRouteWidget = (Fields data, ITarget target) {
-  if(data.hidden??false){
+  if (data.hidden ?? false) {
     return Container();
   }
   return Obx(() {
@@ -407,8 +414,8 @@ MappingComponentsCallback mappingSwitchWidget = (Fields data, ITarget target) {
   if (data.hidden ?? false) {
     return Container();
   }
-  if( data.select!.isEmpty){
-    return mappingTextWidget(data,target);
+  if (data.select!.isEmpty) {
+    return mappingTextWidget(data, target);
   }
   return Stack(
     children: [
@@ -444,7 +451,7 @@ MappingComponentsCallback mappingSwitchWidget = (Fields data, ITarget target) {
                       });
 
                       return Row(children: children);
-              }),
+                    }),
             ],
           ),
         ),
@@ -476,13 +483,16 @@ MappingComponentsCallback mappingUploadWidget = (Fields data, ITarget target) {
         str = data.defaultData.value?.name;
       }
     }
-    return CommonWidget.commonChoiceTile(data.title ?? "", str,
-        required: data.required ?? false, onTap: () async {
-      if (!(data.readOnly ?? false)) {
-        FilePickerResult? result =
-            await FilePicker.platform.pickFiles(type: FileType.any);
-        if (result != null) {
-          LoadingDialog.showLoading(Get.context!);
+    return CommonWidget.commonChoiceTile(
+      data.title ?? "",
+      str,
+      required: data.required ?? false,
+      onTap: () async {
+        if (!(data.readOnly ?? false)) {
+          FilePickerResult? result =
+              await FilePicker.platform.pickFiles(type: FileType.any);
+          if (result != null) {
+            LoadingDialog.showLoading(Get.context!);
             var docDir = target.directory;
             PlatformFile file = result.files.first;
             var file1 = File(file.path!);

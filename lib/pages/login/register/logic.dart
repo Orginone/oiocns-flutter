@@ -1,17 +1,14 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/event_bus.dart';
-import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
 class RegisterController extends BaseController<RegisterState> {
+  @override
   final RegisterState state = RegisterState();
 
   void changeAgreeTerms() {
@@ -35,11 +32,12 @@ class RegisterController extends BaseController<RegisterState> {
       ToastUtils.showMsg(msg: "密码的长度不能大于15");
       return;
     }
-    RegExp regExp = RegExp(r'(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,15}');
+    RegExp regExp =
+        RegExp(r'(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,15}');
     Match? match = regExp.firstMatch(state.passWordController.text);
-    if(match == null){
-     ToastUtils.showMsg(msg: '密码必须包含：数字、字母、特殊字符');
-     return;
+    if (match == null) {
+      ToastUtils.showMsg(msg: '密码必须包含：数字、字母、特殊字符');
+      return;
     }
 
     state.isStepOne.value = false;
@@ -65,8 +63,8 @@ class RegisterController extends BaseController<RegisterState> {
         avatar: ''));
     LoadingDialog.dismiss(context);
     if (res.success) {
-       ToastUtils.showMsg(msg: "注册成功,请重新登录");
-       Get.back();
+      ToastUtils.showMsg(msg: "注册成功,请重新登录");
+      Get.back();
     }
   }
 

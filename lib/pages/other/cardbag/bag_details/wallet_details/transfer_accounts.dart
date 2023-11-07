@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:orginone/common/models/index.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/model/wallet_model.dart';
 import 'package:orginone/routers.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/common_widget.dart';
@@ -75,7 +74,7 @@ class _TransferAccountsState extends State<TransferAccounts> {
                 icon: const Icon(Ionicons.scan_outline),
                 onPressed: () {
                   Get.toNamed(Routers.qrScan)?.then((value) async {
-                    if(value!=null){
+                    if (value != null) {
                       toController.text = value;
                     }
                   });
@@ -107,13 +106,17 @@ class _TransferAccountsState extends State<TransferAccounts> {
               ),
             ),
             GestureDetector(
-              onTap: () async{
+              onTap: () async {
                 LoadingDialog.showLoading(context);
-                bool success = await walletCtrl.createTransaction(coin, amountController.text, toController.text, noteController.text);
+                bool success = await walletCtrl.createTransaction(
+                    coin,
+                    amountController.text,
+                    toController.text,
+                    noteController.text);
                 LoadingDialog.dismiss(context);
-                if(success){
+                if (success) {
                   ToastUtils.showMsg(msg: "转账成功");
-                }else{
+                } else {
                   ToastUtils.showMsg(msg: "转账失败");
                 }
               },

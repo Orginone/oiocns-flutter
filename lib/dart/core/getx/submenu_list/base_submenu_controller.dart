@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/models/index.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
-import 'package:orginone/dart/core/getx/base_list_controller.dart';
-import 'package:orginone/model/subgroup.dart';
 import 'package:orginone/pages/home/home/logic.dart';
 import 'package:orginone/routers.dart';
-import 'package:orginone/util/page_view_scroll_utils.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 
 import 'base_submenu_state.dart';
 
 class BaseSubmenuController<S extends BaseSubmenuState>
-    extends BaseController<S> with GetTickerProviderStateMixin{
-
+    extends BaseController<S> with GetTickerProviderStateMixin {
   HomeController homeController = Get.find();
 
   @override
@@ -48,16 +45,14 @@ class BaseSubmenuController<S extends BaseSubmenuState>
             actions: [
               TextButton(
                 onPressed: () {
-                  Get.toNamed(Routers.editSubGroup,
-                      arguments: {
-                        "subGroup": SubGroup.fromJson(
-                            state.subGroup.value.toJson())
-                      })?.then((value) {
-                        if(value!=null){
-                          state.subGroup.value = value;
-                          state.subGroup.refresh();
-                          resetTab();
-                        }
+                  Get.toNamed(Routers.editSubGroup, arguments: {
+                    "subGroup": SubGroup.fromJson(state.subGroup.value.toJson())
+                  })?.then((value) {
+                    if (value != null) {
+                      state.subGroup.value = value;
+                      state.subGroup.refresh();
+                      resetTab();
+                    }
                   });
                 },
                 child: Text(
@@ -98,6 +93,7 @@ class BaseSubmenuController<S extends BaseSubmenuState>
       if (value != null) {
         changeSubmenuIndex(value);
       }
+      return null;
     });
   }
 
@@ -108,9 +104,10 @@ class BaseSubmenuController<S extends BaseSubmenuState>
     }
   }
 
-  void resetTab(){
+  void resetTab() {
     state.tabController.dispose();
-    state.tabController = TabController(length: state.subGroup.value.groups!.length, vsync: this);
+    state.tabController =
+        TabController(length: state.subGroup.value.groups!.length, vsync: this);
     state.tabController.index = 0;
     state.submenuIndex.value = 0;
     state.tabController.addListener(() {

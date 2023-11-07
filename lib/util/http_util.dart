@@ -1,9 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
+import 'package:orginone/common/utils/index.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
@@ -54,7 +54,7 @@ class HttpUtil {
   }
 
   Future<Options> addTokenHeader(Options? options) async {
-    var accessToken = Storage.getString('accessToken');
+    var accessToken = Storage().getString('accessToken');
     log.info("====> accessToken：$accessToken");
     if (options == null) {
       return Options(headers: {"Authorization": accessToken});

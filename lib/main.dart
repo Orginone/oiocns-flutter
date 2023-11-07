@@ -7,6 +7,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/channel/wallet_channel.dart';
+import 'package:orginone/common/utils/index.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/controller/wallet_controller.dart';
 import 'package:orginone/routers.dart';
@@ -14,7 +15,6 @@ import 'package:orginone/util/foreground_utils.dart';
 import 'package:orginone/util/notification_util.dart';
 import 'dart/controller/index.dart';
 import 'util/hive_utils.dart';
-import 'util/local_store.dart';
 
 void main() async {
   // 逻辑绑定
@@ -28,7 +28,7 @@ void main() async {
   await NotificationUtil.initializeService();
 
   // 初始化通知配置
-  await Storage.init();
+  await Storage().init();
 
   ForegroundUtils().initForegroundTask();
 
@@ -58,7 +58,7 @@ const Size screenSize = Size(540, 1170);
 class ScreenInit extends StatelessWidget {
   const ScreenInit({Key? key}) : super(key: key);
 
-  List<String> get account => Storage.getList("account");
+  List<String> get account => Storage().getList("account");
 
   @override
   Widget build(BuildContext context) {

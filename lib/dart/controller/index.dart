@@ -4,6 +4,7 @@ import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:orginone/common/utils/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
@@ -20,7 +21,6 @@ import 'package:orginone/routers.dart';
 import 'package:orginone/util/event_bus.dart';
 import 'package:orginone/util/event_bus_helper.dart';
 import 'package:orginone/util/hive_utils.dart';
-import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/toast_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 
@@ -236,7 +236,7 @@ class IndexController extends GetxController {
 
   void exitLogin({bool cleanUserLoginInfo = true}) async {
     if (cleanUserLoginInfo) {
-      Storage.clear();
+      Storage().clear();
     }
     LoadingDialog.dismiss(Get.context!);
     kernel.stop();

@@ -2,7 +2,7 @@
 import 'dart:convert';
 
 import 'package:flutter/services.dart';
-import 'package:orginone/model/asset_creation_config.dart';
+import 'package:orginone/common/models/file/index.dart';
 
 import 'model.dart';
 
@@ -7061,7 +7061,7 @@ class VersionEntity {
   String? key;
   String? name;
   String? updateTime;
-  List<VersionVersionMes>? versionMes;
+  List<VersionMes>? versionMes;
 
   VersionEntity({
     required this.key,
@@ -7074,7 +7074,7 @@ class VersionEntity {
       : key = json["Key"],
         name = json["Name"],
         updateTime = json["UpdateTime"],
-        versionMes = VersionVersionMes.fromList(json["versionMes"]);
+        versionMes = VersionMes.fromList(json["versionMes"]);
 
   static List<VersionEntity> fromList(List<Map<String, dynamic>>? list) {
     if (list == null) {
@@ -7105,15 +7105,15 @@ class VersionEntity {
   }
 }
 
-class VersionVersionMes {
-  VersionVersionMesUploadName? uploadName;
+class VersionMes {
+  VersionMesUploadName? uploadName;
   String? appName;
   String? publisher;
   int? version;
   String? remark;
   String? id;
-  VersionVersionMesPubTeam? pubTeam;
-  VersionVersionMesPubAuthor? pubAuthor;
+  VersionMesPubTeam? pubTeam;
+  VersionMesPubAuthor? pubAuthor;
   String? platform;
   String? pubTime;
   int? size;
@@ -7122,17 +7122,17 @@ class VersionVersionMes {
   String? shareLink;
   String? thumbnail;
 
-  VersionVersionMes();
+  VersionMes();
 
-  VersionVersionMes.fromJson(Map<String, dynamic> json)
-      : uploadName = VersionVersionMesUploadName.fromJson(json["uploadName"]),
+  VersionMes.fromJson(Map<String, dynamic> json)
+      : uploadName = VersionMesUploadName.fromJson(json["uploadName"]),
         appName = json["appName"],
         publisher = json["publisher"],
         version = json["version"],
         remark = json["remark"],
         id = json["id"],
-        pubTeam = VersionVersionMesPubTeam.fromJson(json["pubTeam"]),
-        pubAuthor = VersionVersionMesPubAuthor.fromJson(json["pubAuthor"]),
+        pubTeam = VersionMesPubTeam.fromJson(json["pubTeam"]),
+        pubAuthor = VersionMesPubAuthor.fromJson(json["pubAuthor"]),
         platform = json["platform"],
         pubTime = json["pubTime"],
         size = json["size"],
@@ -7141,14 +7141,14 @@ class VersionVersionMes {
         shareLink = json["shareLink"],
         thumbnail = json["thumbnail"];
 
-  static List<VersionVersionMes> fromList(List<dynamic>? list) {
+  static List<VersionMes> fromList(List<dynamic>? list) {
     if (list == null) {
       return [];
     }
-    List<VersionVersionMes> retList = [];
+    List<VersionMes> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
-        retList.add(VersionVersionMes.fromJson(item));
+        retList.add(VersionMes.fromJson(item));
       }
     }
     return retList;
@@ -7176,17 +7176,17 @@ class VersionVersionMes {
   }
 }
 
-class VersionVersionMesUploadName {
+class VersionMesUploadName {
   int? size;
   String? name;
   String? extension;
   String? shareLink;
   String? thumbnail;
 
-  VersionVersionMesUploadName();
+  VersionMesUploadName();
 
 //通过JSON构造
-  VersionVersionMesUploadName.fromJson(Map<String, dynamic>? json)
+  VersionMesUploadName.fromJson(Map<String, dynamic>? json)
       : size = json?["size"] ?? 0,
         name = json?["name"] ?? "",
         extension = json?["extension"] ?? "",
@@ -7194,15 +7194,14 @@ class VersionVersionMesUploadName {
         thumbnail = json?["thumbnail"] ?? "";
 
   //通过动态数组解析成List
-  static List<VersionVersionMesUploadName> fromList(
-      List<Map<String, dynamic>>? list) {
+  static List<VersionMesUploadName> fromList(List<Map<String, dynamic>>? list) {
     if (list == null) {
       return [];
     }
-    List<VersionVersionMesUploadName> retList = [];
+    List<VersionMesUploadName> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
-        retList.add(VersionVersionMesUploadName.fromJson(item));
+        retList.add(VersionMesUploadName.fromJson(item));
       }
     }
     return retList;
@@ -7220,7 +7219,7 @@ class VersionVersionMesUploadName {
   }
 }
 
-class VersionVersionMesPubTeam {
+class VersionMesPubTeam {
   String? value;
   String? label;
   String? id;
@@ -7235,12 +7234,12 @@ class VersionVersionMesPubTeam {
   String? version;
   String? createTime;
   String? updateTime;
-  VersionVersionMesPubTeamTeam? team;
+  VersionMesPubTeamTeam? team;
 
-  VersionVersionMesPubTeam();
+  VersionMesPubTeam();
 
 //通过JSON构造
-  VersionVersionMesPubTeam.fromJson(dynamic json)
+  VersionMesPubTeam.fromJson(dynamic json)
       : value = json["value"],
         label = json["label"],
         id = json["id"],
@@ -7255,18 +7254,17 @@ class VersionVersionMesPubTeam {
         version = json["version"],
         createTime = json["createTime"],
         updateTime = json["updateTime"],
-        team = VersionVersionMesPubTeamTeam.fromJson(json["team"]);
+        team = VersionMesPubTeamTeam.fromJson(json["team"]);
 
   //通过动态数组解析成List
-  static List<VersionVersionMesPubTeam> fromList(
-      List<Map<String, dynamic>>? list) {
+  static List<VersionMesPubTeam> fromList(List<Map<String, dynamic>>? list) {
     if (list == null) {
       return [];
     }
-    List<VersionVersionMesPubTeam> retList = [];
+    List<VersionMesPubTeam> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
-        retList.add(VersionVersionMesPubTeam.fromJson(item));
+        retList.add(VersionMesPubTeam.fromJson(item));
       }
     }
     return retList;
@@ -7294,7 +7292,7 @@ class VersionVersionMesPubTeam {
   }
 }
 
-class VersionVersionMesPubTeamTeam {
+class VersionMesPubTeamTeam {
   String? id;
   String? name;
   String? code;
@@ -7307,10 +7305,10 @@ class VersionVersionMesPubTeamTeam {
   String? updateTime;
   String? remark;
 
-  VersionVersionMesPubTeamTeam();
+  VersionMesPubTeamTeam();
 
 //通过JSON构造
-  VersionVersionMesPubTeamTeam.fromJson(Map<String, dynamic>? json)
+  VersionMesPubTeamTeam.fromJson(Map<String, dynamic>? json)
       : id = json?["id"] ?? "",
         name = json?["name"] ?? "",
         code = json?["code"] ?? "",
@@ -7324,15 +7322,15 @@ class VersionVersionMesPubTeamTeam {
         remark = json?["remark"] ?? "";
 
   //通过动态数组解析成List
-  static List<VersionVersionMesPubTeamTeam> fromList(
+  static List<VersionMesPubTeamTeam> fromList(
       List<Map<String, dynamic>>? list) {
     if (list == null) {
       return [];
     }
-    List<VersionVersionMesPubTeamTeam> retList = [];
+    List<VersionMesPubTeamTeam> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
-        retList.add(VersionVersionMesPubTeamTeam.fromJson(item));
+        retList.add(VersionMesPubTeamTeam.fromJson(item));
       }
     }
     return retList;
@@ -7356,7 +7354,7 @@ class VersionVersionMesPubTeamTeam {
   }
 }
 
-class VersionVersionMesPubAuthor {
+class VersionMesPubAuthor {
   String? id;
   String? name;
   String? code;
@@ -7368,12 +7366,12 @@ class VersionVersionMesPubAuthor {
   String? version;
   String? createTime;
   String? updateTime;
-  VersionVersionMesPubAuthorTeam? team;
+  VersionMesPubAuthorTeam? team;
 
-  VersionVersionMesPubAuthor();
+  VersionMesPubAuthor();
 
 //通过JSON构造
-  VersionVersionMesPubAuthor.fromJson(dynamic json)
+  VersionMesPubAuthor.fromJson(dynamic json)
       : id = json["id"],
         name = json["name"],
         code = json["code"],
@@ -7387,15 +7385,14 @@ class VersionVersionMesPubAuthor {
         updateTime = json["updateTime"];
 
   //通过动态数组解析成List
-  static List<VersionVersionMesPubAuthor> fromList(
-      List<Map<String, dynamic>>? list) {
+  static List<VersionMesPubAuthor> fromList(List<Map<String, dynamic>>? list) {
     if (list == null) {
       return [];
     }
-    List<VersionVersionMesPubAuthor> retList = [];
+    List<VersionMesPubAuthor> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
-        retList.add(VersionVersionMesPubAuthor.fromJson(item));
+        retList.add(VersionMesPubAuthor.fromJson(item));
       }
     }
     return retList;
@@ -7419,7 +7416,7 @@ class VersionVersionMesPubAuthor {
   }
 }
 
-class VersionVersionMesPubAuthorTeam {
+class VersionMesPubAuthorTeam {
   String? id;
   String? name;
   String? code;
@@ -7432,10 +7429,10 @@ class VersionVersionMesPubAuthorTeam {
   String? createTime;
   String? updateTime;
 
-  VersionVersionMesPubAuthorTeam();
+  VersionMesPubAuthorTeam();
 
 //通过JSON构造
-  VersionVersionMesPubAuthorTeam.fromJson(Map<String, dynamic> json)
+  VersionMesPubAuthorTeam.fromJson(Map<String, dynamic> json)
       : id = json["id"],
         name = json["name"],
         code = json["code"],
@@ -7449,15 +7446,15 @@ class VersionVersionMesPubAuthorTeam {
         updateTime = json["updateTime"];
 
   //通过动态数组解析成List
-  static List<VersionVersionMesPubAuthorTeam> fromList(
+  static List<VersionMesPubAuthorTeam> fromList(
       List<Map<String, dynamic>>? list) {
     if (list == null) {
       return [];
     }
-    List<VersionVersionMesPubAuthorTeam> retList = [];
+    List<VersionMesPubAuthorTeam> retList = [];
     if (list.isNotEmpty) {
       for (var item in list) {
-        retList.add(VersionVersionMesPubAuthorTeam.fromJson(item));
+        retList.add(VersionMesPubAuthorTeam.fromJson(item));
       }
     }
     return retList;

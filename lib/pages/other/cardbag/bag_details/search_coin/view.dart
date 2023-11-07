@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:orginone/common/models/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/model/wallet_model.dart';
 import 'package:orginone/widget/common_widget.dart';
 import 'package:orginone/widget/gy_scaffold.dart';
 import 'package:orginone/widget/unified.dart';
@@ -13,6 +13,8 @@ import 'state.dart';
 
 class SearchCoinPage
     extends BaseGetView<SearchCoinController, SearchCoinState> {
+  const SearchCoinPage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(
@@ -23,8 +25,9 @@ class SearchCoinPage
         itemBuilder: (BuildContext context, int index) {
           var item = DEFAULT_COINS[index];
           return Obx(() {
-            bool hasItem = state.wallet.value.coins?.firstWhereOrNull((
-                element) => element.type == item['type']) != null;
+            bool hasItem = state.wallet.value.coins?.firstWhereOrNull(
+                    (element) => element.type == item['type']) !=
+                null;
             return Container(
               padding: EdgeInsets.symmetric(horizontal: 50.w, vertical: 10.h),
               child: Row(
@@ -62,9 +65,9 @@ class SearchCoinPage
                         controller.addCoin(item);
                       }
                     },
-                    icon: Icon(
-                        hasItem ? Ionicons.close_circle_outline : Ionicons
-                            .add_circle_outline),
+                    icon: Icon(hasItem
+                        ? Ionicons.close_circle_outline
+                        : Ionicons.add_circle_outline),
                     color: hasItem ? XColors.black6 : XColors.blueHintTextColor,
                   )
                 ],

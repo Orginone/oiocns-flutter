@@ -2,10 +2,10 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/models/file/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
-import 'package:orginone/model/asset_creation_config.dart';
 import 'package:orginone/util/date_utils.dart';
 import 'package:orginone/widget/loading_dialog.dart';
 import 'state.dart';

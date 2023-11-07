@@ -1,12 +1,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:hive/hive.dart';
-import 'package:orginone/model/asset_creation_config.dart';
-import 'package:orginone/model/subgroup.dart';
-import 'package:orginone/model/user_model.dart';
-import 'package:orginone/model/wallet_model.dart';
+import 'package:orginone/common/models/file/index.dart';
 import 'package:path_provider/path_provider.dart';
 
-import '../model/acc.dart';
+import '../common/models/index.dart';
 
 ///flutter packages pub run build_runner build --delete-conflicting-outputs
 class HiveUtils {
@@ -53,18 +50,18 @@ class HiveUtils {
     return _subGroupConfigBox.get(key);
   }
 
-  static void putSubGroup(String key,SubGroup group) {
-     _subGroupConfigBox.put(key,group);
+  static void putSubGroup(String key, SubGroup group) {
+    _subGroupConfigBox.put(key, group);
   }
 
   static void putWallet(Wallet wallet) {
-    _walletBox.put(wallet.account,wallet);
+    _walletBox.put(wallet.account, wallet);
   }
 
   static List<Wallet> getAllWallet() {
     List<Wallet> wallets = [];
-    var data= _walletBox.values.toList();
-    if(data.isNotEmpty){
+    var data = _walletBox.values.toList();
+    if (data.isNotEmpty) {
       for (var element in data) {
         wallets.add(element);
       }
@@ -72,51 +69,46 @@ class HiveUtils {
     return wallets;
   }
 
-  static Future<void> clean() async{
+  static Future<void> clean() async {
     await _userBox.clear();
     await _assetConfigBox.clear();
     await _subGroupConfigBox.clear();
     await _walletBox.clear();
   }
 
-  static void putConfig(List<AssetCreationConfig> configs) async{
-    if(configs.isEmpty){
-     return;
+  static void putConfig(List<AssetCreationConfig> configs) async {
+    if (configs.isEmpty) {
+      return;
     }
-    Map<String,AssetCreationConfig> map = {};
+    Map<String, AssetCreationConfig> map = {};
     for (var element in configs) {
       map[element.businessCode!] = element;
     }
-    if(map.isEmpty){
+    if (map.isEmpty) {
       return;
     }
     await _assetConfigBox.putAll(map);
   }
 
+  static AssetCreationConfig getConfig(String key) {
+    var assetConfig = _assetConfigBox.get(key);
+    if (assetConfig == null) {
+      switch (key) {
+        case "claim":
+          assetConfig = AssetCreationConfig.fromJson(claimConfig);
+          break;
+        case "dispose":
+          assetConfig = AssetCreationConfig.fromJson(disposeConfig);
+          break;
+        case "transfer":
+          assetConfig = AssetCreationConfig.fromJson(transferConfig);
+          break;
+        case "handOver":
+          assetConfig = AssetCreationConfig.fromJson(handOverConfig);
+          break;
+      }
+    }
 
-
-
-  static AssetCreationConfig getConfig(String key){
-   var assetConfig =  _assetConfigBox.get(key);
-   if(assetConfig == null){
-     switch(key){
-       case "claim":
-         assetConfig = AssetCreationConfig.fromJson(claimConfig);
-         break;
-       case "dispose":
-         assetConfig = AssetCreationConfig.fromJson(disposeConfig);
-         break;
-       case "transfer":
-         assetConfig = AssetCreationConfig.fromJson(transferConfig);
-         break;
-       case "handOver":
-         assetConfig =AssetCreationConfig.fromJson(handOverConfig);
-         break;
-     }
-   }
-
-   return assetConfig;
+    return assetConfig;
   }
-
-
 }

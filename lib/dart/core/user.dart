@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:orginone/common/utils/index.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -8,7 +9,6 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/util/local_store.dart';
 import 'package:orginone/util/logger.dart';
 import 'thing/standard/application.dart';
 import 'work/provider.dart';
@@ -18,7 +18,7 @@ const sessionUserName = 'sessionUser';
 class UserProvider {
   UserProvider({Emitter? emiter}) {
     _emiter = emiter;
-    final userJson = Storage.getString(sessionUserName);
+    final userJson = Storage().getString(sessionUserName);
     if (userJson.isNotEmpty) {
       _loadUser(XTarget.fromJson(jsonDecode(userJson)));
     }
@@ -91,7 +91,7 @@ class UserProvider {
 
   /// 加载用户
   _loadUser(XTarget person) async {
-    Storage.setJson(sessionUserName, person.toJson());
+    Storage().setJson(sessionUserName, person.toJson());
     kernel.userId = person.id;
 
     _user.value = Person(person);

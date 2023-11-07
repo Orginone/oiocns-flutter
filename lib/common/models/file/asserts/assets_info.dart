@@ -1,4 +1,4 @@
-import 'package:orginone/model/file_data.dart';
+import 'package:orginone/common/models/file/index.dart';
 
 enum CardStatus {
   normal,
@@ -151,7 +151,7 @@ class AssetsInfo {
         fileList!.add(FileData.fromJson(json));
       });
     }
-    assetType = json['ASSET_TYPE']??json['category'];
+    assetType = json['ASSET_TYPE'] ?? json['category'];
     assetTypeCodeAssetTypeCode = json['ASSET_TYPE_CODE_ASSET_TYPE_CODE'];
     assetsEnglishName = json['ASSETS_ENGLISH_NAME'];
     geographicInformation = json['GEOGRAPHIC_INFORMATION'];
@@ -172,7 +172,8 @@ class AssetsInfo {
     numOrArea = json['NUM_OR_AREA'];
     numUnit = json['NUM_UNIT'];
     haveUsedIt = json['HAVE_USED_IT'];
-    netVal = json['NET_VAL']!=null?int.tryParse(json['NET_VAL'].toString()):0;
+    netVal =
+        json['NET_VAL'] != null ? int.tryParse(json['NET_VAL'].toString()) : 0;
     residualRate = json['RESIDUAL_RATE'];
     monthAccDep = json['MONTH_ACC_DEP'];
     accDepMonth = json['ACC_DEP_MONTH'];
@@ -181,12 +182,12 @@ class AssetsInfo {
     canZhi = json['CANZHI'];
     initAssetVal = json['INIT_ASSET_VAL'];
     liuCzt = json['LIUCZT'];
-    sfxc = json['SFXC'] is bool?json['SFXC']:false;
+    sfxc = json['SFXC'] is bool ? json['SFXC'] : false;
     id = json['id'];
     gmtCreate = json['gmtCreate'];
     updateTime = json['UPDATE_TIME'];
-    brand = json['BRAND']??json['PINPAI'];
-    specMod = json['SPEC_MOD']??json['GUIGEXH'];
+    brand = json['BRAND'] ?? json['PINPAI'];
+    specMod = json['SPEC_MOD'] ?? json['GUIGEXH'];
     location = json['LOCATION'];
     invoiceNo = json['INVOICE_NO'];
     sourcesOfFunding = json['SOURCES_OF_FUNDING'];
@@ -200,7 +201,7 @@ class AssetsInfo {
     gs1 = json['GS1'];
     minimumLimit = json['MINIMUM_LIMIT'];
     acquirementWay = json['ACQUIREMENT_WAY'];
-    kapianzt = toStatus(json['KAPIANZT']??"");
+    kapianzt = toStatus(json['KAPIANZT'] ?? "");
     status = json['status'];
     assetRemark = json['assetRemark'];
     stockTaskCode = json['stockTaskCode'];
@@ -216,15 +217,17 @@ class AssetsInfo {
     }
     assetType = json['ASSET_TYPE'] ?? assetType;
     assetName = json['ASSET_NAME'] ?? assetName;
-    assetTypeCodeAssetTypeCode = json['ASSET_TYPE_CODE_ASSET_TYPE_CODE']??assetName;
-    assetsEnglishName = json['ASSETS_ENGLISH_NAME']??assetsEnglishName;
-    geographicInformation = json['GEOGRAPHIC_INFORMATION']??geographicInformation;
-    ownershipFormCode = json['OWNERSHIP_FORM_CODE']??ownershipFormCode;
-    ownershipCert = json['OWNERSHIP_CERT']??ownershipCert;
-    certifiDate = json['CERTIFI_DATE']??certifiDate;
-    ownershipNo = json['OWNERSHIP_NO']??ownershipNo;
-    ownershipArea = json['OWNERSHIP_AREA']??ownershipArea;
-    owner = json['OWNER']??owner;
+    assetTypeCodeAssetTypeCode =
+        json['ASSET_TYPE_CODE_ASSET_TYPE_CODE'] ?? assetName;
+    assetsEnglishName = json['ASSETS_ENGLISH_NAME'] ?? assetsEnglishName;
+    geographicInformation =
+        json['GEOGRAPHIC_INFORMATION'] ?? geographicInformation;
+    ownershipFormCode = json['OWNERSHIP_FORM_CODE'] ?? ownershipFormCode;
+    ownershipCert = json['OWNERSHIP_CERT'] ?? ownershipCert;
+    certifiDate = json['CERTIFI_DATE'] ?? certifiDate;
+    ownershipNo = json['OWNERSHIP_NO'] ?? ownershipNo;
+    ownershipArea = json['OWNERSHIP_AREA'] ?? ownershipArea;
+    owner = json['OWNER'] ?? owner;
     assetCode = json['ASSET_CODE'] ?? assetCode;
     startDate = json['START_DATE'] ?? startDate;
     useDept = json['USE_DEPT'] ?? useDept;
@@ -260,9 +263,9 @@ class AssetsInfo {
     gs1 = json['GS1'] ?? gs1;
     minimumLimit = json['MINIMUM_LIMIT'] ?? minimumLimit;
     acquirementWay = json['ACQUIREMENT_WAY'] ?? acquirementWay;
-    kapianzt = toStatus(json['KAPIANZT']??"") ?? kapianzt;
-    isDistribution = json['isDistribution']??isDistribution;
-    sfxc = json['SFXC']??sfxc;
+    kapianzt = toStatus(json['KAPIANZT'] ?? "") ?? kapianzt;
+    isDistribution = json['isDistribution'] ?? isDistribution;
+    sfxc = json['SFXC'] ?? sfxc;
   }
 
   bool get notLockStatus =>
@@ -271,7 +274,6 @@ class AssetsInfo {
       kapianzt != CardStatus.dispose &&
       kapianzt != CardStatus.borrow &&
       kapianzt != CardStatus.handOver;
-
 
   CardStatus? toStatus(String status) {
     switch (status) {
@@ -295,62 +297,62 @@ class AssetsInfo {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    if (this.assetType != null) {
-      data['ASSET_TYPE'] = this.assetType;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    if (assetType != null) {
+      data['ASSET_TYPE'] = assetType;
     }
-    data['ASSET_NAME'] = this.assetName;
-    data['ASSET_TYPE_CODE_ASSET_TYPE_CODE'] = this.assetTypeCodeAssetTypeCode;
-    data['ASSETS_ENGLISH_NAME'] = this.assetsEnglishName;
-    data['GEOGRAPHIC_INFORMATION'] = this.geographicInformation;
-    data['OWNERSHIP_FORM_CODE'] = this.ownershipFormCode;
-    data['OWNERSHIP_CERT'] = this.ownershipCert;
-    data['CERTIFI_DATE'] = this.certifiDate;
-    data['OWNERSHIP_NO'] = this.ownershipNo;
-    data['OWNERSHIP_AREA'] = this.ownershipArea;
-    data['OWNER'] = this.owner;
-    data['ASSET_CODE'] = this.assetCode;
-    data['START_DATE'] = this.startDate;
-    data['USE_DEPT'] = this.useDept;
-    data['FIXED_ASS_ACQ_CODE'] = this.fixedAssAcqCode;
-    data['ESTIMATED_USEFUL_LIFE'] = this.estimatedUsefulLife;
-    data['QUDERQ'] = this.quderq;
-    data['NUM_OR_AREA'] = this.numOrArea;
-    data['NUM_UNIT'] = this.numUnit;
-    data['HAVE_USED_IT'] = this.haveUsedIt;
-    data['NET_VAL'] = this.netVal;
-    data['RESIDUAL_RATE'] = this.residualRate;
-    data['MONTH_ACC_DEP'] = this.monthAccDep;
-    data['ACC_DEP_MONTH'] = this.accDepMonth;
-    data['DEPRECIATION_METHOD'] = this.depreciationMethod;
-    data['ACC_DEP'] = this.accDep;
-    data['CANZHI'] = this.canZhi;
-    data['INIT_ASSET_VAL'] = this.initAssetVal;
-    data['LIUCZT'] = this.liuCzt;
-    data['id'] = this.id;
-    data['gmtCreate'] = this.gmtCreate;
-    data['UPDATE_TIME'] = this.updateTime;
-    data['SPEC_MOD'] = this.specMod;
-    data['BRAND'] = this.brand;
-    data['LOCATION'] = this.location;
-    data['INVOICE_NO'] = this.invoiceNo;
-    data['SOURCES_OF_FUNDING'] = this.sourcesOfFunding;
-    data['USER'] = this.user;
-    data['MANUFACTURER'] = this.manufacturer;
-    data['FIXED_ASSET_STATE_CODE'] = this.fixedAssetStateCode;
-    data['SUPPLIER'] = this.supplier;
-    data['REMARK'] = this.remark;
-    data['THE_DEPOSITORY'] = this.theDepository;
+    data['ASSET_NAME'] = assetName;
+    data['ASSET_TYPE_CODE_ASSET_TYPE_CODE'] = assetTypeCodeAssetTypeCode;
+    data['ASSETS_ENGLISH_NAME'] = assetsEnglishName;
+    data['GEOGRAPHIC_INFORMATION'] = geographicInformation;
+    data['OWNERSHIP_FORM_CODE'] = ownershipFormCode;
+    data['OWNERSHIP_CERT'] = ownershipCert;
+    data['CERTIFI_DATE'] = certifiDate;
+    data['OWNERSHIP_NO'] = ownershipNo;
+    data['OWNERSHIP_AREA'] = ownershipArea;
+    data['OWNER'] = owner;
+    data['ASSET_CODE'] = assetCode;
+    data['START_DATE'] = startDate;
+    data['USE_DEPT'] = useDept;
+    data['FIXED_ASS_ACQ_CODE'] = fixedAssAcqCode;
+    data['ESTIMATED_USEFUL_LIFE'] = estimatedUsefulLife;
+    data['QUDERQ'] = quderq;
+    data['NUM_OR_AREA'] = numOrArea;
+    data['NUM_UNIT'] = numUnit;
+    data['HAVE_USED_IT'] = haveUsedIt;
+    data['NET_VAL'] = netVal;
+    data['RESIDUAL_RATE'] = residualRate;
+    data['MONTH_ACC_DEP'] = monthAccDep;
+    data['ACC_DEP_MONTH'] = accDepMonth;
+    data['DEPRECIATION_METHOD'] = depreciationMethod;
+    data['ACC_DEP'] = accDep;
+    data['CANZHI'] = canZhi;
+    data['INIT_ASSET_VAL'] = initAssetVal;
+    data['LIUCZT'] = liuCzt;
+    data['id'] = id;
+    data['gmtCreate'] = gmtCreate;
+    data['UPDATE_TIME'] = updateTime;
+    data['SPEC_MOD'] = specMod;
+    data['BRAND'] = brand;
+    data['LOCATION'] = location;
+    data['INVOICE_NO'] = invoiceNo;
+    data['SOURCES_OF_FUNDING'] = sourcesOfFunding;
+    data['USER'] = user;
+    data['MANUFACTURER'] = manufacturer;
+    data['FIXED_ASSET_STATE_CODE'] = fixedAssetStateCode;
+    data['SUPPLIER'] = supplier;
+    data['REMARK'] = remark;
+    data['THE_DEPOSITORY'] = theDepository;
     data['GS1'] = gs1;
     data['MINIMUM_LIMIT'] = minimumLimit;
     data['ACQUIREMENT_WAY'] = acquirementWay;
-    data['KAPIANZT'] = this.kapianzt?.toStatusId;
-    data['status'] = this.status;
-    data["stockTaskCode"] = this.stockTaskCode;
-    data['assetRemark'] = this.assetRemark;
-    data['isDistribution'] = this.isDistribution;
-    data['USE_DEPT_NAME'] = this.useDeptName;
-    data['USER_NAME'] = this.userName;
+    data['KAPIANZT'] = kapianzt?.toStatusId;
+    data['status'] = status;
+    data["stockTaskCode"] = stockTaskCode;
+    data['assetRemark'] = assetRemark;
+    data['isDistribution'] = isDistribution;
+    data['USE_DEPT_NAME'] = useDeptName;
+    data['USER_NAME'] = userName;
     data['SFXC'] = sfxc;
     return data;
   }

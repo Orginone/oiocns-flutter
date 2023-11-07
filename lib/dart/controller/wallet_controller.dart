@@ -1,7 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/channel/wallet_channel.dart';
-import 'package:orginone/model/transaction_record_model.dart';
-import 'package:orginone/model/wallet_model.dart';
+import 'package:orginone/common/models/index.dart';
 import 'package:orginone/util/hive_utils.dart';
 
 abstract class WalletApi {
@@ -11,9 +10,11 @@ abstract class WalletApi {
 
   Future<void> queryWalletBalance(Wallet wallet);
 
-  Future<List<TransactionRecord>> transactionsByaddress(Coin coin,int page,int type);
+  Future<List<TransactionRecord>> transactionsByaddress(
+      Coin coin, int page, int type);
 
-  Future<bool> createTransaction(Coin coin,String amount,String to,String note);
+  Future<bool> createTransaction(
+      Coin coin, String amount, String to, String note);
 
   void updateWallet(Wallet wallet);
 }
@@ -80,9 +81,9 @@ class WalletController extends GetxController implements WalletApi {
     }
   }
 
-
   @override
-  Future<List<TransactionRecord>> transactionsByaddress(Coin coin, int page, int type) async{
+  Future<List<TransactionRecord>> transactionsByaddress(
+      Coin coin, int page, int type) async {
     Map<String, dynamic> params = coin.toJson();
     params['count'] = 20;
     params['index'] = page;
@@ -92,10 +93,11 @@ class WalletController extends GetxController implements WalletApi {
   }
 
   @override
-  Future<bool> createTransaction(Coin coin, String amount, String to, String note) async{
-    Map<String,dynamic> json = coin.toJson();
+  Future<bool> createTransaction(
+      Coin coin, String amount, String to, String note) async {
+    Map<String, dynamic> json = coin.toJson();
     json['amount'] = amount;
-    json['fee'] ='0';
+    json['fee'] = '0';
     json['from'] = coin.address;
     json['to'] = to;
     json['note'] = note;

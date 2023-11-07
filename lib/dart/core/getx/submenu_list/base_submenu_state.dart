@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/models/index.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/model/subgroup.dart';
 
 class BaseSubmenuState<T extends FrequentlyUsed> extends BaseGetState {
-
   late Rx<SubGroup> subGroup;
 
   var submenuIndex = 0.obs;
@@ -14,7 +13,7 @@ class BaseSubmenuState<T extends FrequentlyUsed> extends BaseGetState {
   String tag = '';
 }
 
-class FrequentlyUsed{
+class FrequentlyUsed {
   String? id;
   String? name;
   dynamic avatar;

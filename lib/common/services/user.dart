@@ -10,7 +10,6 @@
  */
 import 'dart:convert';
 import 'package:get/get.dart';
-import 'package:orginone/model/user_model.dart';
 
 import '../index.dart';
 
@@ -28,8 +27,8 @@ class UserService extends GetxService {
   Map<String, dynamic> userNamePassword = {};
 
   /// 用户 profile
-  UserModel get userInfo => _userInfo.value;
-  final _userInfo = UserModel().obs;
+  // UserModel get userInfo => _userInfo.value;
+  // final _userInfo = UserModel().obs;
 
   /// 仓库
 
@@ -68,20 +67,20 @@ class UserService extends GetxService {
     return userNamePassword;
   }
 
-  /// 储存用户信息 +++++++++++++++++++++++++++++++++++++++++
-  Future<void> setUserInfo(UserModel userModel) async {
-    if (token.isEmpty) return;
-    _isLogin.value = true;
-    _userInfo(userModel);
-    Storage().setString(Constants.userInfoKey, jsonEncode(userModel));
-  }
+  // /// 储存用户信息 +++++++++++++++++++++++++++++++++++++++++
+  // Future<void> setUserInfo(UserModel userModel) async {
+  //   if (token.isEmpty) return;
+  //   _isLogin.value = true;
+  //   _userInfo(userModel);
+  //   Storage().setString(Constants.userInfoKey, jsonEncode(userModel));
+  // }
 
   /// 获取用户信息
   Future<void> getUserInfo() async {
     if (token.isEmpty) return;
     var userInfoOffline = Storage().getString(Constants.userInfoKey);
     if (userInfoOffline.isNotEmpty) {
-      _userInfo(UserModel.fromJson(jsonDecode(userInfoOffline)));
+      // _userInfo(UserModel.fromJson(jsonDecode(userInfoOffline)));
     }
     _isLogin.value = true;
   }
@@ -90,7 +89,7 @@ class UserService extends GetxService {
   Future<void> logout() async {
     // if (_isLogin.value) await UserAPIs.logout();
     await Storage().remove(Constants.appTokenKey);
-    _userInfo(UserModel());
+    // _userInfo(UserModel());
     _isLogin.value = false;
     token = '';
   }
