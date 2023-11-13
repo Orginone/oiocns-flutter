@@ -8,6 +8,7 @@
  */
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/config/index.dart';
 
 import '../index.dart';
 
@@ -42,7 +43,7 @@ class ActionDialog {
                 // 标题
                 DefaultTextStyle(
                   textAlign: TextAlign.center,
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
                     color: AppColors.black,
@@ -52,8 +53,8 @@ class ActionDialog {
                           padding: const EdgeInsets.only(top: 4),
                           child: title,
                         )
-                      : Padding(
-                          padding: const EdgeInsets.only(top: 4),
+                      : const Padding(
+                          padding: EdgeInsets.only(top: 4),
                           child: Text("温馨提示"),
                         ),
                 ),
@@ -63,7 +64,7 @@ class ActionDialog {
                   padding: const EdgeInsets.symmetric(vertical: 20),
                   child: DefaultTextStyle(
                     textAlign: TextAlign.center,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                       color: AppColors.black,
@@ -88,7 +89,7 @@ class ActionDialog {
                         },
                       ),
                     ),
-                    SizedBox(width: 10),
+                    const SizedBox(width: 10),
                     Expanded(
                       child: ButtonWidget.textRoundFilled(
                         confirmTitle ?? LocaleKeys.commonBottomConfirm.tr,

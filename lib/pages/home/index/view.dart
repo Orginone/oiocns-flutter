@@ -2,8 +2,8 @@ import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/widget/keep_alive_widget.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/components/widgets/keep_alive_widget.dart';
+import 'package:orginone/config/unified.dart';
 
 import 'digital_assets/digital_assets.dart';
 import 'friend_dynamic/friend_dynamic.dart';
@@ -14,24 +14,21 @@ import 'state.dart';
 import 'warehouse/warehouse.dart';
 import 'welfare/welfare.dart';
 
-class IndexPage extends BaseGetPageView<IndexController,IndexState>{
+class IndexPage extends BaseGetPageView<IndexController, IndexState> {
   @override
   Widget buildView() {
     return Column(
       children: [
         tabBar(),
         Expanded(
-          child: ExtendedTabBarView(
-            controller: state.tabController,
-            children: [
-              GroupDynamics(),
-              FriendDynamic(),
-              SharedSoftware(),
-              Warehouse(),
-              Welfare(),
-              DigitalAssets(),
-            ]
-          ),
+          child: ExtendedTabBarView(controller: state.tabController, children: [
+            GroupDynamics(),
+            FriendDynamic(),
+            SharedSoftware(),
+            Warehouse(),
+            Welfare(),
+            DigitalAssets(),
+          ]),
         )
       ],
     );
@@ -65,22 +62,21 @@ class IndexPage extends BaseGetPageView<IndexController,IndexState>{
           ),
         ),
         IconButton(
-          onPressed: () {
-
-          },
+          onPressed: () {},
           alignment: Alignment.center,
           icon: const Icon(
             Icons.menu,
           ),
           iconSize: 24.w,
-          padding: EdgeInsets.zero,)
+          padding: EdgeInsets.zero,
+        )
       ],
     );
   }
 
   @override
   IndexController getController() {
-   return IndexController();
+    return IndexController();
   }
 
   @override

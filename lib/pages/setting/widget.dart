@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
 
 import 'config.dart';
 
@@ -25,13 +25,8 @@ class UserDocument extends StatelessWidget {
   Widget build(BuildContext context) {
     List<List<String>> docContent = [];
     for (var user in unitMember) {
-      docContent.add([
-        user.code!,
-        user.name!,
-        user.name!,
-        user.code!,
-        user.remark ?? ""
-      ]);
+      docContent.add(
+          [user.code!, user.name!, user.name!, user.code!, user.remark ?? ""]);
     }
     return CommonWidget.commonDocumentWidget(
       title: title ?? memberTitle,

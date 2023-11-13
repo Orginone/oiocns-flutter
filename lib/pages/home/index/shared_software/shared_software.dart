@@ -1,19 +1,13 @@
-
-
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/values/index.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
-import 'package:orginone/images.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/home/index/widget/widget.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
 
 class SharedSoftware extends StatefulWidget {
   const SharedSoftware({Key? key}) : super(key: key);
@@ -34,11 +28,11 @@ class _SharedSoftwareState extends State<SharedSoftware> {
     );
   }
 
-
-  Widget hotSoftware(){
+  Widget hotSoftware() {
     return Column(
       children: [
-        CommonWidget.commonHeadInfoWidget("热门软件",action: ImageWidget(Images.iconBlueArrow)),
+        CommonWidget.commonHeadInfoWidget("热门软件",
+            action: const ImageWidget(AssetsImages.iconBlueArrow)),
         Container(
           height: 180.h,
           padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -46,7 +40,7 @@ class _SharedSoftwareState extends State<SharedSoftware> {
             scrollDirection: Axis.horizontal,
             itemCount: 12,
             itemBuilder: (context, index) {
-              return PopularItem();
+              return const PopularItem();
             },
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 1,
@@ -60,15 +54,17 @@ class _SharedSoftwareState extends State<SharedSoftware> {
     );
   }
 
-  Widget sharedSoftware(){
+  Widget sharedSoftware() {
     return Column(
       children: [
-        CommonWidget.commonHeadInfoWidget("我共享的",action: ImageWidget(Images.iconBlueArrow)),
-        Obx((){
+        CommonWidget.commonHeadInfoWidget("我共享的",
+            action: const ImageWidget(AssetsImages.iconBlueArrow)),
+        Obx(() {
           return Column(
-            children: settingCtrl.provider.myApps.map((element){
+            children: settingCtrl.provider.myApps.map((element) {
               return ListItem(
-                adapter: ListAdapter.application(element.keys.first, element.values.first),
+                adapter: ListAdapter.application(
+                    element.keys.first, element.values.first),
               );
             }).toList(),
           );
@@ -77,13 +73,12 @@ class _SharedSoftwareState extends State<SharedSoftware> {
     );
   }
 
-  Widget allSoftware(){
+  Widget allSoftware() {
     return Column(
       children: [
-        CommonWidget.commonHeadInfoWidget("全部软件",action: ImageWidget(Images.iconBlueArrow)),
+        CommonWidget.commonHeadInfoWidget("全部软件",
+            action: const ImageWidget(AssetsImages.iconBlueArrow)),
       ],
     );
   }
 }
-
-

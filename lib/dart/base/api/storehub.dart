@@ -4,9 +4,9 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/util/logger.dart';
-import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/loading_dialog.dart';
+import 'package:orginone/utils/logger.dart';
+import 'package:orginone/utils/toast_utils.dart';
+import 'package:orginone/components/widgets/loading_dialog.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 import 'package:uuid/uuid.dart';
 

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:orginone/common/models/index.dart';
-import 'package:orginone/util/hive_utils.dart';
+import 'package:orginone/utils/hive_utils.dart';
 
 class WalletChannel {
   static const channelName = 'WALLET';

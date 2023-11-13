@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:orginone/common/index.dart';
+import 'package:orginone/config/index.dart';
 
 /// TextFormField 表单 输入框
 class TextFormWidget extends StatefulWidget {

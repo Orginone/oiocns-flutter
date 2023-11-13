@@ -11,9 +11,9 @@ import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
-import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/loading_dialog.dart';
+import 'package:orginone/utils/toast_utils.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/loading_dialog.dart';
 
 import 'logic.dart';
 

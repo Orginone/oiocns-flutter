@@ -1,8 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/semantics.dart';
-
-import '../index.dart';
+import 'package:orginone/config/index.dart';
 
 /// 手势 tap
 typedef GestureOnTapChangeCallback = void Function<T>(T val);
@@ -53,8 +52,8 @@ extension ExWidget on Widget {
   }) =>
       DecoratedBox(
         key: key,
-        child: this,
         decoration: BoxDecoration(color: color),
+        child: this,
       );
 
   /// 背景图片
@@ -64,8 +63,8 @@ extension ExWidget on Widget {
   }) =>
       DecoratedBox(
         key: key,
-        child: this,
         decoration: BoxDecoration(image: image),
+        child: this,
       );
 
   /// 边框
@@ -97,8 +96,8 @@ extension ExWidget on Widget {
     );
     return DecoratedBox(
       key: key,
-      child: this,
       decoration: decoration,
+      child: this,
     );
   }
 
@@ -121,8 +120,8 @@ extension ExWidget on Widget {
     );
     return DecoratedBox(
       key: key,
-      child: this,
       decoration: decoration,
+      child: this,
     );
   }
 
@@ -146,8 +145,8 @@ extension ExWidget on Widget {
     );
     return DecoratedBox(
       key: key,
-      child: this,
       decoration: decoration,
+      child: this,
     );
   }
 
@@ -189,7 +188,7 @@ extension ExWidget on Widget {
           boxShadow: [
             BoxShadow(
               // x偏移量 | y偏移量
-              offset: Offset(0, 1),
+              offset: const Offset(0, 1),
               color: shadowColor ?? AppColors.outline.withOpacity(0.15),
               // 阴影模糊半径
               blurRadius: blurRadius ?? 4,
@@ -247,7 +246,6 @@ extension ExWidget on Widget {
   }) =>
       ClipRRect(
         key: key,
-        child: this,
         clipper: clipper,
         clipBehavior: clipBehavior,
         borderRadius: BorderRadius.only(
@@ -256,6 +254,7 @@ extension ExWidget on Widget {
           bottomLeft: Radius.circular(bottomLeft ?? all ?? 0.0),
           bottomRight: Radius.circular(bottomRight ?? all ?? 0.0),
         ),
+        child: this,
       );
 
   /// 约束
@@ -279,8 +278,8 @@ extension ExWidget on Widget {
         : constraints;
     return ConstrainedBox(
       key: key,
-      child: this,
       constraints: constraints,
+      child: this,
     );
   }
 
@@ -326,9 +325,9 @@ extension ExWidget on Widget {
     );
     return DecoratedBox(
       key: key,
-      child: this,
       decoration: decoration,
       position: position,
+      child: this,
     );
   }
 
@@ -341,11 +340,11 @@ extension ExWidget on Widget {
   }) =>
       Material(
         key: key,
-        child: this,
         color: Colors.transparent,
         elevation: elevation,
         borderRadius: borderRadius,
         shadowColor: shadowColor,
+        child: this,
       );
 
   /// expanded 撑满
@@ -355,8 +354,8 @@ extension ExWidget on Widget {
   }) =>
       Expanded(
         key: key,
-        child: this,
         flex: flex,
+        child: this,
       );
 
   Widget fittedBox({
@@ -381,9 +380,9 @@ extension ExWidget on Widget {
   }) =>
       Flexible(
         key: key,
-        child: this,
         flex: flex,
         fit: fit,
+        child: this,
       );
 
   Widget fractionallySizedBox({
@@ -533,8 +532,8 @@ extension ExWidget on Widget {
   }) =>
       ConstrainedBox(
         key: key,
-        child: this,
         constraints: BoxConstraints.tightFor(height: height),
+        child: this,
       );
 
   /// 限制盒子 最大宽高
@@ -692,13 +691,13 @@ extension ExWidget on Widget {
   }) =>
       Positioned(
         key: key,
-        child: this,
         left: left,
         top: top,
         right: right,
         bottom: bottom,
         width: width,
         height: height,
+        child: this,
       );
 
   // 墨水纹
@@ -802,9 +801,9 @@ extension ExWidget on Widget {
         key: key,
         transform: Matrix4.diagonal3Values(x ?? all ?? 0, y ?? all ?? 0, 1.0),
         alignment: alignment,
-        child: this,
         origin: origin,
         transformHitTests: transformHitTests,
+        child: this,
       );
 
   /// 滚动视图
@@ -820,7 +819,6 @@ extension ExWidget on Widget {
   }) =>
       SingleChildScrollView(
         key: key,
-        child: this,
         scrollDirection: scrollDirection,
         reverse: reverse,
         primary: primary,
@@ -828,6 +826,7 @@ extension ExWidget on Widget {
         controller: controller,
         dragStartBehavior: dragStartBehavior,
         padding: padding,
+        child: this,
       );
 
   /// 语义调试
@@ -850,8 +849,8 @@ extension ExWidget on Widget {
   }) =>
       ConstrainedBox(
         key: key,
-        child: this,
         constraints: BoxConstraints.tightFor(width: width, height: height),
+        child: this,
       );
 
   /// 约束 宽高 size
@@ -861,8 +860,8 @@ extension ExWidget on Widget {
   }) =>
       ConstrainedBox(
         key: key,
-        child: this,
         constraints: BoxConstraints.tightFor(width: size, height: size),
+        child: this,
       );
 
   /// transforms Matrix4
@@ -902,8 +901,8 @@ extension ExWidget on Widget {
   }) =>
       ConstrainedBox(
         key: key,
-        child: this,
         constraints: BoxConstraints.tightFor(width: width),
+        child: this,
       );
 
   /// SliverToBoxAdapter

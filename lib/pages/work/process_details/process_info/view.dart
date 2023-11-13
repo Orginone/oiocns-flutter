@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/mapping_components.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/mapping_components.dart';
+import 'package:orginone/config/unified.dart';
+import 'package:orginone/utils/index.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -140,14 +142,16 @@ class ProcessInfoPage
               textColor: Colors.white,
               color: Colors.red,
               onTap: () {
-                controller.approval(200);
+                LogUtil.d('退回');
+                controller.approval(TaskStatus.refuseStart.status);
               }),
           _button(
               text: '通过',
               textColor: Colors.white,
               color: XColors.themeColor,
               onTap: () {
-                controller.approval(100);
+                LogUtil.d('通过');
+                controller.approval(TaskStatus.approvalStart.status);
               }),
         ],
       ),

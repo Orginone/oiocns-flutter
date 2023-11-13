@@ -16,20 +16,21 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:orginone/common/values/index.dart';
 import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/base/schema.dart' hide Rule;
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/images.dart';
+
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
-import 'package:orginone/util/event_bus_helper.dart';
-import 'package:orginone/util/permission_util.dart';
-import 'package:orginone/util/string_util.dart';
-import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/target_text.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/utils/bus/event_bus_helper.dart';
+import 'package:orginone/utils/permission_util.dart';
+import 'package:orginone/utils/string_util.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/components/widgets/target_text.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:vibration/vibration.dart';
@@ -324,7 +325,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
   Widget _emojiBtn(BuildContext context) {
     return GestureDetector(
       onTap: () => controller.eventFire(context, InputEvent.clickEmoji, chat),
-      child: _rightIcon(Images.iconEmoji),
+      child: _rightIcon(AssetsImages.iconEmoji),
     );
   }
 
@@ -332,7 +333,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
   Widget _moreBtn(BuildContext context) {
     return GestureDetector(
       onTap: () => controller.eventFire(context, InputEvent.clickMore, chat),
-      child: _rightIcon(Images.iconAddAction),
+      child: _rightIcon(AssetsImages.iconAddAction),
     );
   }
 
@@ -342,7 +343,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
       onTap: () {
         controller.eventFire(context, InputEvent.clickVoice, chat);
       },
-      child: _leftIcon(Images.iconVoice),
+      child: _leftIcon(AssetsImages.iconVoice),
     );
   }
 

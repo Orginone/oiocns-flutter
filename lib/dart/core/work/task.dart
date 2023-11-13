@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:orginone/common/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/consts.dart';
@@ -10,6 +9,7 @@ import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/dart/core/work/apply.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/utils/index.dart';
 
 abstract class IWorkTask extends IFile {
   //内容

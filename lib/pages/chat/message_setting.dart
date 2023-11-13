@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/routers/index.dart';
+import 'package:orginone/components/modules/general_bread_crumbs/index.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
@@ -12,14 +14,12 @@ import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/avatars.dart';
-import 'package:orginone/pages/other/general_bread_crumbs/state.dart';
 import 'package:orginone/pages/setting/dialog.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/template/choose_item.dart';
-import 'package:orginone/widget/unified.dart';
-import 'package:orginone/widget/widgets/team_avatar.dart';
+import 'package:orginone/utils/toast_utils.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/choose_item.dart';
+import 'package:orginone/config/unified.dart';
+import 'package:orginone/components/widgets/team_avatar.dart';
 
 Size defaultBtnSize = Size(400.w, 70.h);
 

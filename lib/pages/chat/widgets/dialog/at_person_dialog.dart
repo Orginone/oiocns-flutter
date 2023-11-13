@@ -4,14 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:orginone/common/index.dart';
-import 'package:orginone/config/color.dart';
+import 'package:orginone/config/colors.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
-import 'package:orginone/widget/buttons.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/unified.dart';
-import 'package:orginone/widget/widgets/team_avatar.dart';
+import 'package:orginone/utils/index.dart';
+import 'package:orginone/components/widgets/buttons.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/config/unified.dart';
+import 'package:orginone/components/widgets/team_avatar.dart';
 
 class AtPersonDialog {
   static Future<List<XTarget>?> showDialog(
@@ -202,7 +203,7 @@ class _AtContactListPageState extends State<AtContactListPage> {
       }),
       child: Text(
         title,
-        style: const TextStyle(color: GYColors.black_666),
+        style: const TextStyle(color: AppColors.black_666),
       ),
     );
   }
@@ -213,7 +214,7 @@ class _AtContactListPageState extends State<AtContactListPage> {
         onPressed: () => Get.back(),
         icon: const Icon(
           Icons.keyboard_arrow_down,
-          color: GYColors.black_666,
+          color: AppColors.black_666,
         ));
   }
 
@@ -277,7 +278,7 @@ class _AtContactListPageState extends State<AtContactListPage> {
           ]
             .toRow(mainAxisAlignment: MainAxisAlignment.spaceBetween)
             .height(66.h)
-            .border(top: 1, color: GYColors.lightGray)
+            .border(top: 1, color: AppColors.lightGray)
         : const SizedBox();
   }
 

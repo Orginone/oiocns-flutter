@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:orginone/common/values/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/images.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/config/unified.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -32,7 +32,7 @@ class MessageChatInfoPage
                       return Container(
                         margin: EdgeInsets.only(right: 15.w),
                         child: ImageWidget(
-                          Images.empty,
+                          AssetsImages.empty,
                           size: 60.w,
                           fit: BoxFit.fill,
                         ),
@@ -46,7 +46,7 @@ class MessageChatInfoPage
                       return Container(
                         margin: EdgeInsets.only(right: 15.w),
                         child: ImageWidget(
-                          Images.empty,
+                          AssetsImages.empty,
                           size: 60.w,
                           fit: BoxFit.fill,
                         ),
@@ -60,7 +60,7 @@ class MessageChatInfoPage
                       return Container(
                         margin: EdgeInsets.only(right: 15.w),
                         child: ImageWidget(
-                          Images.empty,
+                          AssetsImages.empty,
                           size: 60.w,
                           fit: BoxFit.fill,
                         ),
@@ -74,7 +74,7 @@ class MessageChatInfoPage
                       return Container(
                         margin: EdgeInsets.only(right: 15.w),
                         child: ImageWidget(
-                          Images.empty,
+                          AssetsImages.empty,
                           size: 60.w,
                           fit: BoxFit.fill,
                         ),

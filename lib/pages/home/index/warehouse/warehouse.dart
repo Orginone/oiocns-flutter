@@ -1,12 +1,10 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/images.dart';
+import 'package:orginone/common/values/index.dart';
+
 import 'package:orginone/pages/home/index/widget/widget.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/image_widget.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
 
 class Warehouse extends StatefulWidget {
   const Warehouse({Key? key}) : super(key: key);
@@ -19,18 +17,15 @@ class _WarehouseState extends State<Warehouse> {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      children: [
-        latest(),
-        shared(),
-        all()
-      ],
+      children: [latest(), shared(), all()],
     );
   }
 
-  Widget latest(){
+  Widget latest() {
     return Column(
       children: [
-        CommonWidget.commonHeadInfoWidget("最新",action: ImageWidget(Images.iconBlueArrow)),
+        CommonWidget.commonHeadInfoWidget("最新",
+            action: const ImageWidget(AssetsImages.iconBlueArrow)),
         Container(
           height: 180.h,
           padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -38,7 +33,7 @@ class _WarehouseState extends State<Warehouse> {
             scrollDirection: Axis.horizontal,
             itemCount: 12,
             itemBuilder: (context, index) {
-              return PopularItem();
+              return const PopularItem();
             },
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 1,
@@ -52,19 +47,22 @@ class _WarehouseState extends State<Warehouse> {
     );
   }
 
-  Widget shared(){
+  Widget shared() {
     return Column(
       children: [
-        CommonWidget.commonHeadInfoWidget("我分享的",action: ImageWidget(Images.iconBlueArrow)),
-        ...List.generate(3, (index) =>  CardItem()).toList(),
+        CommonWidget.commonHeadInfoWidget("我分享的",
+            action: const ImageWidget(AssetsImages.iconBlueArrow)),
+        ...List.generate(3, (index) => const CardItem()).toList(),
       ],
     );
   }
-  Widget all(){
+
+  Widget all() {
     return Column(
       children: [
-        CommonWidget.commonHeadInfoWidget("全部物品",action: ImageWidget(Images.iconBlueArrow)),
-        ...List.generate(3, (index) =>  CardItem()).toList(),
+        CommonWidget.commonHeadInfoWidget("全部物品",
+            action: const ImageWidget(AssetsImages.iconBlueArrow)),
+        ...List.generate(3, (index) => const CardItem()).toList(),
       ],
     );
   }

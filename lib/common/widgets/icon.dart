@@ -1,8 +1,7 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
-import '../index.dart';
+import 'package:orginone/config/index.dart';
 
 /*
 icon	Icons 图标	iconData 图标数据

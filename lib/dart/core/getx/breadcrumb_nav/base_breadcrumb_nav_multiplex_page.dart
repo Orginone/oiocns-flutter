@@ -3,9 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/config/unified.dart';
 
 import 'base_breadcrumb_nav_controller.dart';
 import 'base_get_breadcrumb_nav_state.dart';

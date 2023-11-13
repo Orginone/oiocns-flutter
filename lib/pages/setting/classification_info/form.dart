@@ -5,14 +5,12 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/loading_dialog.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/loading_dialog.dart';
 
 import 'logic.dart';
 
-
 class FormPage extends BaseGetPageView<FormController, FormState> {
-
   @override
   Widget buildView() {
     return Container(
@@ -51,18 +49,15 @@ class FormPage extends BaseGetPageView<FormController, FormState> {
   }
 }
 
-
-class FormController
-    extends BaseController<FormState> {
+class FormController extends BaseController<FormState> {
   final FormState state = FormState();
-
 
   ClassificationInfoController get info => Get.find();
 
   dynamic get species => info.state.species;
 
   @override
-  void onReady() async{
+  void onReady() async {
     // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
@@ -71,15 +66,12 @@ class FormController
   }
 
   Future<void> loadForm({bool reload = false}) async {
-
-    try{
+    try {
       var property = (species.propertys as List<XProperty>)
           .firstWhere((element) => element.id == info.state.data.id);
       state.form.value = await species.loadPropAttributes(property);
-    }catch(e){
-    }
+    } catch (e) {}
   }
-
 
   // Future<void> createForm({XForm? form}) async {
   //   showCreateFormDialog(context,
@@ -117,7 +109,6 @@ class FormController
   //   } catch (e) {}
   // }
 }
-
 
 class FormState extends BaseGetState {
   var form = <XAttribute>[].obs;

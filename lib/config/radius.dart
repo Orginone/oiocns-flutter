@@ -1,5 +1,5 @@
 /// 圆角定义
-class GYRadius {
+class AppRadius {
   /// 按钮圆角
   static double get button => 6;
 

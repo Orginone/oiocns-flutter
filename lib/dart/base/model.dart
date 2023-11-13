@@ -2,14 +2,14 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:orginone/common/index.dart';
 import 'package:orginone/common/models/file/asserts/asset_creation_config.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/images.dart';
 
-import 'package:orginone/util/encryption_util.dart';
-import 'package:orginone/util/string_util.dart';
+import 'package:orginone/utils/encryption_util.dart';
+import 'package:orginone/utils/string_util.dart';
 import 'package:orginone/common/models/thing/thing_model.dart' as thing;
 
 import 'common/lists.dart';
@@ -246,10 +246,10 @@ class ResultType<T> {
   });
 
   ResultType.fromJson(Map<String, dynamic> json)
-      : msg = json["msg"],
+      : msg = json["msg"] ?? '',
         data = json["data"],
-        code = json["code"],
-        success = json["success"];
+        code = json["code"] ?? 400,
+        success = json["success"] ?? false;
 
   ResultType.fromObj(ResultType resultT, T this.data)
       : msg = resultT.msg,
@@ -2003,14 +2003,14 @@ class WorkNodeModel {
     data['destName'] = destName;
     data['defineId'] = defineId;
     if (forms != null) {
-      data['forms'] = forms!.map((x) => x.toJson()).toList();
+      data['forms'] = forms?.map((x) => x.toJson()).toList();
     }
 
     if (primaryForms != null) {
-      data['primaryForms'] = forms!.map((x) => x.toJson()).toList();
+      data['primaryForms'] = forms?.map((x) => x.toJson()).toList();
     }
     if (detailForms != null) {
-      data['detailForms'] = forms!.map((x) => x.toJson()).toList();
+      data['detailForms'] = forms?.map((x) => x.toJson()).toList();
     }
     return data;
   }
@@ -2393,19 +2393,19 @@ class ShareIcon {
   }) {
     String defaultAvatar = '';
     if (typeName == TargetType.person.label) {
-      defaultAvatar = Images.chatDefaultPerson;
+      defaultAvatar = AssetsImages.chatDefaultPerson;
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     }
     if (typeName == TargetType.cohort.label) {
-      defaultAvatar = Images.chatDefaultCohort;
+      defaultAvatar = AssetsImages.chatDefaultCohort;
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     }
     if (typeName == TargetType.department.label) {
-      defaultAvatar = Images.chatDefaultCohort;
+      defaultAvatar = AssetsImages.chatDefaultCohort;
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     }
     if (typeName == TargetType.company.label) {
-      defaultAvatar = Images.chatDefaultCohort;
+      defaultAvatar = AssetsImages.chatDefaultCohort;
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     }
   }

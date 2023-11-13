@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/images.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/dynamic_height_grid_view.dart';
-import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/unified.dart';
+
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/dynamic_height_grid_view.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/config/unified.dart';
 
 import '../widget/widget.dart';
 import 'digital_assets_item.dart';
@@ -23,13 +23,21 @@ class _DigitalAssetsState extends State<DigitalAssets> {
       padding: EdgeInsets.symmetric(vertical: 15.h),
       children: [
         statistics(),
-        SizedBox(height: 20.h,),
+        SizedBox(
+          height: 20.h,
+        ),
         newAssets(),
-        SizedBox(height: 20.h,),
+        SizedBox(
+          height: 20.h,
+        ),
         assetIssuer(),
-        SizedBox(height: 20.h,),
+        SizedBox(
+          height: 20.h,
+        ),
         related(),
-        SizedBox(height: 20.h,),
+        SizedBox(
+          height: 20.h,
+        ),
         cooperativeUnit()
       ],
     );
@@ -87,7 +95,10 @@ class _DigitalAssetsState extends State<DigitalAssets> {
   Widget newAssets() {
     return Column(
       children: [
-        CommonWidget.commonHeadInfoWidget("数字资产上新", action: TextArrow(title: "查看更多数字资产",)),
+        CommonWidget.commonHeadInfoWidget("数字资产上新",
+            action: const TextArrow(
+              title: "查看更多数字资产",
+            )),
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 20.w),
           child: DynamicHeightGridView(
@@ -95,7 +106,7 @@ class _DigitalAssetsState extends State<DigitalAssets> {
             crossAxisSpacing: 10.w,
             mainAxisSpacing: 10.h,
             builder: (context, index) {
-              return DigitalAssetsItem();
+              return const DigitalAssetsItem();
             },
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -117,7 +128,9 @@ class _DigitalAssetsState extends State<DigitalAssets> {
             scrollDirection: Axis.horizontal,
             itemCount: 12,
             itemBuilder: (context, index) {
-              return Card( shadowColor: XColors.cardShadowColor,);
+              return const Card(
+                shadowColor: XColors.cardShadowColor,
+              );
             },
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
@@ -135,7 +148,10 @@ class _DigitalAssetsState extends State<DigitalAssets> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CommonWidget.commonHeadInfoWidget("相关制度", action: TextArrow(title: "查看更多相关制度",)),
+        CommonWidget.commonHeadInfoWidget("相关制度",
+            action: const TextArrow(
+              title: "查看更多相关制度",
+            )),
         relatedItem(
           "《浙江XXXXXXXXXXXXXXXXXXXXXXXX管理规范》简介",
         ),
@@ -149,7 +165,7 @@ class _DigitalAssetsState extends State<DigitalAssets> {
     );
   }
 
-  Widget cooperativeUnit(){
+  Widget cooperativeUnit() {
     return Column(
       children: [
         CommonWidget.commonHeadInfoWidget("合作单位"),
@@ -160,20 +176,21 @@ class _DigitalAssetsState extends State<DigitalAssets> {
             scrollDirection: Axis.horizontal,
             itemCount: 12,
             itemBuilder: (context, index) {
-              return Card( shadowColor: XColors.cardShadowColor,);
+              return const Card(
+                shadowColor: XColors.cardShadowColor,
+              );
             },
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 1,
-                mainAxisSpacing: 10.h,
-                crossAxisSpacing: 10.w,
-                childAspectRatio: 9/16,
+              crossAxisCount: 1,
+              mainAxisSpacing: 10.h,
+              crossAxisSpacing: 10.w,
+              childAspectRatio: 9 / 16,
             ),
           ),
         )
       ],
     );
   }
-
 
   Widget relatedItem(String title) {
     return GestureDetector(

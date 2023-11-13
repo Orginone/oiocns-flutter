@@ -7,10 +7,10 @@ import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/utils/toast_utils.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/config/unified.dart';
 
 class MessageFilePage
     extends BaseGetView<MessageFileController, MessageFileState> {

@@ -4,7 +4,7 @@ import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:orginone/common/utils/index.dart';
+import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
@@ -14,15 +14,13 @@ import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/dart/core/work/provider.dart';
-import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/dialog.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/event_bus.dart';
-import 'package:orginone/util/event_bus_helper.dart';
-import 'package:orginone/util/hive_utils.dart';
-import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/loading_dialog.dart';
+import 'package:orginone/utils/bus/event_bus_helper.dart';
+import 'package:orginone/utils/hive_utils.dart';
+import 'package:orginone/utils/index.dart';
+import 'package:orginone/utils/toast_utils.dart';
+import 'package:orginone/components/widgets/loading_dialog.dart';
 
 const sessionUserName = 'sessionUser';
 const sessionSpaceName = 'sessionSpace';
@@ -131,7 +129,7 @@ class IndexController extends GetxController {
     functionMenuController = CustomPopupMenuController();
     settingMenuController = CustomPopupMenuController();
     _provider = UserProvider();
-    _userSub = XEventBus.instance.on<UserLoaded>().listen((event) async {
+    _userSub = EventBusUtil.instance.on<UserLoaded>((event) async {
       EventBusHelper.fire(ShowLoading(true));
       // await _provider.loadData();
       // EventBusHelper.fire(ShowLoading(false));
@@ -276,7 +274,7 @@ class IndexController extends GetxController {
         Get.toNamed(Routers.forgotPassword);
         break;
       case SettingEnum.cardbag:
-        Routers.jumpCardBag();
+        RoutePages.jumpCardBag();
         break;
       case SettingEnum.gateway:
         Get.toNamed(

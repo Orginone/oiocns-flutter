@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
+import 'package:orginone/config/index.dart';
 
 /// 导航栏数据模型
 class NavigationItemModel {

@@ -6,8 +6,8 @@ import 'package:orginone/common/models/file/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
-import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/widget/loading_dialog.dart';
+import 'package:orginone/utils/date_utils.dart';
+import 'package:orginone/components/widgets/loading_dialog.dart';
 import 'state.dart';
 
 class ProcessDetailsController extends BaseController<ProcessDetailsState>

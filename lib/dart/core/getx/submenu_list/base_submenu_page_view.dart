@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/config/unified.dart';
 
 import 'base_submenu_controller.dart';
 import 'base_submenu_state.dart';

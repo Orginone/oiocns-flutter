@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:orginone/common/index.dart';
 import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message.dart';
@@ -11,11 +11,10 @@ import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/event/message.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/utils/index.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'message_forward.dart';

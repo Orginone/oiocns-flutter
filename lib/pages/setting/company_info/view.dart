@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/widget.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -39,7 +39,6 @@ class CompanyInfoPage
                           value: CompanyFunction.roleSettings,
                           child: Text("角色设置"),
                         ),
-
                       ],
                       onSelected: (CompanyFunction function) {
                         controller.companyOperation(function);
@@ -72,12 +71,14 @@ class CompanyInfoPage
         );
       }
       return UserDocument(
-          popupMenus: const [
-            PopupMenuItem(value: 'out', child: Text("踢出")),
-          ],
-          onOperation: (type,data) {
-            controller.removeMember(data);
-          }, unitMember: state.unitMember.value,);
+        popupMenus: const [
+          PopupMenuItem(value: 'out', child: Text("踢出")),
+        ],
+        onOperation: (type, data) {
+          controller.removeMember(data);
+        },
+        unitMember: state.unitMember.value,
+      );
     });
   }
 
@@ -98,7 +99,8 @@ class CompanyInfoPage
           CommonWidget.commonTextContentWidget(
               "社会统一信用代码", state.company.metadata.code!),
           CommonWidget.commonTextContentWidget(
-              "单位简介", state.company.metadata.remark ?? "",maxLines: 3),
+              "单位简介", state.company.metadata.remark ?? "",
+              maxLines: 3),
         ],
       ),
     );

@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
-import 'package:orginone/config/color.dart';
+import 'package:orginone/config/colors.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
+class StorePage extends BaseGetPageView<StoreController, StoreState> {
+  StorePage({super.key});
 
-class StorePage extends BaseGetPageView<StoreController,StoreState>{
   @override
   Widget buildView() {
     return Container(
-      color: GYColors.backgroundColor,
+      color: AppColors.backgroundColor,
       child: Column(
         children: [
           CommonWidget.commonNonIndicatorTabBar(state.tabController, tabTitle),
@@ -29,8 +28,7 @@ class StorePage extends BaseGetPageView<StoreController,StoreState>{
       decoration: BoxDecoration(
           color: Colors.white,
           border: Border(
-              bottom: BorderSide(color: Colors.grey.shade200, width: 0.5))
-      ),
+              bottom: BorderSide(color: Colors.grey.shade200, width: 0.5))),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -75,9 +73,7 @@ class StorePage extends BaseGetPageView<StoreController,StoreState>{
 
   Widget button(Popular recent) {
     return GestureDetector(
-      onTap: () {
-
-      },
+      onTap: () {},
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -89,8 +85,11 @@ class StorePage extends BaseGetPageView<StoreController,StoreState>{
               color: Colors.black,
               image: DecorationImage(
                   fit: BoxFit.cover, image: NetworkImage(recent.url)),
-            ),),
-          SizedBox(height: 5.h,),
+            ),
+          ),
+          SizedBox(
+            height: 5.h,
+          ),
           Text(
             recent.name,
             maxLines: 1,
@@ -98,8 +97,8 @@ class StorePage extends BaseGetPageView<StoreController,StoreState>{
                 fontSize: 14.sp,
                 color: const Color.fromARGB(255, 52, 52, 54),
                 overflow: TextOverflow.ellipsis
-              // color: Colors.black
-            ),
+                // color: Colors.black
+                ),
           )
         ],
       ),

@@ -1,18 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/public/enums.dart';
+import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/pages/setting/config.dart';
-import 'package:orginone/pages/setting/dialog.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/toast_utils.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
 class CompanyInfoController extends BaseController<CompanyInfoState>
     with GetTickerProviderStateMixin {
+  @override
   final CompanyInfoState state = CompanyInfoState();
 
   CompanyInfoController() {

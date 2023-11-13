@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/config/unified.dart';
 
 class DigitalAssetsItem extends StatelessWidget {
   const DigitalAssetsItem({Key? key}) : super(key: key);
@@ -53,15 +53,15 @@ class DigitalAssetsItem extends StatelessWidget {
             ),
             Text(
               "发行方：我是发行方",
-              style:
-                  TextStyle(color: XColors.blueTextColor, fontSize: 14.sp),
+              style: TextStyle(color: XColors.blueTextColor, fontSize: 14.sp),
             ),
             Text(
               "发行平台：我是发行平台",
-              style:
-                  TextStyle(color: XColors.blueTextColor, fontSize: 14.sp),
+              style: TextStyle(color: XColors.blueTextColor, fontSize: 14.sp),
             ),
-            SizedBox(height: 10.h,),
+            SizedBox(
+              height: 10.h,
+            ),
             Container(
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -86,7 +86,10 @@ class DigitalAssetsItem extends StatelessWidget {
                       ],
                     ),
                   ),
-                  Text("免费",style: TextStyle(color: Colors.red,fontSize: 22.sp),)
+                  Text(
+                    "免费",
+                    style: TextStyle(color: Colors.red, fontSize: 22.sp),
+                  )
                 ],
               ),
             )
@@ -98,7 +101,7 @@ class DigitalAssetsItem extends StatelessWidget {
 
   Widget tag(String tag) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w,vertical: 2.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 2.h),
       decoration: BoxDecoration(
         color: XColors.blueTextColor,
         borderRadius: BorderRadius.circular(14.w),

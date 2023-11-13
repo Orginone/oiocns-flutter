@@ -7,10 +7,9 @@ import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/icons.dart';
-import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/text_widget.dart';
+import 'package:orginone/utils/icons.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/components/widgets/text_widget.dart';
 
 import 'search_bar.dart';
 
@@ -62,8 +61,9 @@ class UserBar extends GetView<IndexController> {
             controller: controller.functionMenuController),
         Text(
           controller.homeEnum.value.label,
-          style: GYTextStyles.titleLarge?.copyWith(fontWeight: FontWeight.w900),
-        ).paddingLeft(GYSpace.listRow),
+          style:
+              AppTextStyles.titleLarge?.copyWith(fontWeight: FontWeight.w900),
+        ).paddingLeft(AppSpace.listRow),
       ],
     );
   }
@@ -92,7 +92,7 @@ class UserBar extends GetView<IndexController> {
                   children: [
                     TextWidget(
                       text: controller.provider.user?.metadata.name ?? "",
-                      style: GYTextStyles.titleSmall
+                      style: AppTextStyles.titleSmall
                           ?.copyWith(fontWeight: FontWeight.w900),
                     ),
                     Expanded(
@@ -131,7 +131,7 @@ class UserBar extends GetView<IndexController> {
             ],
           )
         ],
-      ).paddingTop(GYSpace.listItem).paddingRight(GYSpace.listItem),
+      ).paddingTop(AppSpace.listItem).paddingRight(AppSpace.listItem),
     );
   }
 
@@ -303,12 +303,12 @@ class UserBar extends GetView<IndexController> {
               children: children,
             ),
           ),
-        ).paddingAll(GYSpace.listView),
+        ).paddingAll(AppSpace.listView),
       ),
       controller: controller,
       pressType: PressType.singleClick,
       showArrow: false,
-      child: child.clipRRect(all: GYSpace.button),
+      child: child.clipRRect(all: AppSpace.button),
     );
   }
 

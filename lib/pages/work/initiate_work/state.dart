@@ -1,7 +1,8 @@
 import 'package:get/get.dart';
+import 'package:orginone/common/values/index.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
-import 'package:orginone/images.dart';
+
 import 'package:orginone/main.dart';
 
 class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
@@ -101,10 +102,10 @@ class WorkBreadcrumbNav extends BaseBreadcrumbNavModel<WorkBreadcrumbNav> {
 }
 
 enum WorkEnum {
-  todo("待办事项", Images.iconWorkTodo),
-  completed("已办事项", Images.iconWorkCompleted),
-  initiationWork("发起事项", Images.iconWorkInitiation),
-  initiated("我发起的", Images.iconWorkInitiated);
+  todo("待办事项", AssetsImages.iconWorkTodo),
+  completed("已办事项", AssetsImages.iconWorkCompleted),
+  initiationWork("发起事项", AssetsImages.iconWorkInitiation),
+  initiated("我发起的", AssetsImages.iconWorkInitiated);
 
   final String label;
 

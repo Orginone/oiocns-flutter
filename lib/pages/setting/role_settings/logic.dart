@@ -6,7 +6,7 @@ import 'package:orginone/dart/core/target/identity/identity.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/network.dart';
-import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/utils/toast_utils.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';

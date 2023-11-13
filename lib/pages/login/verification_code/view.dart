@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 
 import 'logic.dart';
@@ -34,7 +34,6 @@ class VerificationCodePage
             ),
             const BackButton(color: Colors.black)
           ],
-
         ),
       ),
       backgroundColor: Colors.white,
@@ -105,15 +104,15 @@ class VerificationCodePage
         text = "${state.countDown.value}秒后重新获取";
       }
       return GestureDetector(
-        onTap: (){
-          if (!state.startCountDown.value) {
-            controller.resend();
-          }
-        },
+          onTap: () {
+            if (!state.startCountDown.value) {
+              controller.resend();
+            }
+          },
           child: Text(
-        text,
-        style: textStyle,
-      ));
+            text,
+            style: textStyle,
+          ));
     });
   }
 

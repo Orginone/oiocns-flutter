@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:adaptive_dialog/adaptive_dialog.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
@@ -23,9 +24,8 @@ import 'package:orginone/dart/core/thing/standard/property.dart';
 import 'package:orginone/dart/core/thing/standard/species.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/pages/setting/home/state.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/loading_dialog.dart';
+import 'package:orginone/utils/toast_utils.dart';
+import 'package:orginone/components/widgets/loading_dialog.dart';
 
 import 'dialog.dart';
 

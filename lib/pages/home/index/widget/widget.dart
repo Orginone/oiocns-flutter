@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/images.dart';
-import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/common/values/index.dart';
+
+import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/config/unified.dart';
 
 class TextArrow extends StatelessWidget {
   final String title;
@@ -21,7 +22,7 @@ class TextArrow extends StatelessWidget {
         WidgetSpan(
             child: Container(
                 margin: EdgeInsets.only(left: 10.w),
-                child: const ImageWidget(Images.iconBlueArrow)),
+                child: const ImageWidget(AssetsImages.iconBlueArrow)),
             alignment: PlaceholderAlignment.middle)
       ])),
     );
@@ -142,12 +143,11 @@ class ColumnItem extends StatelessWidget {
           circular: true,
           size: 60.w,
         ),
-        Text("名字"),
+        const Text("名字"),
       ],
     );
   }
 }
-
 
 class NewsPage extends StatelessWidget {
   const NewsPage({Key? key}) : super(key: key);
@@ -159,8 +159,11 @@ class NewsPage extends StatelessWidget {
       activeIndicator: GFColors.WHITE,
       height: 200.h,
       autoPlay: true,
-      items: ['https://lmg.jj20.com/up/allimg/tp05/1Z9291S23R619-0-lp.jpg','https://lmg.jj20.com/up/allimg/1112/031319114916/1Z313114916-3-1200.jpg'].map(
-            (img) {
+      items: [
+        'https://lmg.jj20.com/up/allimg/tp05/1Z9291S23R619-0-lp.jpg',
+        'https://lmg.jj20.com/up/allimg/1112/031319114916/1Z313114916-3-1200.jpg'
+      ].map(
+        (img) {
           return Container(
             margin: EdgeInsets.only(left: 8.w),
             width: double.infinity,
@@ -168,7 +171,6 @@ class NewsPage extends StatelessWidget {
               img,
               radius: 5.w,
               fit: BoxFit.fill,
-
             ),
           );
         },
@@ -184,22 +186,41 @@ class PopularItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        ImageWidget('https://lmg.jj20.com/up/allimg/tp05/1Z9291S23R619-0-lp.jpg',fit: BoxFit.fill,size: double.infinity,radius: 8.w,),
+        ImageWidget(
+          'https://lmg.jj20.com/up/allimg/tp05/1Z9291S23R619-0-lp.jpg',
+          fit: BoxFit.fill,
+          size: double.infinity,
+          radius: 8.w,
+        ),
         Positioned(
           bottom: 10.w,
           left: 10.w,
           child: Row(
             children: [
-              ImageWidget('https://lmg.jj20.com/up/allimg/1112/031319114916/1Z313114916-3-1200.jpg',size: 50.w,fit: BoxFit.fill,radius: 8.w,),
-              SizedBox(width: 5.w,),
+              ImageWidget(
+                'https://lmg.jj20.com/up/allimg/1112/031319114916/1Z313114916-3-1200.jpg',
+                size: 50.w,
+                fit: BoxFit.fill,
+                radius: 8.w,
+              ),
+              SizedBox(
+                width: 5.w,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("名称",style: TextStyle(fontSize: 18.sp),maxLines: 1,),
-                  Text("介绍",maxLines: 2,style: TextStyle(fontSize: 16.sp),),
+                  Text(
+                    "名称",
+                    style: TextStyle(fontSize: 18.sp),
+                    maxLines: 1,
+                  ),
+                  Text(
+                    "介绍",
+                    maxLines: 2,
+                    style: TextStyle(fontSize: 16.sp),
+                  ),
                 ],
               )
-
             ],
           ),
         )

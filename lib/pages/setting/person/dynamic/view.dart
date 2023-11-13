@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/images.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/common/values/index.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
 
 import 'index.dart';
 
@@ -33,7 +33,7 @@ class _DynamicViewGetX extends GetView<DynamicController> {
     return Center(
       child: Column(children: [
         Image.asset(
-          Images.empty,
+          AssetsImages.empty,
           width: 280.w,
           height: 280.w,
         ),

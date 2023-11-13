@@ -7,10 +7,11 @@ import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/util/hive_utils.dart';
-import 'package:orginone/util/http_util.dart';
-import 'package:orginone/util/logger.dart';
-import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/utils/hive_utils.dart';
+import 'package:orginone/utils/http_util.dart';
+import 'package:orginone/utils/index.dart';
+import 'package:orginone/utils/logger.dart';
+import 'package:orginone/utils/toast_utils.dart';
 
 class KernelApi {
   // 当前用户
@@ -138,15 +139,19 @@ class KernelApi {
 
   Future<ResultType<dynamic>> login(String userName, String password) async {
     Map<String, dynamic> req = {
-      "account": userName,
-      "pwd": password,
+      'module': 'auth',
+      'action': 'Login',
+      'params': {
+        "account": userName,
+        "password": password,
+      },
     };
     dynamic raw;
-    if (_storeHub.isConnected) {
-      raw = await _storeHub.invoke('Login', args: [req]);
-    } else {
-      raw = await _restRequest('login', req);
-    }
+    // if (_storeHub.isConnected) {
+    raw = await _storeHub.invoke('Auth', args: [req]);
+    // } else {
+    //   raw = await _restRequest('Auth', req);
+    // }
 
     var res = raw is ResultType ? raw : ResultType.fromJson(raw);
     if (res.success) {
@@ -692,7 +697,7 @@ class KernelApi {
       ReqestType(
         module: 'work',
         action: 'ApprovalTask',
-        params: params,
+        params: params.toJson(),
       ),
     );
   }
@@ -1179,28 +1184,31 @@ class KernelApi {
 
   Future<ResultType<T>> request<T>(ReqestType req,
       [T Function(Map<String, dynamic>)? cvt]) async {
-    dynamic raw;
-    print("===> req:${req.toJson()}");
-    if (_storeHub.isConnected) {
-      raw = await _storeHub.invoke('Request', args: [req]);
-    } else {
-      raw = await _restRequest('request', req.toJson());
-    }
+    ResultType raw;
+    LogUtil.d("===> req:${req.toJson()}");
+    // if (_storeHub.isConnected) {
+    raw = await _storeHub.invoke('Request', args: [req]);
+    LogUtil.d("===> res:${req.toJson()}");
+    // } else {
+    //   raw = await _restRequest('Request', req.toJson());
+    // }
     if (!raw.success) {
       ToastUtils.showMsg(msg: raw.msg);
+      return ResultType<T>.fromJson({});
     }
-    try {
-      if (null != cvt) {
-        return ResultType<T>.fromJsonSerialize(raw ?? {}, cvt);
-      } else {
-        return ResultType<T>.fromJson(raw);
-      }
-    } catch (e) {
-      print('====err1:$e');
-      print('====err2:$cvt-$T');
-      e.printError();
+
+    // try {
+    if (null != cvt) {
+      return ResultType<T>.fromJsonSerialize(raw, cvt);
+    } else {
+      return ResultType<T>.fromJson(raw.toJson());
     }
-    return ResultType<T>.fromJson({});
+    // } catch (e) {
+    //   LogUtil.d('====err1:$e');
+    //   LogUtil.d('====err2:$cvt-$T');
+    //   e.printError();
+    // }
+    // return ResultType<T>.fromJson({});
   }
 
   Future<ResultType<T>> request_<T, R>(ReqestType req,
@@ -1383,7 +1391,7 @@ class KernelApi {
   /// @returns 返回结果
   Future<ResultType<T>> _restRequest<T>(String methodName, dynamic args) async {
     final res = await _http.post(
-      '${Constant.rest}/$methodName',
+      '${Constant.rest}/${methodName.toLowerCase()}',
       data: args,
     );
 

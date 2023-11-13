@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 /// 字体样式
-class GYTextStyles {
+class AppTextStyles {
   static TextStyle? get bodyLarge => Get.textTheme.bodyLarge;
   static TextStyle? get bodyMedium => Get.textTheme.bodyMedium;
   static TextStyle? get bodySmall => Get.textTheme.bodySmall;

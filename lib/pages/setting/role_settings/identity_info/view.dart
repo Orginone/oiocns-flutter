@@ -4,8 +4,8 @@ import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/target/identity/identity.dart';
 import 'package:orginone/pages/setting/config.dart';
 import 'package:orginone/pages/setting/widget.dart';
-import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/utils/date_utils.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -13,8 +13,6 @@ import 'state.dart';
 class IdentityInfoPage
     extends BaseGetPageView<IdentityInfoController, IdentityInfoState> {
   late Rx<IIdentity> identity;
-
-
 
   IdentityInfoPage(IIdentity identity) {
     this.identity = Rx(identity);
@@ -36,18 +34,23 @@ class IdentityInfoPage
     return Column(
       children: [
         CommonWidget.commonHeadInfoWidget(
-            "角色信息", action: CommonWidget.commonPopupMenuButton(items: const [
-          PopupMenuItem(
-            value: IdentityFunction.edit,
-            child: Text("编辑"),
-          ),
-          PopupMenuItem(
-            value: IdentityFunction.delete,
-            child: Text("删除"),
-          ),
-        ], onSelected: (IdentityFunction function) {
-          controller.identityOperation(function);
-        },color: Colors.transparent),),
+          "角色信息",
+          action: CommonWidget.commonPopupMenuButton(
+              items: const [
+                PopupMenuItem(
+                  value: IdentityFunction.edit,
+                  child: Text("编辑"),
+                ),
+                PopupMenuItem(
+                  value: IdentityFunction.delete,
+                  child: Text("删除"),
+                ),
+              ],
+              onSelected: (IdentityFunction function) {
+                controller.identityOperation(function);
+              },
+              color: Colors.transparent),
+        ),
         Obx(() {
           return CommonWidget.commonFormWidget(formItem: [
             CommonWidget.commonFormItem(
@@ -55,12 +58,12 @@ class IdentityInfoPage
             CommonWidget.commonFormItem(
                 title: "编码", content: identity.value.metadata.code ?? ""),
             CommonWidget.commonFormItem(
-                title: "创建人",userId: identity.value.metadata.createUser??""),
+                title: "创建人", userId: identity.value.metadata.createUser ?? ""),
             CommonWidget.commonFormItem(
                 title: "创建时间",
-                content: DateTime.tryParse(
-                    identity.value.metadata.createTime ?? "")!
-                    .format()),
+                content:
+                    DateTime.tryParse(identity.value.metadata.createTime ?? "")!
+                        .format()),
             CommonWidget.commonFormItem(
                 title: "描述", content: identity.value.metadata.remark ?? ""),
           ]);
@@ -73,29 +76,34 @@ class IdentityInfoPage
     return Column(
       children: [
         Obx(() {
-          return CommonWidget.commonHeadInfoWidget(identity.value.metadata.name??"",
-              action: CommonWidget.commonPopupMenuButton(items: const [
-                PopupMenuItem(
-                  value: IdentityFunction.addMember,
-                  child: Text("添加成员"),
-                ),
-              ], onSelected: (IdentityFunction function) {
-                controller.identityOperation(function);
-              },color: Colors.transparent));
+          return CommonWidget.commonHeadInfoWidget(
+              identity.value.metadata.name ?? "",
+              action: CommonWidget.commonPopupMenuButton(
+                  items: const [
+                    PopupMenuItem(
+                      value: IdentityFunction.addMember,
+                      child: Text("添加成员"),
+                    ),
+                  ],
+                  onSelected: (IdentityFunction function) {
+                    controller.identityOperation(function);
+                  },
+                  color: Colors.transparent));
         }),
         Obx(() {
           return UserDocument(
-              popupMenus: const [
-                PopupMenuItem(value: 'out', child: Text("移除")),
-              ],
-              onOperation: (type, data) {
-                controller.removeRole(data);
-              }, unitMember: state.unitMember.value,);
+            popupMenus: const [
+              PopupMenuItem(value: 'out', child: Text("移除")),
+            ],
+            onOperation: (type, data) {
+              controller.removeRole(data);
+            },
+            unitMember: state.unitMember.value,
+          );
         }),
       ],
     );
   }
-
 
   @override
   IdentityInfoController getController() {

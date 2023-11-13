@@ -1,8 +1,8 @@
 import 'package:get/get.dart';
-import 'package:orginone/common/utils/index.dart';
+import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/utils/storage.dart';
+import 'package:orginone/utils/toast_utils.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../dart/core/getx/base_controller.dart';

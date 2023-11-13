@@ -1,5 +1,8 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
@@ -7,11 +10,10 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/initiate_work/state.dart';
 import 'package:orginone/pages/work/state.dart';
-import 'package:orginone/routers.dart';
+import 'package:orginone/utils/index.dart';
 
 import 'state.dart';
 
@@ -23,12 +25,22 @@ class WorkSubController extends BaseListController<WorkSubState> {
 
   WorkSubController(this.type);
 
+  StreamSubscription? sub;
   @override
   void onInit() async {
     super.onInit();
+    sub = EventBusUtil().on((event) async {
+      LogUtil.d(event);
+      if (event is LoadTodosEvent) {
+        await loadTodos();
+      }
+    });
     state.scrollController = ScrollController(debugLabel: type);
     if (type == "all") {
       initNav();
+    }
+    if (type == "todo") {
+      await loadTodos();
     }
     if (type == "done") {
       await loadDones();
@@ -40,6 +52,12 @@ class WorkSubController extends BaseListController<WorkSubState> {
       await loadCreate();
     }
     loadSuccess();
+  }
+
+  @override
+  void onClose() {
+    EventBusUtil().cancel(sub!);
+    super.onClose();
   }
 
   @override
@@ -234,9 +252,10 @@ class WorkSubController extends BaseListController<WorkSubState> {
     state.list.value = tasks;
   }
 
-  loadApply() async {
-    List<IWorkTask> tasks = await settingCtrl.work.loadContent(TaskType.done);
-    state.list.value = tasks;
+  loadTodos() async {
+    List<IWorkTask> todos = await settingCtrl.work.loadTodos(reload: true);
+    state.list.value = todos;
+    settingCtrl.work.todos = todos;
   }
 
   ///办事tab 下拉刷新
@@ -244,8 +263,7 @@ class WorkSubController extends BaseListController<WorkSubState> {
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     //待办
     if (type == "todo") {
-      List<IWorkTask> todos = await settingCtrl.work.loadTodos(reload: true);
-      state.list.value = todos;
+      await loadTodos();
     }
     if (type == "done") {
       await loadDones();

@@ -3,43 +3,45 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/setting/config.dart';
-import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/utils/date_utils.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
 
 import '../widget.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
-
-
+class CohortInfoPage
+    extends BaseGetView<CohortInfoController, CohortInfoState> {
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.cohort.metadata.name??"",
+      titleName: state.cohort.metadata.name ?? "",
       body: SingleChildScrollView(
         child: Column(
           children: [
             cohortInfo(),
             Column(
               children: [
-                CommonWidget.commonHeadInfoWidget("群组人员",action: CommonWidget.commonPopupMenuButton(
-                  items: const [
-                    PopupMenuItem(
-                      value: CompanyFunction.roleSettings,
-                      child: Text("角色设置"),
-                    ),
-                    PopupMenuItem(
-                      value: CompanyFunction.addUser,
-                      child: Text("邀请成员"),
-                    ),
-                  ],
-                  onSelected: (CompanyFunction function) {
-                    controller.companyOperation(function);
-                  },color: Colors.transparent
-                ),),
-                Obx((){
+                CommonWidget.commonHeadInfoWidget(
+                  "群组人员",
+                  action: CommonWidget.commonPopupMenuButton(
+                      items: const [
+                        PopupMenuItem(
+                          value: CompanyFunction.roleSettings,
+                          child: Text("角色设置"),
+                        ),
+                        PopupMenuItem(
+                          value: CompanyFunction.addUser,
+                          child: Text("邀请成员"),
+                        ),
+                      ],
+                      onSelected: (CompanyFunction function) {
+                        controller.companyOperation(function);
+                      },
+                      color: Colors.transparent),
+                ),
+                Obx(() {
                   List<List<String>> memberContent = [];
                   for (var user in state.unitMember) {
                     memberContent.add([
@@ -57,7 +59,7 @@ class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
                       popupMenus: [
                         const PopupMenuItem(value: 'out', child: Text("移除")),
                       ],
-                      onOperation: (type,data) {
+                      onOperation: (type, data) {
                         controller.removeMember(data);
                       });
                 }),
@@ -68,7 +70,6 @@ class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
       ),
     );
   }
-
 
   Widget cohortInfo() {
     return Container(
@@ -90,12 +91,10 @@ class CohortInfoPage extends BaseGetView<CohortInfoController,CohortInfoState>{
               "团队简称", state.cohort.metadata.name!),
           CommonWidget.commonTextContentWidget(
               "团队标识", state.cohort.metadata.code!),
-          CommonWidget.commonTextContentWidget(
-              "创建人", "",userId: state.cohort.metadata.createUser!),
-          CommonWidget.commonTextContentWidget(
-              "创建时间", DateTime.tryParse(
-              state.cohort.metadata.createTime!)!
-              .format()),
+          CommonWidget.commonTextContentWidget("创建人", "",
+              userId: state.cohort.metadata.createUser!),
+          CommonWidget.commonTextContentWidget("创建时间",
+              DateTime.tryParse(state.cohort.metadata.createTime!)!.format()),
           CommonWidget.commonTextContentWidget(
               "简介", state.cohort.metadata.remark ?? ""),
         ],
