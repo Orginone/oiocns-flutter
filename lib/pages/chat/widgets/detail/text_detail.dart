@@ -3,15 +3,15 @@ import 'dart:convert';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/config/constant.dart';
 
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/string_util.dart';
-import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/utils/string_util.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/config/unified.dart';
 
 class TextDetail extends BaseDetail {
   const TextDetail(

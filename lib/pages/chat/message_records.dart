@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
@@ -9,15 +9,14 @@ import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/event/message.dart';
-import 'package:orginone/images.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/event_bus_helper.dart';
-import 'package:orginone/util/string_util.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/unified.dart';
-import 'package:orginone/widget/widgets/team_avatar.dart';
+
+import 'package:orginone/utils/event_bus_helper.dart';
+import 'package:orginone/utils/index.dart';
+import 'package:orginone/utils/string_util.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/config/unified.dart';
+import 'package:orginone/components/widgets/team_avatar.dart';
 
 class MessageRecordsPage
     extends BaseGetView<MessageRecordsController, MessageRecordsState> {
@@ -100,7 +99,7 @@ class MessageRecordsPage
       height: double.infinity,
       alignment: Alignment.center,
       child: Image.asset(
-        Images.empty,
+        AssetsImages.empty,
         width: 300.w,
         height: 400.w,
       ),

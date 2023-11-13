@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/utils/date_utils.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -47,34 +47,39 @@ class ApplicationDetailsPage
       alignment: Alignment.center,
       child: Row(
         children: [
-          Expanded(child: Container(
-            margin: EdgeInsets.only(left: 32.w),
-            alignment: Alignment.center,
-            child: GestureDetector(
-              onTap: () {
-                controller.addCommon();
-              },
-              child: LayoutBuilder(builder:(context, type) {
-                bool has = false;
-                return Container(
-                  width: 300.w,
-                  height: 50.h,
-                  decoration: BoxDecoration(
-                    color: has?Colors.white:Colors.blueAccent,
-                    borderRadius: BorderRadius.circular(4.w),
-                    border:has?Border.all(color: Colors.blueAccent):null
-                  ),
-                  alignment: Alignment.center,
-                  child: Text(
-                     has
-                        ? "取消常用"
-                        : "设为常用",
-                    style: TextStyle(color: has?Colors.blueAccent:Colors.white, fontSize: 16.sp),
-                  ),
-                );
-              },),
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(left: 32.w),
+              alignment: Alignment.center,
+              child: GestureDetector(
+                onTap: () {
+                  controller.addCommon();
+                },
+                child: LayoutBuilder(
+                  builder: (context, type) {
+                    bool has = false;
+                    return Container(
+                      width: 300.w,
+                      height: 50.h,
+                      decoration: BoxDecoration(
+                          color: has ? Colors.white : Colors.blueAccent,
+                          borderRadius: BorderRadius.circular(4.w),
+                          border: has
+                              ? Border.all(color: Colors.blueAccent)
+                              : null),
+                      alignment: Alignment.center,
+                      child: Text(
+                        has ? "取消常用" : "设为常用",
+                        style: TextStyle(
+                            color: has ? Colors.blueAccent : Colors.white,
+                            fontSize: 16.sp),
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
-          ),),
+          ),
           _popupMenuButton(),
         ],
       ),
@@ -89,7 +94,10 @@ class ApplicationDetailsPage
       ),
       itemBuilder: (BuildContext context) {
         return [
-          const PopupMenuItem(value: "createThing", child: Text("退订"),),
+          const PopupMenuItem(
+            value: "createThing",
+            child: Text("退订"),
+          ),
         ];
       },
     );
@@ -155,9 +163,7 @@ class ApplicationDetailsPage
                       width: 20.w,
                     ),
                     Text(
-                        "订阅到期时间:${DateTime.tryParse(
-                            state.product.prod.createTime ?? "")!.format(
-                            format: "yyyy-MM-dd HH:mm")}",
+                        "订阅到期时间:${DateTime.tryParse(state.product.prod.createTime ?? "")!.format(format: "yyyy-MM-dd HH:mm")}",
                         style: TextStyle(
                           fontSize: 16.sp,
                         ))

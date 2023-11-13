@@ -14,3 +14,4 @@ export 'ex_icon.dart';
 export 'ex_list.dart';
 export 'ex_string.dart';
 export 'ex_widget.dart';
+export 'clip_circle.dart';

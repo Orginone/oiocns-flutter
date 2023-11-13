@@ -4,8 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
-import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/widgets/photo_widget.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/components/widgets/photo_widget.dart';
 
 import 'shadow_widget.dart';
 

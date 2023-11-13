@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/mapping_components.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/mapping_components.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -62,7 +62,7 @@ class CreateWorkPage
                     .map((element) => element.metadata.name!)
                     .toList(), onTap: (index) {
               controller.changeMainIndex(index);
-            },labelStyle: TextStyle(fontSize: 20.sp)),
+            }, labelStyle: TextStyle(fontSize: 20.sp)),
             Column(
               children: state.mainForm[state.mainIndex.value].fields.map((e) {
                     if (e.field.type == null) {
@@ -100,7 +100,7 @@ class CreateWorkPage
                             .map((element) => element.metadata.name!)
                             .toList(), onTap: (index) {
                       controller.changeSubIndex(index);
-                    },labelStyle: TextStyle(fontSize: 20.sp)),
+                    }, labelStyle: TextStyle(fontSize: 20.sp)),
                   ),
                   CommonWidget.commonPopupMenuButton(
                     items: SubTableEnum.values.map((e) {

@@ -7,9 +7,9 @@ import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/image_widget.dart';
+import 'package:orginone/utils/toast_utils.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
 
 import 'message_routers.dart';
 

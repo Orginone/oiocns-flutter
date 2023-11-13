@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+import 'package:orginone/common/routers/index.dart';
+import 'package:orginone/common/values/index.dart';
 import 'package:orginone/dart/base/model.dart' as model;
-import 'package:orginone/images.dart';
+
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/config/unified.dart';
 
 import 'image_detail.dart';
 import 'shadow_widget.dart';
@@ -75,7 +75,7 @@ class FileDetail extends BaseDetail {
               ],
             ),
           ),
-          ImageWidget(Images.iconFile, size: 40.w),
+          ImageWidget(AssetsImages.iconFile, size: 40.w),
         ],
       ),
     );
@@ -90,7 +90,7 @@ class FileDetail extends BaseDetail {
 
   @override
   void onTap(BuildContext context) {
-    Routers.jumpFile(
+    RoutePages.jumpFile(
         file: model.FileItemShare.fromJson(message.body!.toJson()));
   }
 }

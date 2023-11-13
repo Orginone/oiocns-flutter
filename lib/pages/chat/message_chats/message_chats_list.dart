@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/pages/chat/widgets/chat_item.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
 
 class MessageChatsList extends GetView<MessageChatsListController> {
   const MessageChatsList({Key? key}) : super(key: key);

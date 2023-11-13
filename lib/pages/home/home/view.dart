@@ -11,11 +11,11 @@ import 'package:orginone/pages/home/index/view.dart';
 import 'package:orginone/pages/setting/view.dart';
 import 'package:orginone/pages/store/view.dart';
 import 'package:orginone/pages/work/view.dart';
-import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/badge_widget.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/keep_alive_widget.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/utils/toast_utils.dart';
+import 'package:orginone/components/widgets/badge_widget.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/keep_alive_widget.dart';
+import 'package:orginone/config/unified.dart';
 
 import 'logic.dart';
 import 'state.dart';

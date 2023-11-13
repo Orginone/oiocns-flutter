@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/common/models/index.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_controller.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_state.dart';
-import 'package:orginone/util/hive_utils.dart';
+import 'package:orginone/utils/hive_utils.dart';
 
 class MessageChatsController extends BaseSubmenuController<MessageChatsState> {
   @override

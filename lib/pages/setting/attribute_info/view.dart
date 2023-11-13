@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
 class AttributeInfoPage
     extends BaseGetView<AttributeInfoController, AttributeInfoState> {
-
   @override
   Widget buildView() {
     return GyScaffold(
@@ -20,7 +19,6 @@ class AttributeInfoPage
               Obx(() {
                 List<List<String>> content = [];
 
-
                 for (var element in state.propertys) {
                   content.add([
                     element.code ?? "",
@@ -28,8 +26,8 @@ class AttributeInfoPage
                     element.valueType ?? "",
                     element.unit ?? "",
                     element.directory?.name ?? "",
-                    element.createUser??"",
-                    element.belong?.name??"",
+                    element.createUser ?? "",
+                    element.belong?.name ?? "",
                     element.remark ?? ""
                   ]);
                 }
@@ -55,9 +53,10 @@ class AttributeInfoPage
                         value: "delete",
                         child: Text("删除属性"),
                       ),
-                    ],onOperation: (operation,code){
-                      controller.onOperation(operation,code);
-                });
+                    ],
+                    onOperation: (operation, code) {
+                      controller.onOperation(operation, code);
+                    });
               }),
             ],
           ),

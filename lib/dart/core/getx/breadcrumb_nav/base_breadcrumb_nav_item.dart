@@ -4,8 +4,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/popup_widget.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/components/widgets/popup_widget.dart';
 
 class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
     extends StatelessWidget {

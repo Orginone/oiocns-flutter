@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/utils/toast_utils.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
@@ -46,9 +46,9 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
       return;
     }
     ResultType result = await settingCtrl.provider.resetPassword(
-        state.accountController.text,
-        state.passWordController.text,
-        state.keyController.text,
+      state.accountController.text,
+      state.passWordController.text,
+      state.keyController.text,
     );
 
     if (result.success) {

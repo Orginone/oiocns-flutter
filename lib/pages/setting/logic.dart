@@ -4,7 +4,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:orginone/common/models/index.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_controller.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_state.dart';
-import 'package:orginone/util/hive_utils.dart';
+import 'package:orginone/utils/hive_utils.dart';
 import 'state.dart';
 
 class SettingController extends BaseSubmenuController<SettingState> {

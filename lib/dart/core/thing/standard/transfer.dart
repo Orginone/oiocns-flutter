@@ -10,7 +10,7 @@ import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/util/date_utils.dart';
+import 'package:orginone/utils/date_utils.dart';
 
 typedef GraphData = dynamic Function();
 

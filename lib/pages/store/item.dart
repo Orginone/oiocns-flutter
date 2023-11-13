@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/common/routers/index.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/config/unified.dart';
 
 import 'state.dart';
 
@@ -69,7 +69,7 @@ class StoreItem extends StatelessWidget {
             ),
             onTap: () async {
               if (item.type == 'file') {
-                Routers.jumpFile(file: item.file!, type: 'store');
+                RoutePages.jumpFile(file: item.file!, type: 'store');
               } else {
                 // var thing = item.thing;
                 // IForm? form = await settingCtrl.store

@@ -4,8 +4,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
-import 'package:orginone/util/string_util.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/utils/string_util.dart';
+import 'package:orginone/config/unified.dart';
 
 class VoiceDetail extends BaseDetail {
   VoiceDetail({

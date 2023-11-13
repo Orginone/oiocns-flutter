@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/pages/work/state.dart';
-import 'package:orginone/widget/target_text.dart';
-import 'package:orginone/widget/unified.dart';
-import 'package:orginone/config/color.dart';
+import 'package:orginone/components/widgets/target_text.dart';
+import 'package:orginone/config/unified.dart';
+import 'package:orginone/config/colors.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/util/date_utils.dart';
+import 'package:orginone/utils/date_utils.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 import '../../../../../dart/core/getx/base_get_page_view.dart';
@@ -26,7 +26,7 @@ class UseTracesPage
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.w),
       height: double.infinity,
-      color: GYColors.backgroundColor,
+      color: AppColors.backgroundColor,
       child: Builder(builder: (context) {
         int length = state.flowInstance?.historyTasks?.length ?? 0;
         return ListView.builder(

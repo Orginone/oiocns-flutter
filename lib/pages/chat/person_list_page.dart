@@ -4,9 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/widgets/team_avatar.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/team_avatar.dart';
 
 class PersonInfo extends ISuspensionBean {
   late XTarget person;
@@ -59,10 +59,10 @@ class _PersonListPageState extends State<PersonListPage> {
     SuspensionUtil.setShowSuspensionStatus(personInfo);
   }
 
-  search(String key){
+  search(String key) {
     personInfo.clear();
     for (var person in persons) {
-      if(person.name!.contains(key)){
+      if (person.name!.contains(key)) {
         personInfo.add(PersonInfo(person));
       }
     }
@@ -77,7 +77,10 @@ class _PersonListPageState extends State<PersonListPage> {
       titleName: "群成员",
       body: Column(
         children: [
-          CommonWidget.commonSearchBarWidget(hint: "搜索",searchColor:const Color(0xFFF3F4F5),onChanged: search),
+          CommonWidget.commonSearchBarWidget(
+              hint: "搜索",
+              searchColor: const Color(0xFFF3F4F5),
+              onChanged: search),
           Expanded(
             child: AzListView(
               data: personInfo,
@@ -128,7 +131,7 @@ class _PersonListPageState extends State<PersonListPage> {
         softWrap: false,
         style: TextStyle(
           fontSize: 16.sp,
-          color: Color(0xFF666666),
+          color: const Color(0xFF666666),
         ),
       ),
     );

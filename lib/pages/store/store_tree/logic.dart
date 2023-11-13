@@ -1,13 +1,13 @@
 import 'package:get/get.dart';
+import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/outTeam/group.dart';
 import 'package:orginone/pages/store/config.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/loading_dialog.dart';
+import 'package:orginone/utils/toast_utils.dart';
+import 'package:orginone/components/widgets/loading_dialog.dart';
 
 import 'state.dart';
 
@@ -137,7 +137,7 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
             arguments: {"works": works, 'target': target});
         break;
       case SpaceEnum.file:
-        Routers.jumpFile(file: nav.source!.shareInfo(), type: 'store');
+        RoutePages.jumpFile(file: nav.source!.shareInfo(), type: 'store');
         break;
       case SpaceEnum.filter:
         Get.toNamed(Routers.thing, arguments: {

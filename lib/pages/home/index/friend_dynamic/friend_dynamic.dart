@@ -1,14 +1,10 @@
-
-
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/images.dart';
+
 import 'package:orginone/pages/home/index/widget/widget.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/config/unified.dart';
 
 class FriendDynamic extends StatefulWidget {
   const FriendDynamic({Key? key}) : super(key: key);
@@ -30,42 +26,51 @@ class _FriendDynamicState extends State<FriendDynamic> {
     );
   }
 
-
-  Widget concerned(){
+  Widget concerned() {
     return Card(
       shadowColor: XColors.cardShadowColor,
       elevation: 1.25,
       margin: EdgeInsets.symmetric(horizontal: 15.w),
       child: Padding(
-        padding:EdgeInsets.symmetric(horizontal: 10.w,vertical: 5.h),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 5.h),
         child: Column(
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("特别关心",style: XFonts.size22Black0W700,),
-                TextArrow(title: '',)
+                Text(
+                  "特别关心",
+                  style: XFonts.size22Black0W700,
+                ),
+                const TextArrow(
+                  title: '',
+                )
               ],
             ),
-            SizedBox(height: 10.h,),
+            SizedBox(
+              height: 10.h,
+            ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: List.generate(5, (index) => ColumnItem())
-            )
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: List.generate(5, (index) => const ColumnItem()))
           ],
         ),
       ),
     );
   }
 
-  Widget newDynamic(){
+  Widget newDynamic() {
     return Column(
       children: [
-        CommonWidget.commonHeadInfoWidget("最新动态", action: TextArrow(title: "查看全部动态",)),
-        SizedBox(height: 10.h,),
-        ...List.generate(5, (index) =>  CardItem()).toList(),
+        CommonWidget.commonHeadInfoWidget("最新动态",
+            action: const TextArrow(
+              title: "查看全部动态",
+            )),
+        SizedBox(
+          height: 10.h,
+        ),
+        ...List.generate(5, (index) => const CardItem()).toList(),
       ],
     );
   }
-
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:orginone/config/index.dart';
 import '../index.dart';
 
 /*
@@ -443,9 +444,8 @@ class ButtonWidget extends StatelessWidget {
       height: height,
       child: ElevatedButton(
         onPressed: onTap,
-        child: _child,
         style: ButtonStyle(
-          minimumSize: MaterialStateProperty.all(Size(0, 0)),
+          minimumSize: MaterialStateProperty.all(const Size(0, 0)),
           elevation: MaterialStateProperty.all(0),
           backgroundColor: _backgroundColor,
           side: _side,
@@ -453,6 +453,7 @@ class ButtonWidget extends StatelessWidget {
           shape: _shape,
           padding: _padding,
         ),
+        child: _child,
       ),
     );
   }

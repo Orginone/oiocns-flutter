@@ -10,10 +10,10 @@ import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/pages/setting/dialog.dart';
-import 'package:orginone/util/date_utils.dart';
-import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/loading_dialog.dart';
+import 'package:orginone/utils/date_utils.dart';
+import 'package:orginone/utils/toast_utils.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/loading_dialog.dart';
 
 import 'logic.dart';
 

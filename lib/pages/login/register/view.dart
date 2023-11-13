@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
 
 import 'logic.dart';
 import 'state.dart';
-
 
 class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
   @override
@@ -26,16 +25,22 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   tips(),
-                  SizedBox(height: 75.h,),
+                  SizedBox(
+                    height: 75.h,
+                  ),
                   Obx(() {
                     if (!state.isStepOne.value) {
                       return stepTwo();
                     }
                     return stepOne();
                   }),
-                  SizedBox(height: 60.h,),
+                  SizedBox(
+                    height: 60.h,
+                  ),
                   clause(),
-                  SizedBox(height: 15.h,),
+                  SizedBox(
+                    height: 15.h,
+                  ),
                   loginButton(),
                 ],
               ),
@@ -66,15 +71,16 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
     );
   }
 
-
   Widget stepOne() {
     return Obx(() {
       return Column(
         children: [
-          CommonWidget.commonTextField(controller: state.userNameController,
+          CommonWidget.commonTextField(
+              controller: state.userNameController,
               hint: "请输入用户名",
               title: "用户名"),
-          CommonWidget.commonTextField(controller: state.passWordController,
+          CommonWidget.commonTextField(
+              controller: state.passWordController,
               hint: "请输入密码",
               title: "密码",
               obscureText: state.passwordUnVisible.value,
@@ -89,7 +95,8 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                     size: 24.w,
                     color: Colors.grey,
                   ))),
-          CommonWidget.commonTextField(controller: state.verifyPassWordController,
+          CommonWidget.commonTextField(
+              controller: state.verifyPassWordController,
               hint: "请再次输入密码",
               title: "确认密码",
               obscureText: state.verifyPassWordUnVisible.value,
@@ -112,18 +119,22 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
   Widget stepTwo() {
     return Column(
       children: [
-        CommonWidget.commonTextField(controller: state.phoneNumberController,
+        CommonWidget.commonTextField(
+            controller: state.phoneNumberController,
             hint: "请输入电话号码",
             title: "手机号"),
-        CommonWidget.commonTextField(controller: state.nickNameController,
+        CommonWidget.commonTextField(
+          controller: state.nickNameController,
           hint: "请输入昵称",
           title: "昵称",
         ),
-        CommonWidget.commonTextField(controller: state.realNameController,
+        CommonWidget.commonTextField(
+          controller: state.realNameController,
           hint: "请输入真实姓名",
           title: "姓名",
         ),
-        CommonWidget.commonTextField(controller: state.remarkController,
+        CommonWidget.commonTextField(
+          controller: state.remarkController,
           hint: "请输入座右铭",
           title: "座右铭",
         ),
@@ -150,21 +161,19 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
             const TextSpan(text: "同意"),
             WidgetSpan(
                 child: GestureDetector(
-                  child: Text(
-                    "《服务条款》",
-                    style: TextStyle(
-                        color: XColors.themeColor, fontSize: 20.sp),
-                  ),
-                )),
+              child: Text(
+                "《服务条款》",
+                style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
+              ),
+            )),
             const TextSpan(text: "与"),
             WidgetSpan(
                 child: GestureDetector(
-                  child: Text(
-                    "《隐私条款》",
-                    style: TextStyle(
-                        color: XColors.themeColor, fontSize: 20.sp),
-                  ),
-                ))
+              child: Text(
+                "《隐私条款》",
+                style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
+              ),
+            ))
           ]),
           style: TextStyle(color: Colors.black, fontSize: 20.sp),
         )
@@ -204,7 +213,9 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
               );
             }),
           ),
-          SizedBox(height: 10.h,),
+          SizedBox(
+            height: 10.h,
+          ),
           Obx(() {
             if (state.isStepOne.value) {
               return Container();
@@ -213,13 +224,14 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
               onTap: () {
                 controller.previousStep();
               },
-              child: Text("上一步",
-                style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),),
+              child: Text(
+                "上一步",
+                style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
+              ),
             );
           })
         ],
       ),
     );
   }
-
 }

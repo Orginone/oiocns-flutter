@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:orginone/common/index.dart';
+import 'package:orginone/components/modules/general_bread_crumbs/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/consts.dart';
@@ -8,12 +10,9 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/images.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/other/general_bread_crumbs/state.dart';
 import 'package:orginone/pages/store/state.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/string_util.dart';
+import 'package:orginone/utils/string_util.dart';
 
 class ListAdapter {
   VoidCallback? callback;
@@ -127,7 +126,7 @@ class ListAdapter {
     dateTime = work.metadata.createTime ?? "";
     content = work.taskdata.content ?? "";
     image = ShareIdSet[work.metadata.shareId]?.avatar?.thumbnailUint8List ??
-        Images.iconWorkitem;
+        AssetsImages.iconWorkitem;
     if (work.targets.length == 2) {
       content =
           "${work.targets[0].name}[${work.targets[0].typeName}]申请加入${work.targets[1].name}[${work.targets[1].typeName}]";
@@ -183,7 +182,7 @@ class ListAdapter {
     labels = [recent.thing == null ? "文件" : "物"];
     callback = () {
       if (recent.file != null) {
-        Routers.jumpFile(file: recent.file!, type: "store");
+        RoutePages.jumpFile(file: recent.file!, type: "store");
       }
     };
     title = recent.thing?.id ?? recent.file?.name ?? "";

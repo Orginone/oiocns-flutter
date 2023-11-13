@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/config/unified.dart';
 
 import 'base_breadcrumb_nav_controller.dart';
 import 'base_get_breadcrumb_nav_state.dart';
 import '../base_get_view.dart';
 
-abstract class BaseBreadcrumbNavPage<T extends BaseBreadcrumbNavController, S extends BaseBreadcrumbNavState>
-    extends BaseGetView<T, S> {
-
+abstract class BaseBreadcrumbNavPage<T extends BaseBreadcrumbNavController,
+    S extends BaseBreadcrumbNavState> extends BaseGetView<T, S> {
   TextStyle get _selectedTextStyle =>
       TextStyle(fontSize: 20.sp, color: XColors.themeColor);
 
@@ -19,15 +18,18 @@ abstract class BaseBreadcrumbNavPage<T extends BaseBreadcrumbNavController, S ex
 
   @override
   Widget buildView() {
-
     return GyScaffold(
       titleSpacing: 0,
-      leading: BackButton(color: Colors.black, onPressed: () {
-        controller.popAll();
-      },),
+      leading: BackButton(
+        color: Colors.black,
+        onPressed: () {
+          controller.popAll();
+        },
+      ),
       centerTitle: false,
       appBarColor: Colors.white,
-      titleWidget: SingleChildScrollView(scrollDirection: Axis.horizontal,
+      titleWidget: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
         controller: state.navBarController,
         child: Obx(() {
           List<Widget> nextStep = [];
@@ -36,12 +38,14 @@ abstract class BaseBreadcrumbNavPage<T extends BaseBreadcrumbNavController, S ex
               nextStep.add(_level(value));
             }
           }
-          return Row(children: nextStep,);
-        }),),
+          return Row(
+            children: nextStep,
+          );
+        }),
+      ),
       body: body(),
     );
   }
-
 
   Widget _level(BaseBreadcrumbNavInfo info) {
     int index = state.bcNav.indexOf(info);
@@ -52,9 +56,7 @@ abstract class BaseBreadcrumbNavPage<T extends BaseBreadcrumbNavController, S ex
       child: Text.rich(
         TextSpan(
           children: [
-            TextSpan(
-                text: " • ",
-                style: _unSelectedTextStyle),
+            TextSpan(text: " • ", style: _unSelectedTextStyle),
             TextSpan(
                 text: info.title,
                 style: index == state.bcNav.length - 1

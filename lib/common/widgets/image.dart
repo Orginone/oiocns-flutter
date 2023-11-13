@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:orginone/config/index.dart';
 
 import '../index.dart';
 

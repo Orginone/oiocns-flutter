@@ -7,10 +7,11 @@ import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/util/hive_utils.dart';
-import 'package:orginone/util/http_util.dart';
-import 'package:orginone/util/logger.dart';
-import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/utils/hive_utils.dart';
+import 'package:orginone/utils/http_util.dart';
+import 'package:orginone/utils/index.dart';
+import 'package:orginone/utils/logger.dart';
+import 'package:orginone/utils/toast_utils.dart';
 
 class KernelApi {
   // 当前用户
@@ -138,15 +139,19 @@ class KernelApi {
 
   Future<ResultType<dynamic>> login(String userName, String password) async {
     Map<String, dynamic> req = {
-      "account": userName,
-      "pwd": password,
+      'module': 'auth',
+      'action': 'Login',
+      'params': {
+        "account": userName,
+        "password": password,
+      },
     };
     dynamic raw;
-    if (_storeHub.isConnected) {
-      raw = await _storeHub.invoke('Login', args: [req]);
-    } else {
-      raw = await _restRequest('login', req);
-    }
+    // if (_storeHub.isConnected) {
+    raw = await _storeHub.invoke('Auth', args: [req]);
+    // } else {
+    //   raw = await _restRequest('Auth', req);
+    // }
 
     var res = raw is ResultType ? raw : ResultType.fromJson(raw);
     if (res.success) {

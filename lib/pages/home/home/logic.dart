@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
-import 'package:orginone/event/home_data.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/util/event_bus.dart';
-import 'package:orginone/widget/loading_dialog.dart';
+import 'package:orginone/utils/event_bus.dart';
+import 'package:orginone/utils/index.dart';
+import 'package:orginone/components/widgets/loading_dialog.dart';
 
 import 'state.dart';
 
 class HomeController extends BaseController<HomeState>
     with GetTickerProviderStateMixin {
+  @override
   final HomeState state = HomeState();
 
   @override

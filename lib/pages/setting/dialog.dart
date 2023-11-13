@@ -5,10 +5,10 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/thing/standard/species.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/util/toast_utils.dart';
-import 'package:orginone/widget/bottom_sheet_dialog.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/utils/toast_utils.dart';
+import 'package:orginone/components/widgets/bottom_sheet_dialog.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/config/unified.dart';
 
 import '../../dart/core/target/authority/authority.dart';
 import '../../dart/core/target/base/target.dart';

@@ -4,8 +4,8 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/widget/target_text.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/components/widgets/target_text.dart';
+import 'package:orginone/config/unified.dart';
 
 double defaultWidth = 10.w;
 

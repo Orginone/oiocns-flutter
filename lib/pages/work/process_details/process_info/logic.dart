@@ -1,10 +1,10 @@
 import 'package:get/get.dart';
-import 'package:orginone/common/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/network.dart';
+import 'package:orginone/utils/index.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';

@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/channel/wallet_channel.dart';
 import 'package:orginone/common/models/index.dart';
-import 'package:orginone/util/hive_utils.dart';
+import 'package:orginone/utils/hive_utils.dart';
 
 abstract class WalletApi {
   Future<String> loadMnemonicString(int type);

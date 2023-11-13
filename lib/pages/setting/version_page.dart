@@ -8,16 +8,16 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
-import 'package:orginone/widget/a_font.dart';
-import 'package:orginone/widget/image_widget.dart';
-import 'package:orginone/widget/template/originone_scaffold.dart';
-import 'package:orginone/widget/unified.dart';
-import 'package:orginone/widget/widgets/loading_widget.dart';
-import 'package:orginone/widget/widgets/progress_dialog.dart';
+import 'package:orginone/config/a_font.dart';
+import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/components/widgets/originone_scaffold.dart';
+import 'package:orginone/config/unified.dart';
+import 'package:orginone/components/widgets/loading_widget.dart';
+import 'package:orginone/components/widgets/progress_dialog.dart';
 import 'package:orginone/config/enum.dart';
 import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/util/string_util.dart';
+import 'package:orginone/utils/string_util.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class VersionPage extends GetView<VersionController> {

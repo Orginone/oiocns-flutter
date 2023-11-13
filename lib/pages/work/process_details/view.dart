@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
 import 'logic.dart';
 import 'process_info/view.dart';
 import 'state.dart';

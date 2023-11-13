@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
@@ -6,8 +7,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/dialog.dart';
 import 'package:orginone/pages/setting/home/state.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/toast_utils.dart';
+import 'package:orginone/utils/toast_utils.dart';
 
 import '../config.dart';
 import 'state.dart';
@@ -53,7 +53,7 @@ class SettingSubController extends BaseListController<SettingSubState> {
         ...joinedCompanies
                 ?.map((element) => SettingNavModel(
                     name: element.metadata.name!,
-                    id: element.metadata.id!,
+                    id: element.metadata.id,
                     image: element.metadata.avatarThumbnail(),
                     space: element,
                     spaceEnum: SpaceEnum.company,

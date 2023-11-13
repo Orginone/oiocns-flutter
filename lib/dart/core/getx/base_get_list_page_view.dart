@@ -1,9 +1,8 @@
 import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/images.dart';
-import 'package:orginone/widget/load_state_widget.dart';
+import 'package:orginone/common/index.dart';
+import 'package:orginone/components/widgets/load_state_widget.dart';
 
 import 'base_get_list_state.dart';
 import 'base_list_controller.dart';
@@ -61,7 +60,7 @@ abstract class BaseGetListPageView<T extends BaseListController,
         height: MediaQuery.of(context).size.height.h,
         alignment: Alignment.center,
         color: Colors.grey.shade200,
-        child: Image.asset(Images.empty, width: 300.w),
+        child: Image.asset(AssetsImages.empty, width: 300.w),
       ),
     );
   }

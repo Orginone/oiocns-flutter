@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/widget/unified.dart';
-import 'package:orginone/widget/widgets/team_avatar.dart';
+import 'package:orginone/config/unified.dart';
+import 'package:orginone/components/widgets/team_avatar.dart';
 
 double avatarWidth = 76.w;
 
@@ -53,7 +53,8 @@ class _AvatarsState extends State<Avatars> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-         border: Border(bottom: BorderSide(color: Colors.grey.shade300,width: 0.5)),
+        border:
+            Border(bottom: BorderSide(color: Colors.grey.shade300, width: 0.5)),
       ),
       child: Column(
         children: [
@@ -73,11 +74,12 @@ class _AvatarsState extends State<Avatars> {
       mappedPerson = mappedPerson.sublist(0, showCount!);
     }
     if (hasAdd) {
-       if(mappedPerson.length == showCount){
-         mappedPerson.replaceRange(mappedPerson.length-1, mappedPerson.length, [_addItem]);
-       }else{
-         mappedPerson.add(_addItem);
-       }
+      if (mappedPerson.length == showCount) {
+        mappedPerson.replaceRange(
+            mappedPerson.length - 1, mappedPerson.length, [_addItem]);
+      } else {
+        mappedPerson.add(_addItem);
+      }
     }
     return GridView.count(
       padding: padding,
@@ -110,20 +112,24 @@ class _AvatarsState extends State<Avatars> {
     );
   }
 
-
-  get _showMore{
-    if(!showMore){
+  get _showMore {
+    if (!showMore) {
       return const SizedBox();
     }
     return GestureDetector(
-      onTap: (){
-        Get.toNamed(Routers.personListPage,arguments: {'persons':persons});
+      onTap: () {
+        Get.toNamed(Routers.personListPage, arguments: {'persons': persons});
       },
       child: Container(
         width: double.infinity,
         alignment: Alignment.center,
         padding: EdgeInsets.only(bottom: 10.h),
-        child: Text('查看全部群成员(${persons.length})>',style: TextStyle(color: Colors.grey.shade500,),),
+        child: Text(
+          '查看全部群成员(${persons.length})>',
+          style: TextStyle(
+            color: Colors.grey.shade500,
+          ),
+        ),
       ),
     );
   }

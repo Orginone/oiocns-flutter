@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response, FormData, MultipartFile;
+import 'package:orginone/utils/index.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import '../index.dart';

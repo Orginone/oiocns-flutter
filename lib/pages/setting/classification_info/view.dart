@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/widget/common_widget.dart';
-import 'package:orginone/widget/gy_scaffold.dart';
-import 'package:orginone/widget/keep_alive_widget.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/keep_alive_widget.dart';
+import 'package:orginone/config/unified.dart';
 
 import 'attrs.dart';
 import 'basic_info.dart';
@@ -17,13 +17,12 @@ import 'species.dart';
 import 'state.dart';
 import 'work.dart';
 
-
 class ClassificationInfoPage
     extends BaseGetView<ClassificationInfoController, ClassificationInfoState> {
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.data.name??"",
+      titleName: state.data.name ?? "",
       body: Column(
         children: [
           tabBar(),
@@ -89,19 +88,23 @@ class ClassificationInfoPage
           ),
           Obx(() {
             var classif = state.tabTitle[state.currentIndex.value];
-            if (state.currentIndex.value == 0 ||  classif == ClassificationEnum.form || classif == ClassificationEnum.attrs) {
+            if (state.currentIndex.value == 0 ||
+                classif == ClassificationEnum.form ||
+                classif == ClassificationEnum.attrs) {
               return Container();
             }
 
-            return CommonWidget.commonPopupMenuButton(items: [
-              PopupMenuItem(
-                value: 'create',
-                  child: Text(
-                      "新增${state.species.metadata.typeName}"),
+            return CommonWidget.commonPopupMenuButton(
+              items: [
+                PopupMenuItem(
+                  value: 'create',
+                  child: Text("新增${state.species.metadata.typeName}"),
                 ),
-            ], onSelected: (str) {
-              controller.create(state.tabTitle[state.currentIndex.value]);
-              },);
+              ],
+              onSelected: (str) {
+                controller.create(state.tabTitle[state.currentIndex.value]);
+              },
+            );
           }),
         ],
       ),

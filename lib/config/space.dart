@@ -9,7 +9,7 @@
 import 'package:flutter/material.dart';
 
 /// 间距
-class GYSpace {
+class AppSpace {
   /// 按钮
   static double get button => 5;
 

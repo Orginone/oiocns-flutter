@@ -4,8 +4,8 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
-import 'package:orginone/util/date_util.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/utils/date_util.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'info_item.dart';

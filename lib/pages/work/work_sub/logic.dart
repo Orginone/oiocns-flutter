@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
@@ -7,11 +8,10 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/event/work_reload.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/initiate_work/state.dart';
 import 'package:orginone/pages/work/state.dart';
-import 'package:orginone/routers.dart';
+import 'package:orginone/utils/index.dart';
 
 import 'state.dart';
 

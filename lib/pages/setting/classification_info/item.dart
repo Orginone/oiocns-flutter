@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/pages/setting/widget.dart';
 
-import '../../../widget/common_widget.dart';
+import '../../../components/widgets/common_widget.dart';
 
 class Item extends StatelessWidget {
   final VoidCallback? onTap;
   final XDict dict;
   final PopupMenuItemSelected? onSelected;
-  const Item({Key? key, this.onTap, required this.dict, this.onSelected}) : super(key: key);
-
+  const Item({Key? key, this.onTap, required this.dict, this.onSelected})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -69,6 +69,7 @@ class Item extends StatelessWidget {
       ),
     );
   }
+
   Widget _header() {
     IconData icon = Icons.account_balance_rounded;
 

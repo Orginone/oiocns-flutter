@@ -7,14 +7,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/channel/wallet_channel.dart';
-import 'package:orginone/common/utils/index.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/controller/wallet_controller.dart';
-import 'package:orginone/routers.dart';
-import 'package:orginone/util/foreground_utils.dart';
-import 'package:orginone/util/notification_util.dart';
+import 'package:orginone/utils/foreground_utils.dart';
+import 'package:orginone/utils/notification_util.dart';
+import 'common/routers/index.dart';
 import 'dart/controller/index.dart';
-import 'util/hive_utils.dart';
+import 'utils/hive_utils.dart';
+import 'utils/index.dart';
 
 void main() async {
   // 逻辑绑定
@@ -47,7 +47,7 @@ void main() async {
 
 KernelApi get kernel => KernelApi();
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
-final RouteObserver<PageRoute> routeObserver = RouteObserver();
+// final RouteObserver<PageRoute> routeObserver = RouteObserver();
 
 IndexController get settingCtrl => Get.find<IndexController>();
 
@@ -68,7 +68,7 @@ class ScreenInit extends StatelessWidget {
       splitScreenMode: true,
       builder: (context, child) {
         return GetMaterialApp(
-          navigatorObservers: [routeObserver],
+          navigatorObservers: [RoutePages.observer],
           navigatorKey: navigatorKey,
           initialBinding: UserBinding(),
           onInit: () async {
@@ -87,7 +87,7 @@ class ScreenInit extends StatelessWidget {
           textDirection: TextDirection.ltr,
           initialRoute: account.isNotEmpty ? Routers.home : Routers.login,
           defaultTransition: Transition.fadeIn,
-          getPages: Routers.getInitRouters(),
+          getPages: RoutePages.getInitRouters,
         );
       },
     );

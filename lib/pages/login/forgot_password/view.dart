@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/common/utils/index.dart';
-import 'package:orginone/widget/unified.dart';
+import 'package:orginone/utils/storage.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/widget/common_widget.dart';
+import 'package:orginone/components/widgets/common_widget.dart';
 import 'logic.dart';
 import 'state.dart';
 

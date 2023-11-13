@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
@@ -9,7 +10,6 @@ import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/pages/store/store_tree/state.dart';
-import 'package:orginone/routers.dart';
 
 import '../config.dart';
 import 'state.dart';
@@ -159,7 +159,7 @@ class StoreSubController extends BaseListController<StoreSubState> {
             arguments: {"works": works, 'target': target});
         break;
       case SpaceEnum.file:
-        Routers.jumpFile(file: nav.source!.shareInfo(), type: 'store');
+        RoutePages.jumpFile(file: nav.source!.shareInfo(), type: 'store');
         break;
       default:
         Get.toNamed(Routers.storeTree,

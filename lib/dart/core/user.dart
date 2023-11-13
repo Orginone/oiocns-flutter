@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
-import 'package:orginone/common/utils/index.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -9,7 +8,8 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/util/logger.dart';
+import 'package:orginone/utils/index.dart';
+import 'package:orginone/utils/logger.dart';
 import 'thing/standard/application.dart';
 import 'work/provider.dart';
 
