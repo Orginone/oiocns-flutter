@@ -697,7 +697,7 @@ class KernelApi {
       ReqestType(
         module: 'work',
         action: 'ApprovalTask',
-        params: params,
+        params: params.toJson(),
       ),
     );
   }
@@ -1184,28 +1184,31 @@ class KernelApi {
 
   Future<ResultType<T>> request<T>(ReqestType req,
       [T Function(Map<String, dynamic>)? cvt]) async {
-    dynamic raw;
-    print("===> req:${req.toJson()}");
-    if (_storeHub.isConnected) {
-      raw = await _storeHub.invoke('Request', args: [req]);
-    } else {
-      raw = await _restRequest('request', req.toJson());
-    }
+    ResultType raw;
+    LogUtil.d("===> req:${req.toJson()}");
+    // if (_storeHub.isConnected) {
+    raw = await _storeHub.invoke('Request', args: [req]);
+    LogUtil.d("===> res:${req.toJson()}");
+    // } else {
+    //   raw = await _restRequest('Request', req.toJson());
+    // }
     if (!raw.success) {
       ToastUtils.showMsg(msg: raw.msg);
+      return ResultType<T>.fromJson({});
     }
-    try {
-      if (null != cvt) {
-        return ResultType<T>.fromJsonSerialize(raw ?? {}, cvt);
-      } else {
-        return ResultType<T>.fromJson(raw);
-      }
-    } catch (e) {
-      print('====err1:$e');
-      print('====err2:$cvt-$T');
-      e.printError();
+
+    // try {
+    if (null != cvt) {
+      return ResultType<T>.fromJsonSerialize(raw, cvt);
+    } else {
+      return ResultType<T>.fromJson(raw.toJson());
     }
-    return ResultType<T>.fromJson({});
+    // } catch (e) {
+    //   LogUtil.d('====err1:$e');
+    //   LogUtil.d('====err2:$cvt-$T');
+    //   e.printError();
+    // }
+    // return ResultType<T>.fromJson({});
   }
 
   Future<ResultType<T>> request_<T, R>(ReqestType req,
@@ -1388,7 +1391,7 @@ class KernelApi {
   /// @returns 返回结果
   Future<ResultType<T>> _restRequest<T>(String methodName, dynamic args) async {
     final res = await _http.post(
-      '${Constant.rest}/$methodName',
+      '${Constant.rest}/${methodName.toLowerCase()}',
       data: args,
     );
 

@@ -5538,7 +5538,7 @@ class XWorkInstance extends Xbase {
     Map<String, dynamic> json = {...super.toJson()};
     json["operationIds"] = operationIds;
     json["thingIds"] = thingIds;
-    json["historyTasks"] = historyTasks;
+    json["historyTasks"] = historyTasks?.map((e) => e.toJson()).toList();
     json["defineId"] = defineId;
     json["productId"] = productId;
     json["belongId"] = belongId;
@@ -5547,7 +5547,7 @@ class XWorkInstance extends Xbase {
     json["content"] = content;
     json["data"] = data;
     json["hook"] = hook;
-    json["historyTasks"] = historyTasks;
+
     json["define"] = define?.toJson();
     return json;
   }

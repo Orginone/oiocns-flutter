@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/utils/event_bus.dart';
 import 'package:orginone/utils/index.dart';
 import 'package:orginone/components/widgets/loading_dialog.dart';
 
@@ -29,7 +28,7 @@ class HomeController extends BaseController<HomeState>
       }
     });
     if (Get.arguments ?? false) {
-      XEventBus.instance.fire(UserLoaded());
+      EventBusUtil.instance.fire(UserLoaded());
     }
   }
 
@@ -43,7 +42,7 @@ class HomeController extends BaseController<HomeState>
       }
     }
     if (event is StartLoad) {
-      XEventBus.instance.fire(UserLoaded());
+      EventBusUtil.instance.fire(UserLoaded());
     }
   }
 

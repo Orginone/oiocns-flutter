@@ -58,11 +58,13 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
         shrinkWrap: true,
         controller: state.scrollController,
         itemBuilder: (context, index) {
-          var work = settingCtrl.work.todos[index];
+          // var work = settingCtrl.work.todos[index];
+          var work = state.list[index];
 
           return ListItem(adapter: ListAdapter.work(work));
         },
-        itemCount: settingCtrl.work.todos.length,
+        // itemCount: settingCtrl.work.todos.length,
+        itemCount: state.list.length,
       );
     });
   }

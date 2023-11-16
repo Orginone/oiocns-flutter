@@ -12,6 +12,9 @@ class InputFormClearEvent {
       {required this.indexs, required this.focusIndex, required this.tag});
 }
 
+//加载待办事件
+class LoadTodosEvent {}
+
 class CheckReload {}
 
 class ChoicePeople {
@@ -50,3 +53,12 @@ class JumpSpecifyMessage {
 }
 
 class WorkReload {}
+
+class User {
+  late Map<String, dynamic> person;
+  User(this.person);
+}
+
+class SignOut {}
+
+class UserLoaded {}

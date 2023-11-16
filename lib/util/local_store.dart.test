@@ -1,0 +1,122 @@
+import 'dart:convert';
+
+/// kv离线存储
+class Storage {
+  // 单例写法
+  static final Storage _instance = Storage._internal();
+  // factory Storage() => _instance;
+  // static late final SharedPreferences _prefs;
+
+  // Storage._internal();
+
+  // static Future<void> init() async {
+  //   _prefs = await SharedPreferences.getInstance();
+  // }
+
+  // static Future<bool> setString(String key, String value) async {
+  //   return await _prefs.setString(key, value);
+  // }
+
+  // static Future<bool> setJson(String key, Object value) async {
+  //   return await _prefs.setString(key, jsonEncode(value));
+  // }
+
+  // static Future<bool> setBool(String key, bool value) async {
+  //   return await _prefs.setBool(key, value);
+  // }
+
+  // static Future<bool> setList(String key, List<String> value) async {
+  //   return await _prefs.setStringList(key, value);
+  // }
+
+  // static String getString(String key) {
+  //   return _prefs.getString(key) ?? '';
+  // }
+
+  // static bool getBool(String key) {
+  //   return _prefs.getBool(key) ?? false;
+  // }
+
+  // static List<String> getList(String key) {
+  //   return _prefs.getStringList(key) ?? [];
+  // }
+
+  // static Future<bool> remove(String key) async {
+  //   return await _prefs.remove(key);
+  // }
+
+  // static void clear() {
+  //   _prefs.clear();
+  // }
+  static late final Map<String, Object> _prefs;
+
+  Storage._internal();
+
+  static Future<void> init() async {
+    _prefs = <String, Object>{};
+  }
+
+  static Future<bool> setString(String key, String value) async {
+    // return await _prefs.setString(key, value);
+    _prefs[key] = value;
+    return _prefs.containsKey(key);
+  }
+
+  static Future<bool> setJson(String key, Object value) async {
+    // return await _prefs.setString(key, jsonEncode(value));
+    _prefs[key] = jsonEncode(value);
+    return _prefs.containsKey(key);
+  }
+
+  static Future<bool> setBool(String key, bool value) async {
+    // return await _prefs.setBool(key, value);
+    _prefs[key] = value;
+    return _prefs.containsKey(key);
+  }
+
+  static Future<bool> setList(String key, List<String> value) async {
+    // return await _prefs.setStringList(key, value);
+    _prefs[key] = value;
+    return _prefs.containsKey(key);
+  }
+
+  static String getString(String key) {
+    // return _prefs.getString(key) ?? '';
+    var value = _prefs[key];
+    if (value is String) {
+      return value;
+    } else {
+      return "";
+    }
+  }
+
+  static bool getBool(String key) {
+    // return _prefs.getBool(key) ?? false;
+    var value = _prefs[key];
+    if (value is bool) {
+      return value;
+    } else {
+      return false;
+    }
+  }
+
+  static List<String> getList(String key) {
+    // return _prefs.getStringList(key) ?? [];
+    var value = _prefs[key];
+    if (value is List<String>) {
+      return value;
+    } else {
+      return [];
+    }
+  }
+
+  static Future<bool> remove(String key) async {
+    // return _prefs.remove(key);
+    _prefs.remove(key);
+    return _prefs.containsKey(key);
+  }
+
+  static void clear() {
+    _prefs.clear();
+  }
+}

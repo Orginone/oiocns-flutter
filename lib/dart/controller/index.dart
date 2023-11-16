@@ -16,7 +16,6 @@ import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/dart/core/work/provider.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/setting/dialog.dart';
-import 'package:orginone/utils/event_bus.dart';
 import 'package:orginone/utils/event_bus_helper.dart';
 import 'package:orginone/utils/hive_utils.dart';
 import 'package:orginone/utils/index.dart';
@@ -130,7 +129,7 @@ class IndexController extends GetxController {
     functionMenuController = CustomPopupMenuController();
     settingMenuController = CustomPopupMenuController();
     _provider = UserProvider();
-    _userSub = XEventBus.instance.on<UserLoaded>().listen((event) async {
+    _userSub = EventBusUtil.instance.on<UserLoaded>((event) async {
       EventBusHelper.fire(ShowLoading(true));
       // await _provider.loadData();
       // EventBusHelper.fire(ShowLoading(false));

@@ -246,10 +246,10 @@ class ResultType<T> {
   });
 
   ResultType.fromJson(Map<String, dynamic> json)
-      : msg = json["msg"],
+      : msg = json["msg"] ?? '',
         data = json["data"],
-        code = json["code"],
-        success = json["success"];
+        code = json["code"] ?? 400,
+        success = json["success"] ?? false;
 
   ResultType.fromObj(ResultType resultT, T this.data)
       : msg = resultT.msg,
@@ -2003,14 +2003,14 @@ class WorkNodeModel {
     data['destName'] = destName;
     data['defineId'] = defineId;
     if (forms != null) {
-      data['forms'] = forms!.map((x) => x.toJson()).toList();
+      data['forms'] = forms?.map((x) => x.toJson()).toList();
     }
 
     if (primaryForms != null) {
-      data['primaryForms'] = forms!.map((x) => x.toJson()).toList();
+      data['primaryForms'] = forms?.map((x) => x.toJson()).toList();
     }
     if (detailForms != null) {
-      data['detailForms'] = forms!.map((x) => x.toJson()).toList();
+      data['detailForms'] = forms?.map((x) => x.toJson()).toList();
     }
     return data;
   }

@@ -20,6 +20,7 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
         todo: state.todo!,
         onSuccess: () {
           Get.back();
+          EventBusUtil().fire(LoadTodosEvent());
         });
   }
 
