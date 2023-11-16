@@ -19,7 +19,8 @@ class XObject<T extends Xbase> {
     _relations = relations;
     _objName = name;
     _methods = {};
-    kernel.subscribe(this.subMethodName, keys, (i) => _objectCallback(i));
+    kernel.subscribe(
+        this.subMethodName, keys, (i) => _objectCallback(Res.fromJson(i)));
   }
 
   dynamic get cache {
@@ -134,12 +135,12 @@ class XObject<T extends Xbase> {
         return this.cache();
       }
       var paths = path.split('.');
-      var prop = paths[0];
+      var prop = paths;
       paths.removeAt(0);
-      var value = this.cache();
-      while (value != null && (prop != '' && (prop != ''))) {
+      var value = this.cache;
+      while (value != null && prop != '') {
         value = value[prop];
-        if (paths.isEmpty) {
+        if (paths.length > 1) {
           value[prop] = data;
         }
       }
@@ -188,4 +189,8 @@ class Res {
   late dynamic data;
 
   Res({required this.flag, this.data});
+
+  Res.fromJson(Map<String, dynamic> json)
+      : flag = json['flag'] ?? '',
+        data = json['data'];
 }

@@ -31,7 +31,7 @@ class MessageItemWidget extends GetView<IndexController> {
     bool isTop = chat.chatdata.labels.contains("置顶");
     return GestureDetector(
       onTap: () {
-        chat.onMessage((messages) => null);
+        chat.onMessage((messages) => print('>>>$messages'));
         Get.toNamed(
           Routers.messageChat,
           arguments: chat,

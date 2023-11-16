@@ -328,8 +328,10 @@ class XCollection<T extends Xbase> {
     return res.success;
   }
 
-  void subscribe(List<String> keys, Function callback, {String? id}) {
+  void subscribe(
+      List<String> keys, Function(Map<String, dynamic> dynamic) callback,
+      [String? id]) {
     kernel.subscribe(
-        subMethodName(id: id), keys, (data) => callback.call(data));
+        subMethodName(id: id), keys, callback); //(data) => callback.call(data)
   }
 }

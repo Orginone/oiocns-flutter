@@ -118,7 +118,6 @@ class Session extends Entity<XEntity> implements ISession {
     members = <XTarget>[].obs;
     messages = <IMessage>[].obs;
     activity = Activity(metadata, this);
-    subscribeOperations();
     if (id != userId) {
       loadCacheChatData();
     }
@@ -288,6 +287,12 @@ class Session extends Entity<XEntity> implements ISession {
     if (cite != null) {
       cite.metadata.comments = [];
     }
+    print(
+        '>>>==========================================================================');
+    print(
+        '>>>KEY:$key ID:$id hashCode:$hashCode belong:$belongId target:${target.id} name:$name');
+    print(
+        '>>>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
     // var createTime = DateTime.now().format(format: 'yyyy-MM-dd HH:mm:ss.SSS');
     var data = await coll.insert(
       ChatMessageType.fromJson({
@@ -385,34 +390,16 @@ class Session extends Entity<XEntity> implements ISession {
     return false;
   }
 
-  Future<void> subscribeOperations() async {
-    if (isGroup) {
-      coll.subscribe(
-        [key],
-        ({required String operate, required List<ChatMessageType> data}) {
-          data.map((item) => receiveMessage(operate, item));
-        },
-      );
-    } else {
-      coll.subscribe(
-        [key],
-        ({required String operate, required List<ChatMessageType> data}) {
-          for (var item in data) {
-            if ([item.fromId, item.toId].contains(sessionId) &&
-                [item.fromId, item.toId].contains(userId)) {
-              receiveMessage(operate, item);
-            }
-          }
-        },
-        id: sessionId,
-      );
-    }
-  }
-
   void receiveMessage(String operate, ChatMessageType data) {
     var imsg = Message(data, this);
+    print(
+        '>>>==========================================================================');
+    print(
+        '>>>KEY:$key ID:$id hashCode:$hashCode belong:$belongId target:${target.id} name:$name');
+    print(
+        '>>>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
     if (operate == 'insert') {
-      messages.add(imsg);
+      messages.insert(0, imsg);
       if (messageNotify == null) {
         chatdata.noReadCount += imsg.isMySend ? 0 : 1;
         if (!chatdata.mentionMe) {
@@ -440,10 +427,10 @@ class Session extends Entity<XEntity> implements ISession {
     bool onlineOnly = true,
   ]) async {
     return await coll.notity(
-      ChatMessageType.fromJson({
+      {
         "data": data,
         "operate": operate,
-      }),
+      },
       ignoreSelf: false,
       targetId: sessionId,
       onlyTarget: true,
@@ -465,6 +452,7 @@ class Session extends Entity<XEntity> implements ISession {
         command.emitterFlag(flag: 'session');
       }
     });
+    _subscribeMessage();
   }
 
   @override
@@ -480,6 +468,63 @@ class Session extends Entity<XEntity> implements ISession {
     }
     return success;
   }
+
+  void _subscribeMessage() {
+    print(
+        '>>>--==========================================================================');
+    print(
+        '>>>--KEY:$key ID:$id hashCode:$hashCode isGroup:$isGroup belong:$belongId target:${target.id} name:$name');
+    print(
+        '>>>--^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+    if (isGroup) {
+      coll.subscribe(
+        [key],
+        (res) => {
+          res['data'].forEach((item) =>
+              receiveMessage(res['operate'], ChatMessageType.fromJson(item)))
+        },
+      );
+    } else {
+      coll.subscribe(
+        [key],
+        (res) => {
+          res['data'].forEach((item) => {
+                if ([item.fromId, item.toId].contains(sessionId) &&
+                    [item.fromId, item.toId].contains(userId))
+                  {
+                    receiveMessage(
+                        res['operate'], ChatMessageType.fromJson(item))
+                  }
+              })
+        },
+        sessionId,
+      );
+    }
+  }
+
+  // Future<void> subscribeOperations() async {
+  //   if (isGroup) {
+  //     coll.subscribe(
+  //       [key],
+  //       ({required String operate, required List<ChatMessageType> data}) {
+  //         data.map((item) => receiveMessage(operate, item));
+  //       },
+  //     );
+  //   } else {
+  //     coll.subscribe(
+  //       [key],
+  //       ({required String operate, required List<ChatMessageType> data}) {
+  //         for (var item in data) {
+  //           if ([item.fromId, item.toId].contains(sessionId) &&
+  //               [item.fromId, item.toId].contains(userId)) {
+  //             receiveMessage(operate, item);
+  //           }
+  //         }
+  //       },
+  //       sessionId,
+  //     );
+  //   }
+  // }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

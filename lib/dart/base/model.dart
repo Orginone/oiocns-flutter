@@ -120,6 +120,19 @@ class DataNotityType {
     required this.onlineOnly,
     this.subTargetId,
   });
+  DataNotityType.fromJson(Map<String, dynamic> json)
+      : data = json['data'],
+        targetId = json['targetId'],
+        ignoreSelf = json['ignoreSelf'] ?? false,
+        ignoreConnectionId = json['ignoreConnectionId'],
+        flag = json['flag'],
+        relations =
+            null != json['relations'] ? json['relations'].cast<String>() : [],
+        belongId = json['belongId'],
+        onlyTarget = json['onlyTarget'],
+        onlineOnly = json['onlineOnly'],
+        subTargetId = json['subTargetId'];
+
   Map<String, dynamic> toJson() {
     return {
       'data': data,
@@ -227,16 +240,16 @@ class LoadResult<T> {
 /// 统一返回结构模型
 class ResultType<T> {
   // 代码，成功为200
-  final int code;
+  late final int code;
 
   // 数据
   T? data;
 
   // 消息
-  final String msg;
+  late final String msg;
 
   // 是否成功标志
-  final bool success;
+  late final bool success;
 
   ResultType({
     required this.code,
@@ -257,13 +270,18 @@ class ResultType<T> {
         code = resultT.code;
 
   ResultType.fromJsonSerialize(
-      ResultType<dynamic> json, T Function(Map<String, dynamic>) serialize)
-      : msg = json.msg ?? "",
-        data = (json.data != null && json.data is List)
-            ? Lists.fromList(json.data!, (data) => serialize(data)) as T
-            : serialize(json.data),
-        code = json.code ?? 400,
-        success = json.success ?? false;
+      ResultType<dynamic> json, T Function(Map<String, dynamic>) serialize) {
+    msg = json.msg ?? "";
+    if (json.data != null) {
+      if (json.data is List) {
+        data = Lists.fromList(json.data!, (data) => serialize(data)) as T;
+      } else {
+        data = serialize(json.data);
+      }
+    }
+    code = json.code ?? 400;
+    success = json.success ?? false;
+  }
 
   Map<String, dynamic> toJson() {
     return {

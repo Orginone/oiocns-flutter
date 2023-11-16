@@ -201,17 +201,17 @@ class Activity extends Entity<XTarget> implements IActivity {
   }
 
   subscribeNotify() {
-    coll.subscribe([key], ({required bool update, required ActivityType data}) {
-      if (update) {
-        var index = activityList.indexWhere((i) => i.id == data.id);
-        if (index > -1) {
-          activityList[index].update(data);
-        }
-      } else {
-        activityList = [ActivityMessage(data, this), ...activityList];
-        changCallback();
-      }
-    });
+    // coll.subscribe([key], ({required bool update, required ActivityType data}) {
+    //   if (update) {
+    //     var index = activityList.indexWhere((i) => i.id == data.id);
+    //     if (index > -1) {
+    //       activityList[index].update(data);
+    //     }
+    //   } else {
+    //     activityList = [ActivityMessage(data, this), ...activityList];
+    //     changCallback();
+    //   }
+    // });
   }
 
   @override

@@ -172,7 +172,7 @@ class DirectoryOperate implements IDirectoryOperate {
     XCollection<T> coll,
     StandardFileInfo<T> Function(T data, IDirectory dir) create,
   ) {
-    coll.subscribe([directory.key], (Map a) async {
+    coll.subscribe([directory.key], (a) async {
       String operate = a['operate'];
       List<T> data = a['data'];
       for (var s in data) {

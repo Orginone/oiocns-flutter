@@ -29,7 +29,7 @@ class KernelApi {
   // 订阅方法
   final Map<String, List<Function>> _methods;
   // 订阅方法
-  final Map<String, List> _subMethods;
+  final Map<String, List<Map<String, dynamic>>> _subMethods;
 
   // 上下线提醒
   final Emitter onlineNotify = Emitter(); //////
@@ -798,8 +798,8 @@ class KernelApi {
         belongId: belongId,
         relations: relations,
         params: {
-          key,
-          setData,
+          "key": key,
+          "setData": setData,
         },
       ),
     );
@@ -1139,9 +1139,9 @@ class KernelApi {
       // ToastUtils.showMsg(msg: raw.msg);
     }
     if (null != raw.data && null != cvt) {
-      return ResultType.fromJsonSerialize(raw, cvt);
+      return ResultType<T>.fromJsonSerialize(raw, cvt);
     } else {
-      return raw;
+      return ResultType<T>.fromJsonSerialize(raw, (data) => raw.data);
     }
   }
 
@@ -1257,13 +1257,13 @@ class KernelApi {
   void subscribe(
     String flag,
     List<String> keys,
-    Function(dynamic) operation, //部分代码又用到dynamic，我先改了
+    Function(Map<String, dynamic> data) operation, //部分代码又用到dynamic，我先改了
   ) {
     if (flag.isEmpty || keys.isEmpty) {
       return;
     }
     flag = flag.toLowerCase();
-    if (_subMethods[flag] != null) {
+    if (_subMethods[flag] == null) {
       _subMethods[flag] = [];
     }
     _subMethods[flag]?.add({
@@ -1322,22 +1322,35 @@ class KernelApi {
 
   /// 接收服务端消息
   _receive(List<dynamic>? params) {
-    if (params == null) {
+    if (params == null || params.isEmpty) {
       return;
     }
     Map<String, dynamic> param = params[0];
     ReceiveType res = ReceiveType.fromJson(param);
     bool onlineOnly = true;
-    if (res.target == 'DataNotify') {
-      DataNotityType data = res.data;
-      if (data.ignoreConnectionId == _storeHub.connectionId) {
-        return;
-      }
-      res.target = '${data.belongId}-${data.targetId}-${data.flag}';
-      res.data = data.data;
-      onlineOnly = data.onlineOnly;
-    }
     switch (res.target) {
+      case 'DataNotify':
+        {
+          DataNotityType data = DataNotityType.fromJson(res.data);
+          if (data.ignoreConnectionId == _storeHub.connectionId) {
+            return;
+          }
+          var flag =
+              '${data.belongId}-${data.targetId}-${data.flag}'.toLowerCase();
+          var methods = _subMethods[flag];
+          if (null != methods) {
+            try {
+              for (var m in methods) {
+                m['operation'].call(data.data);
+              }
+            } catch (e) {
+              logger.warning(e as Error);
+            }
+          } else {
+            onlineOnly = data.onlineOnly;
+          }
+        }
+        break;
       case 'Online':
       case 'Outline':
         {
@@ -1371,11 +1384,12 @@ class KernelApi {
             } catch (e) {
               logger.warning(e as Error);
             }
-          } else if (!onlineOnly) {
-            var data = _cacheData[res.target.toLowerCase()] ?? {};
-            _cacheData[res.target.toLowerCase()] = [...data, res.data];
           }
         }
+    }
+    if (!onlineOnly) {
+      var data = _cacheData[res.target.toLowerCase()] ?? {};
+      _cacheData[res.target.toLowerCase()] = [...data, res.data];
     }
   }
 

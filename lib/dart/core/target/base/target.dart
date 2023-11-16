@@ -245,10 +245,10 @@ abstract class Target extends Team implements ITarget {
   //   throw Error();
   // }
 
-  @override
-  Future<ITeam?> createTarget(TargetModel data) async {
-    return null;
-  }
+  // @override
+  // Future<ITeam?> createTarget(TargetModel data) async {
+  //   return null;
+  // }
 
   @override
   Future<void> notifySession(bool pull, List<XTarget> member) async {

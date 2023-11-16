@@ -178,7 +178,8 @@ class StoreHub {
         //   ToastUtils.showMsg(msg: "后端异常${res['code']}：${res['msg']}");
         // }
         if (res['code'] == 401) {
-          ToastUtils.showMsg(msg: "登录已过期,请重新登录");
+          // ToastUtils.showMsg(msg: "登录已过期,请重新登录");
+          print('登录已过期,请重新登录');
           await restart();
           res = await invoke(methodName, args: args, retry: !retry!);
           // settingCtrl.exitLogin(cleanUserLoginInfo: false);

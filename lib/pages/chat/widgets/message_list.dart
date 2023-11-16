@@ -18,6 +18,7 @@ class MessageList extends StatelessWidget {
   ISession get chat => controller.state.chat;
   @override
   Widget build(BuildContext context) {
+    print('>>>currentHashCode:${chat.hashCode}');
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         if (notification is ScrollStartNotification) {

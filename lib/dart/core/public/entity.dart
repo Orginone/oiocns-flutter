@@ -2,6 +2,7 @@ import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/main.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../base/model.dart';
 import '../../base/schema.dart';
@@ -11,9 +12,9 @@ Map<String, dynamic> shareIdSet = <String, dynamic>{};
 abstract class IEntity<T> extends Emitter {
   //实体唯一键
   late String key;
-  // //唯一标识
-  // @override
-  // late String id;
+  //唯一标识
+  @override
+  late String id;
   //实体名称
   late String name;
   //实体编号
@@ -53,7 +54,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
   late String key;
 
   Entity(T metadata) : super() {
-    this.key = super.id;
+    this.key = const Uuid().v1();
     _metadata = metadata;
     shareIdSet[_metadata.id] = _metadata;
   }

@@ -49,8 +49,11 @@ abstract class Belong extends Target implements IBelong {
             space: null, user: user, memberTypes: memberTypes) {
     memberTypes = [TargetType.person];
 
-    kernel.subscribe('${metadata.belongId}-${metadata.id}-authority', [key],
-        (data) => superAuth?.receiveAuthority(data)); ///////
+    kernel.subscribe(
+        '${metadata.belongId}-${metadata.id}-authority',
+        [key],
+        (data) => superAuth
+            ?.receiveAuthority(AuthorityOperateModel.fromJson(data))); ///////
 
     // speciesTypes = [SpeciesType.store, SpeciesType.dict];
     // message = ChatMessage(this);
