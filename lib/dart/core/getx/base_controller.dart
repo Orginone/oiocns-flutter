@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
-import 'package:orginone/utils/event_bus_helper.dart';
+import 'package:orginone/utils/bus/event_bus_helper.dart';
 
 import 'base_get_state.dart';
 

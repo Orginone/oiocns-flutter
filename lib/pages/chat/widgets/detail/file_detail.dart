@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/common/routers/index.dart';
@@ -14,8 +16,9 @@ import 'shadow_widget.dart';
 
 class FileDetail extends BaseDetail {
   final bool showShadow;
+  late final model.FileItemShare msgBody;
 
-  const FileDetail(
+  FileDetail(
       {super.key,
       this.showShadow = false,
       required super.isSelf,
@@ -25,11 +28,13 @@ class FileDetail extends BaseDetail {
       super.padding = EdgeInsets.zero,
       super.bgColor,
       super.isReply = false,
-      super.chat});
+      super.chat}) {
+    msgBody = model.FileItemShare.fromJson(jsonDecode(message.msgBody));
+  }
 
   @override
   Widget build(BuildContext context) {
-    String extension = message.body?.extension ?? '';
+    String extension = msgBody.extension ?? '';
     if (imageExtension.contains(extension.toLowerCase())) {
       return ImageDetail(
         isSelf: isSelf,
@@ -59,7 +64,7 @@ class FileDetail extends BaseDetail {
               children: [
                 Expanded(
                   child: Text(
-                    message.body?.name ?? "",
+                    msgBody.name ?? "",
                     style: XFonts.size20Black0,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
@@ -69,7 +74,7 @@ class FileDetail extends BaseDetail {
                   height: 5.h,
                 ),
                 Text(
-                  getFileSizeString(bytes: message.body?.size ?? 0),
+                  getFileSizeString(bytes: msgBody.size ?? 0),
                   style: XFonts.size16Black9,
                 ),
               ],
@@ -90,7 +95,6 @@ class FileDetail extends BaseDetail {
 
   @override
   void onTap(BuildContext context) {
-    RoutePages.jumpFile(
-        file: model.FileItemShare.fromJson(message.body!.toJson()));
+    RoutePages.jumpFile(file: model.FileItemShare.fromJson(msgBody.toJson()));
   }
 }

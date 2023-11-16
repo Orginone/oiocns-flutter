@@ -8,7 +8,8 @@ import 'package:orginone/utils/string_util.dart';
 import 'package:orginone/config/unified.dart';
 
 class VoiceDetail extends BaseDetail {
-  VoiceDetail({
+  const VoiceDetail({
+    super.key,
     required super.isSelf,
     required super.message,
     super.clipBehavior = Clip.hardEdge,
@@ -25,7 +26,8 @@ class VoiceDetail extends BaseDetail {
 
   @override
   Widget body(BuildContext context) {
-    playCtrl.putPlayerStatusIfAbsent(message);
+    // TODO 视频处理
+    // playCtrl.putPlayerStatusIfAbsent(message);
     var seconds = voicePlay.initProgress ~/ 1000;
     seconds = seconds > 60 ? 60 : seconds;
     return Wrap(

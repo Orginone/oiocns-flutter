@@ -37,7 +37,7 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
   Future<String> _buildField(FieldModel field, dynamic value) async {
     if (field.field.type == "input") {
       field.field.controller!.text = (value ?? "").toString();
-      return value ?? "";
+      return value.toString() ?? "";
     } else {
       switch (field.field.type) {
         case "selectPerson":

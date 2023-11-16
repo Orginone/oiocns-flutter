@@ -25,9 +25,8 @@ import 'package:orginone/dart/core/public/enums.dart';
 
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
-import 'package:orginone/utils/event_bus_helper.dart';
+import 'package:orginone/utils/bus/event_bus_helper.dart';
 import 'package:orginone/utils/permission_util.dart';
-import 'package:orginone/utils/string_util.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/components/widgets/target_text.dart';
 import 'package:orginone/config/unified.dart';
@@ -189,8 +188,8 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
             if (controller.reply.value == null) {
               return const SizedBox();
             }
-            String showTxt =
-                StringUtil.msgConversion(controller.reply.value!, '');
+            String showTxt = '';
+            // StringUtil.msgConversion(controller.reply.value!, '');
             List<InlineSpan> span = [
               TextSpan(
                 text: showTxt,

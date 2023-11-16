@@ -11,9 +11,9 @@ Map<String, dynamic> shareIdSet = <String, dynamic>{};
 abstract class IEntity<T> extends Emitter {
   //实体唯一键
   late String key;
-  //唯一标识
-  @override
-  late String id;
+  // //唯一标识
+  // @override
+  // late String id;
   //实体名称
   late String name;
   //实体编号

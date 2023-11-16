@@ -3,6 +3,8 @@ import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:get/get.dart';
+
 const sizeUnits = ['', 'KB', 'MB', 'GB', 'TB', 'PB'];
 
 /// 格式化大小
@@ -54,12 +56,12 @@ class StringGzip {
   static String inflate(String input) {
     if (input.startsWith('^!:')) {
       try {
-        input = base64
-            .decode(input.substring(8, input.length - 5).replaceAll('*', '='))
-            .toString();
-        final output = utf8.decode(gzip.decode(input.codeUnits));
+        List<int> convertedBytes = base64
+            .decode(input.substring(8, input.length - 5).replaceAll('*', '='));
+        final output = utf8.decode(gzip.decode(convertedBytes));
         return Uri.decodeComponent(output);
       } catch (err) {
+        err.printError();
         return input;
       }
     }
@@ -71,7 +73,10 @@ class StringGzip {
     input = Uri.encodeComponent(input);
     final output =
         base64.encode(gzip.encode(utf8.encode(input))).replaceAll('=', '*');
-    return '^!:${randomStr(5)}$output${randomStr(5)}';
+    var endStr = randomStr(5);
+    String str = '^!:${randomStr(5)}$output${randomStr(5)}';
+    print(str);
+    return str;
   }
 
   /// 生成随机字符串
@@ -81,7 +86,7 @@ class StringGzip {
     const maxPos = chars.length;
     var str = '';
     for (var i = 0; i < len; ++i) {
-      str += chars[chars.codeUnitAt((Random().nextDouble() * maxPos).floor())];
+      str += chars[(Random().nextDouble() * maxPos).floor()];
     }
     return str;
   }

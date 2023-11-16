@@ -3,8 +3,6 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/main.dart';
-import 'package:orginone/utils/logger.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/loading_dialog.dart';
 import 'package:signalr_netcore/signalr_client.dart';
@@ -58,9 +56,12 @@ class StoreHub {
           msg: "正在重新连接服务器", dismissSeconds: -1);
     });
     _connection.onreconnected(({connectionId}) {
-      kernel.restart();
+      // kernel.restart();
       Future.delayed(const Duration(microseconds: 500), () {
         LoadingDialog.dismiss(Get.context!);
+        if (_connection.state == HubConnectionState.Connected) {
+          _isStarted = true;
+        }
       });
     });
   }
@@ -100,11 +101,11 @@ class StoreHub {
 
   /// 重新建立连接
   /// @returns {void} 无返回值
-  void restart() {
+  Future<void> restart() async {
     if (isConnected) {
       _isStarted = false;
       _connection.stop();
-      _connection.stop().then((_) {
+      await _connection.stop().then((_) {
         _starting();
       });
     } else if (_connection.state != HubConnectionState.Reconnecting) {
@@ -166,29 +167,38 @@ class StoreHub {
   /// @param {string} methodName 方法名
   /// @param {any[]} args 参数
   /// @returns {Promise<ResultType>} 异步结果
-  Future<ResultType> invoke<T>(String methodName, {List<Object>? args}) async {
+  Future<ResultType> invoke<T>(String methodName,
+      {List<Object>? args, bool? retry = false}) async {
     final id = const Uuid().v1();
     Object? res;
     try {
       res = await _connection.invoke(methodName, args: args);
       if (res != null && (res is Map)) {
+        // if (res['code'] != 200) {
+        //   ToastUtils.showMsg(msg: "后端异常${res['code']}：${res['msg']}");
+        // }
         if (res['code'] == 401) {
           ToastUtils.showMsg(msg: "登录已过期,请重新登录");
-          settingCtrl.exitLogin(cleanUserLoginInfo: false);
+          await restart();
+          res = await invoke(methodName, args: args, retry: !retry!);
+          // settingCtrl.exitLogin(cleanUserLoginInfo: false);
         } else if (res['code'] == 500) {
-          ToastUtils.showMsg(msg: 'error 500 长连接已断开,正在重试');
-          Log.info('anystore断开链接,正在重试');
+          ToastUtils.showMsg(msg: "后端异常${res['code']}：${res['msg']}");
+          // ToastUtils.showMsg(msg: "后端异常：${res['msg']}");
+          // ToastUtils.showMsg(msg: 'error 500 长连接已断开,正在重试');
+          // Log.info('anystore断开链接,正在重试');
           // String token = kernel.accessToken;
           // kernel.setToken = '';
           // kernel.setToken(token);
         }
       }
-      log.info("========== storeHub-invoke-start =============$id");
-      log.info("=====>$id url: ${_connection.baseUrl}");
-      log.info("=====>$id methodName: $methodName");
-      log.info("=====>$id args: ${toJson(args)}");
-      log.info("=====>$id res: ${toJson(res)}");
-      log.info("==========$id storeHub-invoke-end =============");
+      // log.info("========== storeHub-invoke-start =============$id");
+      // log.info("=====>$id url: ${_connection.baseUrl}");
+      // log.info("=====>$id methodName: $methodName");
+      // log.info("=====>$id args: ${toJson(args)}");
+      // log.info("=====>$id res: ${toJson(res)}");
+      // log.info("==========$id storeHub-invoke-end =============");
+      print(toJson(res));
       return ResultType.fromJson(res as Map<String, dynamic>);
     } catch (err) {
       log.warning("==========$id storeHub-invoke-start =============");

@@ -29,17 +29,17 @@ class StringUtil {
     return newText;
   }
 
-  static String msgConversion(MsgSaveModel msg, String currentUserId) {
+  static String msgConversion(ChatMessageType msg, String currentUserId) {
     String showTxt = '';
-    var messageType = msg.msgType;
+    var messageType = MessageType.getType(msg.typeName);
     if (messageType == MessageType.text.label) {
-      var userIds = msg.body?.mentions ?? [];
-      if (userIds.isNotEmpty && userIds.contains(currentUserId)) {
-        showTxt = "有人@你";
-      } else {
-        showTxt = "$showTxt${msg.body?.text ?? ""}";
-        showTxt = StringUtil.imgLabelMsgConversion(showTxt);
-      }
+      // var userIds = msg.body?.mentions ?? [];
+      // if (userIds.isNotEmpty && userIds.contains(currentUserId)) {
+      //   showTxt = "有人@你";
+      // } else {
+      //   showTxt = "$showTxt${msg. ?? ""}";
+      //   showTxt = StringUtil.imgLabelMsgConversion(showTxt);
+      // }
     } else if (messageType == MessageType.recall.label) {
       showTxt = "$showTxt撤回了一条消息";
     } else if (messageType == MessageType.image.label) {

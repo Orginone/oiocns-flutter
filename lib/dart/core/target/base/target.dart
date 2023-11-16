@@ -43,8 +43,8 @@ abstract class ITarget extends IFileInfo<XTarget> with ITeam {
 
 ///用户基类实现
 abstract class Target extends Team implements ITarget {
-  Target(this.keys, this.metadata, this.relations,
-      {space, user, this.memberTypes = mTypes})
+  Target(List<String> keys, metadata, List<String> relations,
+      {space, user, memberTypes = mTypes})
       : super(keys, metadata, relations, memberTypes: memberTypes) {
     if (space != null) {
       this.space = space;
@@ -54,7 +54,8 @@ abstract class Target extends Team implements ITarget {
     if (user != null) {
       this.user = user;
     } else {
-      this.user = this as IPerson;
+      print('=======>>>$runtimeType');
+      this.user = this as IPerson?;
     }
     cache = XCache(fullId: '${metadata.belongId}_${metadata.id}');
     resource = DataResource(metadata, relations, [key]);
@@ -90,14 +91,14 @@ abstract class Target extends Team implements ITarget {
   }
 
   ///构造函数使用的参数
-  @override
-  List<String> keys = [];
-  @override
-  final XTarget metadata;
-  @override
-  List<String> relations = [];
-  @override
-  List<TargetType>? memberTypes = [];
+  // @override
+  // List<String> keys = [];
+  // @override
+  // final XTarget metadata;
+  // @override
+  // List<String> relations = [];
+  // @override
+  // List<TargetType>? memberTypes = [];
   @override
   late IPerson? user;
   @override
@@ -108,8 +109,8 @@ abstract class Target extends Team implements ITarget {
   late ISession session;
   @override
   late bool isContainer;
-  @override
-  late IDirectory directory;
+  // @override
+  // late IDirectory directory;
   @override
   late DataResource resource;
 

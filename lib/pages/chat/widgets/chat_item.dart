@@ -202,8 +202,7 @@ class MessageItemWidget extends GetView<IndexController> {
       }
 
       showTxt = showTxt +
-          StringUtil.msgConversion(
-              lastMessage as MsgSaveModel, controller.user.userId);
+          StringUtil.msgConversion(lastMessage, controller.user.userId);
 
       return Text(
         showTxt,

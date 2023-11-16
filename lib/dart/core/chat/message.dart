@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/public/enums.dart';
@@ -122,16 +124,20 @@ class Message implements IMessage {
     var txt = StringGzip.inflate(metadata.content);
     if (txt.startsWith('[obj]')) {
       var content = json.decode(txt.substring(5));
-      _msgBody = content.body;
-      mentions = content.mentions;
-      if (content.cite) {
-        cite = Message(content.cite, chat);
+      _msgBody = content['body'];
+      mentions = content['mentions'] != null && content['mentions'] is List
+          ? content['mentions'].cast<String>()
+          : content['mentions'];
+      if (content.containsKey('cite') && null != content['cite']) {
+        cite = Message(ChatMessageType.fromJson(content['cite']), chat);
       }
     } else {
       _msgBody = txt;
     }
 
-    metadata.comments.map((tag) => labels.add(MessageLabel(tag, user)));
+    for (var tag in metadata.comments) {
+      labels.add(MessageLabel(tag, user));
+    }
   }
   @override
   final ChatMessageType metadata;
@@ -253,7 +259,7 @@ class Message implements IMessage {
       case MessageType.text:
       case MessageType.notify:
       case MessageType.recall:
-        return '$header${msgBody.substring(0, 50)}';
+        return '$header${msgBody.substring(0, min(50, msgBody.length))}';
       case MessageType.voice:
         return '$header[${MessageType.voice}]';
 

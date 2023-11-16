@@ -219,7 +219,7 @@ class Transfer extends StandardFileInfo<XTransfer> implements ITransfer {
       for (var index = 0; index < match.groupCount; index++) {
         var matcher = match[index]!;
         var varName = matcher.substring(2, matcher.length - 2);
-        json = json.replaceAll(matcher, (env!.key == varName) ? varName : '');
+        json = json.replaceAll(matcher, (env![key] == varName) ? varName : '');
       }
     }
     var res = await kernel.httpForward(jsonDecode(json));

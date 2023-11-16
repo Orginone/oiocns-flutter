@@ -9,8 +9,8 @@ import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/dart/core/public/enums.dart';
+import 'package:orginone/utils/bus/event_bus_helper.dart';
 
-import 'package:orginone/utils/event_bus_helper.dart';
 import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/string_util.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
@@ -71,8 +71,7 @@ class MessageRecordsPage
                     ),
                     title: Text(snapshot.data?.name ?? ""),
                     subtitle: Text(
-                      StringUtil.msgConversion(
-                          item.metadata as MsgSaveModel, ''),
+                      StringUtil.msgConversion(item.metadata, ''),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

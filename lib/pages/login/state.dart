@@ -1,19 +1,17 @@
-
-
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 
-class LoginState extends BaseGetState{
-
+class LoginState extends BaseGetState {
   var accountLogin = true.obs;
 
   var phoneNumberLogin = false.obs;
 
-  TextEditingController accountController = TextEditingController(text: "");
+  TextEditingController accountController =
+      TextEditingController(text: "18888888866");
 
-  TextEditingController passWordController = TextEditingController(text: "");
+  TextEditingController passWordController =
+      TextEditingController(text: "Gy@2023");
 
   TextEditingController phoneNumberController = TextEditingController();
 

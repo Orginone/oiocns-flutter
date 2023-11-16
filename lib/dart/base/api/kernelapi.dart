@@ -765,20 +765,18 @@ class KernelApi {
   /// @param {string} key 对象名称（eg: rootName.person.name）
   /// @returns {model.ResultType<T>} 对象异步结果
   Future<ResultType<T>> objectGet<T>(
-    String belongId,
-    List<String> relations,
-    String key,
-  ) async {
+      String belongId, List<String> relations, String key,
+      [T Function(Map<String, dynamic>)? cvt]) async {
     return await dataProxy(
-      DataProxyType(
-        module: 'Object',
-        action: 'Get',
-        flag: key,
-        belongId: belongId,
-        relations: relations,
-        params: key,
-      ),
-    );
+        DataProxyType(
+          module: 'Object',
+          action: 'Get',
+          flag: key,
+          belongId: belongId,
+          relations: relations,
+          params: key,
+        ),
+        cvt);
   }
 
   /// 变更对象数据
@@ -833,13 +831,9 @@ class KernelApi {
   /// @param {} data 要添加的数据，对象/数组
   /// @param {string} belongId 对象所在的归属用户ID
   /// @returns {model.ResultType<T>} 对象异步结果
-  Future<ResultType<T>> collectionInsert<T>(
-    String belongId,
-    List<String> relations,
-    String collName,
-    T data,
-    String? copyId,
-  ) async {
+  Future<ResultType<T>> collectionInsert<T>(String belongId,
+      List<String> relations, String collName, T data, String? copyId,
+      [T Function(Map<String, dynamic>)? cvt]) async {
     return await dataProxy(
       DataProxyType(
         module: 'Collection',
@@ -848,8 +842,9 @@ class KernelApi {
         copyId: copyId,
         relations: relations,
         flag: collName,
-        params: {collName, data},
+        params: {"collName": collName, "data": data},
       ),
+      cvt,
     );
   }
 
@@ -858,14 +853,10 @@ class KernelApi {
   /// @param {} data 要添加的数据，对象/数组
   /// @param {string} belongId 对象所在的归属用户ID
   /// @returns {model.ResultType<T>} 对象异步结果
-  Future<ResultType<T>> collectionSetFields<T>(
-    String belongId,
-    List<String> relations,
-    String collName,
-    dynamic collSet,
-    String? copyId,
-  ) async {
-    return await dataProxy(
+  Future<ResultType<T>> collectionSetFields<T>(String belongId,
+      List<String> relations, String collName, dynamic collSet, String? copyId,
+      [T Function(Map<String, dynamic>)? fromJson]) async {
+    ResultType res = await dataProxy(
       DataProxyType(
         module: 'Collection',
         action: 'SetFields',
@@ -876,6 +867,8 @@ class KernelApi {
         params: {collName, collSet},
       ),
     );
+
+    return ResultType.fromJsonSerialize(res, fromJson!);
   }
 
   /// 替换数据集数据
@@ -956,12 +949,9 @@ class KernelApi {
   /// 查询数据集数据
   /// @param  过滤参数
   /// @returns {model.ResultType<T>} 移除异步结果
-  Future<LoadResult<List<XWorkTask>>> collectionLoad<T>(
-    String belongId,
-    List<String> relations,
-    String collName,
-    dynamic options,
-  ) async {
+  Future<LoadResult<T>> collectionLoad<T>(
+      String belongId, List<String> relations, String collName, dynamic options,
+      {T Function(Map<String, dynamic>)? fromJson}) async {
     options['belongId'] = belongId;
     ResultType res = await dataProxy(
       DataProxyType(
@@ -977,12 +967,14 @@ class KernelApi {
       ),
     );
 
-    if (res.data is Map && res.data['data'] is List<T>) {
-      res.data = res.data['data'];
+    // if (res.data is Map && res.data['data'] is List) {
+    //   res.data = res.data['data'];
+    // }
+    if (null != fromJson) {
+      return LoadResult<T>.fromJsonSerialize(res.toJson(), fromJson);
+    } else {
+      return LoadResult.fromJson(res.toJson());
     }
-    return LoadResult.fromJsonSerialize(res.toJson(), (data) {
-      return XWorkTask.fromList(data['data'] is List ? data['data'] : []);
-    });
   }
 
   /// 从数据集查询数据
@@ -1132,11 +1124,10 @@ class KernelApi {
   /// 请求一个数据核方法
   /// @param {ReqestType} reqs 请求体
   /// @returns 异步结果
-  Future<ResultType<T>> dataProxy<T>(
-    DataProxyType req,
-  ) async {
+  Future<ResultType<T>> dataProxy<T>(DataProxyType req,
+      [T Function(Map<String, dynamic>)? cvt]) async {
     dynamic raw;
-    print('dataProxy param:${req.toJson()}');
+    // print('dataProxy param:${req.toJson()}');
     if (_storeHub.isConnected) {
       raw = await _storeHub.invoke('DataProxy', args: [req]);
     } else {
@@ -1145,10 +1136,13 @@ class KernelApi {
     }
     logger.info('dataProxy raw:${raw.toString()}');
     if (!raw.success) {
-      ToastUtils.showMsg(msg: raw.msg);
+      // ToastUtils.showMsg(msg: raw.msg);
     }
-
-    return raw;
+    if (null != raw.data && null != cvt) {
+      return ResultType.fromJsonSerialize(raw, cvt);
+    } else {
+      return raw;
+    }
   }
 
   /// 数据变更通知
@@ -1163,7 +1157,7 @@ class KernelApi {
           as ResultType<bool>;
     } else {
       var res = await _restRequest('dataNotify', req.toJson());
-      return res as ResultType<bool>;
+      return ResultType.fromObj(res, res.data);
     }
   }
 
@@ -1186,12 +1180,12 @@ class KernelApi {
       [T Function(Map<String, dynamic>)? cvt]) async {
     ResultType raw;
     LogUtil.d("===> req:${req.toJson()}");
-    // if (_storeHub.isConnected) {
-    raw = await _storeHub.invoke('Request', args: [req]);
-    LogUtil.d("===> res:${req.toJson()}");
-    // } else {
-    //   raw = await _restRequest('Request', req.toJson());
-    // }
+    if (_storeHub.isConnected) {
+      raw = await _storeHub.invoke('Request', args: [req]);
+      LogUtil.d("===> res:${req.toJson()}");
+    } else {
+      raw = await _restRequest('Request', req.toJson());
+    }
     if (!raw.success) {
       ToastUtils.showMsg(msg: raw.msg);
       return ResultType<T>.fromJson({});

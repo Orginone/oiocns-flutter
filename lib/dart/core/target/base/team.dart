@@ -67,8 +67,8 @@ abstract class ITeam implements IEntity<XTarget> {
 abstract class Team extends Entity<XTarget> implements ITeam {
   //构造函数
   Team(
-    this.keys,
-    this.metadata,
+    keys,
+    metadata,
     this.relations, {
     this.memberTypes = mTypes,
   }) : super(metadata) {
@@ -77,9 +77,9 @@ abstract class Team extends Entity<XTarget> implements ITeam {
   }
 
   ///构造函数使用的参数
-  final List<String> keys;
-  @override
-  final XTarget metadata;
+  // final List<String> keys;
+  // @override
+  // final XTarget metadata;
   final List<String> relations;
   @override
   final List<TargetType>? memberTypes;
@@ -91,10 +91,10 @@ abstract class Team extends Entity<XTarget> implements ITeam {
   @override
   late IDirectory directory;
   bool _memberLoaded = false;
-  @override
-  abstract IBelong? space;
-  @override
-  abstract IPerson? user;
+  // @override
+  // abstract IBelong? space;
+  // @override
+  // abstract IPerson? user;
 
   bool get isInherited => metadata.belongId != space?.id;
 
@@ -139,7 +139,10 @@ abstract class Team extends Entity<XTarget> implements ITeam {
         for (var c in members) {
           sendTargetNotity(OperateType.add, sub: c, subTargetId: c.id);
         }
+        notifySession(true, members);
       }
+      this.members.addAll(members);
+      loadMemberChats(members, true);
     }
     return true;
   }

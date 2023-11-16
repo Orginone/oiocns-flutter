@@ -209,11 +209,11 @@ class LoadResult<T> {
         msg = json["msg"],
         success = json["success"];
 
-  LoadResult.fromJsonSerialize(
-      Map<String, dynamic> json, T Function(Map<String, dynamic>) serialize)
-      : data = (json['data'] != null && json['data'] is Map)
-            ? serialize(json['data']!)
-            : null,
+  LoadResult.fromJsonSerialize(Map<String, dynamic> json,
+      [T Function(Map<String, dynamic>)? serialize])
+      : data = (null != serialize && json['data'] != null)
+            ? serialize(json['data'])
+            : json['data'],
         groupCount = json["groupCount"] ?? 0,
         totalCount = json["totalCount"] ?? 0,
         summary = json['summary'] == null
@@ -259,9 +259,9 @@ class ResultType<T> {
   ResultType.fromJsonSerialize(
       ResultType<dynamic> json, T Function(Map<String, dynamic>) serialize)
       : msg = json.msg ?? "",
-        data = (json.data != null && json.data is Map)
-            ? serialize(json.data!)
-            : null,
+        data = (json.data != null && json.data is List)
+            ? Lists.fromList(json.data!, (data) => serialize(data)) as T
+            : serialize(json.data),
         code = json.code ?? 400,
         success = json.success ?? false;
 
@@ -1044,14 +1044,27 @@ class ChatMessageType extends Xbase {
     required super.id,
   });
   ChatMessageType.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    fromId = json['fromId'];
-    toId = json['toId'];
+    fromId = json['fromId'] ?? '';
+    toId = json['toId'] ?? '';
     sessionId = json['sessionId'] ?? '';
-    typeName = json['typeName'];
-    content = json['content'];
+    typeName = json['typeName'] ?? '';
+    content = json['content'] ?? '';
     comments = json['comments'] != null
         ? Lists.fromList(json['comments'], CommentType.fromJson)
         : [];
+  }
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      ...super.toJson(),
+      'fromId': fromId,
+      'toId': toId,
+      'sessionId': sessionId,
+      'typeName': typeName,
+      'content': content,
+      'comments': comments.map((e) => e.toJson()).toList(),
+    };
   }
 }
 
@@ -1069,6 +1082,14 @@ class CommentType {
     label = json['label'];
     userId = json['userId'];
     time = json['time'];
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'label': label,
+      'userId': userId,
+      'time': time,
+    };
   }
 }
 
@@ -2991,6 +3012,11 @@ class Environment {
     required this.name,
     required this.params,
   });
+
+  Environment.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        name = json['name'],
+        params = KeyValue.from(json['params']);
 }
 
 class Script {
@@ -3150,6 +3176,17 @@ class Node {
     this.postScripts,
     this.status,
   });
+
+  Node.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        code = json['code'],
+        name = json['name'],
+        typeName = json['typeName'],
+        preScripts = json['preScripts'],
+        postScripts = json['postScripts'],
+        status = NStatus.values.singleWhere((element) =>
+            element.label ==
+            json['status']); //NStatus.value(json['status'] as String);
 }
 
 class Edge {
@@ -3162,6 +3199,10 @@ class Edge {
     required this.start,
     required this.end,
   });
+  Edge.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        start = json['start'],
+        end = json['end'];
 }
 // 请求
 
@@ -3225,8 +3266,20 @@ class Column {
   });
 }
 
-class KeyValue {
-  String? key;
+abstract class KeyValue {
+  external factory KeyValue();
+  dynamic operator [](String? key);
+
+  void operator []=(String key, dynamic value);
+  factory KeyValue.from(Map<String, dynamic> json) {
+    Map aa = {};
+    aa['dd'] = '';
+    KeyValue result = KeyValue();
+    json.forEach((String k, dynamic v) {
+      result[k] = v;
+    });
+    return result;
+  }
 }
 
 class Shift<T, S> {
@@ -3266,10 +3319,10 @@ class XTransfer extends XStandard {
     required super.typeName,
   });
   XTransfer.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    envs = json['envs'];
+    envs = Lists.fromList(json['envs'], Environment.fromJson);
     curEnv = json['curEnv'];
-    nodes = json['nodes'];
-    edges = json['edges'];
+    nodes = Lists.fromList(json['nodes'], Node.fromJson);
+    edges = Lists.fromList(json['edges'], Edge.fromJson);
     graph = json['graph'];
     isSelfCirculation = json['isSelfCirculation'];
     judge = json['judge'];
@@ -7165,17 +7218,17 @@ class MsgSaveModel {
   });
 
   MsgSaveModel.fromJson(Map<String, dynamic> json)
-      : sessionId = json['sessionId'],
+      : sessionId = json['sessionId'] ?? '',
         belongId = json['belongId'],
-        fromId = json['fromId'],
-        msgType = json['msgType'],
-        msgBody = json['msgBody'],
+        fromId = json['fromId'] ?? '',
+        msgType = json['msgType'] ?? '',
+        msgBody = json['msgBody'] ?? '',
         createTime = json['createTime'],
         updateTime = json['updateTime'],
         id = json['id'],
         key = GlobalKey(debugLabel: json['id']),
-        toId = json['toId'],
-        showTxt = EncryptionUtil.inflate(json['msgBody']),
+        toId = json['toId'] ?? '',
+        showTxt = EncryptionUtil.inflate(json['msgBody'] ?? ''),
         allowEdit = json['allowEdit'] ?? false {
     if (json['tags'] != null) {
       tags = [];

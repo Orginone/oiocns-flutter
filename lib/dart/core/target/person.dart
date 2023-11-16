@@ -53,14 +53,14 @@ abstract class IPerson extends IBelong {
 
 //人员类型实现
 class Person extends Belong implements IPerson {
-  Person(this.metadata) : super(metadata, []) {
+  Person(metadata) : super(metadata, []) {
     cacheObj = XObject(metadata, 'target-cache', [], [key]);
 
     ///TODO:FriendsActivity类需创建
 // friendsActivity = FriendsActivity(this);
   }
-  @override
-  final XTarget metadata;
+  // @override
+  // final XTarget metadata;
   @override
   List<ICompany> companys = [];
   late IActivity friendsActivity;
@@ -137,7 +137,7 @@ class Person extends Belong implements IPerson {
         storages = [];
         companys = [];
         for (var i in res.data?.result ?? []) {
-          switch (i.typeName) {
+          switch (TargetType.getType(i.typeName)) {
             case TargetType.cohort:
               cohorts.add(Cohort(i, this, i.id));
               break;

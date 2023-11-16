@@ -66,19 +66,12 @@ class XCollection<T extends Xbase> {
     options['options'] = options['options'] ?? {};
     options['options']['match'] = options['options']['match'] ?? {};
     // options['options']['match']['isDeleted'] = false;
-    var res = await kernel.collectionLoad(
-      _target.belongId!,
-      _relations,
-      _collName,
-      options,
-    );
+    var res = await kernel.collectionLoad<List<T>>(
+        _target.belongId!, _relations, _collName, options,
+        fromJson: (data) => Lists.fromList(data['data'], (d) => cvt!(d)));
     if (res.success && res.data != null) {
       if (res.data!.isNotEmpty) {
-        if (null != cvt) {
-          return Lists.fromList(res.data!, cvt);
-        } else {
-          return res.data!.cast<T>();
-        }
+        return res.data!.cast<T>();
       } else {
         return Future(() => []);
       }
@@ -97,17 +90,13 @@ class XCollection<T extends Xbase> {
     return await loadSpace(options, cvt);
   }
 
-  Future<T?> insert(T data, {String? copyId}) async {
-    data.id = data.id ?? 'snowId()';
+  Future<T?> insert(T data,
+      {String? copyId, T Function(Map<String, dynamic>)? fromJson}) async {
+    data.id = '' != data.id ? data.id : 'snowId()';
     data.shareId = _target.id;
     data.belongId = data.belongId ?? _target.belongId;
-    var res = await kernel.collectionInsert(
-      _target.belongId!,
-      _relations,
-      _collName,
-      data,
-      copyId,
-    );
+    var res = await kernel.collectionInsert<T>(
+        _target.belongId!, _relations, _collName, data, copyId, fromJson);
     if (res.success) {
       if (res.data != null && _loaded) {
         _cache.add(res.data!);

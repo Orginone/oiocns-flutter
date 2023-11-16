@@ -47,7 +47,7 @@ class NotificationUtil {
     }
   }
 
-  static void showChatMessageNotification(MsgSaveModel msg) async {
+  static void showChatMessageNotification(ChatMessageType msg) async {
     ShareIcon share = settingCtrl.user.findShareById(msg.fromId);
     showMsgNotification("${share.name}发来一条消息",
         StringUtil.msgConversion(msg, settingCtrl.user.id));

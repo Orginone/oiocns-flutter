@@ -34,7 +34,7 @@ class Xbase {
     status = json['status'];
     createUser = json['createUser'];
     updateUser = json['updateUser'];
-    version = json['version'].toString();
+    version = null != json['version'] ? json['version'].toString() : null;
     createTime = json['createTime'];
     updateTime = json['updateTime'];
     shareId = json['shareId'];
@@ -42,17 +42,32 @@ class Xbase {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'status': status,
-      'createUser': createUser,
-      'updateUser': updateUser,
-      'version': version,
-      'createTime': createTime,
-      'updateTime': updateTime,
-      'shareId': shareId,
-      'belongId': belongId,
-    };
+    // 用于兼容数据核空数据异常返回问题
+    Map<String, dynamic> map = <String, dynamic>{};
+    map['id'] = id;
+    map['shareId'] = shareId;
+    map['belongId'] = belongId;
+
+    if (null != createUser) {
+      map['createUser'] = createUser;
+    }
+    if (null != updateUser) {
+      map['updateUser'] = updateUser;
+    }
+    if (null != version) {
+      map['version'] = version;
+    }
+    if (null != createTime) {
+      map['createTime'] = createTime;
+    }
+    if (null != updateTime) {
+      map['updateTime'] = updateTime;
+    }
+    if (null != status) {
+      map['status'] = status;
+    }
+
+    return map;
   }
 }
 

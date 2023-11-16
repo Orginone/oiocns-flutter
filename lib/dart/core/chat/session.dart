@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/common/format.dart';
@@ -44,13 +45,13 @@ abstract class ISession extends IEntity<XEntity> {
   late String information;
 
   /// 会话的历史消息
-  late List<IMessage> messages;
+  late RxList<IMessage> messages;
 
   /// 是否为群会话
   late bool isGroup;
 
   /// 会话的成员
-  late List<XTarget> members;
+  late RxList<XTarget> members;
 
   /// 会话动态
   late IActivity activity;
@@ -114,6 +115,8 @@ class Session extends Entity<XEntity> implements ISession {
       labels: id == userId ? ['本人'] : tags ?? [],
       lastMessage: null,
     );
+    members = <XTarget>[].obs;
+    messages = <IMessage>[].obs;
     activity = Activity(metadata, this);
     subscribeOperations();
     if (id != userId) {
@@ -130,22 +133,31 @@ class Session extends Entity<XEntity> implements ISession {
 
   List<String>? tags;
 
+  /// 消息类会话元数据
   @override
   late MsgChatData chatdata;
+
+  /// 会话的历史消息
+  @override
+  late RxList<IMessage> messages;
+
+  /// 会话的成员
+  @override
+  late RxList<XTarget> members;
   @override
   late IActivity activity;
-  @override
-  List<IMessage> messages = [];
+  // @override
+  // RxList<IMessage> messages = [];
   Function(List<IMessage> messages)? messageNotify;
 
   XCollection<ChatMessageType> get coll {
     return target.resource.messageColl;
   }
 
-  @override
-  List<XTarget> get members {
-    return isGroup ? target.members : [];
-  }
+  // @override
+  // List<XTarget> get members {
+  //   return isGroup ? target.members : [];
+  // }
 
   @override
   bool get isGroup {
@@ -154,7 +166,7 @@ class Session extends Entity<XEntity> implements ISession {
 
   dynamic get sessionMatch {
     return isGroup
-        ? {"toId": sessionId}
+        ? {"toId": sessionId, "isDeleted": false}
         : {
             "_or_": [
               {"fromId": sessionId, "toId": userId},
@@ -181,6 +193,15 @@ class Session extends Entity<XEntity> implements ISession {
   bool get isFriend {
     return (metadata.typeName != TargetType.person.label ||
         target.user!.members.any((i) => i.id == sessionId));
+  }
+
+  @override
+  String get remark {
+    if (null != chatdata.lastMessage) {
+      var msg = Message(chatdata.lastMessage!, this);
+      return msg.msgTitle;
+    }
+    return metadata.remark!.substring(0, 60);
   }
 
   String? get copyId {
@@ -219,10 +240,10 @@ class Session extends Entity<XEntity> implements ISession {
           "createTime": -1,
         },
       },
-    });
+    }, ChatMessageType.fromJson);
     if (data.isNotEmpty) {
       for (var msg in data) {
-        messages.insert(0, Message(msg, this));
+        messages.add(Message(msg, this));
       }
       if (chatdata.lastMsgTime == nullTime) {
         chatdata.lastMsgTime =
@@ -241,7 +262,7 @@ class Session extends Entity<XEntity> implements ISession {
   @override
   void onMessage(Function(List<IMessage> messages)? callback) {
     messageNotify = callback;
-    moreMessage().then(() async {
+    moreMessage().then((e) async {
       var ids = messages.where((i) => !i.isReaded).map((i) => i.id).toList();
       if (ids.isNotEmpty) {
         tagMessage(ids, '已读');
@@ -253,7 +274,7 @@ class Session extends Entity<XEntity> implements ISession {
       }
       msgChatNotify.changCallback();
       messageNotify?.call(messages);
-    } as FutureOr Function(int value));
+    });
   }
 
   @override
@@ -267,20 +288,27 @@ class Session extends Entity<XEntity> implements ISession {
     if (cite != null) {
       cite.metadata.comments = [];
     }
+    // var createTime = DateTime.now().format(format: 'yyyy-MM-dd HH:mm:ss.SSS');
     var data = await coll.insert(
-      {
-        "typeName": type,
+      ChatMessageType.fromJson({
+        "typeName": type.label,
         "fromId": userId,
         "toId": sessionId,
         "comments": [],
+        // "createTime": createTime,
+        // "updateTime": createTime,
+        // "createUser": userId,
+        // "updateUser": userId,
+        // "status": 1,
         "content": StringGzip.deflate(
           '[obj]${json.encode({
                 "body": text,
-                mentions: mentions,
-                cite: cite?.metadata,
+                "mentions": mentions,
+                "cite": cite?.metadata,
               })}',
         ),
-      } as ChatMessageType,
+      }),
+      fromJson: ChatMessageType.fromJson,
     );
     if (data != null) {
       await notify('insert', [data], false);
@@ -347,7 +375,7 @@ class Session extends Entity<XEntity> implements ISession {
     if (canDeleteMessage) {
       var success = await coll.deleteMatch(sessionMatch);
       if (success) {
-        messages = [];
+        messages.clear();
         chatdata.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
         messageNotify?.call(messages);
         sendMessage(MessageType.notify, '${target.user?.name} 清空了消息', []);
@@ -412,10 +440,10 @@ class Session extends Entity<XEntity> implements ISession {
     bool onlineOnly = true,
   ]) async {
     return await coll.notity(
-      {
+      ChatMessageType.fromJson({
         "data": data,
         "operate": operate,
-      } as ChatMessageType,
+      }),
       ignoreSelf: false,
       targetId: sessionId,
       onlyTarget: true,

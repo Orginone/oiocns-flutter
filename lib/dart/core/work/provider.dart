@@ -7,6 +7,7 @@ import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/utils/index.dart';
 
 import 'task.dart';
 
@@ -127,6 +128,11 @@ class WorkProvider implements IWorkProvider {
         },
         'skip': skip,
         'take': 30,
+      },
+      fromJson: (data) {
+        LogUtil.d(data);
+        // return [];
+        return XWorkTask.fromList(data['data'] is List ? data['data'] : []);
       },
     );
     if (result.success && result.data != null && result.data!.isNotEmpty) {

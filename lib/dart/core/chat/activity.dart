@@ -119,7 +119,7 @@ abstract class IActivity extends IEntity<XTarget> {
   );
 
   /// 加载动态
-  Future<List<IActivityMessage>> load(int take, String? beforeTime);
+  Future<List<IActivityMessage>> load(int take, [String? beforeTime]);
 }
 
 /// 动态实现

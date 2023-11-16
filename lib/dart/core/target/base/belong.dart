@@ -9,7 +9,6 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/outTeam/cohort.dart';
 import 'package:orginone/dart/core/target/outTeam/storage.dart';
-import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main.dart';
 
 abstract class IBelong extends ITarget {
@@ -42,10 +41,10 @@ abstract class IBelong extends ITarget {
 abstract class Belong extends Target implements IBelong {
   ///构造函数
   Belong(
-    this.metadata,
-    this.relations, {
-    this.user,
-    this.memberTypes = mTypes,
+    metadata,
+    List<String> relations, {
+    user,
+    memberTypes = mTypes,
   }) : super([], metadata, relations,
             space: null, user: user, memberTypes: memberTypes) {
     memberTypes = [TargetType.person];
@@ -57,17 +56,17 @@ abstract class Belong extends Target implements IBelong {
     // message = ChatMessage(this);
   }
 
-  @override
-  final XTarget metadata;
-  @override
-  List<String> relations = [];
-  @override
-  final IPerson? user;
-  @override
-  List<TargetType>? memberTypes = [];
+  // @override
+  // final XTarget metadata;
+  // @override
+  // List<String> relations = [];
+  // @override
+  // final IPerson? user;
+  // @override
+  // List<TargetType>? memberTypes = [];
 
-  @override
-  IBelong? space;
+  // @override
+  // IBelong? space;
   @override
   List<ICohort> cohorts = [];
 

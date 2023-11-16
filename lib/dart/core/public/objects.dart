@@ -46,11 +46,8 @@ class XObject<T extends Xbase> {
   Future<dynamic> all() async {
     var kernel = KernelApi();
     if (!this._loaded) {
-      var res = await kernel.objectGet(
-        this._target.belongId!,
-        this._relations,
-        this._objName,
-      );
+      var res = await kernel.objectGet(this._target.belongId!, this._relations,
+          this._objName, (data) => data);
       if (res.success) {
         this._cache = res.data;
         this._loaded = true;

@@ -19,7 +19,7 @@ import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
-import 'package:orginone/utils/event_bus_helper.dart';
+import 'package:orginone/utils/bus/event_bus_helper.dart';
 import 'package:orginone/utils/string_util.dart';
 import 'package:orginone/components/widgets/target_text.dart';
 import 'package:orginone/config/unified.dart';
@@ -29,7 +29,6 @@ import 'chat_box.dart';
 import 'detail/file_detail.dart';
 import 'detail/image_detail.dart';
 import 'detail/text_detail.dart';
-import 'detail/uploading_detail.dart';
 import 'detail/voice_detail.dart';
 
 enum Direction { leftStart, rightStart }
@@ -81,7 +80,7 @@ class DetailItemWidget extends GetView<IndexController> {
       id = msg.metadata.fromId;
       if (chat.share.typeName == TargetType.person.label) {
         shareIcon = chat.share;
-      } else {
+      } else if (chat.members.isNotEmpty) {
         target = chat.members.firstWhere((element) => element.id == id);
         shareIcon = target.shareIcon();
       }
@@ -356,29 +355,32 @@ class DetailItemWidget extends GetView<IndexController> {
     if (msg.msgType == MessageType.text.label) {
       body = TextDetail(
         isSelf: isSelf,
-        message: msg.metadata as MsgSaveModel,
+        message: msg,
       );
     } else if (msg.msgType == MessageType.image.label) {
       body = ImageDetail(
         isSelf: isSelf,
-        message: msg.metadata as MsgSaveModel,
+        message: msg,
       );
     } else if (msg.msgType == MessageType.voice.label) {
       body = VoiceDetail(
         isSelf: isSelf,
-        message: msg.metadata as MsgSaveModel,
+        message: msg,
       );
     } else if (msg.msgType == MessageType.file.label) {
       body = FileDetail(
         isSelf: isSelf,
-        message: msg.metadata as MsgSaveModel,
+        message: msg,
       );
-    } else if (msg.msgType == MessageType.uploading.label) {
+    }
+    // TODO 待实现上传中
+    /*else if (msg.msgType == MessageType.uploading.label) {
       body = UploadingDetail(
         isSelf: isSelf,
-        message: msg.metadata as MsgSaveModel,
+        message: msg.metadata,
       );
-    } else {
+    }*/
+    else {
       body = Container();
     }
 
@@ -390,28 +392,28 @@ class DetailItemWidget extends GetView<IndexController> {
     if (msg.cite?.msgType == MessageType.text.label) {
       body = TextDetail(
         isSelf: isSelf,
-        message: msg.cite as MsgSaveModel,
+        message: msg.cite!,
         bgColor: Colors.black.withOpacity(0.1),
         isReply: true,
         chat: chat,
       );
     } else if (msg.cite?.msgType == MessageType.image.label) {
       body = ImageDetail(
-        message: msg.cite! as MsgSaveModel,
+        message: msg.cite!,
         bgColor: Colors.black.withOpacity(0.1),
         isSelf: isSelf,
         chat: chat,
       );
     } else if (msg.cite?.msgType == MessageType.voice.label) {
       body = VoiceDetail(
-        message: msg.cite! as MsgSaveModel,
+        message: msg.cite!,
         bgColor: Colors.black.withOpacity(0.1),
         isSelf: isSelf,
         chat: chat,
       );
     } else if (msg.cite?.msgType == MessageType.file.label) {
       body = FileDetail(
-        message: msg.cite! as MsgSaveModel,
+        message: msg.cite!,
         bgColor: Colors.black.withOpacity(0.1),
         isSelf: isSelf,
         chat: chat,

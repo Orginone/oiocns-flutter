@@ -25,7 +25,7 @@ abstract class IWorkTask extends IFile {
   //实例携带的数据
   InstanceDataModel? instanceData;
   //加用户任务信息
-  late List<XTarget> targets;
+  List<XTarget> targets = [];
 
   /// 是否为指定的任务类型
   bool isTaskType(TaskType type);
@@ -52,6 +52,9 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
 
   @override
   late UserProvider user;
+
+  @override
+  String get cacheFlag => 'worktask';
   @override
   XWorkInstance? instance;
 

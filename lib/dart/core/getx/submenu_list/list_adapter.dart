@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/modules/general_bread_crumbs/index.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
@@ -12,7 +11,6 @@ import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/store/state.dart';
-import 'package:orginone/utils/string_util.dart';
 
 class ListAdapter {
   VoidCallback? callback;
@@ -94,16 +92,17 @@ class ListAdapter {
     if (lastMessage != null) {
       if (lastMessage.fromId != settingCtrl.user.metadata.id) {
         if (chat.share.typeName != TargetType.person.label) {
-          var target = chat.members
-              .firstWhere((element) => element.id == lastMessage.fromId);
-          content = "${target.name}:";
+          if (chat.members.isNotEmpty) {
+            var target = chat.members
+                .firstWhere((element) => element.id == lastMessage.fromId);
+            content = "${target.name}:";
+          }
         } else {
           content = "对方:";
         }
       }
-      content = content +
-          StringUtil.msgConversion(MsgSaveModel.fromJson(lastMessage.toJson()),
-              settingCtrl.user.userId);
+      content = content + chat.remark;
+      // StringUtil.msgConversion(lastMessage, settingCtrl.user.userId);
     }
 
     image = chat.share.avatar?.thumbnailUint8List ??

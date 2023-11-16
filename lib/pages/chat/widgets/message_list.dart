@@ -31,24 +31,23 @@ class MessageList extends StatelessWidget {
         return true;
       },
       child: RefreshIndicator(
-        onRefresh: () => controller.state.chat.moreMessage(),
-        child: Obx(() {
-          return ScrollablePositionedList.builder(
-            padding: EdgeInsets.only(left: 10.w, right: 10.w),
-            shrinkWrap: true,
-            key: controller.state.scrollKey,
-            reverse: true,
-            physics: const ClampingScrollPhysics(),
-            itemScrollController: controller.state.itemScrollController,
-            addAutomaticKeepAlives: true,
-            addRepaintBoundaries: true,
-            itemCount: chat.messages.length,
-            itemBuilder: (BuildContext context, int index) {
-              return _item(index);
-            },
-          );
-        }),
-      ),
+          onRefresh: () => controller.state.chat.moreMessage(),
+          child: Obx(() {
+            return ScrollablePositionedList.builder(
+              padding: EdgeInsets.only(left: 10.w, right: 10.w),
+              shrinkWrap: true,
+              key: controller.state.scrollKey,
+              reverse: true,
+              physics: const ClampingScrollPhysics(),
+              itemScrollController: controller.state.itemScrollController,
+              addAutomaticKeepAlives: true,
+              addRepaintBoundaries: true,
+              itemCount: chat.messages.length,
+              itemBuilder: (BuildContext context, int index) {
+                return _item(index);
+              },
+            );
+          })),
     );
   }
 
@@ -57,8 +56,7 @@ class MessageList extends StatelessWidget {
     Widget currentWidget = DetailItemWidget(
       msg: msg,
       chat: chat,
-      //TODO:没有此方法
-      // key: msg.metadata.key,
+      key: GlobalKey(debugLabel: msg.metadata.id),
     );
     var time = _time(msg.createTime);
     var item = Column(children: [currentWidget]);

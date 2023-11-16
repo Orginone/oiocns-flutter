@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
@@ -10,7 +11,7 @@ import 'package:orginone/config/unified.dart';
 double defaultWidth = 10.w;
 
 abstract class BaseDetail extends StatelessWidget {
-  final MsgSaveModel message;
+  final IMessage message;
   final ISession? chat;
   final BoxConstraints? constraints;
   final Clip? clipBehavior;
@@ -48,7 +49,7 @@ abstract class BaseDetail extends StatelessWidget {
           shareIcon = chat!.share;
         } else {
           var target = chat!.members
-              .firstWhere((element) => element.id == message.fromId);
+              .firstWhere((element) => element.id == message.metadata.fromId);
           shareIcon = target.shareIcon();
         }
       }
@@ -58,7 +59,7 @@ abstract class BaseDetail extends StatelessWidget {
       child = Text.rich(TextSpan(children: [
         WidgetSpan(
             child: TargetText(
-              userId: message.fromId,
+              userId: message.metadata.fromId,
               text: ": ",
               style: XFonts.size24Black0,
               shareIcon: shareIcon,
