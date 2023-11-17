@@ -1,6 +1,7 @@
 class Constant {
   static const projectName = "Orginone";
-  static const host = "https://orginone.cn";
+  static const host = "https://asset.orginone.cn";
+  // static const host = "https://orginone.cn";
   static const messageHub = "$host/orginone/orgchat/msghub";
   static const anyStoreHub = "$host/orginone/anydata/hub";
   static const kernelHub = "$host/orginone/kernel/hub";
@@ -15,4 +16,6 @@ class Constant {
   static const order = "$host/orginone/appstore/order";
   static const product = "$host/orginone/appstore/product";
   static const rest = "$host/orginone/kernel/rest";
+  static const userName = "";
+  static const pwd = "";
 }
