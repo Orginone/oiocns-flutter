@@ -14,11 +14,6 @@ class QrScanController extends BaseController<QrScanState> {
   final ImagePicker picker = ImagePicker();
   ScanController scanController = ScanController();
 
-  @override
-  onClose() {
-    scanController.pause();
-  }
-
   requestPermission() async {
     var status = await Permission.camera.status;
     if (status.isDenied) {

@@ -100,8 +100,8 @@ class KernelApi {
   Future<void> stop() async {
     _methods.clear();
 
-    await _storeHub.dispose();
-    _instance = null;
+    // await _storeHub.dispose();
+    // _instance = null;
   }
 
   Future<void> disconnect() async {
@@ -157,6 +157,21 @@ class KernelApi {
     if (res.success) {
       HiveUtils.putUser(UserModel.fromJson(res.data));
       setToken = res.data["accessToken"];
+    }
+    return res;
+  }
+
+  /// 扫码登录认证
+  /// @param connectionId 二维码认证内容
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType> qrAuth(
+    String connectionId,
+  ) async {
+    dynamic res;
+    if (_storeHub.isConnected) {
+      res = await _storeHub.invoke('QrAuth', args: [connectionId]);
+    } else {
+      res = await _restRequest("qrAuth", connectionId);
     }
     return res;
   }
@@ -403,12 +418,13 @@ class KernelApi {
   /// @returns {ResultType<bool>} 请求结果
   Future<ResultType<List<String>>> pullAnyToTeam(GiveModel params) async {
     return await request(
-      ReqestType(
-        module: 'target',
-        action: 'PullAnyToTeam',
-        params: params,
-      ),
-    );
+        ReqestType(
+          module: 'target',
+          action: 'PullAnyToTeam',
+          params: params,
+        ), (data) {
+      return data['data'].cast<String>().toList();
+    });
   }
 
   /// 移除或退出用户的团队
@@ -1186,13 +1202,13 @@ class KernelApi {
     } else {
       raw = await _restRequest('Request', req.toJson());
     }
-    if (!raw.success) {
-      ToastUtils.showMsg(msg: raw.msg);
-      return ResultType<T>.fromJson({});
-    }
+    // if (!raw.success) {
+    // ToastUtils.showMsg(msg: raw.msg);
+    // return ResultType<T>.fromJson({});
+    // }
 
     // try {
-    if (null != cvt) {
+    if (null != raw.data && null != cvt) {
       return ResultType<T>.fromJsonSerialize(raw, cvt);
     } else {
       return ResultType<T>.fromJson(raw.toJson());

@@ -123,6 +123,11 @@ class DetailItemWidget extends GetView<IndexController> {
       }
       children.add(child);
       isCenter = true;
+    } else if (msg.msgType == MessageType.notify.label) {
+      Widget child =
+          Text.rich(TextSpan(children: [TextSpan(text: msg.msgBody)]));
+      children.add(child);
+      isCenter = true;
     } else {
       children.add(_getAvatar(id, shareIcon));
       children.add(_getChat(target?.name ?? ""));

@@ -261,6 +261,16 @@ class IndexController extends GetxController {
           } else {
             ToastUtils.showMsg(msg: "获取用户失败");
           }
+        } else if (null != value &&
+            value.length == 24 &&
+            value.indexOf('==') > 0) {
+          print('$value>>>${value.length}');
+          ResultType res = await provider.qrAuth(value);
+          if (res.success) {
+            ToastUtils.showMsg(msg: "登录成功");
+          } else {
+            ToastUtils.showMsg(msg: "登录失败：${res.msg}");
+          }
         } else {
           ToastUtils.showMsg(msg: "获取用户失败");
         }

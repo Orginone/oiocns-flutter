@@ -66,6 +66,13 @@ class UserProvider {
     return res;
   }
 
+  /// 二维码认证登录
+  /// @param connectionId 二维码认证内容
+  Future<ResultType> qrAuth(String connectionId) async {
+    var res = await kernel.qrAuth(connectionId);
+    return res;
+  }
+
   /// 注册用户
   /// @param {RegisterType} params 参数
   register(RegisterType params) async {

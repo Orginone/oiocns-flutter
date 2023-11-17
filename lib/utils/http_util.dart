@@ -3,7 +3,6 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/utils/toast_utils.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 import 'storage.dart';
@@ -160,12 +159,13 @@ class HttpUtil {
     Response response = error.response!;
     var statusCode = response.statusCode;
     if (statusCode == 400 || statusCode == 500) {
-      log.info("errorInfo =====> ${response.statusMessage}");
+      log.warning("errorInfo =====> ${response.statusMessage}");
       if (showToast) {
         Fluttertoast.showToast(msg: response.statusMessage ?? "");
       }
     } else if (statusCode == 401) {
-      ToastUtils.showMsg(msg: "登录已过期,请重新登录");
+      // ToastUtils.showMsg(msg: "登录已过期,请重新登录");
+      log.warning("errorInfo =====> 登录已过期,请重新登录");
       //token过期
       _errorNoAuthLogout();
     }

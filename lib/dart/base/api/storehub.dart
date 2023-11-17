@@ -57,7 +57,7 @@ class StoreHub {
     });
     _connection.onreconnected(({connectionId}) {
       // kernel.restart();
-      Future.delayed(const Duration(microseconds: 500), () {
+      Future.delayed(const Duration(microseconds: 50), () {
         LoadingDialog.dismiss(Get.context!);
         if (_connection.state == HubConnectionState.Connected) {
           _isStarted = true;
@@ -127,13 +127,19 @@ class StoreHub {
       }
     }, onError: (err) {
       log.warning("url: ${_connection.baseUrl}");
-      log.warning("连接失败,${_timeout}ms后重试。${err != null ? err.toString() : ''}");
-      for (final callback in _disconnectedCallbacks) {
-        callback(err);
+      if (_connection.state == HubConnectionState.Connected) {
+        log.warning("连接失败,连接状态为$_isStarted。长链接状态:${_connection.state}");
+        _isStarted = true;
+      } else {
+        log.warning(
+            "连接失败,${_timeout}ms后重试。${err != null ? err.toString() : ''}");
+        for (final callback in _disconnectedCallbacks) {
+          callback(err);
+        }
+        Future.delayed(Duration(milliseconds: _timeout), () {
+          restart();
+        });
       }
-      Future.delayed(Duration(milliseconds: _timeout), () {
-        restart();
-      });
     });
   }
 
@@ -177,14 +183,19 @@ class StoreHub {
         // if (res['code'] != 200) {
         //   ToastUtils.showMsg(msg: "后端异常${res['code']}：${res['msg']}");
         // }
-        if (res['code'] == 401) {
+        if (res['code'] == 400 || res['code'] == 401) {
+          log.warning('连接被断开,请重新连接$res');
+          await restart();
+          res = await invoke(methodName, args: args, retry: !retry!);
+        } else if (res['code'] == 401) {
           // ToastUtils.showMsg(msg: "登录已过期,请重新登录");
-          print('登录已过期,请重新登录');
+          log.warning('登录已过期,请重新登录');
           await restart();
           res = await invoke(methodName, args: args, retry: !retry!);
           // settingCtrl.exitLogin(cleanUserLoginInfo: false);
         } else if (res['code'] == 500) {
-          ToastUtils.showMsg(msg: "后端异常${res['code']}：${res['msg']}");
+          // ToastUtils.showMsg(msg: "后端异常${res['code']}：${res['msg']}");
+          log.warning("后端异常${res['code']}：${res['msg']}");
           // ToastUtils.showMsg(msg: "后端异常：${res['msg']}");
           // ToastUtils.showMsg(msg: 'error 500 长连接已断开,正在重试');
           // Log.info('anystore断开链接,正在重试');
@@ -199,7 +210,6 @@ class StoreHub {
       // log.info("=====>$id args: ${toJson(args)}");
       // log.info("=====>$id res: ${toJson(res)}");
       // log.info("==========$id storeHub-invoke-end =============");
-      print(toJson(res));
       return ResultType.fromJson(res as Map<String, dynamic>);
     } catch (err) {
       log.warning("==========$id storeHub-invoke-start =============");

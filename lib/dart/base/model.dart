@@ -274,7 +274,7 @@ class ResultType<T> {
     msg = json.msg ?? "";
     if (json.data != null) {
       if (json.data is List) {
-        data = Lists.fromList(json.data!, (data) => serialize(data)) as T;
+        data = serialize({'data': json.data});
       } else {
         data = serialize(json.data);
       }
@@ -929,11 +929,19 @@ class SearchModel {
   // 名称
   final String name;
   // 类型数组
-  final List<String> peNames;
+  final List<String> typeNames;
   // 分页
   PageModel? page;
 
-  SearchModel(this.name, this.peNames, {this.page});
+  SearchModel(this.name, this.typeNames, {this.page});
+
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["name"] = name;
+    json["typeNames"] = typeNames;
+    json["page"] = page;
+    return json;
+  }
 }
 
 class GetSubsModel {

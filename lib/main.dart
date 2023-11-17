@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -11,7 +12,10 @@ import 'utils/index.dart';
 
 initApp() async {
   await Global.init();
-  runApp(const MyApp());
+  // 开启 app
+  SystemChrome.setPreferredOrientations(
+          [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp])
+      .then((value) => runApp(const MyApp()));
 }
 
 KernelApi get kernel => KernelApi();

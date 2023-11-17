@@ -217,10 +217,10 @@ class Person extends Belong implements IPerson {
         .isNotEmpty;
   }
 
-  @override
-  Future<bool> pullMembers(List<XTarget> members, {bool? notity}) async {
-    return await applyJoin(members);
-  }
+  // @override
+  // Future<bool> pullMembers(List<XTarget> members, {bool? notity}) async {
+  //   return await applyJoin(members);
+  // }
 
   @override
   Future<bool> applyJoin(List<XTarget> members) async {
@@ -234,9 +234,9 @@ class Person extends Belong implements IPerson {
     }).toList();
     for (var value in filter) {
       if (TargetType.getType(value.typeName!) == TargetType.person) {
-        await pullMembers([value]);
+        await super.pullMembers([value]);
       }
-      await kernel.applyJoinTeam(GainModel(
+      ResultType<bool> result = await kernel.applyJoinTeam(GainModel(
         id: value.id,
         subId: metadata.id,
       ));
