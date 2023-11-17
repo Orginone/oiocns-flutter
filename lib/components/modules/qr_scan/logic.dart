@@ -9,14 +9,14 @@ import 'package:scan/scan.dart';
 import 'state.dart';
 
 class QrScanController extends BaseController<QrScanState> {
+  @override
   final QrScanState state = QrScanState();
   final ImagePicker picker = ImagePicker();
   ScanController scanController = ScanController();
 
   @override
-  onInit() {
-    super.onInit();
-    // requestPermission();
+  onClose() {
+    scanController.pause();
   }
 
   requestPermission() async {
