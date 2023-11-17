@@ -1,47 +1,17 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:logging/logging.dart';
-import 'package:orginone/channel/wallet_channel.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/controller/wallet_controller.dart';
-import 'package:orginone/utils/foreground_utils.dart';
-import 'package:orginone/utils/notification_util.dart';
+import 'package:orginone/global.dart';
 import 'common/routers/index.dart';
 import 'dart/controller/index.dart';
-import 'utils/hive_utils.dart';
 import 'utils/index.dart';
 
-void main() async {
-  // 逻辑绑定
-  WidgetsFlutterBinding.ensureInitialized();
-
-  SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
-
-  await HiveUtils.init();
-
-  await NotificationUtil.initializeService();
-
-  // 初始化通知配置
-  await Storage().init();
-
-  ForegroundUtils().initForegroundTask();
-
-  WalletChannel().init();
-  // 日志初始化
-  Logger.root.level = Level.ALL;
-  Logger.root.onRecord.listen((event) {
-    if (kDebugMode) {
-      print('${event.level.name}: ${event.time}: ${event.message}');
-    }
-  });
-
-  // 开启 app
-  runApp(const ScreenInit());
+initApp() async {
+  await Global.init();
+  runApp(const MyApp());
 }
 
 KernelApi get kernel => KernelApi();
@@ -54,8 +24,8 @@ WalletController get walletCtrl => Get.find<WalletController>();
 
 const Size screenSize = Size(540, 1170);
 
-class ScreenInit extends StatelessWidget {
-  const ScreenInit({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   // List<String> get account => Storage().getList("account");
   String get userJson => Storage().getString(sessionUserName);

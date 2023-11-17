@@ -1,5 +1,5 @@
 #fvm flutter build apk -t lib/main.dart --flavor stage  --target-platform android-arm,android-arm64 \
-fvm flutter build apk -t lib/main.dart --target-platform android-arm,android-arm64 \
+fvm flutter build apk -t lib/main_prod.dart --target-platform android-arm,android-arm64 \
 ###
  # @Descripttion: 
  # @version: 
@@ -12,6 +12,6 @@ fvm flutter build apk -t lib/main.dart --target-platform android-arm,android-arm
 
 cd build/app/outputs/flutter-apk/
 
-mv "app-release.apk" "oiocns-app.apk"
+mv "app-prod-release.apk" "oiocns-prod.apk"
 
 start .

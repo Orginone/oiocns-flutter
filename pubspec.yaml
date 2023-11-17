@@ -71,7 +71,7 @@ dependencies:
   fluttertoast: ^8.0.9
   permission_handler: ^10.0.1
   # 二维码扫描
-  qr_code_scanner: ^1.0.1
+  # qr_code_scanner: ^1.0.1
   qr_flutter: ^4.0.0
   #扫码 支持图片识别
   scan: ^1.6.0

@@ -138,14 +138,14 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
     if (res != null) {
       try {
         instance = res; //XWorkInstance.fromJson(res.data[0]);
-        LogUtil.d(res.toJson());
+        LogUtil.d('${res.toJson()}');
         Map<String, dynamic> json = jsonDecode(instance!.data ?? "");
         instanceData = instance != null && json.isNotEmpty
             ? InstanceDataModel.fromJson(json)
             : null;
         return instanceData != null;
       } catch (ex) {
-        print(ex);
+        LogUtil.d('loadInstance:$ex');
       }
     }
     return false;

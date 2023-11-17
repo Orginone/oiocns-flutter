@@ -1134,7 +1134,7 @@ class KernelApi {
       var json = req.toJson();
       raw = await _restRequest('dataProxy', json);
     }
-    logger.info('dataProxy raw:${raw.toString()}');
+    LogUtil.d('dataProxy raw:${raw.toString()}');
     if (!raw.success) {
       // ToastUtils.showMsg(msg: raw.msg);
     }

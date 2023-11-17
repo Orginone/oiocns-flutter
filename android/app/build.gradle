@@ -63,6 +63,8 @@ android {
         targetSdkVersion 32
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        flavorDimensions "default"
+        resValue "string", "app_name", "共享云"
     }
 
     signingConfigs {
@@ -88,6 +90,24 @@ android {
                 // 设置支持的 so 库架构 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
                 abiFilters 'armeabi-v7a', 'arm64-v8a','x86', 'x86_64'
             }
+        }
+    }
+        // 不同APP的配置
+    productFlavors {
+        // 开发环境
+        dev {
+            buildConfigField 'String', 'BASE_HOST', '"orginone.cn"'
+            applicationIdSuffix ".dev"
+            versionNameSuffix ""
+            resValue "string", "app_name", "共享云(Dev)"
+        }
+        
+        // 生产环境
+        prod {
+            buildConfigField 'String', 'BASE_HOST', '"asset.orginone.cn"'
+            applicationIdSuffix ".prod"
+            versionNameSuffix ""
+            resValue "string", "app_name", "共享云"
         }
     }
 }

@@ -131,8 +131,9 @@ class ListAdapter {
           "${work.targets[0].name}[${work.targets[0].typeName}]申请加入${work.targets[1].name}[${work.targets[1].typeName}]";
     }
 
-    content = "内容:$content";
+    content = content.isEmpty ? '暂无信息' : "内容:$content";
 
+    ///点击回调
     callback = () async {
       //加载流程实例数据
       await work.loadInstance();
