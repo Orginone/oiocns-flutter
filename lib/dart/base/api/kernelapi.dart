@@ -1,4 +1,3 @@
-import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/api/storehub.dart';
@@ -6,20 +5,15 @@ import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/utils/hive_utils.dart';
-import 'package:orginone/utils/http_util.dart';
 import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/logger.dart';
-import 'package:orginone/utils/toast_utils.dart';
 
 class KernelApi {
   // 当前用户
   String userId = '';
 // 存储集线器
   final StoreHub _storeHub;
-  // axios实例
-  final _http = HttpUtil();
   // 单例
   static KernelApi? _instance;
   // 单例
@@ -47,8 +41,9 @@ class KernelApi {
     _storeHub.on("Receive", (res) => _receive(res));
 
     _storeHub.onConnected(() {
-      if (accessToken.isNotEmpty) {
-        _storeHub.invoke("TokenAuth", args: [accessToken]).then((value) {
+      if (_storeHub.accessToken.isNotEmpty) {
+        _storeHub
+            .invoke("TokenAuth", args: [_storeHub.accessToken]).then((value) {
           ResultType res = value;
           if (res.success) {
             logger.info('连接到内核成功!');
@@ -61,15 +56,15 @@ class KernelApi {
     start();
   }
 
-// 获取accessToken
+  // 获取accessToken
   String get accessToken {
-    return Storage().getString('accessToken');
+    return _storeHub.accessToken;
   }
 
-  // 设置accessToken
-  set setToken(String val) {
-    Storage().setString('accessToken', val);
-  }
+//   // 设置accessToken
+//   set setToken(String val) {
+//     Storage().setString('accessToken', val);
+//   }
 
   /// 实时获取连接状态
   /// @param callback
@@ -82,8 +77,8 @@ class KernelApi {
   /// 获取单例
   /// @param {string} url 集线器地址，默认为 "/orginone/kernel/hub"
   /// @returns {KernelApi} 内核api单例
-  static getInstance(String url) {
-    _instance ??= KernelApi._(Constant.kernelHub);
+  static getInstance([String? url]) {
+    _instance ??= KernelApi._(url ?? Constant.kernelHub);
     return _instance!;
   }
 
@@ -146,17 +141,11 @@ class KernelApi {
         "password": password,
       },
     };
-    dynamic raw;
-    // if (_storeHub.isConnected) {
-    raw = await _storeHub.invoke('Auth', args: [req]);
-    // } else {
-    //   raw = await _restRequest('Auth', req);
-    // }
+    ResultType res = await _storeHub.invoke('Auth', args: [req]);
 
-    var res = raw is ResultType ? raw : ResultType.fromJson(raw);
     if (res.success) {
       HiveUtils.putUser(UserModel.fromJson(res.data));
-      setToken = res.data["accessToken"];
+      _storeHub.accessToken = res.data["accessToken"];
     }
     return res;
   }
@@ -167,12 +156,7 @@ class KernelApi {
   Future<ResultType> qrAuth(
     String connectionId,
   ) async {
-    dynamic res;
-    if (_storeHub.isConnected) {
-      res = await _storeHub.invoke('QrAuth', args: [connectionId]);
-    } else {
-      res = await _restRequest("qrAuth", connectionId);
-    }
+    ResultType res = await _storeHub.invoke('QrAuth', args: [connectionId]);
     return res;
   }
 
@@ -189,12 +173,7 @@ class KernelApi {
       "password": password,
       "privateKey": privateKey
     };
-    ResultType res;
-    if (_storeHub.isConnected) {
-      res = await _storeHub.invoke('ResetPassword', args: [req]);
-    } else {
-      res = await _restRequest("resetpassword", req);
-    }
+    ResultType res = await _storeHub.invoke('ResetPassword', args: [req]);
 
     return res;
   }
@@ -209,20 +188,9 @@ class KernelApi {
   /// @returns {Promise<model.ResultType<any>>} 异步注册结果
 
   Future<ResultType<dynamic>> register(RegisterType params) async {
-    dynamic res;
-    if (_storeHub.isConnected) {
-      res = await _storeHub.invoke('Register', args: [params]);
-    } else {
-      res = await _restRequest('Register', params);
-    }
+    ResultType res = await _storeHub.invoke('Register', args: [params]);
 
-    var model = ResultType.fromJson(res);
-    if (res.success) {
-      // ToastUtils.showMsg(msg: "私有key---${res.data['privateKey']}");
-    } else {
-      ToastUtils.showMsg(msg: res.msg);
-    }
-    return model;
+    return res;
   }
 
   /// 激活存储
@@ -1126,15 +1094,10 @@ class KernelApi {
   Future<ResultType<HttpResponseType>> httpForward(
     HttpRequestType req,
   ) async {
-    if (_storeHub.isConnected) {
-      return await _storeHub.invoke('HttpForward', args: [req])
-          as ResultType<HttpResponseType>;
-    } else {
-      var res = await _restRequest('httpForward', req.toJson());
+    ResultType res = await _storeHub.invoke('HttpForward', args: [req]);
 
-      return ResultType<HttpResponseType>(
-          code: res.code, msg: res.msg, success: res.success, data: res.data);
-    }
+    return ResultType.fromJsonSerialize(
+        res, (data) => HttpResponseType.fromJson(data));
   }
 
   /// 请求一个数据核方法
@@ -1142,18 +1105,9 @@ class KernelApi {
   /// @returns 异步结果
   Future<ResultType<T>> dataProxy<T>(DataProxyType req,
       [T Function(Map<String, dynamic>)? cvt]) async {
-    dynamic raw;
-    // print('dataProxy param:${req.toJson()}');
-    if (_storeHub.isConnected) {
-      raw = await _storeHub.invoke('DataProxy', args: [req]);
-    } else {
-      var json = req.toJson();
-      raw = await _restRequest('dataProxy', json);
-    }
+    ResultType raw = await _storeHub.invoke('DataProxy', args: [req]);
     LogUtil.d('dataProxy raw:${raw.toString()}');
-    if (!raw.success) {
-      // ToastUtils.showMsg(msg: raw.msg);
-    }
+
     if (null != raw.data && null != cvt) {
       return ResultType<T>.fromJsonSerialize(raw, cvt);
     } else {
@@ -1168,13 +1122,8 @@ class KernelApi {
     if (req.ignoreSelf) {
       req.ignoreConnectionId = _storeHub.connectionId;
     }
-    if (_storeHub.isConnected) {
-      return await _storeHub.invoke('DataNotify', args: [req])
-          as ResultType<bool>;
-    } else {
-      var res = await _restRequest('dataNotify', req.toJson());
-      return ResultType.fromObj(res, res.data);
-    }
+    return await _storeHub.invoke('DataNotify', args: [req])
+        as ResultType<bool>;
   }
 
   /// 请求一个内核方法
@@ -1194,64 +1143,13 @@ class KernelApi {
 
   Future<ResultType<T>> request<T>(ReqestType req,
       [T Function(Map<String, dynamic>)? cvt]) async {
-    ResultType raw;
-    LogUtil.d("===> req:${req.toJson()}");
-    if (_storeHub.isConnected) {
-      raw = await _storeHub.invoke('Request', args: [req]);
-      LogUtil.d("===> res:${req.toJson()}");
-    } else {
-      raw = await _restRequest('Request', req.toJson());
-    }
-    // if (!raw.success) {
-    // ToastUtils.showMsg(msg: raw.msg);
-    // return ResultType<T>.fromJson({});
-    // }
+    ResultType raw = await _storeHub.invoke('Request', args: [req]);
 
-    // try {
     if (null != raw.data && null != cvt) {
       return ResultType<T>.fromJsonSerialize(raw, cvt);
     } else {
       return ResultType<T>.fromJson(raw.toJson());
     }
-    // } catch (e) {
-    //   LogUtil.d('====err1:$e');
-    //   LogUtil.d('====err2:$cvt-$T');
-    //   e.printError();
-    // }
-    // return ResultType<T>.fromJson({});
-  }
-
-  Future<ResultType<T>> request_<T, R>(ReqestType req,
-      [T Function(Map<String, dynamic>, [Function(List<dynamic>)?])? dataCF,
-      List<T> Function(List<dynamic>)? resultCF]) async {
-    dynamic raw;
-    print("===> req:${req.toJson()}");
-    if (_storeHub.isConnected) {
-      raw = await _storeHub.invoke('Request', args: [req]);
-    } else {
-      raw = await _restRequest('request', req.toJson());
-    }
-    if (!raw.success) {
-      ToastUtils.showMsg(msg: raw.msg);
-    }
-    try {
-      if (null != dataCF && null != resultCF) {
-        return ResultType<T>.fromJsonSerialize(raw ?? {}, (e) {
-          return dataCF(e, resultCF);
-        });
-      } else if (null != dataCF) {
-        return ResultType<T>.fromJsonSerialize(raw ?? {}, (e) {
-          return dataCF(e);
-        });
-      } else {
-        return ResultType<T>.fromJson(raw);
-      }
-    } catch (e) {
-      print('====err1:$e');
-      // print('====err2:$cvt-$T');
-      e.printError();
-    }
-    return ResultType<T>.fromJson({});
   }
 
   /// 请求多个内核方法,使用同一个事务
@@ -1259,11 +1157,7 @@ class KernelApi {
   /// @returns 异步结果
 
   Future<ResultType<dynamic>> requests<T>(List<ReqestType> reqs) async {
-    if (_storeHub.isConnected) {
-      return await _storeHub.invoke('Requests', args: reqs);
-    } else {
-      return await _restRequest('requests', reqs.map((e) => e.toJson()));
-    }
+    return await _storeHub.invoke('Requests', args: reqs);
   }
 
   /// 订阅变更
@@ -1408,36 +1302,4 @@ class KernelApi {
       _cacheData[res.target.toLowerCase()] = [...data, res.data];
     }
   }
-
-  /// 使用rest请求后端
-  /// @param methodName 方法
-  /// @param data 参数
-  /// @returns 返回结果
-  Future<ResultType<T>> _restRequest<T>(String methodName, dynamic args) async {
-    final res = await _http.post(
-      '${Constant.rest}/${methodName.toLowerCase()}',
-      data: args,
-    );
-
-    // if (res.data && (res.data is ResultType)) {
-    if (res != null && res['data'] != null) {
-      final result = ResultType<T>.fromJson(res);
-      if (!result.success) {
-        if (result.code == 401) {
-          settingCtrl.exitLogin(cleanUserLoginInfo: false);
-        } else {
-          logger.warning('请求失败${result.msg}');
-        }
-      }
-      return result;
-    }
-    return ResultType(success: false, msg: '请求失败', code: 400); //badRequest;
-  }
-
-  // PageResult<R> Function(Map<String, dynamic> data) _pageResult<T, R>(
-  //     [List<R> Function(List<dynamic>)? cvt]) {
-  //   return (data) {
-  //     return PageResult<R>.fromJson(data, cvt);
-  //   };
-  // }
 }

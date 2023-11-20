@@ -183,9 +183,15 @@ class HttpResponseType {
   // 响应类型
   late String contentType;
   // 响应头
-  late Map<String, List<String>> header;
+  late Map<String, List<dynamic>> header;
   // 响应体
   late String content;
+
+  HttpResponseType.fromJson(Map<String, dynamic> json)
+      : status = json['status'],
+        contentType = json['contentType'],
+        header = json['header'],
+        content = json['content'];
 }
 
 // 返回类型定义
