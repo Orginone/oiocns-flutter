@@ -16,22 +16,15 @@ class ProcessDetailsPage
   @override
   Widget buildView() {
     return GyScaffold(
-      titleName: state.todo?.taskdata.title,
-      body: Column(
-        children: [
-          tabBar(),
-          Expanded(
-            child: TabBarView(
-              controller: state.tabController,
-              children: [
-                ProcessInfoPage(),
-                UseTracesPage(),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
+        titleName: state.todo?.taskdata.title, body: _buildMainView());
+  }
+
+  _buildMainView() {
+    if (state.todo?.instance != null) {
+      //返回流程视图
+      return _buildInstanceView();
+    }
+    return _buildApplyView();
   }
 
   Widget tabBar() {
@@ -55,5 +48,26 @@ class ProcessDetailsPage
         isScrollable: true,
       ),
     );
+  }
+
+  _buildInstanceView() {
+    return Column(
+      children: [
+        tabBar(),
+        Expanded(
+          child: TabBarView(
+            controller: state.tabController,
+            children: [
+              ProcessInfoPage(),
+              UseTracesPage(),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
+  _buildApplyView() {
+    return const Center(child: Text('申请视图'));
   }
 }

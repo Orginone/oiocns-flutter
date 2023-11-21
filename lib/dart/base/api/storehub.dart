@@ -195,8 +195,13 @@ class StoreHub {
         );
       }
       ResultType res = ResultType.fromJson(resObj as Map<String, dynamic>);
+      LogUtil.d('接口：${Constant.rest}/${methodName.toLowerCase()}');
+      LogUtil.d('参数：${jsonEncode(args![0])}');
       return _success(res);
     } catch (e, s) {
+      LogUtil.d('接口：${Constant.rest}/${methodName.toLowerCase()}');
+      LogUtil.d('参数：${jsonEncode(args![0])}');
+      LogUtil.e("invoke Error${e.toString()}${s.toString()}");
       return _error(e, s);
     }
     // final id = const Uuid().v1();
@@ -274,7 +279,8 @@ class StoreHub {
       if (res.code == 401) {
         // 登录已过期处理
       } else if (res.msg != '' && !res.msg.contains('不在线')) {
-        LogUtil.e('操作失败,${res.msg}');
+        LogUtil.e('Http:操作失败,${res.msg}');
+        ToastUtils.showMsg(msg: res.msg);
       }
     }
     return res;
@@ -283,11 +289,11 @@ class StoreHub {
   ResultType<dynamic> _error(dynamic res, dynamic s) {
     var msg = '请求异常';
     if (null != res) {
-      LogUtil.e('===========================err');
-      LogUtil.e('$res');
-      LogUtil.e('$s');
+      LogUtil.e('Http:===========================err');
+      LogUtil.e('Http:$res');
+      LogUtil.e('Http:$s');
       msg += ',$res';
-      LogUtil.e(msg);
+      LogUtil.e('Http:$msg');
       return res;
     } else {
       return badRequest;
@@ -318,7 +324,7 @@ class StoreHub {
       try {
         jsonStr = jsonEncode(jsonObj);
       } catch (e) {
-        print('>>>>>>>>>>>err:${jsonObj.runtimeType}>$jsonObj');
+        LogUtil.d('Http:err:${jsonObj.runtimeType}>$jsonObj');
         e.printError();
       }
     }

@@ -30,6 +30,6 @@ class ProcessDetailsState extends BaseGetState {
 }
 
 const List<String> tabTitle = [
-  '基本信息',
+  '办事详情',
   '历史痕迹',
 ];

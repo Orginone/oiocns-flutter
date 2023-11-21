@@ -13,6 +13,12 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
   @override
   final ProcessInfoState state = ProcessInfoState();
 
+  @override
+  void onInit() {
+    super.onInit();
+    LogUtil.d(state.todo);
+  }
+
   void approval(int status) async {
     await WorkNetWork.approvalTask(
         status: status,

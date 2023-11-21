@@ -90,6 +90,7 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
             jsonDecode(taskdata.content ?? "[]") as List<dynamic>;
         return parsedContent.map((item) => XTarget.fromJson(item)).toList();
       } catch (ex) {
+        LogUtil.d(ex);
         return [];
       }
     }

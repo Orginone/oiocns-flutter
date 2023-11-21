@@ -20,7 +20,7 @@ class EnvConfig {
       case Env.dev:
         return "https://orginone.cn";
       case Env.prod:
-        return "https://asset.orginone.cn";
+        return "https://assert.orginone.cn";
       default:
         return "https://orginone.cn";
     }

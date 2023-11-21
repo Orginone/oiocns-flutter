@@ -6,8 +6,8 @@ import 'package:orginone/common/models/file/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
-import 'package:orginone/utils/date_utils.dart';
 import 'package:orginone/components/widgets/loading_dialog.dart';
+import 'package:orginone/utils/index.dart';
 import 'state.dart';
 
 class ProcessDetailsController extends BaseController<ProcessDetailsState>
@@ -17,6 +17,14 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState>
 
   ProcessDetailsController() {
     state.tabController = TabController(length: tabTitle.length, vsync: this);
+  }
+
+  @override
+  void onInit() {
+    LogUtil.d('参数：${jsonEncode(state.todo!.taskdata)}');
+    LogUtil.d('instance:${jsonEncode(state.todo!.instance)}');
+
+    super.onInit();
   }
 
   @override
