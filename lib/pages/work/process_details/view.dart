@@ -29,7 +29,13 @@ class ProcessDetailsPage
       //返回流程视图
       return _buildInstanceView();
     }
-    return _buildApplyView();
+    if (state.todo!.targets.isNotEmpty) {
+      return _buildApplyView();
+    } else {
+      return const Center(
+        child: TextWidget(text: '数据异常'),
+      );
+    }
   }
 
   Widget tabBar() {
@@ -85,13 +91,13 @@ class ProcessDetailsPage
 
   _buildApplyHeaderView() {
     ShareIcon? create = settingCtrl.provider.user
-        ?.findShareById(state.todo?.targets[0].createUser ?? '');
+        ?.findShareById(state.todo?.targets.first.createUser ?? '');
     ShareIcon? target = settingCtrl.provider.user
-        ?.findShareById(state.todo?.targets[1].id ?? '');
+        ?.findShareById(state.todo?.targets.last.id ?? '');
 
     return <Widget>[
       _imageWidget(create),
-      TextWidget.body1(state.todo?.targets[0].name ?? '')
+      TextWidget.body1(state.todo?.targets.first.name ?? '')
           .paddingLeft(AppSpace.listItem),
 
       const SizedBox(
@@ -111,7 +117,7 @@ class ProcessDetailsPage
             width: 4,
           )).paddingRight(AppSpace.listItem),
       _imageWidget(target),
-      TextWidget.body1(state.todo?.targets[1].name ?? '')
+      TextWidget.body1(state.todo?.targets.last.name ?? '')
           .paddingLeft(AppSpace.listItem),
     ].toRow().paddingVertical(AppSpace.listItem);
   }
