@@ -21,34 +21,32 @@ class GridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() {
-      return PopupWidget(
-        onTap: () {
-          adapter.callback?.call();
-        },
-        itemBuilder: (BuildContext context) {
-          return adapter.popupMenuItems;
-        },
-        onSelected: (key) {
-          adapter.onSelected?.call(key);
-        },
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            _avatarContainer,
-            SizedBox(
-              width: 10.w,
-            ),
-            Expanded(child: _content),
-          ],
-        ),
-      );
-    });
+    return PopupWidget(
+      onTap: () {
+        adapter.callback?.call();
+      },
+      itemBuilder: (BuildContext context) {
+        return adapter.popupMenuItems;
+      },
+      onSelected: (key) {
+        adapter.onSelected?.call(key);
+      },
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          _avatarContainer,
+          SizedBox(
+            width: 10.w,
+          ),
+          Expanded(child: _content),
+        ],
+      ),
+    );
   }
 
   Widget get _avatarContainer {
-    var noRead = adapter.chat.noReadCount; //adapter.noReadCount;
+    var noRead = adapter.noReadCount;
     Widget child = ImageWidget(
       adapter.image,
       size: 50.w,
@@ -126,7 +124,7 @@ class GridItem extends StatelessWidget {
   }
 }
 
-class ListItem extends StatefulWidget {
+class ListItem extends StatelessWidget {
   final ListAdapter adapter;
 
   const ListItem({
@@ -134,25 +132,25 @@ class ListItem extends StatefulWidget {
     required this.adapter,
   }) : super(key: key);
 
-  @override
-  State<StatefulWidget> createState() {
-    return _ListItemState();
-  }
-}
+//   @override
+//   State<StatefulWidget> createState() {
+//     return _ListItemState();
+//   }
+// }
 
-class _ListItemState extends State<ListItem> {
+// class _ListItemState extends State<ListItem> {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
       return PopupWidget(
         itemBuilder: (BuildContext context) {
-          return widget.adapter.popupMenuItems;
+          return adapter.popupMenuItems;
         },
         onTap: () {
-          widget.adapter.callback?.call();
+          adapter.callback?.call();
         },
         onSelected: (key) {
-          widget.adapter.onSelected?.call(key);
+          adapter.onSelected?.call(key);
         },
         child: Container(
           color: Colors.white,
@@ -181,13 +179,12 @@ class _ListItemState extends State<ListItem> {
   }
 
   Widget get _avatarContainer {
-    var noRead =
-        widget.adapter.chat.noReadCount; //widget.adapter.noReadCount; //
+    var noRead = adapter.noReadCount;
     Widget child = ImageWidget(
-      widget.adapter.image,
+      adapter.image,
       size: 65.w,
       iconColor: const Color(0xFF9498df),
-      circular: widget.adapter.circularAvatar,
+      circular: adapter.circularAvatar,
     );
     if (noRead.isNotEmpty) {
       child = badges.Badge(
@@ -212,7 +209,7 @@ class _ListItemState extends State<ListItem> {
 
   Widget get _content {
     var labels = <Widget>[];
-    for (var item in widget.adapter.labels) {
+    for (var item in adapter.labels) {
       if (item.isNotEmpty) {
         bool isTop = item == "置顶";
 
@@ -222,7 +219,7 @@ class _ListItemState extends State<ListItem> {
           color: isTop ? XColors.fontErrorColor : XColors.designBlue,
           fontSize: 14.sp,
         );
-        if (widget.adapter.isUserLabel) {
+        if (adapter.isUserLabel) {
           label = Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -252,7 +249,7 @@ class _ListItemState extends State<ListItem> {
           children: [
             Expanded(
               child: Text(
-                widget.adapter.title,
+                adapter.title,
                 style: TextStyle(
                   color: XColors.chatTitleColor,
                   fontWeight: FontWeight.w500,
@@ -263,7 +260,7 @@ class _ListItemState extends State<ListItem> {
               ),
             ),
             Text(
-              CustomDateUtil.getSessionTime(widget.adapter.dateTime),
+              CustomDateUtil.getSessionTime(adapter.dateTime),
               style: TextStyle(color: Colors.grey, fontSize: 18.sp),
               textAlign: TextAlign.right,
             ),
@@ -285,7 +282,7 @@ class _ListItemState extends State<ListItem> {
 
   Widget _showTxt() {
     return Text(
-      widget.adapter.content,
+      adapter.content,
       style: TextStyle(
         color: XColors.chatHintColors,
         fontSize: 18.sp,

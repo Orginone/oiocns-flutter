@@ -281,8 +281,11 @@ class ResultType<T> {
     if (json.data != null) {
       if (json.data is List) {
         data = serialize({'data': json.data});
-      } else {
+      } else if (json.data is Map) {
         data = serialize(json.data);
+      } else {
+        print('>>>====ResultType：${json.data}');
+        data = json.data as T;
       }
     }
     code = json.code ?? 400;

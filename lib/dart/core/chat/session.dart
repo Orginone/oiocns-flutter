@@ -431,6 +431,8 @@ class Session extends Entity<XEntity> implements ISession {
         }
         // msgChatNotify.changCallback();
         command.emitterFlag('session');
+        command.emitterFlag(
+            'session-${chatdata.value.fullId}', [chatdata.value.noReadCount]);
       } else if (!imsg.isReaded) {
         tagMessage([imsg.id], '已读');
       }
@@ -442,12 +444,16 @@ class Session extends Entity<XEntity> implements ISession {
       if (index > -1) {
         messages[index] = imsg;
       }
-
-      chatdata.value.noReadCount -= imsg.isMySend ? 0 : 1;
-      refreshNoReadCount();
-      command.emitterFlag('session');
+      print('>>>======synac:${chatdata.value.noReadCount}');
+      if (chatdata.value.noReadCount > 0) {
+        chatdata.value.noReadCount -= imsg.isMySend ? 0 : 1;
+        refreshNoReadCount();
+        command.emitterFlag('session');
+        command.emitterFlag(
+            'session-${chatdata.value.fullId}', [chatdata.value.noReadCount]);
+      }
     }
-    messageNotify!.call(messages);
+    messageNotify?.call(messages);
   }
 
   void refreshNoReadCount() {

@@ -10,12 +10,24 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'info_item.dart';
 
-class MessageList extends StatelessWidget {
+class MessageList extends StatefulWidget {
   const MessageList({Key? key}) : super(key: key);
 
+  @override
+  State<MessageList> createState() => _MessageListState();
+}
+
+class _MessageListState extends State<MessageList> {
   MessageChatController get controller => Get.find();
 
   ISession get chat => controller.state.chat;
+
+  @override
+  void dispose() {
+    super.dispose();
+    chat.unMessage();
+  }
+
   @override
   Widget build(BuildContext context) {
     chat.onMessage((messages) => null);

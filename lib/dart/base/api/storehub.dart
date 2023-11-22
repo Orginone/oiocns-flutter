@@ -75,6 +75,8 @@ class StoreHub {
   /// 是否处于连接着的状态
   /// @return {boolean} 状态
   bool get isConnected {
+    print(
+        '>>>========$_isStarted ${_connection.state == HubConnectionState.Connected}');
     return _isStarted && _connection.state == HubConnectionState.Connected;
   }
 
@@ -121,10 +123,10 @@ class StoreHub {
       _isStarted = false;
       _connection.stop();
       await _connection.stop().then((_) {
-        _starting();
+        start();
       });
     } else if (_connection.state != HubConnectionState.Reconnecting) {
-      _starting();
+      start();
     }
   }
 
@@ -305,7 +307,7 @@ class StoreHub {
       msg += ',$res';
       LogUtil.e('Http:$msg');
       ToastUtils.dismiss();
-      return res;
+      return ResultType.fromObj(badRequest, msg);
     } else {
       ToastUtils.dismiss();
       return badRequest;

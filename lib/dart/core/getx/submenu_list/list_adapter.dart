@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/modules/general_bread_crumbs/index.dart';
+import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
@@ -25,7 +26,7 @@ class ListAdapter {
 
   late String content;
 
-  late int noReadCount;
+  late RxString noReadCount;
 
   String? dateTime;
 
@@ -37,8 +38,6 @@ class ListAdapter {
 
   String? typeName;
 
-  late ISession chat;
-
   ListAdapter({
     this.title = '',
     this.labels = const [],
@@ -46,13 +45,16 @@ class ListAdapter {
     this.content = '',
     this.dateTime,
     this.isUserLabel = false,
-    this.noReadCount = 0,
+    noReadCount,
     this.circularAvatar = false,
     this.callback,
     this.popupMenuItems = const [],
-  });
+  }) {
+    this.noReadCount = noReadCount ?? ''.obs;
+  }
 
   ListAdapter.chat(ISession chat) {
+    noReadCount = ''.obs;
     labels = chat.chatdata.value.labels;
     bool isTop = labels.contains("置顶");
     isUserLabel = false;
@@ -86,11 +88,10 @@ class ListAdapter {
       }
     };
     circularAvatar = chat.share.typeName == TargetType.person.label;
-    noReadCount = chat.chatdata.value.noReadCount;
+    initNoReadCommand(chat.chatdata.value.fullId, chat);
     title = chat.chatdata.value.chatName ?? "";
     dateTime = chat.chatdata.value.lastMessage?.createTime;
     content = '';
-    this.chat = chat;
     var lastMessage = chat.chatdata.value.lastMessage;
     if (lastMessage != null) {
       if (lastMessage.fromId != settingCtrl.user.metadata.id) {
@@ -120,10 +121,10 @@ class ListAdapter {
     };
   }
   ListAdapter.work(IWorkTask work) {
+    noReadCount = ''.obs;
     labels = [work.metadata.createUser!, work.metadata.shareId!];
     isUserLabel = true;
     circularAvatar = false;
-    noReadCount = 0;
     title = work.taskdata.title ?? '';
     dateTime = work.metadata.createTime ?? "";
     content = work.taskdata.content ?? "";
@@ -146,10 +147,10 @@ class ListAdapter {
   }
 
   ListAdapter.application(IApplication application, ITarget target) {
+    noReadCount = ''.obs;
     labels = [target.name ?? ""];
     isUserLabel = false;
     circularAvatar = false;
-    noReadCount = 0;
     title = application.name ?? "";
     dateTime = application.metadata.createTime ?? "";
     content = "应用说明:${application.metadata.remark ?? ""}";
@@ -181,6 +182,7 @@ class ListAdapter {
   }
 
   ListAdapter.store(RecentlyUseModel recent) {
+    noReadCount = ''.obs;
     image = recent.avatar ?? Ionicons.clipboard_sharp;
     labels = [recent.thing == null ? "文件" : "物"];
     callback = () {
@@ -191,7 +193,6 @@ class ListAdapter {
     title = recent.thing?.id ?? recent.file?.name ?? "";
     isUserLabel = false;
     circularAvatar = false;
-    noReadCount = 0;
     content = '';
     dateTime = recent.createTime;
   }
@@ -226,5 +227,23 @@ class ListAdapter {
           children: []));
     }
     return navs;
+  }
+
+  void initNoReadCommand(String key, ISession chat) {
+    if (chat.chatdata.value.noReadCount > 0) {
+      noReadCount.value = chat.chatdata.value.noReadCount > 99
+          ? "99+"
+          : chat.chatdata.value.noReadCount.toString();
+    }
+    //沟通未读消息提示处理
+    command.subscribeByFlag('session-$key',
+        ([List<dynamic>? args]) => {refreshNoReadMgsCount(args)});
+  }
+
+  void refreshNoReadMgsCount([List<dynamic>? args]) {
+    if (null != args && args.isNotEmpty) {
+      noReadCount.value = args[0].toString();
+      print('>>>=====refresh:${noReadCount.value}');
+    }
   }
 }

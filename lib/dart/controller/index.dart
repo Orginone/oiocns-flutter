@@ -101,14 +101,30 @@ class IndexController extends GetxController {
 
   /// 所有相关会话
   RxList<ISession> get chats {
-    RxList<ISession> chats = RxList();
+    List<ISession> chats = [];
     if (provider.user != null) {
       chats.addAll(provider.user?.chats ?? []);
       for (var company in provider.user?.companys ?? []) {
         chats.addAll(company.chats ?? []);
       }
+
+      /// 排序
+      chats.sort((a, b) {
+        var num = (b.chatdata.value.isToping ? 10 : 0) -
+            (a.chatdata.value.isToping ? 10 : 0);
+        if (num == 0) {
+          if (b.chatdata.value.lastMsgTime == a.chatdata.value.lastMsgTime) {
+            num = b.isBelongPerson ? 1 : -1;
+          } else {
+            num = b.chatdata.value.lastMsgTime > a.chatdata.value.lastMsgTime
+                ? 5
+                : -5;
+          }
+        }
+        return num;
+      });
     }
-    return chats;
+    return RxList<ISession>.from(chats);
   }
 
   int get noReadMgsCount {
@@ -165,6 +181,7 @@ class IndexController extends GetxController {
     for (var element in chats) {
       _noReadMgsCount.value += element.chatdata.value.noReadCount;
     }
+    print('>>>=====refresh:${_noReadMgsCount.value}');
   }
 
   @override
