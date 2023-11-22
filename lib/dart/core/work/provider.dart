@@ -136,7 +136,7 @@ class WorkProvider implements IWorkProvider {
       },
     );
     if (result.success && result.data != null && result.data!.isNotEmpty) {
-      result.data!.forEach((item) => {
+      result.data?.forEach((item) => {
             if (tasks.every((i) => i.id != item.id))
               {tasks.add(WorkTask(item, user))}
           });

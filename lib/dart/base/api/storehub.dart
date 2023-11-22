@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/main.dart';
 import 'package:orginone/utils/http_util.dart';
 import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/toast_utils.dart';
@@ -199,12 +200,13 @@ class StoreHub {
         ResultType res = ResultType.fromJson(resObj as Map<String, dynamic>);
         LogUtil.d('接口：${Constant.rest}/${methodName.toLowerCase()}');
         LogUtil.d('参数：${jsonEncode(args![0])}');
+        LogUtil.d('StoreHub返回值：$resObj');
         return _success(res);
       }
       return _error();
     } catch (e, s) {
       LogUtil.d('接口：${Constant.rest}/${methodName.toLowerCase()}');
-      LogUtil.d('参数：${jsonEncode(args![0])}');
+      LogUtil.d('StoreHub参数：${jsonEncode(args![0])}');
       LogUtil.e("invoke Error${e.toString()}${s.toString()}");
       return _error(e, s);
     }
@@ -284,6 +286,8 @@ class StoreHub {
         LogUtil.e('==========================================登录已过期处理');
         // 登录已过期处理
         restart();
+        ToastUtils.showMsg(msg: res.msg);
+        // _errorNoAuthLogout();
       } else if (res.msg != '' && !res.msg.contains('不在线')) {
         LogUtil.e('Http:操作失败,${res.msg}');
         ToastUtils.showMsg(msg: res.msg);
@@ -300,8 +304,10 @@ class StoreHub {
       LogUtil.e('Http:$s');
       msg += ',$res';
       LogUtil.e('Http:$msg');
+      ToastUtils.dismiss();
       return res;
     } else {
+      ToastUtils.dismiss();
       return badRequest;
     }
   }
@@ -335,5 +341,9 @@ class StoreHub {
       }
     }
     return jsonStr;
+  } // 退出并重新登录
+
+  Future<void> _errorNoAuthLogout() async {
+    settingCtrl.exitLogin(cleanUserLoginInfo: false);
   }
 }

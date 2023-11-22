@@ -5809,7 +5809,7 @@ class XWorkTask extends Xbase {
   });
 
   XWorkTask.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    List<XWorkRecord>? records;
+    // List<XWorkRecord>? records;
     if (json['records'] != null) {
       var recordList = json['records'] as List;
       records =
@@ -5826,7 +5826,7 @@ class XWorkTask extends Xbase {
     instanceId = json['instanceId'] ?? "";
     identityId = json['identityId'] ?? "";
     content = json['content'] ?? "";
-    records = records;
+    // records = records;
     node = json['node'] != null ? XWorkNode.fromJson(json['node']) : null;
     instance = json['instance'] != null
         ? XWorkInstance.fromJson(json['instance'])

@@ -7,12 +7,13 @@ import 'package:orginone/config/index.dart';
 
 import '../index.dart';
 
-enum ImageWidgetType { asset, network, file }
+enum ImageWidgetType { asset, network, file, memory }
 
 /// 图片组件
 class ImageWidget extends StatelessWidget {
   /// 网址
   final String url;
+  final Uint8List? data;
 
   /// 类型
   final ImageWidgetType type;
@@ -43,11 +44,10 @@ class ImageWidget extends StatelessWidget {
     Size? size,
   )? builder;
 
-  const ImageWidget(
-    Uint8List? image, {
+  const ImageWidget({
     Key? key,
-    required this.type,
     required this.url,
+    required this.type,
     this.radius,
     this.width,
     this.height,
@@ -55,6 +55,7 @@ class ImageWidget extends StatelessWidget {
     this.placeholder,
     this.backgroundColor,
     this.builder,
+    this.data,
   }) : super(key: key);
 
   const ImageWidget.url(
@@ -67,6 +68,7 @@ class ImageWidget extends StatelessWidget {
     this.placeholder,
     this.backgroundColor,
     this.builder,
+    this.data,
   })  : type = ImageWidgetType.network,
         super(key: key);
 
@@ -80,6 +82,7 @@ class ImageWidget extends StatelessWidget {
     this.placeholder,
     this.backgroundColor,
     this.builder,
+    this.data,
   })  : type = ImageWidgetType.asset,
         super(key: key);
 
@@ -93,13 +96,26 @@ class ImageWidget extends StatelessWidget {
     this.placeholder,
     this.backgroundColor,
     this.builder,
+    this.data,
   })  : type = ImageWidgetType.file,
         super(key: key);
+  // const ImageWidget.memory(
+  //   this.url, {
+  //   Key? key,
+  //   this.radius,
+  //   this.width,
+  //   this.height,
+  //   this.fit,
+  //   this.placeholder,
+  //   this.backgroundColor,
+  //   this.builder,
+  // })  : type = ImageWidgetType.memory,
+  //       super(key: key);
 
   Widget get _placeholder =>
       placeholder ??
       IconWidget.image(
-        'assets/images/default.png',
+        AssetsImages.defaultAvatar,
         size: 36,
       );
 
@@ -140,6 +156,18 @@ class ImageWidget extends StatelessWidget {
           width: width,
           height: height,
           fit: fit,
+          shape: BoxShape.rectangle,
+          borderRadius: borderRadius,
+          loadStateChanged: (state) => _buildLoadState(context, state),
+        );
+        break;
+      case ImageWidgetType.memory:
+        image = ExtendedImage.memory(
+          data!,
+          width: width,
+          height: height,
+          fit: fit,
+          color: backgroundColor,
           shape: BoxShape.rectangle,
           borderRadius: borderRadius,
           loadStateChanged: (state) => _buildLoadState(context, state),
