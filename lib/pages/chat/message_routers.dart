@@ -126,7 +126,7 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
         type: type,
         spaceEnum: spaceEnum,
         children: children,
-        name: target.chatdata.chatName ?? "",
+        name: target.chatdata.value.chatName ?? "",
         target: target,
         image: image);
   }

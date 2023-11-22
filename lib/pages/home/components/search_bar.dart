@@ -63,7 +63,7 @@ class SearchBar<T> extends SearchDelegate {
     for (var element in data) {
       switch (homeEnum) {
         case HomeEnum.chat:
-          if ((element as ISession).chatdata.chatName.contains(query) ??
+          if ((element as ISession).chatdata.value.chatName.contains(query) ??
               false) {
             searchData.add(element);
           }

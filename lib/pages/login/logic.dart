@@ -63,7 +63,7 @@ class LoginController extends BaseController<LoginState> {
       Get.offAndToNamed(Routers.logintrans, arguments: true);
       Future.delayed(const Duration(seconds: 2));
     } else {
-      ToastUtils.showMsg(msg: res.msg);
+      ToastUtils.showMsg(msg: res.msg ?? '登录失败');
     }
   }
 

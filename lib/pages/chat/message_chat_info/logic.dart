@@ -25,7 +25,7 @@ class MessageChatInfoController extends BaseController<MessageChatInfoState> {
   }
 
   void addPerson() async {
-    var id = state.chat.chatdata.fullId.split('-').last;
+    var id = state.chat.chatdata.value.fullId.split('-').last;
     XEntity? entity = await settingCtrl.user.findEntityAsync(id);
     if (entity != null) {
       List<XTarget> target = await settingCtrl.user

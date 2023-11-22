@@ -142,7 +142,7 @@ class MessageChatInfoPage
                   height: 5.w,
                 ),
                 Text(
-                  state.chat.chatdata.chatRemark,
+                  state.chat.chatdata.value.chatRemark,
                   style: TextStyle(fontSize: 16.sp),
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,

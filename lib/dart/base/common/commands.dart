@@ -46,7 +46,8 @@ class Command {
   }
 
   /// 根据标识订阅变更
-  String subscribeByFlag(String flag, Function callback) {
+  String subscribeByFlag(
+      String flag, Function([List<dynamic>? args]) callback) {
     flagCallbacks['$id-$flag'] = callback;
     callback.call();
     return id;
@@ -61,7 +62,7 @@ class Command {
   }
 
   /// 发送命令
-  void emitterFlag({String flag = '', List<dynamic> args = const []}) {
+  void emitterFlag([String? flag = '', List<dynamic>? args = const []]) {
     for (var id in flagCallbacks.keys) {
       if (flag == '' || id.endsWith('-$flag')) {
         flagCallbacks[id]?.call(args);

@@ -752,7 +752,7 @@ class ChatBoxController with WidgetsBindingObserver {
 
     var save = MsgSaveModel.fromFileUpload(
         settingCtrl.user.id, pickedImage.name, pickedImage.path, ext);
-    chat.messages.insert(0, Message(chat.chatdata.lastMessage!, chat));
+    chat.messages.insert(0, Message(chat.chatdata.value.lastMessage!, chat));
 
     var item = await docDir.createFile(
       File(pickedImage.path),
@@ -778,7 +778,7 @@ class ChatBoxController with WidgetsBindingObserver {
     var file1 = File(file.path!);
     var save = MsgSaveModel.fromFileUpload(
         settingCtrl.user.id, file.name, file.path!, ext, file1.lengthSync());
-    chat.messages.insert(0, Message(chat.chatdata.lastMessage!, chat));
+    chat.messages.insert(0, Message(chat.chatdata.value.lastMessage!, chat));
 
     var item = await docDir.createFile(
       file1,

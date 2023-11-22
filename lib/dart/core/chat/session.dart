@@ -39,7 +39,10 @@ abstract class ISession extends IEntity<XEntity> {
   late ITarget target;
 
   /// 消息类会话元数据
-  late MsgChatData chatdata;
+  late Rx<MsgChatData> chatdata;
+
+  /// 未读消息数量
+  late RxString noReadCount;
 
   /// 会话描述
   late String information;
@@ -114,13 +117,17 @@ class Session extends Entity<XEntity> implements ISession {
       mentionMe: false,
       labels: id == userId ? ['本人'] : tags ?? [],
       lastMessage: null,
-    );
+    ).obs;
     members = <XTarget>[].obs;
     messages = <IMessage>[].obs;
     activity = Activity(metadata, this);
-    if (id != userId) {
-      loadCacheChatData();
-    }
+    noReadCount = "".obs;
+    // loadCacheChatData();
+    Future.delayed(Duration(milliseconds: id == userId ? 100 : 0),
+        () async => {await loadCacheChatData()});
+    // if (id != userId) {
+    //   loadCacheChatData();
+    // }
   }
 
   @override
@@ -134,7 +141,21 @@ class Session extends Entity<XEntity> implements ISession {
 
   /// 消息类会话元数据
   @override
-  late MsgChatData chatdata;
+  late Rx<MsgChatData> chatdata;
+
+  /// 未读消息数量
+  @override
+  late RxString noReadCount;
+
+  // @override
+  // MsgChatData get chatdata {
+  //   return _chatdata.value;
+  // }
+
+  // @override
+  // set chatdata(MsgChatData chatdata) {
+  //   _chatdata.value = chatdata;
+  // }
 
   /// 会话的历史消息
   @override
@@ -185,7 +206,7 @@ class Session extends Entity<XEntity> implements ISession {
   bool get isMyChat {
     return (metadata.typeName == TargetType.person.label ||
         members.any((i) => i.id == userId) ||
-        chatdata.noReadCount > 0);
+        chatdata.value.noReadCount > 0);
   }
 
   @override
@@ -196,8 +217,8 @@ class Session extends Entity<XEntity> implements ISession {
 
   @override
   String get remark {
-    if (null != chatdata.lastMessage) {
-      var msg = Message(chatdata.lastMessage!, this);
+    if (null != chatdata.value.lastMessage) {
+      var msg = Message(chatdata.value.lastMessage!, this);
       return msg.msgTitle;
     }
     return metadata.remark!.substring(0, 60);
@@ -212,15 +233,15 @@ class Session extends Entity<XEntity> implements ISession {
 
   @override
   String get information {
-    if (chatdata.lastMessage != null) {
-      var msg = Message(chatdata.lastMessage!, this);
+    if (chatdata.value.lastMessage != null) {
+      var msg = Message(chatdata.value.lastMessage!, this);
       return msg.msgTitle;
     }
     return metadata.remark!.substring(0, 60);
   }
 
   String get cachePath {
-    return 'session.${chatdata.fullId}';
+    return 'session.${chatdata.value.fullId}';
   }
 
   @override
@@ -244,8 +265,8 @@ class Session extends Entity<XEntity> implements ISession {
       for (var msg in data) {
         messages.add(Message(msg, this));
       }
-      if (chatdata.lastMsgTime == nullTime) {
-        chatdata.lastMsgTime =
+      if (chatdata.value.lastMsgTime == nullTime) {
+        chatdata.value.lastMsgTime =
             DateTime.parse(data[0].createTime!).millisecondsSinceEpoch;
       }
       return data.length;
@@ -266,11 +287,13 @@ class Session extends Entity<XEntity> implements ISession {
       if (ids.isNotEmpty) {
         tagMessage(ids, '已读');
       }
-      chatdata.mentionMe = false;
-      if (chatdata.noReadCount > 0) {
-        chatdata.noReadCount = 0;
+      chatdata.value.mentionMe = false;
+      if (chatdata.value.noReadCount > 0) {
+        chatdata.value.noReadCount = 0;
+        refreshNoReadCount();
         cacheChatData(true);
       }
+      command.emitterFlag('session');
       msgChatNotify.changCallback();
       messageNotify?.call(messages);
     });
@@ -338,18 +361,18 @@ class Session extends Entity<XEntity> implements ISession {
   @override
   Future<void> tagMessage(List<String> ids, String tag) async {
     var data = await coll.updateMany(
-      ids,
-      {
-        "_push_": {
-          "comments": {
-            "label": tag,
-            "time": 'sysdate()',
-            "userId": userId,
+        ids,
+        {
+          "_push_": {
+            "comments": {
+              "label": tag,
+              "time": 'sysdate()',
+              "userId": userId,
+            },
           },
         },
-      },
-      copyId: copyId,
-    );
+        copyId,
+        ChatMessageType.fromJson);
     if (data != null) {
       await notify('replace', data);
     }
@@ -365,7 +388,7 @@ class Session extends Entity<XEntity> implements ISession {
             if (index > -1) {
               messages.removeAt(index);
             }
-            chatdata.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
+            chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
             messageNotify?.call(messages);
             return true;
           }
@@ -381,7 +404,7 @@ class Session extends Entity<XEntity> implements ISession {
       var success = await coll.deleteMatch(sessionMatch);
       if (success) {
         messages.clear();
-        chatdata.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
+        chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
         messageNotify?.call(messages);
         sendMessage(MessageType.notify, '${target.user?.name} 清空了消息', []);
         return true;
@@ -401,24 +424,40 @@ class Session extends Entity<XEntity> implements ISession {
     if (operate == 'insert') {
       messages.insert(0, imsg);
       if (messageNotify == null) {
-        chatdata.noReadCount += imsg.isMySend ? 0 : 1;
-        if (!chatdata.mentionMe) {
-          chatdata.mentionMe = imsg.mentions.contains(userId);
+        chatdata.value.noReadCount += imsg.isMySend ? 0 : 1;
+        refreshNoReadCount();
+        if (!chatdata.value.mentionMe) {
+          chatdata.value.mentionMe = imsg.mentions.contains(userId);
         }
-        msgChatNotify.changCallback();
+        // msgChatNotify.changCallback();
+        command.emitterFlag('session');
       } else if (!imsg.isReaded) {
         tagMessage([imsg.id], '已读');
       }
-      chatdata.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
-      chatdata.lastMessage = data;
+      chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
+      chatdata.value.lastMessage = data;
       cacheChatData(messageNotify != null && !imsg.isMySend);
     } else {
       var index = messages.indexWhere((i) => i.id == data.id);
       if (index > -1) {
         messages[index] = imsg;
       }
+
+      chatdata.value.noReadCount -= imsg.isMySend ? 0 : 1;
+      refreshNoReadCount();
+      command.emitterFlag('session');
     }
     messageNotify!.call(messages);
+  }
+
+  void refreshNoReadCount() {
+    if (chatdata.value.noReadCount > 0) {
+      noReadCount.value = chatdata.value.noReadCount > 99
+          ? "99+"
+          : chatdata.value.noReadCount.toString();
+    } else {
+      noReadCount.value = '';
+    }
   }
 
   Future<bool> notify(
@@ -441,15 +480,17 @@ class Session extends Entity<XEntity> implements ISession {
   Future<void> loadCacheChatData() async {
     var data = await target.user?.cacheObj
         .get<MsgChatData>(cachePath, MsgChatData.fromJson);
-    if (data?.fullId == chatdata.fullId) {
-      chatdata = data!;
+    if (data?.fullId == chatdata.value.fullId) {
+      chatdata.value = data!;
+      refreshNoReadCount();
       msgChatNotify.changCallback();
     }
-    target.user?.cacheObj.subscribe(chatdata.fullId, (data) {
-      if (data.fullId == chatdata.fullId) {
-        chatdata = data as MsgChatData;
+    target.user?.cacheObj.subscribe(chatdata.value.fullId, (data) {
+      if (data.fullId == chatdata.value.fullId) {
+        chatdata.value = data as MsgChatData;
+        refreshNoReadCount();
         target.user?.cacheObj.setValue(cachePath, data);
-        command.emitterFlag(flag: 'session');
+        command.emitterFlag('session');
       }
     });
     _subscribeMessage();
@@ -460,7 +501,7 @@ class Session extends Entity<XEntity> implements ISession {
     var success = await target.user?.cacheObj.set(cachePath, chatdata);
     if (success! && notify!) {
       await target.user?.cacheObj.notity(
-        chatdata.fullId,
+        chatdata.value.fullId,
         chatdata,
         onlyTarget: true,
         ignoreSelf: true,
@@ -473,7 +514,7 @@ class Session extends Entity<XEntity> implements ISession {
     print(
         '>>>--==========================================================================');
     print(
-        '>>>--KEY:$key ID:$id hashCode:$hashCode isGroup:$isGroup belong:$belongId target:${target.id} name:$name');
+        '>>>--KEY:$key ID:$id hashCode:$hashCode isGroup:$isGroup belong:$belongId target:${target.id} name:$name typeName:$typeName');
     print(
         '>>>--^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
     if (isGroup) {
@@ -489,8 +530,8 @@ class Session extends Entity<XEntity> implements ISession {
         [key],
         (res) => {
           res['data'].forEach((item) => {
-                if ([item.fromId, item.toId].contains(sessionId) &&
-                    [item.fromId, item.toId].contains(userId))
+                if ([item['fromId'], item['toId']].contains(sessionId) &&
+                    [item['fromId'], item['toId']].contains(userId))
                   {
                     receiveMessage(
                         res['operate'], ChatMessageType.fromJson(item))

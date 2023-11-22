@@ -47,8 +47,8 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
                   shouldIgnorePointerWhenScrolling: false,
                   controller: state.tabController,
                   children: [
-                    KeepAliveWidget(child: MessageChats()),
-                    KeepAliveWidget(child: WorkPage()),
+                    const KeepAliveWidget(child: MessageChats()),
+                    const KeepAliveWidget(child: WorkPage()),
                     KeepAliveWidget(child: IndexPage()),
                     KeepAliveWidget(child: StorePage()),
                     KeepAliveWidget(child: SettingPage()),
@@ -109,10 +109,7 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
       if (homeEnum == HomeEnum.work) {
         mgsCount = settingCtrl.provider.work?.todos.length ?? 0;
       } else if (homeEnum == HomeEnum.chat) {
-        var chats = settingCtrl.chats;
-        for (var element in chats) {
-          mgsCount += element.chatdata.noReadCount;
-        }
+        mgsCount = settingCtrl.noReadMgsCount;
       }
       return BadgeTabWidget(
         imgPath: !isSelected ? unPath : path,

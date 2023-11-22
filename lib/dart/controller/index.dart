@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/common/routers/index.dart';
+import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
@@ -80,6 +81,7 @@ class IndexController extends GetxController {
   late UserProvider _provider;
 
   var homeEnum = HomeEnum.door.obs;
+  final _noReadMgsCount = 0.obs;
 
   late CustomPopupMenuController functionMenuController;
 
@@ -98,8 +100,8 @@ class IndexController extends GetxController {
   List<ITarget> get targets => provider.targets;
 
   /// 所有相关会话
-  List<ISession> get chats {
-    List<ISession> chats = [];
+  RxList<ISession> get chats {
+    RxList<ISession> chats = RxList();
     if (provider.user != null) {
       chats.addAll(provider.user?.chats ?? []);
       for (var company in provider.user?.companys ?? []) {
@@ -107,6 +109,12 @@ class IndexController extends GetxController {
       }
     }
     return chats;
+  }
+
+  int get noReadMgsCount {
+    //处理所有未读消息
+    refreshNoReadMgsCount();
+    return _noReadMgsCount.value;
   }
 
   var menuItems = [
@@ -142,6 +150,21 @@ class IndexController extends GetxController {
       // _provider.loadApps();
       EventBusHelper.fire(InitDataDone());
     });
+    //初始化未读信息命令
+    initNoReadCommand();
+  }
+
+  void initNoReadCommand() {
+    //沟通未读消息提示处理
+    command.subscribeByFlag(
+        'session', ([List<dynamic>? args]) => {refreshNoReadMgsCount()});
+  }
+
+  void refreshNoReadMgsCount() {
+    _noReadMgsCount.value = 0;
+    for (var element in chats) {
+      _noReadMgsCount.value += element.chatdata.value.noReadCount;
+    }
   }
 
   @override

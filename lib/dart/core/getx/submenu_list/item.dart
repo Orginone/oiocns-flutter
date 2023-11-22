@@ -1,6 +1,7 @@
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:orginone/utils/date_util.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/components/widgets/popup_widget.dart';
@@ -20,44 +21,47 @@ class GridItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PopupWidget(
-      onTap: () {
-        adapter.callback?.call();
-      },
-      itemBuilder: (BuildContext context) {
-        return adapter.popupMenuItems;
-      },
-      onSelected: (key) {
-        adapter.onSelected?.call(key);
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          _avatarContainer,
-          SizedBox(
-            width: 10.w,
-          ),
-          Expanded(child: _content),
-        ],
-      ),
-    );
+    return Obx(() {
+      return PopupWidget(
+        onTap: () {
+          adapter.callback?.call();
+        },
+        itemBuilder: (BuildContext context) {
+          return adapter.popupMenuItems;
+        },
+        onSelected: (key) {
+          adapter.onSelected?.call(key);
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            _avatarContainer,
+            SizedBox(
+              width: 10.w,
+            ),
+            Expanded(child: _content),
+          ],
+        ),
+      );
+    });
   }
 
   Widget get _avatarContainer {
-    var noRead = adapter.noReadCount;
+    var noRead = adapter.chat.noReadCount; //adapter.noReadCount;
     Widget child = ImageWidget(
       adapter.image,
       size: 50.w,
       iconColor: const Color(0xFF9498df),
       circular: adapter.circularAvatar,
     );
-    if (noRead > 0) {
+    if (noRead.isNotEmpty) {
       child = badges.Badge(
         ignorePointer: false,
         position: badges.BadgePosition.topEnd(top: -2),
         badgeContent: Text(
-          "${noRead > 99 ? "99+" : noRead}",
+          noRead.value,
+          // "${noRead > 99 ? "99+" : noRead}",
           style: const TextStyle(
             color: Colors.white,
             fontSize: 10,
@@ -122,7 +126,7 @@ class GridItem extends StatelessWidget {
   }
 }
 
-class ListItem extends StatelessWidget {
+class ListItem extends StatefulWidget {
   final ListAdapter adapter;
 
   const ListItem({
@@ -131,55 +135,67 @@ class ListItem extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<StatefulWidget> createState() {
+    return _ListItemState();
+  }
+}
+
+class _ListItemState extends State<ListItem> {
+  @override
   Widget build(BuildContext context) {
-    return PopupWidget(
-      itemBuilder: (BuildContext context) {
-        return adapter.popupMenuItems;
-      },
-      onTap: () {
-        adapter.callback?.call();
-      },
-      onSelected: (key) {
-        adapter.onSelected?.call(key);
-      },
-      child: Container(
-        color: Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: 15.w),
+    return Obx(() {
+      return PopupWidget(
+        itemBuilder: (BuildContext context) {
+          return widget.adapter.popupMenuItems;
+        },
+        onTap: () {
+          widget.adapter.callback?.call();
+        },
+        onSelected: (key) {
+          widget.adapter.onSelected?.call(key);
+        },
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 7.h),
-          decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(color: Colors.grey.shade300, width: 0.4))),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _avatarContainer,
-              SizedBox(
-                width: 10.w,
-              ),
-              Expanded(child: _content),
-            ],
+          color: Colors.white,
+          padding: EdgeInsets.symmetric(horizontal: 15.w),
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 7.h),
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom:
+                        BorderSide(color: Colors.grey.shade300, width: 0.4))),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _avatarContainer,
+                SizedBox(
+                  width: 10.w,
+                ),
+                Expanded(child: _content),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
+    });
   }
 
   Widget get _avatarContainer {
-    var noRead = adapter.noReadCount;
+    var noRead =
+        widget.adapter.chat.noReadCount; //widget.adapter.noReadCount; //
     Widget child = ImageWidget(
-      adapter.image,
+      widget.adapter.image,
       size: 65.w,
       iconColor: const Color(0xFF9498df),
-      circular: adapter.circularAvatar,
+      circular: widget.adapter.circularAvatar,
     );
-    if (noRead > 0) {
+    if (noRead.isNotEmpty) {
       child = badges.Badge(
         ignorePointer: false,
         position: badges.BadgePosition.topEnd(top: -10),
         badgeContent: Text(
-          "${noRead > 99 ? "99+" : noRead}",
+          noRead.value,
+          // "${noRead > 99 ? "99+" : noRead}",
           style: const TextStyle(
             color: Colors.white,
             fontSize: 10,
@@ -196,7 +212,7 @@ class ListItem extends StatelessWidget {
 
   Widget get _content {
     var labels = <Widget>[];
-    for (var item in adapter.labels) {
+    for (var item in widget.adapter.labels) {
       if (item.isNotEmpty) {
         bool isTop = item == "置顶";
 
@@ -206,7 +222,7 @@ class ListItem extends StatelessWidget {
           color: isTop ? XColors.fontErrorColor : XColors.designBlue,
           fontSize: 14.sp,
         );
-        if (adapter.isUserLabel) {
+        if (widget.adapter.isUserLabel) {
           label = Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -236,7 +252,7 @@ class ListItem extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                adapter.title,
+                widget.adapter.title,
                 style: TextStyle(
                   color: XColors.chatTitleColor,
                   fontWeight: FontWeight.w500,
@@ -247,7 +263,7 @@ class ListItem extends StatelessWidget {
               ),
             ),
             Text(
-              CustomDateUtil.getSessionTime(adapter.dateTime),
+              CustomDateUtil.getSessionTime(widget.adapter.dateTime),
               style: TextStyle(color: Colors.grey, fontSize: 18.sp),
               textAlign: TextAlign.right,
             ),
@@ -269,7 +285,7 @@ class ListItem extends StatelessWidget {
 
   Widget _showTxt() {
     return Text(
-      adapter.content,
+      widget.adapter.content,
       style: TextStyle(
         color: XColors.chatHintColors,
         fontSize: 18.sp,

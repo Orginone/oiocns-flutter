@@ -1,5 +1,6 @@
 // 目录操作的接口
 
+import 'package:orginone/dart/base/common/lists.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/collection.dart';
@@ -32,29 +33,17 @@ class DirectoryOperate implements IDirectoryOperate {
     if (directory.parent != null) {
       // 订阅资源类型的变更
       _subscribe<XForm>(
-        _resource.formColl,
-        (s, l) => Form(s, l),
-      );
+          _resource.formColl, (s, l) => Form(s, l), XForm.fromJson);
       _subscribe<XProperty>(
-        _resource.propertyColl,
-        (s, l) => Property(s, l),
-      );
+          _resource.propertyColl, (s, l) => Property(s, l), XProperty.fromJson);
       _subscribe<XSpecies>(
-        _resource.speciesColl,
-        (s, l) => Species(s, l),
-      );
+          _resource.speciesColl, (s, l) => Species(s, l), XSpecies.fromJson);
       _subscribe<XTransfer>(
-        _resource.transferColl,
-        (s, l) => Transfer(s, l),
-      );
-      _subscribe<XApplication>(
-        _resource.applicationColl,
-        (s, l) => Application(s, l),
-      );
-      _subscribe<XDirectory>(
-        _resource.directoryColl,
-        (s, l) => Directory(s, directory.target),
-      );
+          _resource.transferColl, (s, l) => Transfer(s, l), XTransfer.fromJson);
+      _subscribe<XApplication>(_resource.applicationColl,
+          (s, l) => Application(s, l), XApplication.fromJson);
+      _subscribe<XDirectory>(_resource.directoryColl,
+          (s, l) => Directory(s, directory.target), XDirectory.fromJson);
     }
   }
   @override
@@ -168,13 +157,14 @@ class DirectoryOperate implements IDirectoryOperate {
     return false;
   }
 
-  _subscribe<T extends XStandard>(
-    XCollection<T> coll,
-    StandardFileInfo<T> Function(T data, IDirectory dir) create,
-  ) {
+  _subscribe<T extends XStandard>(XCollection<T> coll,
+      StandardFileInfo<T> Function(T data, IDirectory dir) create,
+      [T Function(Map<String, dynamic>)? fromJson]) {
     coll.subscribe([directory.key], (a) async {
       String operate = a['operate'];
-      List<T> data = a['data'];
+      List<T> data = a['data'] is List
+          ? Lists.fromList(a['data'], fromJson!)
+          : [fromJson!(a['data'])];
       for (var s in data) {
         receiveMessage<T>(operate, s, coll, create);
       }

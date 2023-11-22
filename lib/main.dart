@@ -31,8 +31,8 @@ const Size screenSize = Size(540, 1170);
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  // List<String> get account => Storage().getList("account");
-  String get userJson => Storage().getString(sessionUserName);
+  List<String> get account => Storage().getList("account");
+  // String get userJson => Storage().getString(sessionUserName);
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
           navigatorKey: navigatorKey,
           initialBinding: UserBinding(),
           onInit: () async {
-            // await automaticLogon();
+            await automaticLogon();
           },
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
@@ -59,10 +59,7 @@ class MyApp extends StatelessWidget {
           ],
           darkTheme: ThemeData(useMaterial3: false),
           textDirection: TextDirection.ltr,
-          initialRoute: userJson.isNotEmpty
-              ? Routers.home
-              : Routers
-                  .login, //account.isNotEmpty ? Routers.home : Routers.login,
+          initialRoute: account.isNotEmpty ? Routers.home : Routers.login,
           defaultTransition: Transition.fadeIn,
           getPages: RoutePages.getInitRouters,
         );
@@ -70,27 +67,27 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  // Future<void> automaticLogon() async {
-  //   Future<void> login() async {
-  //     // Storage.clear();
-  //     if (account.isEmpty) {
-  //       settingCtrl.exitLogin();
-  //       return;
-  //     }
-  //     String accountName = account.first;
-  //     String passWord = account.last;
-  //     var login = await settingCtrl.provider.login(accountName, passWord);
-  //     if (!login.success) {
-  //       settingCtrl.exitLogin();
-  //     }
-  //   }
+  Future<void> automaticLogon() async {
+    Future<void> login() async {
+      // Storage.clear();
+      if (account.isEmpty) {
+        settingCtrl.exitLogin();
+        return;
+      }
+      String accountName = account.first;
+      String passWord = account.last;
+      var login = await settingCtrl.provider.login(accountName, passWord);
+      if (!login.success) {
+        settingCtrl.exitLogin();
+      }
+    }
 
-  //   if (kernel.isOnline) {
-  //     await login();
-  //   } else {
-  //     Future.delayed(const Duration(milliseconds: 100), () async {
-  //       await automaticLogon();
-  //     });
-  //   }
-  // }
+    if (kernel.isOnline) {
+      await login();
+    } else {
+      Future.delayed(const Duration(milliseconds: 100), () async {
+        await automaticLogon();
+      });
+    }
+  }
 }

@@ -1,5 +1,9 @@
 #fvm flutter build apk -t lib/main.dart --flavor stage  --target-platform android-arm,android-arm64 \
-fvm flutter build apk -t lib/main_dev.dart --target-platform android-arm,android-arm64 \
+if command -v fvm >/dev/null 2>&1; then
+  fvm flutter build apk -t lib/main_dev.dart --target-platform android-arm,android-arm64
+else
+  flutter build apk -t lib/main_dev.dart --target-platform android-arm,android-arm64
+fi
 ###
  # @Descripttion: 
  # @version: 
@@ -14,4 +18,6 @@ cd build/app/outputs/flutter-apk/
 
 mv "app-dev-release.apk" "oiocns-dev.apk"
 
-start .
+if command -v start >/dev/null 2>&1; then
+  start .
+fi

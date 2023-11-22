@@ -191,17 +191,17 @@ class XCollection<T extends Xbase> {
   }
 
   Future<List<T>?> updateMany(List<String> ids, dynamic update,
-      {String? copyId}) async {
+      [String? copyId, T Function(Map<String, dynamic>)? fromJson]) async {
     var res = await kernel.collectionSetFields<List<T>>(
-      _target.belongId!,
-      this._relations,
-      this._collName,
-      {
-        ids,
-        update,
-      },
-      copyId,
-    );
+        _target.belongId!,
+        this._relations,
+        this._collName,
+        {
+          "ids": ids,
+          "update": update,
+        },
+        copyId,
+        (data) => Lists.fromList(data['data'], fromJson!));
     if (res.success) {
       return res.data;
     }

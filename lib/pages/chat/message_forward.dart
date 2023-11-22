@@ -107,7 +107,8 @@ class _MessageForwardState extends State<MessageForward> {
                       context: context,
                       builder: (context) {
                         return CupertinoAlertDialog(
-                          title: Text("发送给${item.msg.chatdata.chatName}?"),
+                          title:
+                              Text("发送给${item.msg.chatdata.value.chatName}?"),
                           actions: <Widget>[
                             CupertinoDialogAction(
                               child: const Text('取消'),

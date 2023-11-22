@@ -48,30 +48,31 @@ class MessageSetting extends GetView<IndexController> {
       children = [
         _avatar(chat),
         Padding(padding: EdgeInsets.only(top: 50.h)),
-        Obx(() {
-          return Avatars(
-            showCount: 15,
-            persons: chat.members,
-            hasAdd: true,
-            addCallback: () {
-              var target =
-                  TargetType.getType(chat.share.typeName) == TargetType.group
-                      ? TargetType.company
-                      : TargetType.person;
-              showSearchDialog(context, target, title: "邀请成员", hint: "请输入用户的账号",
-                  onSelected: (targets) async {
-                if (targets.isNotEmpty) {
-                  var success = await (chat as ITeam).pullMembers(targets);
-                  if (success) {
-                    ToastUtils.showMsg(msg: "邀请成功");
-                  }
-                } else {
-                  ToastUtils.showMsg(msg: "未选择用户");
+        // Obx(() {
+        //   return
+        Avatars(
+          showCount: 15,
+          persons: chat.members,
+          hasAdd: true,
+          addCallback: () {
+            var target =
+                TargetType.getType(chat.share.typeName) == TargetType.group
+                    ? TargetType.company
+                    : TargetType.person;
+            showSearchDialog(context, target, title: "邀请成员", hint: "请输入用户的账号",
+                onSelected: (targets) async {
+              if (targets.isNotEmpty) {
+                var success = await (chat as ITeam).pullMembers(targets);
+                if (success) {
+                  ToastUtils.showMsg(msg: "邀请成功");
                 }
-              });
-            },
-          );
-        }),
+              } else {
+                ToastUtils.showMsg(msg: "未选择用户");
+              }
+            });
+          },
+        ),
+        // }),
         // _interruption,
         // _top,
         _file(chat),
@@ -122,8 +123,8 @@ class MessageSetting extends GetView<IndexController> {
   /// 头像相关
   Widget _avatar(ISession chat) {
     var messageItem = chat.chatdata;
-    String name = messageItem.chatName ?? "";
-    if (messageItem.labels.contains(TargetType.person.label) ?? false) {
+    String name = messageItem.value.chatName ?? "";
+    if (messageItem.value.labels.contains(TargetType.person.label) ?? false) {
       name += "(${chat.members.length})";
     }
     return Row(
@@ -137,7 +138,7 @@ class MessageSetting extends GetView<IndexController> {
             children: [
               Text(name, style: XFonts.size22Black3W700),
               Text(
-                messageItem.chatRemark ?? "",
+                messageItem.value.chatRemark ?? "",
                 style: XFonts.size16Black6,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
@@ -229,7 +230,7 @@ class MessageSetting extends GetView<IndexController> {
           context: context,
           builder: (context) {
             return CupertinoAlertDialog(
-              title: Text("您确定清空与${chat.chatdata.chatName}的聊天记录吗?"),
+              title: Text("您确定清空与${chat.chatdata.value.chatName}的聊天记录吗?"),
               actions: <Widget>[
                 CupertinoDialogAction(
                   child: const Text('取消'),
@@ -267,11 +268,11 @@ class MessageSetting extends GetView<IndexController> {
   Widget _exitTarget(BuildContext context, ISession chat) {
     String remark = "";
     String btnName = "";
-    if (chat.chatdata.labels.contains(TargetType.person.label) ?? false) {
-      remark = "您确定删除好友${chat.chatdata.chatName}吗?";
+    if (chat.chatdata.value.labels.contains(TargetType.person.label) ?? false) {
+      remark = "您确定删除好友${chat.chatdata.value.chatName}吗?";
       btnName = "删除好友";
     } else {
-      remark = "您确定退出${chat.chatdata.chatName}吗?";
+      remark = "您确定退出${chat.chatdata.value.chatName}吗?";
       btnName = "退出群聊";
     }
     return ElevatedButton(

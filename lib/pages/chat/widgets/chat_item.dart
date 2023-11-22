@@ -28,7 +28,7 @@ class MessageItemWidget extends GetView<IndexController> {
 
   @override
   Widget build(BuildContext context) {
-    bool isTop = chat.chatdata.labels.contains("置顶");
+    bool isTop = chat.chatdata.value.labels.contains("置顶");
     return GestureDetector(
       onTap: () {
         chat.onMessage((messages) => print('>>>$messages'));
@@ -49,9 +49,9 @@ class MessageItemWidget extends GetView<IndexController> {
               label: isTop ? "取消置顶" : "置顶",
               onPressed: (BuildContext context) async {
                 if (isTop) {
-                  chat.chatdata.labels.remove('置顶');
+                  chat.chatdata.value.labels.remove('置顶');
                 } else {
-                  chat.chatdata.labels.add('置顶');
+                  chat.chatdata.value.labels.add('置顶');
                 }
                 await chat.cacheChatData();
                 controller.provider.refresh();
@@ -97,29 +97,27 @@ class MessageItemWidget extends GetView<IndexController> {
 
   Widget get _avatarContainer {
     return Obx(() {
-      var noRead = chat.chatdata.noReadCount;
+      var noRead = chat.noReadCount.value;
       Widget child = TeamAvatar(
         info: TeamTypeInfo(share: chat.share),
         size: 65.w,
         circular: chat.share.typeName == TargetType.person.label,
       );
-      if (noRead > 0) {
-        child = badges.Badge(
-          ignorePointer: false,
-          position: badges.BadgePosition.topEnd(top: -10),
-          badgeContent: Text(
-            "${noRead > 99 ? "99+" : noRead}",
-            style: const TextStyle(
-              color: Colors.white,
-              fontSize: 10,
-              letterSpacing: 1,
-              wordSpacing: 2,
-              height: 1,
-            ),
+      child = badges.Badge(
+        ignorePointer: false,
+        position: badges.BadgePosition.topEnd(top: -10),
+        badgeContent: Text(
+          noRead,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 10,
+            letterSpacing: 1,
+            wordSpacing: 2,
+            height: 1,
           ),
-          child: child,
-        );
-      }
+        ),
+        child: child,
+      );
       return child;
     });
   }
@@ -127,7 +125,7 @@ class MessageItemWidget extends GetView<IndexController> {
   Widget get _content {
     var target = chat.chatdata;
     var labels = <Widget>[];
-    for (var item in chat.chatdata.labels) {
+    for (var item in chat.chatdata.value.labels) {
       if (item.isNotEmpty) {
         bool isTop = item == "置顶";
         labels.add(TextTag(
@@ -149,7 +147,7 @@ class MessageItemWidget extends GetView<IndexController> {
           children: [
             Expanded(
               child: Text(
-                target.chatName ?? "",
+                target.value.chatName ?? "",
                 style: TextStyle(
                   color: XColors.chatTitleColor,
                   fontWeight: FontWeight.w500,
@@ -161,7 +159,7 @@ class MessageItemWidget extends GetView<IndexController> {
             ),
             Text(
               CustomDateUtil.getSessionTime(
-                  chat.chatdata.lastMessage?.createTime),
+                  chat.chatdata.value.lastMessage?.createTime),
               style: TextStyle(color: Colors.grey, fontSize: 18.sp),
               textAlign: TextAlign.right,
             ),
@@ -182,7 +180,7 @@ class MessageItemWidget extends GetView<IndexController> {
   }
 
   Widget _showTxt() {
-    var lastMessage = chat.chatdata.lastMessage;
+    var lastMessage = chat.chatdata.value.lastMessage;
     if (lastMessage == null) {
       return SizedBox(
         height: 30.h,

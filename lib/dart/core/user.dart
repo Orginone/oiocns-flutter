@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
@@ -18,10 +16,10 @@ const sessionUserName = 'sessionUser';
 class UserProvider {
   UserProvider({Emitter? emiter}) {
     _emiter = emiter;
-    final userJson = Storage().getString(sessionUserName);
-    if (userJson.isNotEmpty) {
-      _loadUser(XTarget.fromJson(jsonDecode(userJson)));
-    }
+    // final userJson = Storage().getString(sessionUserName);
+    // if (userJson.isNotEmpty) {
+    //   _loadUser(XTarget.fromJson(jsonDecode(userJson)));
+    // }
   }
   final Rxn<IPerson> _user = Rxn();
   // late IPerson? _user;

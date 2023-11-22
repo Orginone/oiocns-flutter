@@ -80,7 +80,7 @@ class MessageSubPage
       List<ISession> chats = state.chats;
       if (type == "unread") {
         chats = chats
-            .where((element) => element.chatdata.noReadCount != 0)
+            .where((element) => element.chatdata.value.noReadCount != 0)
             .toList();
       }
       if (type == "single") {

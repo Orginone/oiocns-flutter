@@ -194,10 +194,14 @@ class StoreHub {
           args!.isNotEmpty ? args[0] : {},
         );
       }
-      ResultType res = ResultType.fromJson(resObj as Map<String, dynamic>);
-      LogUtil.d('接口：${Constant.rest}/${methodName.toLowerCase()}');
-      LogUtil.d('参数：${jsonEncode(args![0])}');
-      return _success(res);
+
+      if (null != resObj) {
+        ResultType res = ResultType.fromJson(resObj as Map<String, dynamic>);
+        LogUtil.d('接口：${Constant.rest}/${methodName.toLowerCase()}');
+        LogUtil.d('参数：${jsonEncode(args![0])}');
+        return _success(res);
+      }
+      return _error();
     } catch (e, s) {
       LogUtil.d('接口：${Constant.rest}/${methodName.toLowerCase()}');
       LogUtil.d('参数：${jsonEncode(args![0])}');
@@ -265,7 +269,7 @@ class StoreHub {
   ) async {
     final res = await _http.post(
       url,
-      data: args.toJson(),
+      data: args is String || args is Map ? args : args.toJson(),
     );
 
     // if (res != null && res['code'] == 200) {
@@ -277,7 +281,9 @@ class StoreHub {
   ResultType<dynamic> _success(ResultType<dynamic> res) {
     if (!res.success) {
       if (res.code == 401) {
+        LogUtil.e('==========================================登录已过期处理');
         // 登录已过期处理
+        restart();
       } else if (res.msg != '' && !res.msg.contains('不在线')) {
         LogUtil.e('Http:操作失败,${res.msg}');
         ToastUtils.showMsg(msg: res.msg);
@@ -286,7 +292,7 @@ class StoreHub {
     return res;
   }
 
-  ResultType<dynamic> _error(dynamic res, dynamic s) {
+  ResultType<dynamic> _error([dynamic res, dynamic s]) {
     var msg = '请求异常';
     if (null != res) {
       LogUtil.e('Http:===========================err');

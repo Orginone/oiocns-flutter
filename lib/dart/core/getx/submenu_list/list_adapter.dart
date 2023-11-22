@@ -37,6 +37,8 @@ class ListAdapter {
 
   String? typeName;
 
+  late ISession chat;
+
   ListAdapter({
     this.title = '',
     this.labels = const [],
@@ -51,7 +53,7 @@ class ListAdapter {
   });
 
   ListAdapter.chat(ISession chat) {
-    labels = chat.chatdata.labels;
+    labels = chat.chatdata.value.labels;
     bool isTop = labels.contains("置顶");
     isUserLabel = false;
     typeName = chat.share.typeName;
@@ -68,12 +70,12 @@ class ListAdapter {
     onSelected = (key) async {
       switch (key) {
         case PopupMenuKey.cancelTopping:
-          chat.chatdata.labels.remove('置顶');
+          chat.chatdata.value.labels.remove('置顶');
           await chat.cacheChatData();
           settingCtrl.provider.refresh();
           break;
         case PopupMenuKey.topping:
-          chat.chatdata.labels.add('置顶');
+          chat.chatdata.value.labels.add('置顶');
           await chat.cacheChatData();
           settingCtrl.provider.refresh();
           break;
@@ -84,11 +86,12 @@ class ListAdapter {
       }
     };
     circularAvatar = chat.share.typeName == TargetType.person.label;
-    noReadCount = chat.chatdata.noReadCount;
-    title = chat.chatdata.chatName ?? "";
-    dateTime = chat.chatdata.lastMessage?.createTime;
+    noReadCount = chat.chatdata.value.noReadCount;
+    title = chat.chatdata.value.chatName ?? "";
+    dateTime = chat.chatdata.value.lastMessage?.createTime;
     content = '';
-    var lastMessage = chat.chatdata.lastMessage;
+    this.chat = chat;
+    var lastMessage = chat.chatdata.value.lastMessage;
     if (lastMessage != null) {
       if (lastMessage.fromId != settingCtrl.user.metadata.id) {
         if (chat.share.typeName != TargetType.person.label) {

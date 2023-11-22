@@ -39,7 +39,7 @@ class MessageChatsListController extends GetxController {
     super.onInit();
     chats = Get.arguments['chats'];
     chats.sort((f, s) {
-      return (s.chatdata.lastMsgTime) - (f.chatdata.lastMsgTime);
+      return (s.chatdata.value.lastMsgTime) - (f.chatdata.value.lastMsgTime);
     });
   }
 }

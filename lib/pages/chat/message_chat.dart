@@ -46,11 +46,11 @@ class MessageChatPage
   }
 
   Widget _title() {
-    String name = state.chat.chatdata.chatName ?? "";
+    String name = state.chat.chatdata.value.chatName ?? "";
     if (state.chat.members.length > 1) {
       name += "(${state.chat.members.length})";
     }
-    var spaceName = state.chat.chatdata.labels.join(" | ");
+    var spaceName = state.chat.chatdata.value.labels.join(" | ");
     return Column(
       children: [
         Text(name, style: XFonts.size24Black3),

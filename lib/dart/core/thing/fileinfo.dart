@@ -124,7 +124,7 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
         cache = data;
         target.user?.cacheObj.setValue(cachePath, data);
         directory.changCallback();
-        command.emitterFlag(flag: cacheFlag);
+        command.emitterFlag(cacheFlag);
       }
     }, data?.fullId);
   }

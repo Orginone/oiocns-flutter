@@ -287,8 +287,8 @@ class DetailItemWidget extends GetView<IndexController> {
     try {
       IMessageLabel? tag;
       if (chat.share.typeName == TargetType.person.label) {
-        tag = msg.labels
-            .firstWhere((element) => element.userId == chat.chatdata.fullId);
+        tag = msg.labels.firstWhere(
+            (element) => element.userId == chat.chatdata.value.fullId);
         isRead = tag != null;
       } else {
         for (var member in chat.members) {

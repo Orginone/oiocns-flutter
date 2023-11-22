@@ -848,7 +848,7 @@ class KernelApi {
         copyId: copyId,
         relations: relations,
         flag: collName,
-        params: {collName, collSet},
+        params: {"collName": collName, "collSet": collSet},
       ),
     );
 
@@ -1122,8 +1122,8 @@ class KernelApi {
     if (req.ignoreSelf) {
       req.ignoreConnectionId = _storeHub.connectionId;
     }
-    return await _storeHub.invoke('DataNotify', args: [req])
-        as ResultType<bool>;
+    ResultType res = await _storeHub.invoke('DataNotify', args: [req]);
+    return ResultType<bool>.fromObj(res, res.data as bool);
   }
 
   /// 请求一个内核方法

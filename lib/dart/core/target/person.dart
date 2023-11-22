@@ -300,11 +300,11 @@ class Person extends Belong implements IPerson {
     var companyChatIds = <String>[];
     for (var company in companys) {
       for (var item in company.cohorts) {
-        companyChatIds.add(item.session.chatdata.fullId);
+        companyChatIds.add(item.session.chatdata.value.fullId);
       }
     }
     for (var value in cohorts) {
-      if (!companyChatIds.contains(value.session.chatdata.fullId)) {
+      if (!companyChatIds.contains(value.session.chatdata.value.fullId)) {
         chats.addAll(value.chats);
       }
     }
