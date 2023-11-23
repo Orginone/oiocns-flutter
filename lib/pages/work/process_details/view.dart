@@ -26,7 +26,7 @@ class ProcessDetailsPage
 
   _buildMainView() {
     if (state.todo?.instance != null) {
-      //返回流程视图
+      //流程视图
       return _buildInstanceView();
     }
     if (state.todo!.targets.isNotEmpty) {

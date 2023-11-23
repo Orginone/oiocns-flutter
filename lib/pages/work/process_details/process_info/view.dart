@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -46,43 +48,46 @@ class ProcessInfoPage
       if (state.mainForm.isEmpty) {
         return const SizedBox();
       }
+      LogUtil.d('AAAAAAAAAAA${jsonEncode(state.mainForm)}');
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CommonWidget.commonNonIndicatorTabBar(
-              state.mainTabController,
-              // state.mainForm.map((element) => element.name ?? '').toList(),
-              state.mainForm.map((element) => element.typeName ?? '').toList(),
+          CommonWidget.commonNonIndicatorTabBar(state.mainTabController,
+              state.mainForm.map((element) => element.name ?? '').toList(),
               onTap: (index) {
             controller.changeMainIndex(index);
-          }, labelStyle: TextStyle(fontSize: 20.sp)),
-          Column(
-            children: state.mainForm[state.mainIndex.value].fields.map((e) {
-                  Map<String, dynamic> info = {};
-                  if (state.mainForm[state.mainIndex.value].data?.after
-                          .isNotEmpty ??
-                      false) {
-                    info = state.mainForm[state.mainIndex.value].data!.after[0]
-                        .otherInfo;
-                  }
-                  return FutureBuilder(
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState != ConnectionState.done &&
-                          !snapshot.hasData) {
-                        return Container();
-                      }
-                      Widget child = testMappingComponents[e.field.type ?? ""]!(
-                          e.field, settingCtrl.user);
-                      return child;
-                    },
-                    future: controller.loadMainFieldData(e, info),
-                  );
-                }).toList() ??
-                [],
-          ),
+          }, labelStyle: TextStyle(fontSize: 21.sp)),
+          _buildMainFormView(),
         ],
       );
     });
+  }
+
+  _buildMainFormView() {
+    List<Widget> fileds =
+        state.mainForm[state.mainIndex.value].fields.map((element) {
+      Map<String, dynamic> info = {};
+      if (state.mainForm[state.mainIndex.value].data?.after.isNotEmpty ??
+          false) {
+        info = state.mainForm[state.mainIndex.value].data!.after[0].otherInfo;
+      }
+      return FutureBuilder(
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done &&
+              !snapshot.hasData) {
+            return Container();
+          }
+          Widget child = testMappingComponents[element.field.type ?? ""]!(
+              element.field, settingCtrl.user);
+          return child;
+        },
+        future: controller.loadMainFieldData(element, info),
+      );
+    }).toList();
+
+    return Column(
+      children: fileds,
+    );
   }
 
   Widget _subTable() {
@@ -98,26 +103,29 @@ class ProcessInfoPage
                 state.subForm.map((element) => element.name ?? '').toList(),
                 onTap: (index) {
               controller.changeSubIndex(index);
-            }, labelStyle: TextStyle(fontSize: 20.sp)),
-            Obx(() {
-              var sub = state.subForm[state.subIndex.value];
-              List<String> title =
-                  sub.fields.map((e) => e.name ?? "").toList() ?? [];
-              return FutureBuilder<List<List<String>>>(
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return CommonWidget.commonDocumentWidget(
-                      title: ["标识", "创建者", "状态", ...title],
-                      content: snapshot.data ?? [],
-                    );
-                  }
-                  return Container();
-                },
-                future: controller.loadSubFieldData(sub, sub.fields),
-              );
-            }),
+            }, labelStyle: TextStyle(fontSize: 21.sp)),
+            _buildSubFormView(),
           ],
         ),
+      );
+    });
+  }
+
+  _buildSubFormView() {
+    return Obx(() {
+      var sub = state.subForm[state.subIndex.value];
+      List<String> title = sub.fields.map((e) => e.name ?? "").toList() ?? [];
+      return FutureBuilder<List<List<String>>>(
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return CommonWidget.commonDocumentWidget(
+              title: ["标识", "创建者", "状态", ...title],
+              content: snapshot.data ?? [],
+            );
+          }
+          return Container();
+        },
+        future: controller.loadSubFieldData(sub, sub.fields),
       );
     });
   }

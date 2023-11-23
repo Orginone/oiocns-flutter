@@ -38,11 +38,6 @@ Map<String, dynamic> workDefaultConfig = {
   "type": "work",
   "groups": [
     {
-      "label": "全部",
-      "value": "all",
-      "allowEdit": true,
-    },
-    {
       "label": "待办",
       "value": "todo",
       "allowEdit": false,
@@ -62,16 +57,6 @@ Map<String, dynamic> workDefaultConfig = {
       "value": "create",
       "allowEdit": true,
     },
-    // {
-    //   "label": "常用",
-    //   "value": "common",
-    //   "allowEdit": true,
-    // },
-    // {
-    //   "label": "已发起",
-    //   "value": "apply",
-    //   "allowEdit": true,
-    // },
   ]
 };
 
