@@ -354,7 +354,7 @@ enum HomeEnum {
   chat("沟通"),
   work("办事"),
   door("门户"),
-  store("存储"),
+  store("数据"),
   setting("设置");
 
   final String label;

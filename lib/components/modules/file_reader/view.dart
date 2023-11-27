@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_filereader/flutter_filereader.dart';
+// import 'package:flutter_filereader/flutter_filereader.dart';
 import 'package:orginone/components/modules/file_reader/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/components/widgets/gy_scaffold.dart';
@@ -16,9 +16,10 @@ class FileReaderPage
       body: FutureBuilder<String>(
         builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
           if (snapshot.hasData) {
-            return FileReaderView(
-              filePath: snapshot.data!,
-            );
+            return const Text('文档预览');
+            // return FileReaderView(
+            //   filePath: snapshot.data!,
+            // );
           }
           return LoadStateWidget(
             isSuccess: snapshot.hasData,

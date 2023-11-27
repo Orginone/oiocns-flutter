@@ -132,9 +132,9 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   @override
   final ITarget target;
   @override
-  late List<TaskModel> taskList;
+  List<TaskModel> taskList = [];
   @override
-  late List<ISysFileInfo> files;
+  List<ISysFileInfo> files = [];
 
   List<String> formTypes = ['表单', '报表', '事项配置', '实体配置'];
 

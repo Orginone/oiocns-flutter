@@ -21,10 +21,15 @@ class UserProvider {
     //   _loadUser(XTarget.fromJson(jsonDecode(userJson)));
     // }
   }
+
+  ///当前用户
   final Rxn<IPerson> _user = Rxn();
   // late IPerson? _user;
-
+  ///办事提供层
   final Rxn<IWorkProvider> _work = Rxn();
+
+  ///暂存提供层
+  // final Rxn<IBoxProvider> _box = Rxn();
 
   bool _inited = false;
   late Emitter? _emiter;
