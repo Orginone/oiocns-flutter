@@ -10,7 +10,7 @@ class RouteObservers<R extends Route<dynamic>> extends RouteObserver<R> {
     var name = route.settings.name ?? '';
     if (name.isNotEmpty) RoutePages.history.add(name);
     debugPrint('didPush');
-    debugPrint(RoutePages.history.toString());
+    debugPrint('did ${RoutePages.history.toString()}');
   }
 
   @override
@@ -18,7 +18,7 @@ class RouteObservers<R extends Route<dynamic>> extends RouteObserver<R> {
     super.didPop(route, previousRoute);
     RoutePages.history.remove(route.settings.name);
     debugPrint('didPop');
-    debugPrint(RoutePages.history.toString());
+    debugPrint('did ${RoutePages.history.toString()}');
   }
 
   @override
@@ -38,7 +38,7 @@ class RouteObservers<R extends Route<dynamic>> extends RouteObserver<R> {
       }
     }
     debugPrint('didReplace');
-    debugPrint(RoutePages.history.toString());
+    debugPrint('did ${RoutePages.history.toString()}');
   }
 
   @override
@@ -46,17 +46,6 @@ class RouteObservers<R extends Route<dynamic>> extends RouteObserver<R> {
     super.didRemove(route, previousRoute);
     RoutePages.history.remove(route.settings.name);
     debugPrint('didRemove');
-    debugPrint(RoutePages.history.toString());
-  }
-
-  @override
-  void didStartUserGesture(
-      Route<dynamic> route, Route<dynamic>? previousRoute) {
-    super.didStartUserGesture(route, previousRoute);
-  }
-
-  @override
-  void didStopUserGesture() {
-    super.didStopUserGesture();
+    debugPrint('did ${RoutePages.history.toString()}');
   }
 }

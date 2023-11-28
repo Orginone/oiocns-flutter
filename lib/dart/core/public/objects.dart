@@ -73,7 +73,10 @@ class XObject<T extends Xbase> {
       this._target.belongId!,
       this._relations,
       this.fullPath(path),
-      data,
+      {
+        'data': data,
+        'operation': 'replaceAll',
+      },
     );
     if (res.success) {
       if (this._cache == null) {

@@ -26,6 +26,28 @@ class EnvConfig {
     }
   }
 
+  static String get userName {
+    switch (env) {
+      case Env.dev:
+        return "";
+      case Env.prod:
+        return "";
+      default:
+        return "";
+    }
+  }
+
+  static String get pwd {
+    switch (env) {
+      case Env.dev:
+        return "";
+      case Env.prod:
+        return "";
+      default:
+        return "";
+    }
+  }
+
   static String get appId {
     switch (env) {
       case Env.dev:

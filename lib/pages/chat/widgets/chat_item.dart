@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/controller/index.dart';
+import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/utils/date_util.dart';
@@ -200,7 +201,8 @@ class MessageItemWidget extends GetView<IndexController> {
       }
 
       showTxt = showTxt +
-          StringUtil.msgConversion(lastMessage, controller.user.userId);
+          StringUtil.msgConversion(
+              Message(lastMessage, chat), controller.user.userId);
 
       return Text(
         showTxt,

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/utils/string_util.dart';
 
@@ -47,9 +47,9 @@ class NotificationUtil {
     }
   }
 
-  static void showChatMessageNotification(ChatMessageType msg) async {
-    ShareIcon share = settingCtrl.user.findShareById(msg.fromId);
-    showMsgNotification("${share.name}发来一条消息",
+  static void showChatMessageNotification(IMessage msg) async {
+    // ShareIcon share = settingCtrl.user.findShareById(msg.metadata.fromId);
+    showMsgNotification("${msg.from.name}发来一条消息",
         StringUtil.msgConversion(msg, settingCtrl.user.id));
   }
 

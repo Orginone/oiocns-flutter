@@ -10,9 +10,7 @@ class MessageSubState extends BaseGetListState {
 
   ScrollController scrollController = ScrollController();
 
-  RxList<ISession> get chats => [
-        ...settingCtrl.chats,
-      ].obs;
+  RxList<ISession> get chats => settingCtrl.chats;
   // RxList<IMsgChat> get chats => [
   //       ...settingCtrl.provider.chat?.topChats ?? <IMsgChat>[],
   //       ...settingCtrl.provider.chat?.chats ?? <IMsgChat>[],

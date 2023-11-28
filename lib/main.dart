@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
           navigatorKey: navigatorKey,
           initialBinding: UserBinding(),
           onInit: () async {
-            await automaticLogon();
+            // await automaticLogon();
           },
           localizationsDelegates: const [
             GlobalMaterialLocalizations.delegate,
@@ -67,27 +67,15 @@ class MyApp extends StatelessWidget {
     );
   }
 
-  Future<void> automaticLogon() async {
-    Future<void> login() async {
-      // Storage.clear();
-      if (account.isEmpty) {
-        settingCtrl.exitLogin();
-        return;
-      }
-      String accountName = account.first;
-      String passWord = account.last;
-      var login = await settingCtrl.provider.login(accountName, passWord);
-      if (!login.success) {
-        settingCtrl.exitLogin();
-      }
-    }
-
-    if (kernel.isOnline) {
-      await login();
-    } else {
-      Future.delayed(const Duration(milliseconds: 100), () async {
-        await automaticLogon();
-      });
-    }
-  }
+  // Future<void> automaticLogon() async {
+  //   if (kernel.isOnline) {
+  //     await settingCtrl.autoLogin(account);
+  //   } else if (settingCtrl.canAutoLogin(account)) {
+  //     Future.delayed(const Duration(milliseconds: 100), () async {
+  //       await automaticLogon();
+  //     });
+  //   } else {
+  //     settingCtrl.exitLogin(false);
+  //   }
+  // }
 }

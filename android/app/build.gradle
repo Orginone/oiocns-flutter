@@ -104,7 +104,7 @@ android {
         
         // 生产环境
         prod {
-            buildConfigField 'String', 'BASE_HOST', '"assert.orginone.cn"'
+            buildConfigField 'String', 'BASE_HOST', '"asset.orginone.cn"'
             applicationIdSuffix ".prod"
             versionNameSuffix ""
             resValue "string", "app_name", "共享云"

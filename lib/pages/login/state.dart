@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 
 class LoginState extends BaseGetState {
@@ -8,11 +7,9 @@ class LoginState extends BaseGetState {
 
   var phoneNumberLogin = false.obs;
 
-  TextEditingController accountController =
-      TextEditingController(text: Constant.userName);
+  TextEditingController accountController = TextEditingController(text: "");
 
-  TextEditingController passWordController =
-      TextEditingController(text: Constant.pwd);
+  TextEditingController passWordController = TextEditingController(text: "");
 
   TextEditingController phoneNumberController = TextEditingController();
 

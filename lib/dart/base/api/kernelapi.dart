@@ -6,7 +6,6 @@ import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/utils/hive_utils.dart';
-import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/logger.dart';
 
 class KernelApi {
@@ -41,17 +40,7 @@ class KernelApi {
     _storeHub.on("Receive", (res) => _receive(res));
 
     _storeHub.onConnected(() {
-      if (_storeHub.accessToken.isNotEmpty) {
-        _storeHub
-            .invoke("TokenAuth", args: [_storeHub.accessToken]).then((value) {
-          ResultType res = value;
-          if (res.success) {
-            logger.info('连接到内核成功!');
-          }
-        }).catchError((err) {
-          logger.warning(err);
-        });
-      }
+      tokenAuth();
     });
     start();
   }
@@ -127,6 +116,21 @@ class KernelApi {
     return null;
   }
 
+  Future<ResultType> tokenAuth() async {
+    ResultType result = badRequest;
+    if (_storeHub.accessToken.isNotEmpty) {
+      result =
+          await _storeHub.invoke("TokenAuth", args: [_storeHub.accessToken]);
+
+      if (result.success) {
+        logger.info('连接到内核成功!');
+      } else {
+        logger.warning(result);
+      }
+    }
+    return result;
+  }
+
   /// 登录到后台核心获取accessToken
   /// @param userName 用户名
   /// @param password 密码
@@ -144,8 +148,12 @@ class KernelApi {
     ResultType res = await _storeHub.invoke('Auth', args: [req]);
 
     if (res.success) {
-      HiveUtils.putUser(UserModel.fromJson(res.data));
-      _storeHub.accessToken = res.data["accessToken"];
+      UserModel um = UserModel.fromJson(res.data);
+      HiveUtils.putUser(um);
+      _storeHub.accessToken = um.accessToken!;
+      if (_storeHub.isConnected) {
+        await tokenAuth();
+      }
     }
     return res;
   }
@@ -189,6 +197,15 @@ class KernelApi {
 
   Future<ResultType<dynamic>> register(RegisterType params) async {
     ResultType res = await _storeHub.invoke('Register', args: [params]);
+
+    if (res.success) {
+      UserModel um = UserModel.fromJson(res.data);
+      // HiveUtils.putUser(um);
+      _storeHub.accessToken = um.accessToken!;
+      if (_storeHub.isConnected) {
+        await tokenAuth();
+      }
+    }
 
     return res;
   }
@@ -900,7 +917,7 @@ class KernelApi {
         copyId: copyId,
         relations: relations,
         flag: collName,
-        params: {collName, update},
+        params: {'collName': collName, 'update': update},
       ),
     );
   }
@@ -1106,7 +1123,7 @@ class KernelApi {
   Future<ResultType<T>> dataProxy<T>(DataProxyType req,
       [T Function(Map<String, dynamic>)? cvt]) async {
     ResultType raw = await _storeHub.invoke('DataProxy', args: [req]);
-    LogUtil.d('dataProxy raw:${raw.toString()}');
+    // LogUtil.d('dataProxy raw:${raw.toString()}');
 
     if (null != raw.data && null != cvt) {
       return ResultType<T>.fromJsonSerialize(raw, cvt);

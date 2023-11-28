@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 
 class StringUtil {
@@ -29,17 +29,17 @@ class StringUtil {
     return newText;
   }
 
-  static String msgConversion(ChatMessageType msg, String currentUserId) {
+  static String msgConversion(IMessage msg, String currentUserId) {
     String showTxt = '';
-    var messageType = MessageType.getType(msg.typeName);
+    var messageType = msg.msgType;
     if (messageType == MessageType.text.label) {
-      // var userIds = msg.body?.mentions ?? [];
-      // if (userIds.isNotEmpty && userIds.contains(currentUserId)) {
-      //   showTxt = "有人@你";
-      // } else {
-      //   showTxt = "$showTxt${msg. ?? ""}";
-      //   showTxt = StringUtil.imgLabelMsgConversion(showTxt);
-      // }
+      var userIds = msg.mentions ?? [];
+      if (userIds.isNotEmpty && userIds.contains(currentUserId)) {
+        showTxt = "有人@你";
+      } else {
+        showTxt = "$showTxt${msg.msgBody ?? ""}";
+        showTxt = StringUtil.imgLabelMsgConversion(showTxt);
+      }
     } else if (messageType == MessageType.recall.label) {
       showTxt = "$showTxt撤回了一条消息";
     } else if (messageType == MessageType.image.label) {

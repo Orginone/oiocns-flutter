@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/common/routers/index.dart';
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/utils/storage.dart';
 import 'package:orginone/utils/toast_utils.dart';
@@ -15,14 +16,19 @@ class LoginController extends BaseController<LoginState> {
   @override
   void onInit() async {
     super.onInit();
-    if (!kernel.isOnline) {
-      kernel.start();
-    }
+    // if (!kernel.isOnline) {
+    //   kernel.start();
+    // }
     var account = Storage().getList("account");
     if (account.isNotEmpty) {
       state.accountController.text = account.first;
       state.phoneNumberController.text = account.first;
-      state.passWordController.text = account.last;
+      state.passWordController.text =
+          "" != account.last ? account.last : Constant.pwd;
+    } else {
+      state.accountController.text = Constant.userName;
+      state.phoneNumberController.text = Constant.userName;
+      state.passWordController.text = Constant.pwd;
     }
   }
 

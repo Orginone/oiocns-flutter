@@ -5,4 +5,12 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
-void main() {}
+import 'package:flutter_test/flutter_test.dart';
+
+void main() {
+  test('Test String', () {
+    String str = "dddd不在线aaad";
+    print(str.contains('不在线'));
+    print(str.contains('ccc'));
+  });
+}

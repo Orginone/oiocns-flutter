@@ -43,6 +43,7 @@ class StoreHub {
     _connection.keepAliveIntervalInMilliseconds = interval;
     _connection.serverTimeoutInMilliseconds = timeout;
     _connection.onclose(({error}) {
+      _refreshIsStartedState();
       if (!isConnected && error != null) {
         for (final callback in _disconnectedCallbacks) {
           callback(error);
@@ -62,9 +63,7 @@ class StoreHub {
       // kernel.restart();
       Future.delayed(const Duration(microseconds: 50), () {
         LoadingDialog.dismiss(Get.context!);
-        if (_connection.state == HubConnectionState.Connected) {
-          _isStarted = true;
-        }
+        _refreshIsStartedState();
       });
     });
   }
@@ -75,9 +74,15 @@ class StoreHub {
   /// 是否处于连接着的状态
   /// @return {boolean} 状态
   bool get isConnected {
-    print(
-        '>>>========$_isStarted ${_connection.state == HubConnectionState.Connected}');
     return _isStarted && _connection.state == HubConnectionState.Connected;
+  }
+
+  void _refreshIsStartedState() {
+    if (_connection.state == HubConnectionState.Connected) {
+      _isStarted = true;
+    } else {
+      _isStarted = false;
+    }
   }
 
 // 获取accessToken
@@ -121,7 +126,6 @@ class StoreHub {
   Future<void> restart() async {
     if (isConnected) {
       _isStarted = false;
-      _connection.stop();
       await _connection.stop().then((_) {
         start();
       });
@@ -139,9 +143,9 @@ class StoreHub {
       }
     }, onError: (err) {
       LogUtil.e("url: ${_connection.baseUrl}");
+      _refreshIsStartedState();
       if (_connection.state == HubConnectionState.Connected) {
         LogUtil.e("连接失败,连接状态为$_isStarted。长链接状态:${_connection.state}");
-        _isStarted = true;
       } else {
         LogUtil.e("连接失败,${_timeout}ms后重试。${err != null ? err.toString() : ''}");
         for (final callback in _disconnectedCallbacks) {
@@ -197,69 +201,26 @@ class StoreHub {
           args!.isNotEmpty ? args[0] : {},
         );
       }
-
       if (null != resObj) {
         ResultType res = ResultType.fromJson(resObj as Map<String, dynamic>);
         LogUtil.d('接口：${Constant.rest}/${methodName.toLowerCase()}');
-        LogUtil.d('参数：${jsonEncode(args![0])}');
+        LogUtil.d('参数：${jsonEncode(args?[0])}');
         LogUtil.d('StoreHub返回值：$resObj');
-        return _success(res);
+        if (res.success) {
+          return _success(res);
+        } else {
+          return _error(resObj);
+        }
       }
-      return _error();
+      return _error(resObj);
     } catch (e, s) {
-      LogUtil.d('接口：${Constant.rest}/${methodName.toLowerCase()}');
-      LogUtil.d('StoreHub参数：${jsonEncode(args![0])}');
-      LogUtil.e("invoke Error${e.toString()}${s.toString()}");
-      return _error(e, s);
+      try {
+        LogUtil.d('接口：${Constant.rest}/${methodName.toLowerCase()}');
+        LogUtil.d('StoreHub参数：${jsonEncode(args![0])}');
+        LogUtil.e("invoke Error${e.toString()}${s.toString()}");
+      } catch (e) {}
+      return _error(resObj, e, s);
     }
-    // final id = const Uuid().v1();
-    // Object? res;
-    // try {
-    //   res = await _connection.invoke(methodName, args: args);
-    //   if (res != null && (res is Map)) {
-    //     // if (res['code'] != 200) {
-    //     //   ToastUtils.showMsg(msg: "后端异常${res['code']}：${res['msg']}");
-    //     // }
-    //     if (res['code'] == 400 || res['code'] == 401) {
-    //       LogUtil.e('连接被断开,请重新连接$res');
-    //       await restart();
-    //       res = await invoke(methodName, args: args, retry: !retry!);
-    //     } else if (res['code'] == 401) {
-    //       // ToastUtils.showMsg(msg: "登录已过期,请重新登录");
-    //       LogUtil.e('登录已过期,请重新登录');
-    //       await restart();
-    //       res = await invoke(methodName, args: args, retry: !retry!);
-    //       // settingCtrl.exitLogin(cleanUserLoginInfo: false);
-    //     } else if (res['code'] == 500) {
-    //       // ToastUtils.showMsg(msg: "后端异常${res['code']}：${res['msg']}");
-    //       LogUtil.e("后端异常${res['code']}：${res['msg']}");
-    //       // ToastUtils.showMsg(msg: "后端异常：${res['msg']}");
-    //       // ToastUtils.showMsg(msg: 'error 500 长连接已断开,正在重试');
-    //       // Log.info('anystore断开链接,正在重试');
-    //       // String token = kernel.accessToken;
-    //       // kernel.setToken = '';
-    //       // kernel.setToken(token);
-    //     }
-    //   }
-    //   // log.info("========== storeHub-invoke-start =============$id");
-    //   // log.info("=====>$id url: ${_connection.baseUrl}");
-    //   // log.info("=====>$id methodName: $methodName");
-    //   // log.info("=====>$id args: ${toJson(args)}");
-    //   // log.info("=====>$id res: ${toJson(res)}");
-    //   // log.info("==========$id storeHub-invoke-end =============");
-    //   return ResultType.fromJson(res as Map<String, dynamic>);
-    // } catch (err) {
-    //   LogUtil.e("==========$id storeHub-invoke-start =============");
-    //   LogUtil.e("=====>$id url: ${_connection.baseUrl}");
-    //   LogUtil.e("=====>$id methodName: $methodName");
-    //   LogUtil.e("=====>$id args: ${toJson(args)}");
-    //   LogUtil.e("=====>$id res: ${toJson(res)}");
-    //   LogUtil.e("=====>$id err: $err");
-    //   LogUtil.e("==========$id storeHub-invoke-end =============");
-    //   ToastUtils.dismiss();
-    //   return ResultType<T>.fromJson(
-    //       {"code": 400, "msg": err.toString(), "success": false, "data": null});
-    // }
   }
 
   /// Http请求服务端方法
@@ -283,35 +244,37 @@ class StoreHub {
   }
 
   ResultType<dynamic> _success(ResultType<dynamic> res) {
-    if (!res.success) {
-      if (res.code == 401) {
-        LogUtil.e('==========================================登录已过期处理');
-        // 登录已过期处理
-        restart();
-        ToastUtils.showMsg(msg: res.msg);
-        // _errorNoAuthLogout();
-      } else if (res.msg != '' && !res.msg.contains('不在线')) {
-        LogUtil.e('Http:操作失败,${res.msg}');
-        ToastUtils.showMsg(msg: res.msg);
-      }
-    }
     return res;
   }
 
-  ResultType<dynamic> _error([dynamic res, dynamic s]) {
+  ResultType<dynamic> _error([dynamic resObj, dynamic err, dynamic s]) {
     var msg = '请求异常';
-    if (null != res) {
-      LogUtil.e('Http:===========================err');
-      LogUtil.e('Http:$res');
+    ResultType res = badRequest;
+    try {
+      if (null != resObj && resObj is Map) {
+        res = ResultType.fromJson(resObj as Map<String, dynamic>);
+        if (res.code == 401) {
+          LogUtil.e('==========================================登录已过期处理');
+          // 登录已过期处理
+          _errorNoAuthLogout();
+        } else if (res.msg != '' && !res.msg.contains('不在线')) {
+          LogUtil.e('Http:操作失败,${res.msg}');
+          // TODO 再实际业务端做提醒，不然刚进入app 有可能会出现很多异常弹框，体验很不好
+          // ToastUtils.showMsg(msg: res.msg);
+        }
+      } else {
+        LogUtil.e('Http:===========================err');
+        LogUtil.e('Http:$res');
+        LogUtil.e('Http:$s');
+        msg += err ?? ',$res';
+        LogUtil.e('Http:$msg');
+        res.msg = msg;
+      }
+    } catch (e, s) {
       LogUtil.e('Http:$s');
-      msg += ',$res';
-      LogUtil.e('Http:$msg');
-      ToastUtils.dismiss();
-      return ResultType.fromObj(badRequest, msg);
-    } else {
-      ToastUtils.dismiss();
-      return badRequest;
     }
+    ToastUtils.dismiss();
+    return res;
   }
 
   Future<void> disconnect() async {
@@ -346,6 +309,6 @@ class StoreHub {
   } // 退出并重新登录
 
   Future<void> _errorNoAuthLogout() async {
-    settingCtrl.exitLogin(cleanUserLoginInfo: false);
+    settingCtrl.autoLogin();
   }
 }

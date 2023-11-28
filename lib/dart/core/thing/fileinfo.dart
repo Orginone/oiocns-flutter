@@ -63,7 +63,7 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
   FileInfo(
     T metadata,
     this.directory,
-  ) : super(metadata) {
+  ) : super(metadata, [metadata.typeName!]) {
     isContainer = false;
     cache = XCache(fullId: '${this.spaceId}_${metadata.id}');
     Future.delayed(Duration(milliseconds: id == userId ? 100 : 0), () async {

@@ -50,7 +50,7 @@ abstract class IAuthority extends IEntity<XAuthority> {
 
 ///权限实现类
 class Authority extends Entity<XAuthority> implements IAuthority {
-  Authority(this.metadata, this.space, {this.parent}) : super(metadata) {
+  Authority(this.metadata, this.space, {this.parent}) : super(metadata, []) {
     for (var node in metadata.nodes ?? []) {
       children.add(Authority(node, space, parent: this));
     }

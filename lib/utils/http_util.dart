@@ -183,6 +183,7 @@ class HttpUtil {
 
   // 退出并重新登录
   Future<void> _errorNoAuthLogout() async {
-    settingCtrl.exitLogin(cleanUserLoginInfo: false);
+    // settingCtrl.exitLogin(false);
+    settingCtrl.autoLogin();
   }
 }

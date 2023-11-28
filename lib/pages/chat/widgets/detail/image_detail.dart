@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
@@ -31,7 +32,7 @@ class ImageDetail extends BaseDetail {
   @override
   Widget body(BuildContext context) {
     dynamic link = msgBody.shareLink ?? '';
-
+    link = '${Constant.host}$link';
     // TODO 待处理小的预览图
     // if (message.body?.path != null && link == '') {
     //   link = File(message.body!.path!);
@@ -55,7 +56,7 @@ class ImageDetail extends BaseDetail {
   @override
   void onTap(BuildContext context) {
     dynamic link = msgBody.shareLink ?? '';
-
+    link = '${Constant.host}$link';
     // if (message.body?.path != null && link == '') {
     //   link = File(message.body!.path!);
     // }

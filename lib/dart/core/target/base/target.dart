@@ -54,7 +54,6 @@ abstract class Target extends Team implements ITarget {
     if (user != null) {
       this.user = user;
     } else {
-      print('=======>>>$runtimeType $name $typeName');
       this.user = this as IPerson?;
     }
     cache = XCache(fullId: '${metadata.belongId}_${metadata.id}');

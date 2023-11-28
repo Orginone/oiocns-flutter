@@ -189,7 +189,7 @@ class ListItem extends StatelessWidget {
     if (noRead.isNotEmpty) {
       child = badges.Badge(
         ignorePointer: false,
-        position: badges.BadgePosition.topEnd(top: -10),
+        position: badges.BadgePosition.topEnd(top: -6, end: -8),
         badgeContent: Text(
           noRead.value,
           // "${noRead > 99 ? "99+" : noRead}",

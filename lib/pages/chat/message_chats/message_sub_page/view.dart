@@ -20,6 +20,7 @@ class MessageSubPage
   @override
   Widget buildView() {
     if (type == 'all') {
+      // TODO 暂时放弃
       return allWidget();
     }
     if (type == 'common') {
@@ -78,7 +79,6 @@ class MessageSubPage
   Widget messageWidget() {
     return Obx(() {
       List<ISession> chats = state.chats;
-      print('>>>====MessageSubList');
       // if (type == "unread") {
       //   chats = chats
       //       .where((element) => element.chatdata.value.noReadCount != 0)
@@ -90,12 +90,23 @@ class MessageSubPage
       //           (element) => element.share.typeName == TargetType.person.label)
       //       .toList();
       // }
-      // if (type == "group") {
-      //   chats = chats
-      //       .where(
-      //           (element) => element.share.typeName != TargetType.person.label)
-      //       .toList();
-      // }
+      if (type == "group") {
+        chats = chats
+            .where((element) => element.typeName == TargetType.cohort.label)
+            .toList();
+      } else if (type == "friend") {
+        chats = chats.where((element) => element.isFriend).toList();
+      } else if (type == "company") {
+        chats = chats
+            .where((element) => element.typeName == TargetType.company.label)
+            .toList();
+      } else if (type == "company_friend") {
+        chats = chats
+            .where((element) =>
+                !element.isFriend &&
+                element.typeName == TargetType.person.label)
+            .toList();
+      }
       return ListView.builder(
         controller: state.scrollController,
         itemBuilder: (BuildContext context, int index) {

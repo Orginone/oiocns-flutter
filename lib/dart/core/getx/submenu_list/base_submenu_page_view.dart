@@ -54,7 +54,7 @@ abstract class BaseSubmenuPage<T extends BaseSubmenuController,
   buildExtendedTabBar() {
     return ExtendedTabBar(
       controller: state.tabController,
-      tabs: state.subGroup.value.groups?.map((e) {
+      tabs: state.subGroup.value.groups!.map((e) {
             var index = state.subGroup.value.groups!.indexOf(e);
             return ExtendedTab(
               scrollDirection: Axis.horizontal,

@@ -84,9 +84,9 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
                   homeEnum: HomeEnum.store, path: 'store', unPath: 'unstore')),
           ExtendedTab(
             child: button(
-                homeEnum: HomeEnum.setting,
-                path: 'setting',
-                unPath: 'unsetting'),
+                homeEnum: HomeEnum.relation,
+                path: 'relation',
+                unPath: 'unrelation'),
           ),
         ],
         controller: state.tabController,
@@ -109,7 +109,7 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
       if (homeEnum == HomeEnum.work) {
         mgsCount = settingCtrl.provider.work?.todos.length ?? 0;
       } else if (homeEnum == HomeEnum.chat) {
-        mgsCount = settingCtrl.noReadMgsCount;
+        mgsCount = settingCtrl.noReadMgsCount.value;
       }
       return BadgeTabWidget(
         imgPath: !isSelected ? unPath : path,

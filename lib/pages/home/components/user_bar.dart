@@ -212,8 +212,9 @@ class UserBar extends GetView<IndexController> {
           //   search = SearchBar<RecentlyUseModel>(
           //       homeEnum: HomeEnum.store, data: controller.storage.recent);
           // break;
-          case HomeEnum.setting:
-            search = SearchBar<int>(homeEnum: HomeEnum.setting, data: []);
+          case HomeEnum.relation:
+            search =
+                SearchBar<int>(homeEnum: controller.homeEnum.value, data: []);
             break;
           case HomeEnum.door:
             break;

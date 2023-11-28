@@ -259,7 +259,7 @@ class Message implements IMessage {
       case MessageType.text:
       case MessageType.notify:
       case MessageType.recall:
-        return '$header${msgBody.substring(0, min(50, msgBody.length))}';
+        return '$header${msgBody.substring(0, min(15, msgBody.length))}';
       case MessageType.voice:
         return '$header[${MessageType.voice}]';
 

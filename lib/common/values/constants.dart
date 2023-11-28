@@ -25,6 +25,7 @@ class Constants {
   static const aesIV = 'hK6eB4aE1aF3gH5q'; // 加密向量 16 位
 
   static const baseUrlKey = 'app-base-url'; // 基础路径字段名
+  static const sessionUser = 'sessionUser'; // 用户会话
   static const appTokenKey =
       'X-Auth-Token'; //X-Auth-Token Authorization appToken字段名(本地存储，以及dio请求头均使用到此字段名称，不能随意改动)
   static const userInfoKey = 'app-user-info'; // 用户基础信息字段名

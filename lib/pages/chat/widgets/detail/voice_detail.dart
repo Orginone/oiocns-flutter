@@ -1,14 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/utils/string_util.dart';
 import 'package:orginone/config/unified.dart';
 
 class VoiceDetail extends BaseDetail {
-  const VoiceDetail({
+  late MsgBodyModel msgBody;
+
+  VoiceDetail({
     super.key,
     required super.isSelf,
     required super.message,
@@ -18,7 +23,9 @@ class VoiceDetail extends BaseDetail {
     super.constraints,
     super.isReply = false,
     super.chat,
-  });
+  }) {
+    msgBody = MsgBodyModel.fromJson(jsonDecode(message.msgBody));
+  }
 
   PlayController get playCtrl => Get.find<PlayController>();
 
@@ -27,7 +34,7 @@ class VoiceDetail extends BaseDetail {
   @override
   Widget body(BuildContext context) {
     // TODO 视频处理
-    // playCtrl.putPlayerStatusIfAbsent(message);
+    playCtrl.putPlayerStatusIfAbsent(message, msgBody);
     var seconds = voicePlay.initProgress ~/ 1000;
     seconds = seconds > 60 ? 60 : seconds;
     return Wrap(

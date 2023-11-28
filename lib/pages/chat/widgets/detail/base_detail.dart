@@ -47,10 +47,12 @@ abstract class BaseDetail extends StatelessWidget {
       } else {
         if (chat!.share.typeName == TargetType.person.label) {
           shareIcon = chat!.share;
-        } else {
+        } else if (chat!.members.isNotEmpty) {
           var target = chat!.members
               .firstWhere((element) => element.id == message.metadata.fromId);
           shareIcon = target.shareIcon();
+        } else {
+          shareIcon = message.from;
         }
       }
       if (shareIcon == null) {

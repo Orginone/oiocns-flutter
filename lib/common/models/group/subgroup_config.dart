@@ -1,10 +1,15 @@
 Map<String, dynamic> chatDefaultConfig = {
   "type": "chat",
   "groups": [
+    // {
+    //   "label": "全部",
+    //   "value": "all",
+    //   "allowEdit": true,
+    // },
     {
-      "label": "全部",
-      "value": "all",
-      "allowEdit": true,
+      "label": "最近",
+      "value": "recent",
+      "allowEdit": false,
     },
     {
       "label": "常用",
@@ -12,31 +17,46 @@ Map<String, dynamic> chatDefaultConfig = {
       "allowEdit": true,
     },
     {
-      "label": "最近",
-      "value": "recent",
-      "allowEdit": false,
-    },
-    {
-      "label": "未读",
-      "value": "unread",
+      "label": "好友",
+      "value": "friend",
       "allowEdit": true,
     },
     {
-      "label": "单聊",
-      "value": "single",
+      "label": "同事",
+      "value": "company_friend",
       "allowEdit": true,
     },
     {
-      "label": "群聊",
+      "label": "群组",
       "value": "group",
       "allowEdit": true,
     },
+    {
+      "label": "单位",
+      "value": "company",
+      "allowEdit": true,
+    },
+    // {
+    //   "label": "单聊",
+    //   "value": "single",
+    //   "allowEdit": true,
+    // },
+    // {
+    //   "label": "未读",
+    //   "value": "unread",
+    //   "allowEdit": true,
+    // },
   ]
 };
 
 Map<String, dynamic> workDefaultConfig = {
   "type": "work",
   "groups": [
+    // {
+    //   "label": "全部",
+    //   "value": "all",
+    //   "allowEdit": true,
+    // },
     {
       "label": "待办",
       "value": "todo",

@@ -1,4 +1,3 @@
-import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/enum.dart';
@@ -64,7 +63,9 @@ abstract class BaseListController<S extends BaseGetListState>
   }
 
   @override
-  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
+  Future<void> loadData({bool isRefresh = false, bool isLoad = true}) async {
+    state.isSuccess.value = false;
+    state.isLoading.value = isLoad;
     loadSuccess();
   }
 

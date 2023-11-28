@@ -18,6 +18,6 @@ class Constant {
   static String order = "$host/orginone/appstore/order";
   static String product = "$host/orginone/appstore/product";
   static String rest = "$host/orginone/kernel/rest";
-  static const userName = "";
-  static const pwd = "";
+  static String userName = EnvConfig.userName;
+  static String pwd = EnvConfig.pwd;
 }

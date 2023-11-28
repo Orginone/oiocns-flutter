@@ -31,6 +31,16 @@ class Storage {
     return await _prefs.setStringList(key, value);
   }
 
+  Future<bool> setListValue(String key, int index, String value) async {
+    List<String> data = getList(key);
+    if (data.length > index) {
+      data.setAll(index, [value]);
+      setList(key, data);
+      return true;
+    }
+    return false;
+  }
+
   String getString(String key) {
     return _prefs.getString(key) ?? '';
   }

@@ -1,16 +1,12 @@
 import 'dart:io';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
-import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/chat/message_forward.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -45,21 +41,22 @@ class ShareQrCodeController extends BaseController<ShareQrCodeState> {
       );
 
       if (item != null) {
-        showModalBottomSheet(
-            context: Get.context!,
-            builder: (context) {
-              return MessageForward(
-                msgBody: MsgBodyModel.fromJson(item.shareInfo().toJson()),
-                msgType: MessageType.image.label,
-                onSuccess: () {
-                  Navigator.pop(context);
-                },
-              );
-            },
-            isScrollControlled: true,
-            isDismissible: false,
-            useSafeArea: true,
-            barrierColor: Colors.white);
+        //   showModalBottomSheet(
+        //       context: Get.context!,
+        //       builder: (context) {
+        //         return MessageForward(
+        //           // TODO 待处理
+        //           msgBody:  Message(),// MsgBodyModel.fromJson(item.shareInfo().toJson()),
+        //           msgType: MessageType.image.label,
+        //           onSuccess: () {
+        //             Navigator.pop(context);
+        //           },
+        //         );
+        //       },
+        //       isScrollControlled: true,
+        //       isDismissible: false,
+        //       useSafeArea: true,
+        //       barrierColor: Colors.white);
       }
     }
   }

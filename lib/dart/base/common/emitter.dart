@@ -13,12 +13,13 @@ class Emitter {
   /// 订阅变更
   /// [callback] 变更回调
   /// 返回订阅ID
-  String subscribe(void Function(String, List<dynamic>)? callback) {
+  String subscribe(void Function(String, List<dynamic>?) callback,
+      [bool? target = true]) {
     final id = const Uuid().v1();
-    if (callback != null) {
+    if (target!) {
       callback(id, []);
-      _refreshCallback[id] = callback;
     }
+    _refreshCallback[id] = callback;
     return id;
   }
 
@@ -38,9 +39,8 @@ class Emitter {
 
   /// 变更回调
   void changCallback({List<dynamic>? args}) {
-    for (var key in _refreshCallback.keys) {
-      Function.apply(
-          _refreshCallback[key] as Function, [const Uuid().v1(), ...?args]);
-    }
+    _refreshCallback
+        .forEach((key, value) => Function.apply(value, [key, args]));
+    // _refreshCallback.map((key, value) => Function.apply(value, [key, args]));
   }
 }

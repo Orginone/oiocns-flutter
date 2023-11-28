@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:get/get.dart';
+import 'package:orginone/common/values/constants.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -11,15 +14,13 @@ import 'package:orginone/utils/logger.dart';
 import 'thing/standard/application.dart';
 import 'work/provider.dart';
 
-const sessionUserName = 'sessionUser';
-
 class UserProvider {
-  UserProvider({Emitter? emiter}) {
+  UserProvider(Emitter emiter) {
     _emiter = emiter;
-    // final userJson = Storage().getString(sessionUserName);
-    // if (userJson.isNotEmpty) {
-    //   _loadUser(XTarget.fromJson(jsonDecode(userJson)));
-    // }
+    final userJson = Storage().getString(Constants.sessionUser);
+    if (userJson.isNotEmpty) {
+      _loadUser(XTarget.fromJson(jsonDecode(userJson)));
+    }
   }
 
   ///当前用户
@@ -32,7 +33,7 @@ class UserProvider {
   // final Rxn<IBoxProvider> _box = Rxn();
 
   bool _inited = false;
-  late Emitter? _emiter;
+  late Emitter _emiter;
   var myApps = <Map<IApplication, ITarget>>[].obs;
 
   /// 当前用户
@@ -101,7 +102,7 @@ class UserProvider {
 
   /// 加载用户
   _loadUser(XTarget person) async {
-    Storage().setJson(sessionUserName, person.toJson());
+    Storage().setJson(Constants.sessionUser, person.toJson());
     kernel.userId = person.id;
 
     _user.value = Person(person);
@@ -116,7 +117,7 @@ class UserProvider {
     await _user.value?.deepLoad(reload: true);
     await work?.loadTodos(reload: true);
     _inited = true;
-    _emiter?.changCallback();
+    _emiter.changCallback();
     command.emitterFlag();
   }
 }

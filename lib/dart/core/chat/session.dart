@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:orginone/dart/base/common/commands.dart';
@@ -13,6 +14,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/public/collection.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
+import 'package:orginone/utils/notification_util.dart';
 
 import '../target/team/company.dart';
 
@@ -75,10 +77,10 @@ abstract class ISession extends IEntity<XEntity> {
   Future<bool> sendMessage(
     MessageType type,
     String text,
-    List<String> mentions, {
+    List<String> mentions, [
     IMessage? cite,
     List<IMessage>? forward,
-  });
+  ]);
 
   /// 撤回消息
   Future<void> recallMessage(String id);
@@ -99,7 +101,7 @@ abstract class ISession extends IEntity<XEntity> {
 /// 会话实现
 class Session extends Entity<XEntity> implements ISession {
   Session(this.sessionId, this.target, this.metadata, {this.tags})
-      : super(metadata) {
+      : super(metadata, tags ?? []) {
     sessionId = id;
     if (tags == null) {
       tags = [metadata.typeName!];
@@ -115,8 +117,9 @@ class Session extends Entity<XEntity> implements ISession {
       noReadCount: 0,
       lastMsgTime: 0, //nullTime,
       mentionMe: false,
-      labels: id == userId ? ['本人'] : tags ?? [],
+      labels: [],
       lastMessage: null,
+      recently: false,
     ).obs;
     members = <XTarget>[].obs;
     messages = <IMessage>[].obs;
@@ -221,7 +224,7 @@ class Session extends Entity<XEntity> implements ISession {
       var msg = Message(chatdata.value.lastMessage!, this);
       return msg.msgTitle;
     }
-    return metadata.remark!.substring(0, 60);
+    return metadata.remark!.substring(0, min(15, metadata.remark!.length));
   }
 
   String? get copyId {
@@ -232,12 +235,37 @@ class Session extends Entity<XEntity> implements ISession {
   }
 
   @override
+  List<String> get groupTags {
+    var gtags = [...super.groupTags];
+    if (id == userId) {
+      gtags.add('本人');
+    } else if (isGroup) {
+      if (target.space?.id != userId) {
+        gtags.add(target.space!.name);
+      } else {
+        gtags.add(belong.name);
+      }
+      gtags.add(typeName);
+    }
+    if (chatdata.value.noReadCount > 0) {
+      gtags.add('未读');
+    }
+    if (chatdata.value.mentionMe) {
+      gtags.add('@我');
+    }
+    if (chatdata.value.isToping) {
+      gtags.add('置顶');
+    }
+    return [...gtags, ...chatdata.value.labels];
+  }
+
+  @override
   String get information {
     if (chatdata.value.lastMessage != null) {
       var msg = Message(chatdata.value.lastMessage!, this);
       return msg.msgTitle;
     }
-    return metadata.remark!.substring(0, 60);
+    return metadata.remark!.substring(0, min(20, metadata.remark!.length));
   }
 
   String get cachePath {
@@ -294,6 +322,8 @@ class Session extends Entity<XEntity> implements ISession {
         cacheChatData(true);
       }
       command.emitterFlag('session');
+      command.emitterFlag(
+          'session-${chatdata.value.fullId}', [chatdata.value.noReadCount]);
       msgChatNotify.changCallback();
       messageNotify?.call(messages);
     });
@@ -303,10 +333,10 @@ class Session extends Entity<XEntity> implements ISession {
   Future<bool> sendMessage(
     MessageType type,
     String text,
-    List<String> mentions, {
+    List<String> mentions, [
     IMessage? cite,
     List<IMessage>? forward,
-  }) async {
+  ]) async {
     if (cite != null) {
       cite.metadata.comments = [];
     }
@@ -347,12 +377,12 @@ class Session extends Entity<XEntity> implements ISession {
   @override
   Future<void> recallMessage(String id) async {
     var data = await coll.update(
-      id,
-      {
-        "_set_": {"typeName": MessageType.recall},
-      },
-      copyId: copyId,
-    );
+        id,
+        {
+          "_set_": {"typeName": MessageType.recall.label},
+        },
+        copyId,
+        ChatMessageType.fromJson);
     if (data != null) {
       await notify('replace', [data]);
     }
@@ -423,6 +453,8 @@ class Session extends Entity<XEntity> implements ISession {
         '>>>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
     if (operate == 'insert') {
       messages.insert(0, imsg);
+      chatdata.value.lastMsgTime = DateTime.now().microsecondsSinceEpoch;
+      chatdata.value.lastMessage = data;
       if (messageNotify == null) {
         chatdata.value.noReadCount += imsg.isMySend ? 0 : 1;
         refreshNoReadCount();
@@ -433,18 +465,18 @@ class Session extends Entity<XEntity> implements ISession {
         command.emitterFlag('session');
         command.emitterFlag(
             'session-${chatdata.value.fullId}', [chatdata.value.noReadCount]);
+        if (userId != data.fromId) {
+          NotificationUtil.showChatMessageNotification(imsg);
+        }
       } else if (!imsg.isReaded) {
         tagMessage([imsg.id], '已读');
       }
-      chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
-      chatdata.value.lastMessage = data;
       cacheChatData(messageNotify != null && !imsg.isMySend);
     } else {
       var index = messages.indexWhere((i) => i.id == data.id);
       if (index > -1) {
         messages[index] = imsg;
       }
-      print('>>>======synac:${chatdata.value.noReadCount}');
       if (chatdata.value.noReadCount > 0) {
         chatdata.value.noReadCount -= imsg.isMySend ? 0 : 1;
         refreshNoReadCount();
@@ -517,12 +549,6 @@ class Session extends Entity<XEntity> implements ISession {
   }
 
   void _subscribeMessage() {
-    print(
-        '>>>--==========================================================================');
-    print(
-        '>>>--KEY:$key ID:$id hashCode:$hashCode isGroup:$isGroup belong:$belongId target:${target.id} name:$name typeName:$typeName');
-    print(
-        '>>>--^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
     if (isGroup) {
       coll.subscribe(
         [key],

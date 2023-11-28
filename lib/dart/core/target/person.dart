@@ -148,6 +148,8 @@ class Person extends Belong implements IPerson {
               companys.add(_createCompany(i, this));
           }
         }
+      } else {
+        _cohortLoaded = false;
       }
     }
     return cohorts;
@@ -288,7 +290,7 @@ class Person extends Belong implements IPerson {
 
   @override
   List<ISession> get chats {
-    List<ISession> chats = [session];
+    List<ISession> chats = [];
     chats.addAll(cohortChats);
     chats.addAll(memberChats);
     return chats;

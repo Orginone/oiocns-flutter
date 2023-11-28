@@ -283,8 +283,7 @@ class ResultType<T> {
         data = serialize({'data': json.data});
       } else if (json.data is Map) {
         data = serialize(json.data);
-      } else {
-        print('>>>====ResultType：${json.data}');
+      } else if (json.data is T) {
         data = json.data as T;
       }
     }
@@ -2842,6 +2841,9 @@ class MsgChatData {
   /// 提及我
   late bool mentionMe;
 
+  /// 最近活跃
+  late bool? recently;
+
   MsgChatData({
     required this.fullId,
     required this.labels,
@@ -2852,6 +2854,7 @@ class MsgChatData {
     required this.lastMsgTime,
     required this.lastMessage,
     required this.mentionMe,
+    required this.recently,
   });
 
   MsgChatData.fromJson(Map<String, dynamic> json) {
@@ -2866,6 +2869,7 @@ class MsgChatData {
         ? ChatMessageType.fromJson(json['lastMessage'])
         : null;
     mentionMe = json['mentionMe'];
+    recently = json['recently'];
   }
 
   Map<String, dynamic> toJson() {
@@ -2879,6 +2883,7 @@ class MsgChatData {
       "lastMsgTime": lastMsgTime,
       "lastMessage": lastMessage?.toJson(),
       "mentionMe": mentionMe,
+      "recently": recently,
     };
   }
 }

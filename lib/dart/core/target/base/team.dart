@@ -71,7 +71,7 @@ abstract class Team extends Entity<XTarget> implements ITeam {
     metadata,
     this.relations, {
     this.memberTypes = mTypes,
-  }) : super(metadata) {
+  }) : super(metadata, [metadata.typeName]) {
     kernel.subscribe('${metadata.belongId}-${metadata.id}-target',
         [...keys, key], (data) => _receiveTarget(data as TargetOperateModel));
   }

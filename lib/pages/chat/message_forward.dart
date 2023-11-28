@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/base/model.dart' hide Column;
+import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
@@ -14,7 +15,7 @@ import 'package:orginone/components/widgets/image_widget.dart';
 import 'message_routers.dart';
 
 class MessageForward extends StatefulWidget {
-  final MsgBodyModel msgBody;
+  final IMessage msgBody;
 
   final String msgType;
 
@@ -124,8 +125,8 @@ class _MessageForwardState extends State<MessageForward> {
                                 var success = await item.msg.sendMessage(
                                     msgType!,
                                     msgType == MessageType.text
-                                        ? widget.msgBody.text!
-                                        : jsonEncode(widget.msgBody.toJson()),
+                                        ? widget.msgBody.msgType
+                                        : widget.msgBody.msgSource,
                                     []);
                                 if (success) {
                                   ToastUtils.showMsg(msg: "转发成功");

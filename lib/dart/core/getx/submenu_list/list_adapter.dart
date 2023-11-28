@@ -234,6 +234,8 @@ class ListAdapter {
       noReadCount.value = chat.chatdata.value.noReadCount > 99
           ? "99+"
           : chat.chatdata.value.noReadCount.toString();
+    } else {
+      noReadCount.value = '';
     }
     //沟通未读消息提示处理
     command.subscribeByFlag('session-$key',
@@ -242,8 +244,7 @@ class ListAdapter {
 
   void refreshNoReadMgsCount([List<dynamic>? args]) {
     if (null != args && args.isNotEmpty) {
-      noReadCount.value = args[0].toString();
-      print('>>>=====refresh:${noReadCount.value}');
+      noReadCount.value = args[0] > 0 ? args[0].toString() : '';
     }
   }
 }

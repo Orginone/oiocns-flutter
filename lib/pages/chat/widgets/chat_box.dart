@@ -188,7 +188,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
             if (controller.reply.value == null) {
               return const SizedBox();
             }
-            String showTxt = '';
+            String showTxt = controller.reply.value!.msgBody;
             // StringUtil.msgConversion(controller.reply.value!, '');
             List<InlineSpan> span = [
               TextSpan(
@@ -200,7 +200,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
                 0,
                 WidgetSpan(
                     child: TargetText(
-                      userId: controller.reply.value!.fromId,
+                      userId: controller.reply.value!.metadata.fromId,
                       text: ": ",
                     ),
                     alignment: PlaceholderAlignment.middle),
@@ -657,7 +657,7 @@ class ChatBoxController with WidgetsBindingObserver {
 
   List<Rule> rules = [];
 
-  Rxn<MsgSaveModel> reply = Rxn();
+  Rxn<IMessage> reply = Rxn();
 
   ChatBoxController() {
     EventBusHelper.register(this, (event) {
@@ -719,19 +719,18 @@ class ChatBoxController with WidgetsBindingObserver {
         break;
       case InputEvent.clickSendBtn:
         String message = inputController.text;
-        await chat.sendMessage(
-          MessageType.text,
-          message,
-          rules.map((e) => e.target?.id ?? "").toList(),
-        );
-        inputController.clear();
-        atKey.currentState?.clearRules();
-        reply.value = null;
-        rules.clear();
-        if (_inputStatus.value == InputStatus.inputtingText) {
-          _inputStatus.value = InputStatus.focusing;
-        } else {
-          _inputStatus.value = InputStatus.emoji;
+        bool success = await chat.sendMessage(MessageType.text, message,
+            rules.map((e) => e.target?.id ?? "").toList(), reply.value);
+        if (success) {
+          inputController.clear();
+          atKey.currentState?.clearRules();
+          reply.value = null;
+          rules.clear();
+          if (_inputStatus.value == InputStatus.inputtingText) {
+            _inputStatus.value = InputStatus.focusing;
+          } else {
+            _inputStatus.value = InputStatus.emoji;
+          }
         }
         break;
       case InputEvent.clickVoice:

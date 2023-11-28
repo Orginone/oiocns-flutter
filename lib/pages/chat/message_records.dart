@@ -71,7 +71,7 @@ class MessageRecordsPage
                     ),
                     title: Text(snapshot.data?.name ?? ""),
                     subtitle: Text(
-                      StringUtil.msgConversion(item.metadata, ''),
+                      StringUtil.msgConversion(item, ''),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                     ),

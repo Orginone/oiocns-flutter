@@ -124,7 +124,7 @@ abstract class IActivity extends IEntity<XTarget> {
 
 /// 动态实现
 class Activity extends Entity<XTarget> implements IActivity {
-  Activity(this.metadata, this.session) : super(metadata) {
+  Activity(this.metadata, this.session) : super(metadata, ['动态']) {
     if (session.target.id == session.sessionId) {
       coll = session.target.resource.genColl('resource-activity');
     } else {

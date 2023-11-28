@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/dart/base/common/commands.dart';
+import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
@@ -22,9 +23,6 @@ import 'package:orginone/utils/hive_utils.dart';
 import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/loading_dialog.dart';
-
-const sessionUserName = 'sessionUser';
-const sessionSpaceName = 'sessionSpace';
 
 enum Shortcut {
   addPerson("添加朋友", Icons.group_add_outlined),
@@ -81,7 +79,10 @@ class IndexController extends GetxController {
   late UserProvider _provider;
 
   var homeEnum = HomeEnum.door.obs;
-  final _noReadMgsCount = 0.obs;
+  RxInt noReadMgsCount = 0.obs;
+
+  /// 所有相关会话
+  late RxList<ISession> chats = <ISession>[].obs;
 
   late CustomPopupMenuController functionMenuController;
 
@@ -98,40 +99,40 @@ class IndexController extends GetxController {
 
   /// 所有相关的用户
   List<ITarget> get targets => provider.targets;
+  late Emitter emitter;
+  // /// 所有相关会话
+  // RxList<ISession> get chats {
+  //   List<ISession> _chats = [];
+  //   if (provider.user != null) {
+  //     chats.addAll(provider.user?.chats ?? []);
+  //     for (var company in provider.user?.companys ?? []) {
+  //       chats.addAll(company.chats ?? []);
+  //     }
 
-  /// 所有相关会话
-  RxList<ISession> get chats {
-    List<ISession> chats = [];
-    if (provider.user != null) {
-      chats.addAll(provider.user?.chats ?? []);
-      for (var company in provider.user?.companys ?? []) {
-        chats.addAll(company.chats ?? []);
-      }
+  //     /// 排序
+  //     chats.sort((a, b) {
+  //       var num = (b.chatdata.value.isToping ? 10 : 0) -
+  //           (a.chatdata.value.isToping ? 10 : 0);
+  //       if (num == 0) {
+  //         if (b.chatdata.value.lastMsgTime == a.chatdata.value.lastMsgTime) {
+  //           num = b.isBelongPerson ? 1 : -1;
+  //         } else {
+  //           num = b.chatdata.value.lastMsgTime > a.chatdata.value.lastMsgTime
+  //               ? 5
+  //               : -5;
+  //         }
+  //       }
+  //       return num;
+  //     });
+  //   }
+  //   return chats;
+  // }
 
-      /// 排序
-      chats.sort((a, b) {
-        var num = (b.chatdata.value.isToping ? 10 : 0) -
-            (a.chatdata.value.isToping ? 10 : 0);
-        if (num == 0) {
-          if (b.chatdata.value.lastMsgTime == a.chatdata.value.lastMsgTime) {
-            num = b.isBelongPerson ? 1 : -1;
-          } else {
-            num = b.chatdata.value.lastMsgTime > a.chatdata.value.lastMsgTime
-                ? 5
-                : -5;
-          }
-        }
-        return num;
-      });
-    }
-    return RxList<ISession>.from(chats);
-  }
-
-  int get noReadMgsCount {
-    //处理所有未读消息
-    refreshNoReadMgsCount();
-    return _noReadMgsCount.value;
-  }
+  // int get noReadMgsCount {
+  //   //处理所有未读消息
+  //   refreshNoReadMgsCount();
+  //   return _noReadMgsCount.value;
+  // }
 
   var menuItems = [
     ShortcutData(
@@ -152,7 +153,12 @@ class IndexController extends GetxController {
     super.onInit();
     functionMenuController = CustomPopupMenuController();
     settingMenuController = CustomPopupMenuController();
-    _provider = UserProvider();
+    emitter = Emitter();
+    // 监听消息加载
+    emitter.subscribe((key, args) {
+      loadChats();
+    }, false);
+    _provider = UserProvider(emitter);
     _userSub = EventBusUtil.instance.on<UserLoaded>((event) async {
       EventBusHelper.fire(ShowLoading(true));
       // await _provider.loadData();
@@ -170,18 +176,74 @@ class IndexController extends GetxController {
     initNoReadCommand();
   }
 
+  Future<void> loadChats([bool reload = false]) async {
+    if (provider.user != null) {
+      // this.chats.value = [];
+      if (reload) {
+        // TODO 后期晚上刷新列表
+        await provider.user?.deepLoad(reload: reload);
+      }
+      List<ISession> chats = <ISession>[];
+      chats.addAll(provider.user?.chats ?? []);
+      for (var company in provider.user?.companys ?? []) {
+        chats.addAll(company.chats ?? []);
+      }
+      chats = chats
+          .where((element) =>
+              element.chatdata.value.lastMessage != null ||
+              element.chatdata.value.recently!)
+          .toList();
+
+      /// 排序
+      chats.sort((a, b) {
+        var num = (b.chatdata.value.isToping ? 10 : 0) -
+            (a.chatdata.value.isToping ? 10 : 0);
+        if (num == 0) {
+          if (b.chatdata.value.lastMsgTime == a.chatdata.value.lastMsgTime) {
+            num = b.isBelongPerson ? 1 : -1;
+          } else {
+            num = b.chatdata.value.lastMsgTime > a.chatdata.value.lastMsgTime
+                ? 5
+                : -5;
+          }
+        }
+        return num;
+      });
+      this.chats.value = chats;
+    }
+  }
+
+  /// 订阅变更
+  /// [callback] 变更回调
+  /// 返回订阅ID
+  String subscribe(void Function(String, List<dynamic>?) callback,
+      [bool? target = true]) {
+    return emitter.subscribe(callback, _provider.inited && target!);
+  }
+
+  /// 取消订阅 支持取消多个
+  /// [key] 订阅ID
+  void unsubscribe(dynamic key) {
+    emitter.unsubscribe(key);
+  }
+
   void initNoReadCommand() {
     //沟通未读消息提示处理
-    command.subscribeByFlag(
-        'session', ([List<dynamic>? args]) => {refreshNoReadMgsCount()});
+    command.subscribeByFlag('session', ([List<dynamic>? args]) {
+      loadChats();
+      refreshNoReadMgsCount();
+    });
   }
 
   void refreshNoReadMgsCount() {
-    _noReadMgsCount.value = 0;
-    for (var element in chats) {
-      _noReadMgsCount.value += element.chatdata.value.noReadCount;
+    if (chats.isNotEmpty) {
+      if (noReadMgsCount.value != 0) {
+        noReadMgsCount.value = 0;
+      }
+      for (var element in chats) {
+        noReadMgsCount.value += element.chatdata.value.noReadCount;
+      }
     }
-    print('>>>=====refresh:${_noReadMgsCount.value}');
   }
 
   @override
@@ -217,7 +279,7 @@ class IndexController extends GetxController {
       case HomeEnum.store:
         Get.toNamed(Routers.storeTree);
         break;
-      case HomeEnum.setting:
+      case HomeEnum.relation:
         Get.toNamed(Routers.settingCenter);
         break;
       case HomeEnum.door:
@@ -272,11 +334,42 @@ class IndexController extends GetxController {
     }
   }
 
-  void exitLogin({bool cleanUserLoginInfo = true}) async {
-    if (cleanUserLoginInfo) {
-      Storage().clear();
+  bool canAutoLogin([List<String>? account]) {
+    account ??= Storage().getList("account");
+    if (account.isNotEmpty && account.last != "") {
+      return true;
     }
-    LoadingDialog.dismiss(Get.context!);
+    return false;
+  }
+
+  void cancelAutoLogin() {
+    Storage().setListValue("account", 1, "");
+  }
+
+  Future<void> autoLogin([List<String>? account]) async {
+    account ??= Storage().getList("account");
+    if (!canAutoLogin(account)) {
+      return exitLogin(false);
+    }
+
+    String accountName = account.first;
+    String passWord = account.last;
+    var login = await provider.login(accountName, passWord);
+    if (!login.success) {
+      // exitLogin(false);
+      Future.delayed(const Duration(milliseconds: 100), () async {
+        await autoLogin();
+      });
+    }
+  }
+
+  void exitLogin([bool cleanUserLoginInfo = true]) async {
+    // if (cleanUserLoginInfo && canAutoLogin()) {
+    //   cancelAutoLogin();
+    // }
+    if (null != Get.context) {
+      LoadingDialog.dismiss(Get.context!);
+    }
     kernel.stop();
     await HiveUtils.clean();
     homeEnum.value = HomeEnum.door;
@@ -355,6 +448,7 @@ enum HomeEnum {
   work("办事"),
   door("门户"),
   store("数据"),
+  relation("关系"),
   setting("设置");
 
   final String label;

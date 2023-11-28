@@ -35,10 +35,12 @@ abstract class IIdentity extends IFileInfo<XIdentity> {
 
 class Identity extends Entity<XIdentity> implements IIdentity {
   Identity(this.metadata, this.current)
-      : super(XIdentity.fromJson({
-          ...metadata.toJson(),
-          'typeName': '角色',
-        })) {
+      : super(
+            XIdentity.fromJson({
+              ...metadata.toJson(),
+              'typeName': '角色',
+            }),
+            []) {
     isInherited = false;
 
     directory = current.directory;

@@ -173,16 +173,18 @@ class XCollection<T extends Xbase> {
     return [];
   }
 
-  Future<T?> update(String id, dynamic update, {String? copyId}) async {
+  Future<T?> update(String id, dynamic update,
+      [String? copyId, T Function(Map<String, dynamic>)? fromJson]) async {
     var res = await kernel.collectionSetFields<T>(
       _target.belongId!,
       this._relations,
       this._collName,
       {
-        id,
-        update,
+        'id': id,
+        'update': update,
       },
       copyId,
+      fromJson,
     );
     if (res.success) {
       return res.data;
@@ -210,9 +212,9 @@ class XCollection<T extends Xbase> {
 
   Future<bool> delete(T data, {String? copyId}) async {
     Map<String, dynamic> update = {
-      'match': {'_id': data.id},
+      'match': {'id': data.id},
       'update': {
-        '_set': {'isDeleted': true}
+        '_set_': {'isDeleted': true}
       }
     };
     var res = await kernel.collectionUpdate(
@@ -223,7 +225,7 @@ class XCollection<T extends Xbase> {
       copyId,
     );
     if (res.success) {
-      return res.data?.MatchedCount > 0;
+      return res.data?['MatchedCount'] > 0;
     }
     return false;
   }
@@ -231,7 +233,7 @@ class XCollection<T extends Xbase> {
   Future<bool> deleteMany(List<T> data, {String? copyId}) async {
     Map<String, dynamic> update = {
       'match': {
-        '_id': {'_in': data.map((i) => i.id)}
+        'id': {'_in_': data.map((i) => i.id)}
       },
       'update': {
         '_set_': {'isDeleted': true}
@@ -245,7 +247,7 @@ class XCollection<T extends Xbase> {
       copyId,
     );
     if (res.success) {
-      return res.data?.MatchedCount > 0;
+      return res.data?['MatchedCount'] > 0;
     }
     return false;
   }
@@ -265,13 +267,13 @@ class XCollection<T extends Xbase> {
       copyId,
     );
     if (res.success) {
-      return res.data?.MatchedCount > 0;
+      return res.data?['MatchedCount'] > 0;
     }
     return false;
   }
 
   Future<bool> remove(T data, {String? copyId}) async {
-    Map<String, dynamic> match = {'_id': data.id};
+    Map<String, dynamic> match = {'id': data.id};
     var res = await kernel.collectionRemove(
       this._target.belongId!,
       this._relations,
@@ -280,14 +282,14 @@ class XCollection<T extends Xbase> {
       copyId,
     );
     if (res.success) {
-      return res.data?.MatchedCount > 0;
+      return res.data?['MatchedCount'] > 0;
     }
     return false;
   }
 
   Future<bool> removeMany(List<T> data, {String? copyId}) async {
     Map<String, dynamic> match = {
-      '_id': {'_in_': data.map((i) => i.id)}
+      'id': {'_in_': data.map((i) => i.id)}
     };
     var res = await kernel.collectionRemove(
       this._target.belongId!,
@@ -297,7 +299,7 @@ class XCollection<T extends Xbase> {
       copyId,
     );
     if (res.success) {
-      return res.data?.MatchedCount > 0;
+      return res.data?['MatchedCount'] > 0;
     }
     return false;
   }

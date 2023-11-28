@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:math';
 
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
@@ -51,11 +50,14 @@ double defaultWidth = 10.w;
 class DetailItemWidget extends GetView<IndexController> {
   final ISession chat;
   final IMessage msg;
-  const DetailItemWidget({
+  late CustomPopupMenuController popMenuController;
+  DetailItemWidget({
     Key? key,
     required this.chat,
     required this.msg,
-  }) : super(key: key);
+  }) : super(key: key) {
+    popMenuController = CustomPopupMenuController();
+  }
 
   MessageChatController get chatController => Get.find();
 
@@ -95,7 +97,7 @@ class DetailItemWidget extends GetView<IndexController> {
           TextSpan(text: "您撤回了一条消息", style: XFonts.size18Black9)
         ];
 
-        String msgStr = jsonDecode(msg.msgBody.substring(5))['body'];
+        String msgStr = msg.msgSource;
         if (!StringUtil.isJson(msgStr)) {
           recallMsgs.add(TextSpan(
               text: " 重新编辑",
@@ -231,8 +233,7 @@ class DetailItemWidget extends GetView<IndexController> {
                       ),
                     ),
                     onTap: () {
-                      //TODO:没有此方法
-                      // msg.chatController.hideMenu();
+                      popMenuController.hideMenu();
                       switch (item) {
                         case DetailFunc.recall:
                           chat.recallMessage(msg.id);
@@ -241,20 +242,17 @@ class DetailItemWidget extends GetView<IndexController> {
                           chat.deleteMessage(msg.id);
                           break;
                         case DetailFunc.forward:
-                          //TODO:没有此方法
-                          // chatController.forward(msg.msgType, msg.body!);
+                          chatController.forward(msg.msgType, msg);
                           break;
                         case DetailFunc.reply:
                           ChatBoxController controller =
                               Get.find<ChatBoxController>();
-                          //TODO:没有此方法
-                          // controller.reply.value = msg.metadata;
+                          controller.reply.value = msg;
                           break;
                         case DetailFunc.copy:
                           ////TODO:没有此方法
-                          // Clipboard.setData(ClipboardData(
-                          //     text:
-                          //         StringUtil.msgConversion(msg.metadata, '')));
+                          Clipboard.setData(ClipboardData(
+                              text: StringUtil.msgConversion(msg, '')));
                           break;
                       }
                     },
@@ -268,8 +266,7 @@ class DetailItemWidget extends GetView<IndexController> {
 
     content.add(
       CustomPopupMenu(
-        //TODO:无此方法
-        // controller: msg.chatController,
+        controller: popMenuController,
         position: PreferredPosition.bottom,
         menuBuilder: _buildLongPressMenu,
         barrierColor: Colors.transparent,
@@ -534,11 +531,11 @@ class PlayController extends GetxController with GetTickerProviderStateMixin {
   }
 
   /// 不存在就推入状态
-  putPlayerStatusIfAbsent(MsgSaveModel msg) {
+  putPlayerStatusIfAbsent(IMessage msg, MsgBodyModel msgBody) {
     if (!_playStatuses.containsKey(msg.id)) {
       try {
-        int milliseconds = msg.body?.milliseconds ?? 0;
-        List<dynamic> rowBytes = msg.body?.bytes ?? [];
+        int milliseconds = msgBody.milliseconds ?? 0;
+        List<dynamic> rowBytes = msgBody.bytes ?? [];
         List<int> tempBytes = rowBytes.map((byte) => byte as int).toList();
         _playStatuses[msg.id] = PlayerStatus(
           status: VoiceStatus.stop.obs,

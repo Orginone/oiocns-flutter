@@ -14,14 +14,22 @@ class MessageSubController extends BaseListController<MessageSubState> {
   final MessageSubState state = MessageSubState();
 
   late String type;
+  late String key;
 
   MessageSubController(this.type);
 
   @override
   void onInit() async {
     super.onInit();
-    await initChatBreadNav();
-    loadSuccess();
+    // await initChatBreadNav();
+    // loadSuccess();
+    key = settingCtrl.subscribe((key, args) async {
+      // await initChatBreadNav();
+      loadSuccess();
+    });
+    if (settingCtrl.provider.inited) {
+      loadSuccess();
+    }
   }
 
   Future<void> initChatBreadNav() async {
@@ -30,11 +38,11 @@ class MessageSubController extends BaseListController<MessageSubState> {
       companyItems.add(
         createNav(
             company.id,
-            settingCtrl.chats.last,
+            company.session,
             [
               createNav(
                 "${company.id}0",
-                settingCtrl.chats.last,
+                company.session,
                 company.memberChats
                     .map((item) => createNav(item.sessionId, item, []))
                     .toList(),
@@ -52,11 +60,11 @@ class MessageSubController extends BaseListController<MessageSubState> {
     state.nav = ChatBreadcrumbNav(children: [
       createNav(
           settingCtrl.user.id,
-          settingCtrl.chats.last,
+          settingCtrl.user.session,
           [
             createNav(
               "${settingCtrl.user.id}0",
-              settingCtrl.chats.last,
+              settingCtrl.user.session,
               settingCtrl.user.memberChats
                   .map((chat) => createNav(chat.sessionId, chat, [],
                       spaceEnum: SpaceEnum.person))
@@ -70,7 +78,7 @@ class MessageSubController extends BaseListController<MessageSubState> {
           ],
           type: ChatType.list),
       ...companyItems,
-    ], name: "沟通", target: settingCtrl.chats.last);
+    ], name: "沟通", target: settingCtrl.user.session);
   }
 
   ChatBreadcrumbNav createNav(
@@ -118,18 +126,20 @@ class MessageSubController extends BaseListController<MessageSubState> {
   void onClose() {
     state.scrollController.dispose();
     super.onClose();
+    settingCtrl.unsubscribe(key);
   }
 
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
-    if (type != 'all') {
-      if (type == "common") {
-        //TODO:无此方法
-        // await settingCtrl.chat.loadMostUsed();
-      } else {
-        settingCtrl.chats;
-      }
+    // if (type != 'all') {
+    // if (type == "common") {
+    //TODO:无此方法
+    // await settingCtrl.chat.loadMostUsed();
+    // }
+    if (isRefresh && settingCtrl.chats.isEmpty) {
+      await settingCtrl.loadChats(true);
     }
+    // }
   }
 
   void onSelected(key, ISession chat) {

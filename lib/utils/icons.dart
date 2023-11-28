@@ -1,27 +1,24 @@
 class AIcons {
-	static Map<String, Map<String, String>> icons = {
-		"x": {
+  static Map<String, Map<String, String>> icons = {
+    "x": {
+      "chat": "assets/icons/chat-select.svg",
+      "unchat": "assets/icons/chat.svg",
+      "work": "assets/icons/work-select.svg",
+      "unwork": "assets/icons/work.svg",
+      "home": "assets/icons/home-select.svg",
+      "unhome": "assets/icons/home.svg",
+      "store": "assets/icons/store-select.svg",
+      "unstore": "assets/icons/store.svg",
+      "relation": "assets/icons/relation-select.svg",
+      "unrelation": "assets/icons/relation.svg",
+      "setting": "assets/icons/setting-select.svg",
+      "unsetting": "assets/icons/setting.svg",
       "logo": "assets/icons/logo.png",
-      "setting": "assets/icons/setting.png",
-			"unsetting": "assets/icons/unsetting.png",
-      "store": "assets/icons/store.png",
-      "work": "assets/icons/work.png",
+      "defalutAvatar": "assets/icons/defalut_avatar.png",
       "shop": "assets/icons/shop.png",
-      "home": "assets/icons/home.png",
-			"chat": "assets/icons/chat.png",
-			"unchat": "assets/icons/unchat.png",
-      "unstore": "assets/icons/unstore.png",
-      "unwork": "assets/icons/unwork.png",
       "unshop": "assets/icons/unshop.png",
-      "unhome": "assets/icons/unhome.png",
-			"defalutAvatar":"assets/icons/defalut_avatar.png",
     },
-		"2x": {
-
-		},
-		"3x": {
-
-		},
-	};
-
+    "2x": {},
+    "3x": {},
+  };
 }

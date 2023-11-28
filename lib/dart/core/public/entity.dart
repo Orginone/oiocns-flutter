@@ -13,7 +13,6 @@ abstract class IEntity<T> extends Emitter {
   //实体唯一键
   late String key;
   //唯一标识
-  @override
   late String id;
   //实体名称
   late String name;
@@ -37,6 +36,8 @@ abstract class IEntity<T> extends Emitter {
   late ShareIcon updater;
   //归属
   late ShareIcon belong;
+  // 分组标签
+  late List<String> groupTags;
 
   //查找元数据
   T? findMetadata<T>(String id);
@@ -52,10 +53,12 @@ abstract class IEntity<T> extends Emitter {
 abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
   @override
   late String key;
+  late List<String> _gtags;
 
-  Entity(T metadata) : super() {
+  Entity(T metadata, List<String> gtags) : super() {
     this.key = const Uuid().v1();
     _metadata = metadata;
+    _gtags = gtags;
     shareIdSet[_metadata.id] = _metadata;
   }
   late T _metadata;
@@ -120,6 +123,17 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
   @override
   ShareIcon get belong {
     return findShare(metadata.belongId!);
+  }
+
+  @override
+  List<String> get groupTags {
+    // if (
+    //   ('isDeleted' in this._metadata && this._metadata.isDeleted === true) ||
+    //   ('isDeleted' in this.metadata && this.metadata.isDeleted === true)
+    // ) {
+    //   return ['已删除'];
+    // }
+    return this._gtags;
   }
 
   void setMetadata(T metadata) {

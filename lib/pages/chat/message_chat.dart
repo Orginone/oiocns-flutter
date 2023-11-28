@@ -3,7 +3,6 @@ import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/common/index.dart';
-import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
@@ -50,7 +49,7 @@ class MessageChatPage
     if (state.chat.members.length > 1) {
       name += "(${state.chat.members.length})";
     }
-    var spaceName = state.chat.chatdata.value.labels.join(" | ");
+    var spaceName = state.chat.groupTags.join(" | ");
     return Column(
       children: [
         Text(name, style: XFonts.size24Black3),
@@ -89,7 +88,7 @@ class MessageChatController extends BaseController<MessageChatState> {
     // });
   }
 
-  void forward(String msgType, MsgBodyModel msgBody) {
+  void forward(String msgType, IMessage msgBody) {
     showModalBottomSheet(
         context: context,
         builder: (context) {

@@ -90,6 +90,7 @@ class UserService extends GetxService {
   Future<void> logout() async {
     // if (_isLogin.value) await UserAPIs.logout();
     await Storage().remove(Constants.appTokenKey);
+    await Storage().remove(Constants.sessionUser);
     // _userInfo(UserModel());
     _isLogin.value = false;
     token = '';
