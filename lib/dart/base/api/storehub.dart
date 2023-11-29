@@ -204,9 +204,14 @@ class StoreHub {
       if (null != resObj) {
         ResultType res = ResultType.fromJson(resObj as Map<String, dynamic>);
         LogUtil.d('接口：${Constant.rest}/${methodName.toLowerCase()}');
-        LogUtil.d('参数：${jsonEncode(args?[0])}');
-        LogUtil.d('StoreHub返回值：$resObj');
+        LogUtil.d('参数：${jsonEncode(args![0])}');
+
         if (res.success) {
+          LogUtil.d(
+              'StoreHub返回值=================Start============================');
+          LogUtil.d(resObj);
+          LogUtil.d(
+              'StoreHub返回值=================End============================');
           return _success(res);
         } else {
           return _error(resObj);

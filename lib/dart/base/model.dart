@@ -278,7 +278,7 @@ class ResultType<T> {
   ResultType.fromJsonSerialize(
       ResultType<dynamic> json, T Function(Map<String, dynamic>) serialize) {
     msg = json.msg ?? "";
-    if (json.data != null) {
+    if (json.data != null && json.success) {
       if (json.data is List) {
         data = serialize({'data': json.data});
       } else if (json.data is Map) {
