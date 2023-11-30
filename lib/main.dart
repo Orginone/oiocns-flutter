@@ -31,7 +31,7 @@ const Size screenSize = Size(540, 1170);
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  List<String> get account => Storage().getList("account");
+  List<String> get account => Storage.getList("account");
   // String get userJson => Storage().getString(sessionUserName);
 
   @override

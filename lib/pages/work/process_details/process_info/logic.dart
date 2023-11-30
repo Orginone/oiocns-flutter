@@ -1,9 +1,7 @@
-import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/work/network.dart';
 import 'package:orginone/utils/index.dart';
 
 import '../../../../../dart/core/getx/base_controller.dart';
@@ -17,17 +15,6 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
   void onInit() {
     super.onInit();
     LogUtil.d(state.todo);
-  }
-
-  void approval(int status) async {
-    await WorkNetWork.approvalTask(
-        status: status,
-        comment: state.comment.text,
-        todo: state.todo!,
-        onSuccess: () {
-          Get.back();
-          EventBusUtil().fire(LoadTodosEvent());
-        });
   }
 
   Future<bool> loadMainFieldData(

@@ -114,7 +114,7 @@ dependencies:
   #消息总线
   event_bus: 2.0.0
   #数据本地化
-  shared_preferences: ^2.0.17
+  shared_preferences: ^2.2.2
   #图表
   syncfusion_flutter_charts: ^22.2.5
   fl_chart: ^0.61.0

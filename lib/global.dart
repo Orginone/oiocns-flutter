@@ -20,8 +20,10 @@ import 'package:orginone/utils/storage.dart';
 class Global {
   static Future<void> init() async {
     //这个表示先就行原生端（ios android）插件注册，然后再处理后续操作，这样能保证代码运行正确。
-    WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-
+    // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+    WidgetsFlutterBinding.ensureInitialized();
+    // 初始化通知配置
+    await Storage.init();
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: Colors.transparent));
 
@@ -29,10 +31,7 @@ class Global {
 
     await NotificationUtil.initializeService();
 
-    // 初始化通知配置
-    await Storage().init();
-
-    ForegroundUtils().initForegroundTask();
+    await ForegroundUtils().initForegroundTask();
 
     WalletChannel().init();
     // 日志初始化

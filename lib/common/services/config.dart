@@ -51,7 +51,7 @@ class ConfigService extends GetxService {
  */
 // 初始语言
   void initLocale() {
-    var langCode = Storage().getString(Constants.storageLanguageCode);
+    var langCode = Storage.getString(Constants.storageLanguageCode);
     if (langCode.isEmpty) return;
     var index = Translation.supportedLocales.indexWhere((element) {
       return element.languageCode == langCode;
@@ -64,7 +64,7 @@ class ConfigService extends GetxService {
   void onLocaleUpdate(Locale value) {
     locale = value;
     Get.updateLocale(value);
-    Storage().setString(Constants.storageLanguageCode, value.languageCode);
+    Storage.setString(Constants.storageLanguageCode, value.languageCode);
   }
 
   /*
@@ -72,7 +72,7 @@ class ConfigService extends GetxService {
    */
   // 初始 theme
   void initTheme() {
-    var themeCode = Storage().getString(Constants.storageThemeCode);
+    var themeCode = Storage.getString(Constants.storageThemeCode);
     _isDarkModel.value = themeCode == "dark" ? true : false;
     Get.changeTheme(
       themeCode == "dark" ? AppTheme.dark : AppTheme.light,
@@ -85,15 +85,15 @@ class ConfigService extends GetxService {
     Get.changeTheme(
       _isDarkModel.value == true ? AppTheme.dark : AppTheme.light,
     );
-    await Storage().setString(Constants.storageThemeCode,
+    await Storage.setString(Constants.storageThemeCode,
         _isDarkModel.value == true ? "dark" : "light");
   }
 
   // 是否首次打开App
-  bool get opened => Storage().getBool(Constants.storageisFirstOpen);
+  bool get opened => Storage.getBool(Constants.storageisFirstOpen);
 
 // 标记已打开app
   void setAlreadyOpen() {
-    Storage().setBool(Constants.storageisFirstOpen, true);
+    Storage.setBool(Constants.storageisFirstOpen, true);
   }
 }

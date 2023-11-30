@@ -135,7 +135,6 @@ class StoreSubPage
 
   @override
   String tag() {
-    // TODO: implement tag
     return "store_$type";
   }
 

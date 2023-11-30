@@ -17,7 +17,7 @@ import 'work/provider.dart';
 class UserProvider {
   UserProvider(Emitter emiter) {
     _emiter = emiter;
-    final userJson = Storage().getString(Constants.sessionUser);
+    final userJson = Storage.getString(Constants.sessionUser);
     if (userJson.isNotEmpty) {
       _loadUser(XTarget.fromJson(jsonDecode(userJson)));
     }
@@ -102,7 +102,7 @@ class UserProvider {
 
   /// 加载用户
   _loadUser(XTarget person) async {
-    Storage().setJson(Constants.sessionUser, person.toJson());
+    Storage.setJson(Constants.sessionUser, person.toJson());
     kernel.userId = person.id;
 
     _user.value = Person(person);

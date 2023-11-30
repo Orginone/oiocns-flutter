@@ -54,7 +54,7 @@ class HttpUtil {
   }
 
   Future<Options> addTokenHeader(Options? options) async {
-    var accessToken = Storage().getString('accessToken');
+    var accessToken = Storage.getString('accessToken');
     log.info("====> accessToken：$accessToken");
     if (options == null) {
       return Options(headers: {"Authorization": accessToken});

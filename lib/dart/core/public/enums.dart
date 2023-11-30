@@ -103,8 +103,8 @@ enum MessageType {
 ///任务状态
 enum TaskStatus {
   applyStart(0),
-  approvalStart(100),
-  refuseStart(200);
+  approvalStart(100), //已同意
+  refuseStart(200); //已拒绝
 
   final int status;
   const TaskStatus(this.status);

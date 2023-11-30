@@ -335,7 +335,7 @@ class IndexController extends GetxController {
   }
 
   bool canAutoLogin([List<String>? account]) {
-    account ??= Storage().getList("account");
+    account ??= Storage.getList("account");
     if (account.isNotEmpty && account.last != "") {
       return true;
     }
@@ -343,11 +343,11 @@ class IndexController extends GetxController {
   }
 
   void cancelAutoLogin() {
-    Storage().setListValue("account", 1, "");
+    Storage.setListValue("account", 1, "");
   }
 
   Future<void> autoLogin([List<String>? account]) async {
-    account ??= Storage().getList("account");
+    account ??= Storage.getList("account");
     if (!canAutoLogin(account)) {
       return exitLogin(false);
     }

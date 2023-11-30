@@ -37,7 +37,7 @@ class UserService extends GetxService {
   void onInit() {
     super.onInit();
     // 读 token
-    token = Storage().getString(Constants.appTokenKey);
+    token = Storage.getString(Constants.appTokenKey);
     if (token.isNotEmpty) {
       _isLogin(true); //每次app重启的时候 记录登录状态
     }
@@ -48,18 +48,18 @@ class UserService extends GetxService {
 
   /// 设置令牌  +++++++++++++++++++++++++++++++++++++++++
   Future<void> setToken(String value) async {
-    await Storage().setString(Constants.appTokenKey, value);
+    await Storage.setString(Constants.appTokenKey, value);
     token = value;
   }
 
   /// 设置令牌  +++++++++++++++++++++++++++++++++++++++++
   Future<void> setUserNamePassword(Map<String, dynamic> info) async {
-    await Storage().setJson(Constants.userNamePassword, info);
+    await Storage.setJson(Constants.userNamePassword, info);
     userNamePassword = info;
   }
 
   Future<Map<String, dynamic>> getUserNamePassword() async {
-    String userInfo = Storage().getString(Constants.userNamePassword);
+    String userInfo = Storage.getString(Constants.userNamePassword);
     if (userInfo.isEmpty) {
       return {'username': "", 'password': ''};
     }
@@ -79,7 +79,7 @@ class UserService extends GetxService {
   /// 获取用户信息
   Future<void> getUserInfo() async {
     if (token.isEmpty) return;
-    var userInfoOffline = Storage().getString(Constants.userInfoKey);
+    var userInfoOffline = Storage.getString(Constants.userInfoKey);
     if (userInfoOffline.isNotEmpty) {
       // _userInfo(UserModel.fromJson(jsonDecode(userInfoOffline)));
     }
@@ -89,8 +89,8 @@ class UserService extends GetxService {
   /// 注销+++++++++++++++++++++++++++++++++++++++++
   Future<void> logout() async {
     // if (_isLogin.value) await UserAPIs.logout();
-    await Storage().remove(Constants.appTokenKey);
-    await Storage().remove(Constants.sessionUser);
+    await Storage.remove(Constants.appTokenKey);
+    await Storage.remove(Constants.sessionUser);
     // _userInfo(UserModel());
     _isLogin.value = false;
     token = '';

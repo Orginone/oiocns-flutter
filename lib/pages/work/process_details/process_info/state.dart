@@ -7,8 +7,6 @@ import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/pages/work/process_details/logic.dart';
 
 class ProcessInfoState extends BaseGetState {
-  TextEditingController comment = TextEditingController();
-
   ProcessDetailsController processDetailsController =
       Get.find<ProcessDetailsController>();
 

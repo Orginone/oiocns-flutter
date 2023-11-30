@@ -4,11 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
 import 'package:orginone/components/widgets/mapping_components.dart';
-import 'package:orginone/config/unified.dart';
+import 'package:orginone/pages/work/widgets/approve_widget.dart';
 import 'package:orginone/utils/index.dart';
 
 import 'logic.dart';
@@ -33,12 +32,11 @@ class ProcessInfoPage
                 SizedBox(
                   height: 10.h,
                 ),
-                _opinion(),
+                ApproveWidget(todo: state.todo),
               ],
             ),
           ),
         ),
-        _approval(),
       ],
     );
   }
@@ -128,80 +126,6 @@ class ProcessInfoPage
         future: controller.loadSubFieldData(sub, sub.fields),
       );
     });
-  }
-
-  ///审批
-  Widget _approval() {
-    if (state.todo?.metadata.status != 1) {
-      return Container();
-    }
-    return Container(
-      width: double.infinity,
-      height: 100.h,
-      decoration: BoxDecoration(
-          color: Colors.white,
-          border:
-              Border(top: BorderSide(color: Colors.grey.shade300, width: 0.5))),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _button(
-              text: '退回',
-              textColor: Colors.white,
-              color: Colors.red,
-              onTap: () {
-                LogUtil.d('退回');
-                controller.approval(TaskStatus.refuseStart.status);
-              }),
-          _button(
-              text: '通过',
-              textColor: Colors.white,
-              color: XColors.themeColor,
-              onTap: () {
-                LogUtil.d('通过');
-                controller.approval(TaskStatus.approvalStart.status);
-              }),
-        ],
-      ),
-    );
-  }
-
-  Widget _opinion() {
-    if (state.todo?.metadata.status != 1) {
-      return Container();
-    }
-    return CommonWidget.commonTextTile(
-      "备注",
-      "",
-      controller: state.comment,
-      hint: "请填写备注信息",
-      maxLine: 4,
-    );
-  }
-
-  Widget _button(
-      {VoidCallback? onTap,
-      required String text,
-      Color? textColor,
-      Color? color,
-      BoxBorder? border}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        alignment: Alignment.center,
-        height: 45.h,
-        width: 200.w,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(8.w),
-          border: border,
-        ),
-        child: Text(
-          text,
-          style: TextStyle(color: textColor, fontSize: 24.sp),
-        ),
-      ),
-    );
   }
 
   @override

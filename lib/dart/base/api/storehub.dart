@@ -87,12 +87,14 @@ class StoreHub {
 
 // 获取accessToken
   String get accessToken {
-    return Storage().getString('accessToken');
+    LogUtil.d('accessToken');
+    LogUtil.d(Storage());
+    return Storage.getString('accessToken');
   }
 
   // 设置accessToken
   set accessToken(String val) {
-    Storage().setString('accessToken', val);
+    Storage.setString('accessToken', val);
   }
 
   ///连接状态

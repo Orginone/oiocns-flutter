@@ -10,6 +10,7 @@ import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/pages/store/store_tree/state.dart';
+import 'package:orginone/utils/index.dart';
 
 import '../config.dart';
 import 'state.dart';
@@ -27,8 +28,11 @@ class StoreSubController extends BaseListController<StoreSubState> {
     super.onInit();
     if (type == "all") {
       var joinedCompanies = settingCtrl.user.companys;
-
+      LogUtil.d('joinedCompanies');
+      LogUtil.d(joinedCompanies);
       List<StoreTreeNav> organization = [];
+
+      ///组织目录
       for (var value in joinedCompanies) {
         organization.add(
           StoreTreeNav(
@@ -44,8 +48,9 @@ class StoreSubController extends BaseListController<StoreSubState> {
       state.nav = StoreTreeNav(
         name: HomeEnum.store.label,
         children: [
+          //用户文件夹
           StoreTreeNav(
-            name: settingCtrl.provider.user?.metadata.name ?? "",
+            name: '测试名字', //settingCtrl.provider.user?.metadata.name ?? "",
             id: settingCtrl.provider.user?.metadata.id ?? "",
             image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
             children: [],
@@ -64,11 +69,12 @@ class StoreSubController extends BaseListController<StoreSubState> {
   Future<void> loadUserSetting() async {
     var user = state.nav!.children[0];
 
+    ///点击进入下一级
     user.onNext = (nav) async {
       await user.space!.loadContent(reload: true);
       List<StoreTreeNav> function = [
         StoreTreeNav(
-          name: "个人文件",
+          name: "个人文件XXXX",
           space: user.space,
           showPopup: false,
           spaceEnum: SpaceEnum.directory,
