@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/common/values/index.dart';
 
 import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/main.dart';
 
 import 'index.dart';
@@ -32,6 +33,10 @@ class _SecurityViewGetX extends GetView<SecurityController> {
 
   // 主视图
   Widget _buildView() {
+    int cont = 0;
+    for (ICompany company in settingCtrl.provider.user?.companys ?? []) {
+      cont += company.chats.length;
+    }
     List<Widget> widgetList = [
       Row(
         children: [
@@ -47,6 +52,17 @@ class _SecurityViewGetX extends GetView<SecurityController> {
         children: [
           Text("群会话数据：成功加载${settingCtrl.provider.user?.cohortChats.length}个")
         ],
+      ),
+      Row(
+        children: [Text("全部消息列表：成功加载${settingCtrl.chats.length}个")],
+      ),
+      Row(
+        children: [
+          Text("人员消息列表：成功加载${settingCtrl.provider.user?.chats.length}个")
+        ],
+      ),
+      Row(
+        children: [Text("单位消息列表：成功加载$cont个")],
       )
     ];
     if (settingCtrl.provider.errInfo != "" && widgetList.isNotEmpty) {

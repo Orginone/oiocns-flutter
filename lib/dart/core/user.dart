@@ -107,7 +107,7 @@ class UserProvider {
       Storage.setJson(Constants.sessionUser, person.toJson());
       kernel.userId = person.id;
 
-      errInfo += "开始创建人员数据。。。\r\n";
+      errInfo = "开始创建人员数据。。。\r\n";
       _user.value = Person(person);
       logger.info(_user);
       errInfo += "开始创建办事提供器。。。\r\n";

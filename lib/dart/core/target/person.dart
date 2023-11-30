@@ -310,9 +310,9 @@ class Person extends Belong implements IPerson {
         chats.addAll(value.chats);
       }
     }
-    for (var item in storages) {
-      chats.addAll(item.chats);
-    }
+    // for (var item in storages) {
+    //   chats.addAll(item.chats);
+    // }
     return chats;
   }
 
