@@ -55,7 +55,7 @@ class ListAdapter {
 
   ListAdapter.chat(ISession chat) {
     noReadCount = ''.obs;
-    labels = chat.chatdata.value.labels;
+    labels = chat.groupTags;
     bool isTop = labels.contains("置顶");
     isUserLabel = false;
     typeName = chat.share.typeName;
@@ -72,18 +72,22 @@ class ListAdapter {
     onSelected = (key) async {
       switch (key) {
         case PopupMenuKey.cancelTopping:
-          chat.chatdata.value.labels.remove('置顶');
+          chat.groupTags.remove('置顶');
+          chat.chatdata.value.isToping = false;
           await chat.cacheChatData();
-          settingCtrl.provider.refresh();
+          settingCtrl.loadChats();
           break;
         case PopupMenuKey.topping:
-          chat.chatdata.value.labels.add('置顶');
+          chat.groupTags.add('置顶');
+          chat.chatdata.value.isToping = true;
           await chat.cacheChatData();
-          settingCtrl.provider.refresh();
+          settingCtrl.loadChats();
           break;
         case PopupMenuKey.delete:
+          chat.chatdata.value.recently = false;
+          await chat.cacheChatData();
           settingCtrl.chats.remove(chat);
-          settingCtrl.provider.refresh();
+          settingCtrl.loadChats();
           break;
       }
     };
@@ -99,7 +103,7 @@ class ListAdapter {
           if (chat.members.isNotEmpty) {
             var target = chat.members
                 .firstWhere((element) => element.id == lastMessage.fromId);
-            content = "${target.name}:";
+            content = ""; //"${target.name}:";
           }
         } else {
           content = "对方:";

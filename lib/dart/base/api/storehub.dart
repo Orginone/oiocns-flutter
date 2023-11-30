@@ -88,7 +88,6 @@ class StoreHub {
 // 获取accessToken
   String get accessToken {
     LogUtil.d('accessToken');
-    LogUtil.d(Storage());
     return Storage.getString('accessToken');
   }
 
@@ -209,11 +208,11 @@ class StoreHub {
         LogUtil.d('参数：${jsonEncode(args![0])}');
 
         if (res.success) {
-          LogUtil.d(
-              'StoreHub返回值=================Start============================');
-          LogUtil.d(resObj);
-          LogUtil.d(
-              'StoreHub返回值=================End============================');
+          // LogUtil.d(
+          //     'StoreHub返回值=================Start============================');
+          // LogUtil.d(resObj);
+          // LogUtil.d(
+          //     'StoreHub返回值=================End============================');
           return _success(res);
         } else {
           return _error(resObj);

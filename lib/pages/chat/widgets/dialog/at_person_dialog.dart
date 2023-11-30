@@ -31,6 +31,7 @@ class AtPersonDialog {
             constraints: BoxConstraints(
                 maxHeight: MediaQuery.of(context).size.height * 0.8),
             child: AtContactListPage(
+              userId: chat.userId,
               persons: chat.members,
             ),
           );
@@ -55,8 +56,11 @@ class PersonInfo extends ISuspensionBean {
 }
 
 class AtContactListPage extends StatefulWidget {
-  const AtContactListPage({Key? key, required this.persons}) : super(key: key);
+  const AtContactListPage(
+      {Key? key, required this.userId, required this.persons})
+      : super(key: key);
   final List<XTarget> persons;
+  final String userId;
   @override
   State<AtContactListPage> createState() => _AtContactListPageState();
 }
@@ -72,7 +76,9 @@ class _AtContactListPageState extends State<AtContactListPage> {
     super.initState();
 
     personInfo =
-        List.generate(persons.length, (index) => PersonInfo(persons[index]));
+        List.generate(persons.length, (index) => PersonInfo(persons[index]))
+            .where((element) => element.person.id != widget.userId)
+            .toList();
     initList(personInfo);
   }
 
@@ -161,7 +167,7 @@ class _AtContactListPageState extends State<AtContactListPage> {
   void selectPersion(PersonInfo person, int index) {
     //单选
     if (!mutilSelected) {
-      var item = persons[index];
+      var item = person.person; //persons[index];
       back([item]);
       return;
     }

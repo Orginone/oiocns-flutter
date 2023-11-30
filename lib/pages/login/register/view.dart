@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
 class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
+  const RegisterPage({super.key});
+
   @override
   Widget buildView() {
     return Scaffold(
@@ -29,7 +29,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                     height: 75.h,
                   ),
                   Obx(() {
-                    if (!state.isStepOne.value) {
+                    if (state.isStepOne.value) {
                       return stepTwo();
                     }
                     return stepOne();
@@ -121,13 +121,50 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
       children: [
         CommonWidget.commonTextField(
             controller: state.phoneNumberController,
-            hint: "请输入电话号码",
+            hint: "请输入手机号",
             title: "手机号"),
         CommonWidget.commonTextField(
-          controller: state.nickNameController,
-          hint: "请输入昵称",
-          title: "昵称",
-        ),
+            controller: state.phoneNumberController,
+            hint: "请输入验证码",
+            title: "验证码",
+            action: CommonWidget.commonLimitedTimeButtonWidget()),
+        // CommonWidget.commonTextField(
+        //   controller: state.nickNameController,
+        //   hint: "请输入昵称",
+        //   title: "昵称",
+        // ),
+        CommonWidget.commonTextField(
+            controller: state.passWordController,
+            hint: "请输入密码",
+            title: "密码",
+            obscureText: state.passwordUnVisible.value,
+            action: IconButton(
+                onPressed: () {
+                  controller.showPassWord();
+                },
+                icon: Icon(
+                  state.passwordUnVisible.value
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                  size: 24.w,
+                  color: Colors.grey,
+                ))),
+        CommonWidget.commonTextField(
+            controller: state.verifyPassWordController,
+            hint: "请再次输入密码",
+            title: "确认密码",
+            obscureText: state.verifyPassWordUnVisible.value,
+            action: IconButton(
+                onPressed: () {
+                  controller.showVerifyPassWord();
+                },
+                icon: Icon(
+                  state.verifyPassWordUnVisible.value
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                  size: 24.w,
+                  color: Colors.grey,
+                ))),
         CommonWidget.commonTextField(
           controller: state.realNameController,
           hint: "请输入真实姓名",

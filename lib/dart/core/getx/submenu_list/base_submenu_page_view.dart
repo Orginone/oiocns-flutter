@@ -52,6 +52,8 @@ abstract class BaseSubmenuPage<T extends BaseSubmenuController,
 
 //创建ExtendedTabBar
   buildExtendedTabBar() {
+    print(
+        '>>>==========${state.subGroup.value} ${state.subGroup.value.groups?.length} ${state.subGroup.value.groups?.first.label}');
     return ExtendedTabBar(
       controller: state.tabController,
       tabs: state.subGroup.value.groups!.map((e) {
@@ -95,13 +97,13 @@ abstract class BaseSubmenuPage<T extends BaseSubmenuController,
       return ExtendedTabBarView(
         controller: state.tabController,
         children: groups.map((e) {
-          return buildPageView(e.value!);
+          return buildPageView(e.value!, e.label!);
         }).toList(),
       );
     });
   }
 
-  Widget buildPageView(String type);
+  Widget buildPageView(String type, String label);
 }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {

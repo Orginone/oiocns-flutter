@@ -14,8 +14,9 @@ import 'state.dart';
 class MessageSubPage
     extends BaseGetListPageView<MessageSubController, MessageSubState> {
   late String type;
+  late String label;
 
-  MessageSubPage(this.type, {super.key});
+  MessageSubPage(this.type, this.label, {super.key});
 
   @override
   Widget buildView() {
@@ -90,23 +91,27 @@ class MessageSubPage
       //           (element) => element.share.typeName == TargetType.person.label)
       //       .toList();
       // }
-      if (type == "group") {
-        chats = chats
-            .where((element) => element.typeName == TargetType.cohort.label)
-            .toList();
-      } else if (type == "friend") {
-        chats = chats.where((element) => element.isFriend).toList();
-      } else if (type == "company") {
-        chats = chats
-            .where((element) => element.typeName == TargetType.company.label)
-            .toList();
-      } else if (type == "company_friend") {
-        chats = chats
-            .where((element) =>
-                !element.isFriend &&
-                element.typeName == TargetType.person.label)
-            .toList();
-      }
+      // if (type == "group") {
+      //   chats = chats
+      //       .where((element) => element.typeName == TargetType.cohort.label)
+      //       .toList();
+      // } else if (type == "friend") {
+      //   chats = chats.where((element) => element.isFriend).toList();
+      // } else if (type == "company") {
+      //   chats = chats
+      //       .where((element) => element.typeName == TargetType.company.label)
+      //       .toList();
+      // } else if (type == "company_friend") {
+      //   chats = chats
+      //       .where((element) =>
+      //           !element.isFriend &&
+      //           element.typeName == TargetType.person.label)
+      //       .toList();
+      // }
+      chats = chats
+          .where(
+              (element) => label == '最近' || element.groupTags.contains(label))
+          .toList();
       return ListView.builder(
         controller: state.scrollController,
         itemBuilder: (BuildContext context, int index) {
@@ -118,8 +123,25 @@ class MessageSubPage
     });
   }
 
+  void showErr() {
+    var time = Future.delayed(const Duration(milliseconds: 100), () {
+      if (settingCtrl.provider.errInfo != "") {
+        Navigator.of(context).push(PageRouteBuilder(
+            opaque: false,
+            pageBuilder: (BuildContext context, _, __) {
+              return Dialog(
+                child: Text(settingCtrl.provider.errInfo),
+              );
+            }));
+      } else {
+        showErr();
+      }
+    });
+  }
+
   @override
   MessageSubController getController() {
+    // showErr();
     return MessageSubController(type);
   }
 

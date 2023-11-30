@@ -83,8 +83,9 @@ class DetailItemWidget extends GetView<IndexController> {
       if (chat.share.typeName == TargetType.person.label) {
         shareIcon = chat.share;
       } else if (chat.members.isNotEmpty) {
-        target = chat.members.firstWhere((element) => element.id == id);
-        shareIcon = target.shareIcon();
+        target = chat.members.firstWhereOrNull((element) => element.id == id);
+        shareIcon = target?.shareIcon() ??
+            ShareIcon(name: '请稍候', typeName: TargetType.person.label);
       }
     }
 

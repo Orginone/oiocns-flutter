@@ -4499,16 +4499,21 @@ class AttrRuleType {
 
 //身份证明
 class XIdProof extends Xbase {
+  // 身份ID
   String? identityId;
+  // 对象ID
   String? targetId;
+  // 岗位Id
   String? teamId;
+  // 身份证明证明的用户
   XTarget? target;
+  // 身份证明证明的身份
   XIdentity? identity;
 
   XIdProof({
-    this.identityId,
-    this.targetId,
-    this.teamId,
+    required this.identityId,
+    required this.targetId,
+    required this.teamId,
     this.target,
     this.identity,
     required super.id,
@@ -4930,30 +4935,51 @@ class XSpeciesItem extends XEntity {
 
 //组织/个人
 class XTarget extends XEntity {
+  // 开放组织
   bool? public;
-
+  // 元数据
   String? thingId;
+  // 存储
   String? storeId;
-
+  // 身份证明
   List<XIdProof>? idProofs;
+  // 组织的身份
   List<XIdentity>? shareIdentitys;
+  // 归属的身份
   List<XIdentity>? identitys;
+  // 属于该用户的物
   List<XThing>? things;
+  // 加入团队的关系
   List<XRelation>? relations;
+  // 作为团队的影子
   XTeam? team;
+  // 该用户创建的分类
   List<XSpecies>? specieses;
+  // 该用户创建的类目
   List<XSpeciesItem>? speciesItems;
+  // 该用户创建的目录
   List<XDirectory>? directorys;
+  // 该用户创建的应用
   List<XApplication>? applications;
+  // 该用户创建的度量标准
   List<XAttribute>? attributes;
+  // 该用户创建的属性
   List<XProperty>? propertys;
+  // 该用户创建的职权标准
   List<XAuthority>? authority;
+  // 加入的团队
   List<XTeam>? relTeams;
+  // 该用户创建的业务单
   List<XForm>? forms;
+  // 赋予该用户创建的身份
   List<XIdentity>? givenIdentitys;
+  // 该组织或个人所属的用户
   List<XTarget>? targets;
+  // 用户物的本质
   XThing? thing;
+  // 归属用户的办事定义
   List<XWorkDefine>? defines;
+  // 归属用户的办事实例
   List<XWorkInstance>? instances;
 
   bool isSelected = false;

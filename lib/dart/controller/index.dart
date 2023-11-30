@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/common/routers/index.dart';
+import 'package:orginone/common/values/constants.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -90,6 +91,11 @@ class IndexController extends GetxController {
 
   /// 数据提供者
   UserProvider get provider => _provider;
+
+  // /// 授权方法
+  // AuthProvider get auth {
+  //   return provider.auth;
+  // }
 
   /// 当前用户
   IPerson get user => provider.user!;
@@ -268,25 +274,25 @@ class IndexController extends GetxController {
     homeEnum.value = value;
   }
 
-  void jumpInitiate() {
-    switch (homeEnum.value) {
-      case HomeEnum.chat:
-        Get.toNamed(Routers.initiateChat);
-        break;
-      case HomeEnum.work:
-        Get.toNamed(Routers.initiateWork);
-        break;
-      case HomeEnum.store:
-        Get.toNamed(Routers.storeTree);
-        break;
-      case HomeEnum.relation:
-        Get.toNamed(Routers.settingCenter);
-        break;
-      case HomeEnum.door:
-        // TODO: Handle this case.
-        break;
-    }
-  }
+  // void jumpInitiate() {
+  //   switch (homeEnum.value) {
+  //     case HomeEnum.chat:
+  //       Get.toNamed(Routers.initiateChat);
+  //       break;
+  //     case HomeEnum.work:
+  //       Get.toNamed(Routers.initiateWork);
+  //       break;
+  //     case HomeEnum.store:
+  //       Get.toNamed(Routers.storeTree);
+  //       break;
+  //     case HomeEnum.relation:
+  //       Get.toNamed(Routers.settingCenter);
+  //       break;
+  //     case HomeEnum.door:
+  //       // TODO: Handle this case.
+  //       break;
+  //   }
+  // }
 
   bool isUserSpace(space) {
     return space == user;
@@ -373,6 +379,7 @@ class IndexController extends GetxController {
     kernel.stop();
     await HiveUtils.clean();
     homeEnum.value = HomeEnum.door;
+    Storage.remove(Constants.sessionUser);
     Get.offAllNamed(Routers.login);
   }
 

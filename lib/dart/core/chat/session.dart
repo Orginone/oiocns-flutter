@@ -56,7 +56,7 @@ abstract class ISession extends IEntity<XEntity> {
   late bool isGroup;
 
   /// 会话的成员
-  late RxList<XTarget> members;
+  late List<XTarget> members;
 
   /// 会话动态
   late IActivity activity;
@@ -121,7 +121,7 @@ class Session extends Entity<XEntity> implements ISession {
       lastMessage: null,
       recently: false,
     ).obs;
-    members = <XTarget>[].obs;
+    // members = <XTarget>[].obs;
     messages = <IMessage>[].obs;
     activity = Activity(metadata, this);
     noReadCount = "".obs;
@@ -165,8 +165,8 @@ class Session extends Entity<XEntity> implements ISession {
   late RxList<IMessage> messages;
 
   /// 会话的成员
-  @override
-  late RxList<XTarget> members;
+  // @override
+  // late RxList<XTarget> members;
   @override
   late IActivity activity;
   // @override
@@ -177,10 +177,10 @@ class Session extends Entity<XEntity> implements ISession {
     return target.resource.messageColl;
   }
 
-  // @override
-  // List<XTarget> get members {
-  //   return isGroup ? target.members : [];
-  // }
+  @override
+  List<XTarget> get members {
+    return isGroup ? target.members : [];
+  }
 
   @override
   bool get isGroup {

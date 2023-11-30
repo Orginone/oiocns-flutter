@@ -11,7 +11,7 @@ class MessageChats
   const MessageChats({super.key});
 
   @override
-  Widget buildPageView(String type) {
-    return KeepAliveWidget(child: MessageSubPage(type));
+  Widget buildPageView(String type, String label) {
+    return KeepAliveWidget(child: MessageSubPage(type, label));
   }
 }

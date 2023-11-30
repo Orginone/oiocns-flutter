@@ -44,7 +44,6 @@ class XColors {
   static const Color blueHintTextColor = Color(0xFF4C9DF9);
   static const Color blueTextColor = Color(0xFF1890FF);
   static const Color cardShadowColor = Color(0xFF4C9DF9);
-
 }
 
 class XIcons {

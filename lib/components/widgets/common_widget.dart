@@ -958,4 +958,48 @@ class CommonWidget {
       ),
     );
   }
+
+  // 计时的按钮
+  static Widget commonLimitedTimeButtonWidget({
+    String name = "发送验证码",
+    int countdown = 120,
+    VoidCallback? click,
+  }) {
+    RxBool active = true.obs;
+    RxString btnName = name.obs;
+    startCountDown(int count) {
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        if (count > 0) {
+          active.value = false;
+          btnName.value = '$name($count)';
+          startCountDown(count - 1);
+          print('>>>=====$count');
+        } else {
+          btnName.value = name;
+          active.value = true;
+        }
+      });
+    }
+
+    return Obx(() {
+      return GestureDetector(
+        behavior: HitTestBehavior.translucent,
+        onTap: () {
+          if (active.value) {
+            click?.call();
+            startCountDown(countdown);
+          }
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 15.w),
+          child: Text(
+            btnName.value,
+            style: TextStyle(
+                color: active.value ? XColors.themeColor : Colors.grey.shade400,
+                fontSize: 20.sp),
+          ),
+        ),
+      );
+    });
+  }
 }

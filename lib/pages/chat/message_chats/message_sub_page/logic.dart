@@ -136,8 +136,12 @@ class MessageSubController extends BaseListController<MessageSubState> {
     //TODO:无此方法
     // await settingCtrl.chat.loadMostUsed();
     // }
-    if (isRefresh && settingCtrl.chats.isEmpty) {
-      await settingCtrl.loadChats(true);
+    if (isRefresh) {
+      if (settingCtrl.chats.isEmpty ||
+          !kernel.isOnline ||
+          !settingCtrl.provider.inited) {
+        await settingCtrl.loadChats(true);
+      }
     }
     // }
   }

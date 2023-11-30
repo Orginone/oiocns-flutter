@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:common_utils/common_utils.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/values/constants.dart';
 import 'package:orginone/dart/base/common/commands.dart';
@@ -102,22 +103,47 @@ class UserProvider {
 
   /// 加载用户
   _loadUser(XTarget person) async {
-    Storage.setJson(Constants.sessionUser, person.toJson());
-    kernel.userId = person.id;
+    try {
+      Storage.setJson(Constants.sessionUser, person.toJson());
+      kernel.userId = person.id;
 
-    _user.value = Person(person);
-    logger.info(_user);
-    _work.value = WorkProvider(this);
-    refresh();
+      errInfo += "开始创建人员数据。。。\r\n";
+      _user.value = Person(person);
+      logger.info(_user);
+      errInfo += "开始创建办事提供器。。。\r\n";
+      _work.value = WorkProvider(this);
+      refresh();
+    } catch (e, s) {
+      var t =
+          DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss");
+      errInfo += '$t $e ==== $s';
+      // ToastUtils.showMsg(msg: errInfo);
+      // SystemUtils.copyToClipboard(errInfo);
+      print('>>>====$s');
+    }
   }
 
   /// 重载数据
   Future<void> refresh() async {
     _inited = false;
-    await _user.value?.deepLoad(reload: true);
-    await work?.loadTodos(reload: true);
-    _inited = true;
-    _emiter.changCallback();
-    command.emitterFlag();
+    try {
+      errInfo += "开始加载个人内核数据。。。\r\n";
+      await _user.value?.deepLoad(reload: true);
+      errInfo += "开始加载办事数据。。。\r\n";
+      await work?.loadTodos(reload: true);
+      errInfo += "数据加载完成。。。\r\n";
+      _inited = true;
+      _emiter.changCallback();
+      command.emitterFlag();
+    } catch (e, s) {
+      var t =
+          DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss");
+      errInfo += '$t $e ==== $s';
+      // ToastUtils.showMsg(msg: errInfo);
+      // SystemUtils.copyToClipboard(errInfo);
+      print('>>>====$s');
+    }
   }
+
+  late String errInfo = "";
 }

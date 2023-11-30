@@ -80,6 +80,27 @@ Map<String, dynamic> workDefaultConfig = {
   ]
 };
 
+Map<String, dynamic> indexDefaultConfig = {
+  "type": "setting",
+  "groups": [
+    {
+      "label": "全部",
+      "value": "all",
+      "allowEdit": true,
+    },
+    {
+      "label": "常用",
+      "value": "common",
+      "allowEdit": false,
+    },
+    {
+      "label": "最近",
+      "value": "recent",
+      "allowEdit": true,
+    },
+  ]
+};
+
 Map<String, dynamic> storeDefaultConfig = {
   "type": "store",
   "groups": [

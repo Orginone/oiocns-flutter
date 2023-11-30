@@ -4,7 +4,6 @@ import 'dart:ui';
 
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:orginone/main.dart';
 
 const String notificationChannelId = '100001';
 
@@ -61,11 +60,7 @@ Future<void> onStart(ServiceInstance service) async {
 
   if (Platform.isAndroid) {
     Timer.periodic(const Duration(seconds: 3), (timer) async {
-      if (kernel.isOnline) {
-        print('爱共享后台运行中');
-      } else {
-        print('爱共享后台离线中');
-      }
+      print('爱共享后台运行中');
     });
   }
 }

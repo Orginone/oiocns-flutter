@@ -92,7 +92,7 @@ class Company extends Belong implements ICompany {
         groups = [];
 
         for (var i in res.data?.result ?? []) {
-          switch (i.typeName) {
+          switch (TargetType.getType(i.typeName)) {
             case TargetType.storage:
               storages.add(Storage(i, [id], this));
               break;
@@ -124,7 +124,7 @@ class Company extends Belong implements ICompany {
         cohorts = [];
 
         for (var i in (res.data?.result ?? [])) {
-          switch (i.typeName) {
+          switch (TargetType.getType(i.typeName)) {
             case TargetType.cohort:
               cohorts.add(Cohort(i, this, id));
               break;
@@ -255,18 +255,18 @@ class Company extends Belong implements ICompany {
   @override
   List<ISession> get cohortChats {
     List<ISession> chats = [];
-    for (final item in groups) {
-      chats.addAll(item.chats);
-    }
+    // for (final item in groups) {
+    //   chats.addAll(item.chats);
+    // }
     for (final item in departments) {
       chats.addAll(item.chats);
     }
     for (final item in cohorts) {
       chats.addAll(item.chats);
     }
-    for (final item in storages) {
-      chats.addAll(item.chats);
-    }
+    // for (final item in storages) {
+    //   chats.addAll(item.chats);
+    // }
 
     return chats;
   }

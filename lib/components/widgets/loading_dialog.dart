@@ -9,12 +9,11 @@ class LoadingDialog extends Dialog {
 
   // String msg;
   final bool cancelable;
+  final int dismissSeconds;
   static Timer? timer;
 
-  LoadingDialog._({
-    String? msg,
-    this.cancelable = false,
-  }) {
+  LoadingDialog._(
+      {String? msg, this.cancelable = false, required this.dismissSeconds}) {
     _messageNotifier.value = msg ?? "";
   }
 
@@ -48,6 +47,9 @@ class LoadingDialog extends Dialog {
         },
       ),
     );
+
+    _requestShow = true;
+    createDismissTimer(context, dismissSeconds);
     return Material(
       type: MaterialType.transparency,
       child: WillPopScope(
@@ -129,20 +131,19 @@ class LoadingDialog extends Dialog {
     if (_requestShow) {
       return null;
     }
-    _requestShow = true;
-    _showDialogInner(context, msg, cancelable);
-    createDismissTimer(context, dismissSeconds);
+    _showDialogInner(context, msg, cancelable, dismissSeconds);
     return null;
   }
 
   static Future _showDialogInner(
-      BuildContext context, String? msg, bool cancelable) {
+      BuildContext context, String? msg, bool cancelable, int dismissSeconds) {
     return Navigator.of(context).push(PageRouteBuilder(
       opaque: false,
       pageBuilder: (BuildContext context, _, __) {
         return LoadingDialog._(
           msg: msg,
           cancelable: cancelable,
+          dismissSeconds: dismissSeconds,
         );
       },
     ));

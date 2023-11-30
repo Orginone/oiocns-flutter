@@ -17,6 +17,7 @@ class HomeController extends BaseController<HomeState>
   void onInit() {
     // TODO: implement onInit
     super.onInit();
+    print('>>>=======Home1');
     state.tabController = TabController(
         length: 5,
         vsync: this,
@@ -30,6 +31,7 @@ class HomeController extends BaseController<HomeState>
     if (Get.arguments ?? false) {
       EventBusUtil.instance.fire(UserLoaded());
     }
+    print('>>>=======Home2');
   }
 
   @override

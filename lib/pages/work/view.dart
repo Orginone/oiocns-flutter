@@ -10,7 +10,7 @@ class WorkPage extends BaseSubmenuPage<WorkController, WorkState> {
   const WorkPage({super.key});
 
   @override
-  Widget buildPageView(String type) {
+  Widget buildPageView(String type, String label) {
     return KeepAliveWidget(child: WorkSubPage(type));
   }
 }

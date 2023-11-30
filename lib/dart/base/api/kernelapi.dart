@@ -116,7 +116,7 @@ class KernelApi {
     return null;
   }
 
-  Future<ResultType> tokenAuth() async {
+  Future<bool> tokenAuth() async {
     ResultType result = badRequest;
     if (_storeHub.accessToken.isNotEmpty) {
       result =
@@ -124,11 +124,12 @@ class KernelApi {
 
       if (result.success) {
         logger.info('连接到内核成功!');
+        return true;
       } else {
         logger.warning(result);
       }
     }
-    return result;
+    return false;
   }
 
   /// 登录到后台核心获取accessToken

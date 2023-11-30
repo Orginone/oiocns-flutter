@@ -12,6 +12,17 @@ import 'utils/index.dart';
 
 initApp() async {
   await Global.init();
+
+  SystemChannels.lifecycle.setMessageHandler((msg) async {
+    debugPrint('>>>============= $msg ${kernel.isOnline}');
+    if (msg == AppLifecycleState.resumed) {
+      if (!kernel.isOnline) {
+        kernel.restart();
+      }
+    }
+    return msg;
+  });
+
   // 开启 app
   SystemChrome.setPreferredOrientations(
           [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp])
