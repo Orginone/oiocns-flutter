@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:get/get.dart';
+import 'package:orginone/common/models/index.dart';
 import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
@@ -8,7 +9,6 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/store/state.dart';
 import 'package:orginone/pages/store/store_tree/state.dart';
 import 'package:orginone/utils/index.dart';
 
@@ -26,44 +26,57 @@ class StoreSubController extends BaseListController<StoreSubState> {
   @override
   void onInit() async {
     super.onInit();
-    if (type == "all") {
-      var joinedCompanies = settingCtrl.user.companys;
-      LogUtil.d('joinedCompanies');
-      LogUtil.d(joinedCompanies);
-      List<StoreTreeNav> organization = [];
-
-      ///组织目录
-      for (var value in joinedCompanies) {
-        organization.add(
-          StoreTreeNav(
-            name: value.metadata.name ?? "",
-            id: value.metadata.id,
-            space: value,
-            spaceEnum: SpaceEnum.company,
-            children: [],
-            image: value.metadata.avatarThumbnail(),
-          ),
-        );
-      }
-      state.nav = StoreTreeNav(
-        name: HomeEnum.store.label,
-        children: [
-          //用户文件夹
-          StoreTreeNav(
-            name: '测试名字', //settingCtrl.provider.user?.metadata.name ?? "",
-            id: settingCtrl.provider.user?.metadata.id ?? "",
-            image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
-            children: [],
-            space: settingCtrl.provider.user,
-            spaceEnum: SpaceEnum.user,
-          ),
-          ...organization
-        ],
-      );
-      await loadUserSetting();
-      await loadCompanySetting();
-    }
+    // if (type == "all") {
+    await loadAllData();
+    // }
     loadSuccess();
+    LogUtil.d(type);
+  }
+
+  ///加载全部数据
+  loadAllData() async {
+    List<ICompany> joinedCompanies = settingCtrl.user.companys;
+
+    List<StoreTreeNav> user = [];
+    List<StoreTreeNav> organization = [];
+    List<StoreTreeNav> children = [];
+
+    user.add(StoreTreeNav(
+      name: settingCtrl.provider.user?.metadata.name ?? "",
+      id: settingCtrl.provider.user?.metadata.id ?? "",
+      image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
+      children: [],
+      space: settingCtrl.provider.user,
+      spaceEnum: SpaceEnum.user,
+    ));
+
+    ///组织目录
+    for (var value in joinedCompanies) {
+      organization.add(
+        StoreTreeNav(
+          name: value.metadata.name ?? "",
+          id: value.metadata.id,
+          space: value,
+          spaceEnum: SpaceEnum.company,
+          children: [],
+          image: value.metadata.avatarThumbnail(),
+        ),
+      );
+    }
+    children.addAll(user
+        .where(
+            (element) => type == '全部' ? true : element.space?.typeName == type)
+        .toList());
+    children.addAll(organization
+        .where(
+            (element) => type == '全部' ? true : element.space?.typeName == type)
+        .toList());
+    state.nav = StoreTreeNav(
+      name: HomeEnum.store.label,
+      children: children,
+    );
+    await loadUserSetting();
+    await loadCompanySetting();
   }
 
   Future<void> loadUserSetting() async {
@@ -74,7 +87,7 @@ class StoreSubController extends BaseListController<StoreSubState> {
       await user.space!.loadContent(reload: true);
       List<StoreTreeNav> function = [
         StoreTreeNav(
-          name: "个人文件XXXX",
+          name: "个人文件", //个人文件XXXX
           space: user.space,
           showPopup: false,
           spaceEnum: SpaceEnum.directory,

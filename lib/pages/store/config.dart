@@ -1,18 +1,47 @@
 import 'dart:convert';
 
 import 'package:ionicons/ionicons.dart';
+import 'package:orginone/common/models/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/outTeam/cohort.dart';
-import 'package:orginone/dart/core/target/outTeam/group.dart';
+import 'package:orginone/dart/core/target/outTeam/group.dart' hide Group;
+import 'package:orginone/dart/core/target/person.dart';
+import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/dart/core/work/index.dart';
+import 'package:orginone/main.dart';
 
 import 'store_tree/state.dart';
+
+///加载数据的标签数据
+SubGroup loadDataTabs() {
+  IPerson? user = settingCtrl.provider.user;
+  List<ICompany> companys = settingCtrl.user.companys;
+
+  List<Group> group = [];
+  Set<String> distinctValues = <String>{};
+  //添加全部标签
+  group.add(Group(label: '全部', value: '全部', allowEdit: true));
+  if (user != null) {
+    group.add(
+        Group(label: user.typeName, value: user.typeName, allowEdit: true));
+  }
+
+  for (var e in companys) {
+    if (!distinctValues.contains(e.typeName)) {
+      distinctValues.add(e.typeName);
+      group.add(Group(label: e.typeName, value: e.typeName, allowEdit: false));
+    }
+  }
+  SubGroup subGroup = SubGroup(type: 'store', groups: group, hidden: []);
+
+  return subGroup;
+}
 
 Future<List<StoreTreeNav>> loadDir(
     List<IDirectory> dirs, ITarget target) async {

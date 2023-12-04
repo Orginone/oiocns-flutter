@@ -1,33 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/common/models/index.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_controller.dart';
-import 'package:orginone/utils/hive_utils.dart';
 
+import 'config.dart';
 import 'state.dart';
 
 class StoreController extends BaseSubmenuController<StoreState> {
   @override
   final StoreState state = StoreState();
 
-  @override
-  void onInit() {
-    // TODO: implement onInit
-    super.onInit();
-  }
-
+  ///初始化 子分组
   @override
   void initSubGroup() {
-    // TODO: implement initSubGroup
     super.initSubGroup();
-    var store = HiveUtils.getSubGroup('store');
-    if (store == null) {
-      store = SubGroup.fromJson(storeDefaultConfig);
-      HiveUtils.putSubGroup('store', store);
-    }
+    // var store = HiveUtils.getSubGroup('store');
+    // if (store == null) {
+    //   store = SubGroup.fromJson(storeDefaultConfig);
+    //   HiveUtils.putSubGroup('store', store);
+    // }
+
+    var store = loadDataTabs();
     state.subGroup = Rx(store);
-    var index =
-        store.groups!.indexWhere((element) => element.value == "common");
+    // var index = store.groups!.indexWhere((element) => element.value == "all");
+    var index = 0;
     state.tabController = TabController(
         initialIndex: index,
         length: store.groups!.length,

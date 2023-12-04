@@ -16,15 +16,18 @@ class StoreSubPage
 
   StoreSubPage(this.type, {super.key});
 
+  ///创建标签view
   @override
   Widget buildView() {
-    if (type == "all") {
-      return allWidget();
-    }
-    if (type == "common") {
-      return commonWidget();
-    }
-    return recentWidget(type: type);
+    return allWidget();
+
+    // if (type == "all") {
+    //   return allWidget();
+    // }
+    // if (type == "common") {
+    //   return commonWidget();
+    // }
+    // return recentWidget(type: type);
   }
 
   Widget allWidget() {

@@ -14,7 +14,6 @@ abstract class BaseSubmenuPage<T extends BaseSubmenuController,
 
   @override
   Widget buildView() {
-    // TODO: implement build
     return Column(
       children: [
         headWidget(),
