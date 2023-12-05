@@ -13,31 +13,31 @@ abstract class IEntity<T> extends Emitter {
   //实体唯一键
   late String key;
   //唯一标识
-  late String id;
+  String get id;
   //实体名称
-  late String name;
+  String get name;
   //实体编号
-  late String code;
+  String get code;
   //实体类型
-  late String typeName;
+  String get typeName;
   //实体描述
-  late String remark;
+  String get remark;
   //数据实体
-  late T metadata;
+  T get metadata;
   //用户ID
-  late String userId;
+  String get userId;
   //归属Id
-  late String belongId;
+  String get belongId;
   //共享信息
-  late ShareIcon share;
+  ShareIcon get share;
   //创建人
-  late ShareIcon creater;
+  ShareIcon get creater;
   //变更人
-  late ShareIcon updater;
+  ShareIcon get updater;
   //归属
-  late ShareIcon belong;
+  ShareIcon get belong;
   // 分组标签
-  late List<String> groupTags;
+  List<String> get groupTags;
 
   //查找元数据
   T? findMetadata<T>(String id);
@@ -138,7 +138,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
 
   void setMetadata(T metadata) {
     if (metadata.id == id) {
-      metadata = metadata;
+      _metadata = metadata;
       shareIdSet[id] = metadata;
       changCallback();
     }

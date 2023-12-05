@@ -5,6 +5,7 @@ import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/core/public/collection.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/chat/session.dart';
+import 'package:orginone/dart/core/target/person.dart';
 
 /// 动态消息接口
 abstract class IActivityMessage extends Emitter {
@@ -118,7 +119,7 @@ abstract class IActivity extends IEntity<XTarget> {
 
   /// 动态数据
   List<IActivityMessage> get activityList;
-  late XCollection<ActivityType> coll;
+  XCollection<ActivityType> get coll;
 
   /// 发布动态
   Future<bool> send(
@@ -226,86 +227,86 @@ class Activity extends Entity<XTarget> implements IActivity {
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
-// class GroupActivity extends Entity<XTarget> implements IActivity {
-//   @override
-//   late ISession session;
-//   @override
-//   late bool allPublish;
-//   List<String> subscribeIds = [];
-//   late List<IActivity> subActivitys;
-//   int lastTime = DateTime.now().millisecondsSinceEpoch;
-//   GroupActivity(IPerson _user, List<IActivity> _activitys, bool userPublish)
-//       : super(
-//           XTarget.fromJson({
-//             ..._user.metadata.toJson(),
-//             'name': '全部',
-//             'typeName': '动态',
-//             'icon': '',
-//             'id': '${_user.id}xxx',
-//           }),
-//           ['全部动态'],
-//         ) {
-//     allPublish = userPublish;
-//     session = _user.session;
-//     subActivitys = _activitys;
-//   }
+class GroupActivity extends Entity<XTarget> implements IActivity {
+  @override
+  late ISession session;
+  @override
+  late bool allPublish;
+  List<String> subscribeIds = [];
+  late List<IActivity> subActivitys;
+  int lastTime = DateTime.now().millisecondsSinceEpoch;
+  GroupActivity(IPerson _user, List<IActivity> _activitys, bool userPublish)
+      : super(
+          XTarget.fromJson({
+            ..._user.metadata.toJson(),
+            'name': '全部',
+            'typeName': '动态',
+            'icon': '',
+            'id': '${_user.id}xxx',
+          }),
+          ['全部动态'],
+        ) {
+    allPublish = userPublish;
+    session = _user.session;
+    subActivitys = _activitys;
+  }
 
-//   List<IActivity> get activitys {
-//     return [this, ...subActivitys];
-//   }
+  List<IActivity> get activitys {
+    return [this, ...subActivitys];
+  }
 
-//   @override
-//   XCollection<ActivityType> get coll {
-//     return session.activity.coll;
-//   }
+  @override
+  XCollection<ActivityType> get coll {
+    return session.activity.coll;
+  }
 
-//   @override
-//   List<IActivityMessage> get activityList {
-//     List<IActivityMessage> more = [];
-//     for (var activity in subActivitys) {
-//       more.addAll(activity.activityList.where((i) => i.createTime >= lastTime));
-//     }
-//     more.sort((a, b) => b.createTime - a.createTime);
-//     return more;
-//   }
+  @override
+  List<IActivityMessage> get activityList {
+    List<IActivityMessage> more = [];
+    for (var activity in subActivitys) {
+      more.addAll(activity.activityList.where((i) => i.createTime >= lastTime));
+    }
+    more.sort((a, b) => b.createTime - a.createTime);
+    return more;
+  }
 
-//   @override
-//   Future<List<IActivityMessage>> load([int take = 10]) async {
-//     await Future.wait(subActivitys.map((i) => i.load(take)));
-//     List<IActivityMessage> more = [];
-//     for (var activity in subActivitys) {
-//       more.addAll(activity.activityList.where((i) => i.createTime < lastTime));
-//     }
-//     more.sort((a, b) => b.createTime - a.createTime);
-//     var news = more.getRange(0, take).toList();
-//     if (news.isNotEmpty) {
-//       lastTime = news[news.length - 1].createTime;
-//     }
-//     return news;
-//   }
+  @override
+  Future<List<IActivityMessage>> load([int take = 10]) async {
+    await Future.wait(subActivitys.map((i) => i.load(take)));
+    List<IActivityMessage> more = [];
+    for (var activity in subActivitys) {
+      more.addAll(activity.activityList.where((i) => i.createTime < lastTime));
+    }
+    more.sort((a, b) => b.createTime - a.createTime);
+    var news = more.getRange(0, take).toList();
+    if (news.isNotEmpty) {
+      lastTime = news[news.length - 1].createTime;
+    }
+    return news;
+  }
 
-//   @override
-//   Future<bool> send(
-//     String content,
-//     MessageType typeName,
-//     List<FileItemShare> resources,
-//     List<String> tags,
-//   ) {
-//     return session.activity.send(content, typeName, resources, tags);
-//   }
+  @override
+  Future<bool> send(
+    String content,
+    MessageType typeName,
+    List<FileItemShare> resources,
+    List<String> tags,
+  ) {
+    return session.activity.send(content, typeName, resources, tags);
+  }
 
-//   @override
-//   String subscribe(void Function(String key, List<dynamic>? args) callback,
-//       [bool? target = true]) {
-//     for (var activity in subActivitys) {
-//       subscribeIds.add(activity.subscribe(callback, false));
-//     }
-//     return super.subscribe(callback);
-//   }
+  @override
+  String subscribe(void Function(String key, List<dynamic>? args) callback,
+      [bool? target = true]) {
+    for (var activity in subActivitys) {
+      subscribeIds.add(activity.subscribe(callback, false));
+    }
+    return super.subscribe(callback);
+  }
 
-//   @override
-//   void unsubscribe(dynamic id) {
-//     super.unsubscribe(id);
-//     super.unsubscribe(subscribeIds);
-//   }
-// }
+  @override
+  void unsubscribe(dynamic id) {
+    super.unsubscribe(id);
+    super.unsubscribe(subscribeIds);
+  }
+}

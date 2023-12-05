@@ -121,7 +121,7 @@ class Authority extends Entity<XAuthority> implements IAuthority {
     data.remark = data.remark ?? remark;
     final res = await kernel.updateAuthority(data);
     if (res.success && res.data?.id != null) {
-      metadata = res.data!;
+      setMetadata(res.data!);
       res.data?.typeName = '权限';
       setMetadata(res.data!);
       await space.sendAuthorityChangeMsg(OperateType.update.label, res.data!);
