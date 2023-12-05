@@ -7,7 +7,6 @@ import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_page.dart';
 import 'package:orginone/pages/home/components/user_bar.dart';
-import 'package:orginone/pages/home/index/view.dart';
 import 'package:orginone/pages/home/portal/view.dart';
 import 'package:orginone/pages/setting/view.dart';
 import 'package:orginone/pages/store/view.dart';

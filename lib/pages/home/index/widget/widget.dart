@@ -22,7 +22,7 @@ class TextArrow extends StatelessWidget {
         WidgetSpan(
             child: Container(
                 margin: EdgeInsets.only(left: 10.w),
-                child: const ImageWidget(AssetsImages.iconBlueArrow)),
+                child: const ImageWidget(AssetsImages.toMore)),
             alignment: PlaceholderAlignment.middle)
       ])),
     );

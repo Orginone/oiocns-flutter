@@ -26,7 +26,7 @@ class WorkBenchPage
       RenderChat(),
       RenderWork(),
       RendeStore(),
-      RendeAppInfo()
+      // RendeAppInfo()
     ]);
   }
 
@@ -76,18 +76,13 @@ class WorkBenchPage
       {Widget? moreWidget, Widget? contentWidget}) {
     return Container(
       decoration: const BoxDecoration(
-        //设置背景颜色
         color: Colors.white,
-        //设置Container圆角
         borderRadius: BorderRadius.all(Radius.circular(5.0)),
-        //设置Container边框
-        // border: Border.all(width: 0,),
       ),
       margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-      // color: Colors.white,
       child: Column(
         children: [
-          CommonWidget.commonHeadInfoWidget(title,
+          CommonWidget.commonDoorHeadInfoWidget(title,
               action: moreWidget ??
                   const TextArrow(
                     title: '更多操作',
@@ -125,13 +120,13 @@ class WorkBenchPage
     return Container(
       child: Column(
         children: [
-          Text(title),
           Container(
-            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+            padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
             child: Text(number, style: TextStyle(fontSize: 36.sp)),
           ),
-          if (size > 0) Text("大小:${formatSize(size)}"),
-          if (info.isNotEmpty) Text(info),
+          Text(title),
+          // if (size > 0) Text("大小:${formatSize(size)}"),
+          // if (info.isNotEmpty) Text(info),
         ],
       ),
     );
@@ -163,9 +158,16 @@ class WorkBenchPage
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: state.noStore.value
+                    // children: true
                     ? [
-                        const Text(
-                            "您还未申请存储资源，您将无法使用本系统，请申请加入您的存储资源群（用来存储您的数据），个人用户试用存储群为（orginone_data），申请通过后请在关系中激活使用哦！")
+                        const SizedBox(
+                          width: 300,
+                          child: Text(
+                            "您还未申请存储资源，您将无法使用本系统，请申请加入您的存储资源群（用来存储您的数据），个人用户试用存储群为（orginone_data），申请通过后请在关系中激活使用哦！",
+                            maxLines: 5,
+                            overflow: TextOverflow.fade,
+                          ),
+                        )
                       ]
                     : [
                         renderDataItem('关系(个)', state.relationNum.value ?? "0",

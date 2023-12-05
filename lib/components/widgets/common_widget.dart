@@ -483,6 +483,33 @@ class CommonWidget {
     );
   }
 
+  //门户卡片信息
+  static commonDoorHeadInfoWidget(String info,
+      {Widget? action, EdgeInsetsGeometry? padding, Color? color}) {
+    return Container(
+      color: color,
+      padding: padding ?? const EdgeInsets.fromLTRB(20, 10, 15, 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text.rich(
+            TextSpan(
+              children: [
+                TextSpan(
+                    text: info,
+                    style: TextStyle(
+                        fontSize: 22.sp,
+                        color: Colors.black,
+                        fontWeight: FontWeight.w500))
+              ],
+            ),
+          ),
+          action ?? Container(),
+        ],
+      ),
+    );
+  }
+
   //文本框
   static commonTextContentWidget(String text, String content,
       {double textSize = 20,

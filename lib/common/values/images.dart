@@ -54,6 +54,8 @@ class AssetsImages {
 
   static const String star = "assets/images/stars.png";
 
+  static const String toMore = "assets/images/toMore.svg";
+
   static const String empty = "assets/images/empty.png";
 
   static const String logOut = "assets/images/icon_log_out.svg";
