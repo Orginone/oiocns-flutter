@@ -60,7 +60,7 @@ Future<void> onStart(ServiceInstance service) async {
 
   if (Platform.isAndroid) {
     Timer.periodic(const Duration(seconds: 3), (timer) async {
-      print('爱共享后台运行中');
+      // print('爱共享后台运行中');
     });
   }
 }

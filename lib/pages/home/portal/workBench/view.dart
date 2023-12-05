@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:orginone/components/widgets/badge_widget.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/dart/base/common/format.dart';
@@ -9,7 +8,7 @@ import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/home/index/widget/widget.dart';
-
+import 'package:orginone/utils/load_image.dart';
 import 'controller.dart';
 import 'state.dart';
 
@@ -22,7 +21,7 @@ class WorkBenchPage
 
   @override
   Widget buildView() {
-    return ListView(padding: EdgeInsets.symmetric(vertical: 15.h), children: [
+    return ListView(children: [
       RenderOperate(),
       RenderChat(),
       RenderWork(),
@@ -36,54 +35,69 @@ class WorkBenchPage
     // 发送快捷命令
     renderCmdBtn(String cmd, String title, String iconType) {
       return Container(
-          padding: EdgeInsets.only(left: 40.w, right: 40.w),
-          child: BadgeTabWidget(
-            imgPath: cmd,
-            body: Text(title),
-          ));
+        padding:
+            EdgeInsets.only(left: 12.w, right: 12.w, top: 10.h, bottom: 10.h),
+        child: Column(
+          children: [
+            XImage.localImage(cmd, size: Size(56.w, 56.w)),
+            Container(
+              margin: EdgeInsets.only(top: 10.h),
+              child: Text(title),
+            ),
+          ],
+        ),
+      );
     }
 
     return modelWindow("快捷操作",
         contentWidget: Container(
-            // padding: EdgeInsets.only(left: 15.w),
+            padding: EdgeInsets.only(
+                left: 12.w, right: 12.w, top: 10.h, bottom: 10.h),
             child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                renderCmdBtn('joinFriend', '添加好友', 'joinFriend'),
-                renderCmdBtn('joinCohort', '加入群聊', 'joinCohort'),
-                renderCmdBtn('joinStorage', '申请存储', '存储资源'),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    renderCmdBtn('joinFriend', '添加好友', 'joinFriend'),
+                    renderCmdBtn('newCohort', '创建群组', '群组'),
+                    renderCmdBtn('joinCohort', '加入群聊', 'joinCohort'),
+                    renderCmdBtn('newCompany', '新建单位', '单位'),
+                    renderCmdBtn('joinCompany', '加入单位', 'joinCompany'),
+                  ],
+                ),
               ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                renderCmdBtn('newCohort', '创建群组', '群组'),
-                renderCmdBtn('newCompany', '设立单位', '单位'),
-                renderCmdBtn('joinCompany', '加入单位', 'joinCompany'),
-              ],
-            ),
-          ],
-        )));
+            )));
   }
 
+  //更多操作
   Widget modelWindow(String title,
       {Widget? moreWidget, Widget? contentWidget}) {
-    return Column(
-      children: [
-        CommonWidget.commonHeadInfoWidget(title,
-            action: moreWidget ??
-                const TextArrow(
-                  title: '更多操作',
-                )),
-        SizedBox(
-          height: 10.h,
-        ),
-        contentWidget ?? const Column()
-      ],
+    return Container(
+      decoration: const BoxDecoration(
+        //设置背景颜色
+        color: Colors.white,
+        //设置Container圆角
+        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        //设置Container边框
+        // border: Border.all(width: 0,),
+      ),
+      margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+      // color: Colors.white,
+      child: Column(
+        children: [
+          CommonWidget.commonHeadInfoWidget(title,
+              action: moreWidget ??
+                  const TextArrow(
+                    title: '更多操作',
+                  )),
+          SizedBox(
+            height: 10.h,
+          ),
+          contentWidget ?? const Column()
+        ],
+      ),
     );
   }
 
@@ -91,6 +105,7 @@ class WorkBenchPage
   Widget RenderChat() {
     return modelWindow("沟通",
         contentWidget: Container(
+          padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
@@ -102,7 +117,7 @@ class WorkBenchPage
           ),
         ),
         moreWidget:
-            TextArrow(title: '未读消息-${settingCtrl.noReadMgsCount.value}'));
+            TextArrow(title: '未读消息 · ${settingCtrl.noReadMgsCount.value}'));
   }
 
   Widget renderDataItem(String title, String number,
@@ -111,7 +126,10 @@ class WorkBenchPage
       child: Column(
         children: [
           Text(title),
-          Text(number, style: TextStyle(fontSize: 36.sp)),
+          Container(
+            padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+            child: Text(number, style: TextStyle(fontSize: 36.sp)),
+          ),
           if (size > 0) Text("大小:${formatSize(size)}"),
           if (info.isNotEmpty) Text(info),
         ],
@@ -123,14 +141,16 @@ class WorkBenchPage
   Widget RenderWork() {
     return modelWindow("办事",
         contentWidget: Container(
+            padding: EdgeInsets.only(
+                left: 12.w, right: 12.w, top: 10.h, bottom: 10.h),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-              renderDataItem('待办', state.todoCount.value),
-              renderDataItem('已办', state.completedCount.value),
-              renderDataItem('抄送', state.copysCount.value),
-              renderDataItem('发起的', state.applyCount.value),
-            ])),
+                  renderDataItem('待办', state.todoCount.value),
+                  renderDataItem('已办', state.completedCount.value),
+                  renderDataItem('抄送', state.copysCount.value),
+                  renderDataItem('发起的', state.applyCount.value),
+                ])),
         moreWidget: TextArrow(title: '待办${state.todoCount.value}件'));
   }
 
@@ -138,6 +158,8 @@ class WorkBenchPage
   Widget RendeStore() {
     return modelWindow("数据",
         contentWidget: Container(
+            padding: EdgeInsets.only(
+                left: 12.w, right: 12.w, top: 10.h, bottom: 10.h),
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: state.noStore.value
@@ -146,8 +168,8 @@ class WorkBenchPage
                             "您还未申请存储资源，您将无法使用本系统，请申请加入您的存储资源群（用来存储您的数据），个人用户试用存储群为（orginone_data），申请通过后请在关系中激活使用哦！")
                       ]
                     : [
-                        renderDataItem('关系(个)', state.relationNum.value, -1,
-                            '共计:${settingCtrl.chats.length}个'),
+                        renderDataItem('关系(个)', state.relationNum.value ?? "0",
+                            -1, '共计:${settingCtrl.chats.length}个'),
                         renderDataItem(
                             '数据集(个)',
                             state.diskInfo.value.collections.toString() ?? "0",

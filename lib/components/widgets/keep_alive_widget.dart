@@ -17,7 +17,11 @@ class _KeepAliveWidgetState extends State<KeepAliveWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return widget.child;
+    return Container(
+      color: const Color.fromARGB(255, 240, 240, 240),
+      padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
+      child: widget.child,
+    );
   }
 
   @override
