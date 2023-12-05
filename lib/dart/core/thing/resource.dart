@@ -86,8 +86,10 @@ class DataResource {
   }
 
   /// 文件桶操作
-  Future<ResultType<R>> bucketOpreate<R>(BucketOpreateModel data) async {
-    return await kernel.bucketOpreate<R>(target.belongId!, relations, data);
+  Future<ResultType<R>> bucketOpreate<R>(BucketOpreateModel data,
+      [R Function(Map<String, dynamic>)? cvt]) async {
+    return await kernel.bucketOpreate<R>(
+        target.belongId!, relations, data, cvt);
   }
 
   /// 上传文件
@@ -112,7 +114,8 @@ class DataResource {
         data: [],
         dataUrl: await blobToDataUrl(s),
       );
-      final res = await bucketOpreate<FileItemModel>(data);
+      final res = await bucketOpreate<FileItemModel>(
+          data, (a) => FileItemModel.fromJson(a));
       if (!res.success) {
         data.operate = BucketOpreates.abortUpload;
         await bucketOpreate<bool>(data);
@@ -120,8 +123,9 @@ class DataResource {
         return null;
       }
       final finished = i * 1024 * 1024 + s.length;
-      progress(finished.toDouble());
+      // progress(finished.toDouble());
       if (finished == file.length && res.data != null) {
+        progress(1);
         return res.data;
       }
     }

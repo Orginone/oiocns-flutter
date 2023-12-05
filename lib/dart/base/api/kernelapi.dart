@@ -1071,20 +1071,18 @@ class KernelApi {
   /// @param data 操作携带的数据
   /// @returns {ResultType<T>} 移除异步结果
   Future<ResultType<T>> bucketOpreate<T>(
-    String belongId,
-    List<String> relations,
-    BucketOpreateModel data,
-  ) async {
+      String belongId, List<String> relations, BucketOpreateModel data,
+      [T Function(Map<String, dynamic>)? cvt]) async {
     return await dataProxy(
-      DataProxyType(
-        module: 'Bucket',
-        action: 'Operate',
-        belongId: belongId,
-        relations: relations,
-        flag: 'bucketOpreate',
-        params: data,
-      ),
-    );
+        DataProxyType(
+          module: 'Bucket',
+          action: 'Operate',
+          belongId: belongId,
+          relations: relations,
+          flag: 'bucketOpreate',
+          params: data,
+        ),
+        cvt);
   }
 
   /// 加载物
@@ -1148,7 +1146,6 @@ class KernelApi {
   Future<ResultType<T>> dataProxy<T>(DataProxyType req,
       [T Function(Map<String, dynamic>)? cvt]) async {
     ResultType raw = await _storeHub.invoke('DataProxy', args: [req]);
-    // LogUtil.d('dataProxy raw:${raw.toString()}');
 
     if (null != raw.data && null != cvt) {
       return ResultType<T>.fromJsonSerialize(raw, cvt);

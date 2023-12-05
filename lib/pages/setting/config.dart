@@ -661,7 +661,7 @@ void uploadFile(SettingNavModel item,
       if (item.spaceEnum == SpaceEnum.directory) {
         item.children.add(nav);
       } else {
-        item.children[0].children.add(nav);
+        if (item.children.isNotEmpty) item.children[0].children.add(nav);
       }
       callback?.call(nav);
     }
