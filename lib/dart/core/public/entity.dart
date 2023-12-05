@@ -97,7 +97,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
 
   @override
   String get userId {
-    return kernel.userId;
+    return kernel.user!.id;
   }
 
   @override

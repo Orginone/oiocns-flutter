@@ -1,15 +1,18 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:common_utils/common_utils.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/utils/http_util.dart';
-import 'package:orginone/utils/index.dart';
+import 'package:orginone/utils/index.dart' as utils;
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/loading_dialog.dart';
 import 'package:signalr_netcore/signalr_client.dart';
+import 'package:uuid/uuid.dart';
 
 /// 存储集线器
 class StoreHub {
@@ -88,12 +91,12 @@ class StoreHub {
 // 获取accessToken
   String get accessToken {
     LogUtil.d('accessToken');
-    return Storage.getString('accessToken');
+    return utils.Storage.getString('accessToken');
   }
 
   // 设置accessToken
   set accessToken(String val) {
-    Storage.setString('accessToken', val);
+    utils.Storage.setString('accessToken', val);
   }
 
   ///连接状态
@@ -190,7 +193,35 @@ class StoreHub {
   /// @param {any[]} args 参数
   /// @returns {Promise<ResultType>} 异步结果
   Future<ResultType> invoke<T>(String methodName,
+      {List<Object>? args, bool? retry = false}) {
+    var id = const Uuid().v1();
+    return _invoke<T>(id, methodName, args: args, retry: retry);
+
+    // print(
+    //     '<<<==1=$id ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
+    // return Future(() => _invoke(id, methodName, args: args, retry: retry));
+
+    // var completer = Completer<ResultType<dynamic>>();
+
+    // print(
+    //     '<<<==1=$id ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
+    // await Future.wait([_invoke(id, methodName, args: args, retry: retry)])
+    //     .then((value) {
+    //   value.map((e) => completer.complete(e));
+    // });
+    // print(
+    //     '<<<==4=$id ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
+    // return completer.future;
+
+    // ReceivePort receivePort = ReceivePort();
+    // SendPort sendPort = receivePort.sendPort;
+    // return receivePort.first as Future<ResultType>;
+  }
+
+  Future<ResultType> _invoke<T>(String id, String methodName,
       {List<Object>? args, bool? retry = false}) async {
+    // print(
+    //     '<<<==3=$id ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
     Object? resObj;
     try {
       if (isConnected) {

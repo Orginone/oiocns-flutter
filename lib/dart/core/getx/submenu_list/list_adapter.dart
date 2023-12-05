@@ -117,7 +117,7 @@ class ListAdapter {
         chat.share.avatar?.defaultAvatar;
 
     callback = () {
-      chat.onMessage((messages) => null);
+      // chat.onMessage((messages) => null);
       Get.toNamed(
         Routers.messageChat,
         arguments: chat,

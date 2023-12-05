@@ -30,6 +30,7 @@ class _MessageListState extends State<MessageList> {
 
   @override
   Widget build(BuildContext context) {
+    print('>>>=====onMessage1');
     chat.onMessage((messages) => null);
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {

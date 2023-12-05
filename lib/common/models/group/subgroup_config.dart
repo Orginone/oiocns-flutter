@@ -80,22 +80,22 @@ Map<String, dynamic> workDefaultConfig = {
   ]
 };
 
-Map<String, dynamic> indexDefaultConfig = {
-  "type": "setting",
+Map<String, dynamic> portalDefaultConfig = {
+  "type": "portal",
   "groups": [
     {
-      "label": "全部",
-      "value": "all",
+      "label": "工作台",
+      "value": "workbench",
       "allowEdit": true,
     },
     {
-      "label": "常用",
-      "value": "common",
+      "label": "群动态",
+      "value": "activity",
       "allowEdit": false,
     },
     {
-      "label": "最近",
-      "value": "recent",
+      "label": "好友圈",
+      "value": "circle",
       "allowEdit": true,
     },
   ]

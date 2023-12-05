@@ -8,6 +8,7 @@ import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_page.dart';
 import 'package:orginone/pages/home/components/user_bar.dart';
 import 'package:orginone/pages/home/index/view.dart';
+import 'package:orginone/pages/home/portal/view.dart';
 import 'package:orginone/pages/setting/view.dart';
 import 'package:orginone/pages/store/view.dart';
 import 'package:orginone/pages/work/view.dart';
@@ -46,12 +47,12 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
                 child: ExtendedTabBarView(
                   shouldIgnorePointerWhenScrolling: false,
                   controller: state.tabController,
-                  children: [
-                    const KeepAliveWidget(child: MessageChats()),
-                    const KeepAliveWidget(child: WorkPage()),
-                    KeepAliveWidget(child: IndexPage()),
-                    const KeepAliveWidget(child: StorePage()),
-                    const KeepAliveWidget(child: SettingPage()),
+                  children: const [
+                    KeepAliveWidget(child: MessageChats()),
+                    KeepAliveWidget(child: WorkPage()),
+                    KeepAliveWidget(child: PortalPage()),
+                    KeepAliveWidget(child: StorePage()),
+                    KeepAliveWidget(child: SettingPage()),
                   ],
                 ),
               ),

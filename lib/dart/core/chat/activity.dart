@@ -8,11 +8,20 @@ import 'package:orginone/dart/core/chat/session.dart';
 
 /// 动态消息接口
 abstract class IActivityMessage extends Emitter {
+  /// 唯一标识
+  late String key;
+
   /// 消息主体
   late IActivity activity;
 
   /// 消息实体
   late ActivityType metadata;
+
+  /// 是否可以删除
+  late bool canDelete;
+
+  /// 创建时间
+  late int createTime;
 
   /// 更新元数据
   void update(ActivityType data);
@@ -108,18 +117,19 @@ abstract class IActivity extends IEntity<XTarget> {
   late bool allPublish;
 
   /// 动态数据
-  late List<IActivityMessage> activityList;
+  List<IActivityMessage> get activityList;
   late XCollection<ActivityType> coll;
 
   /// 发布动态
   Future<bool> send(
     String content,
+    MessageType typeName,
     List<FileItemShare> resources,
     List<String> tags,
   );
 
   /// 加载动态
-  Future<List<IActivityMessage>> load(int take, [String? beforeTime]);
+  Future<List<IActivityMessage>> load([int take = 10]);
 }
 
 /// 动态实现
@@ -154,17 +164,14 @@ class Activity extends Entity<XTarget> implements IActivity {
   }
 
   @override
-  Future<List<IActivityMessage>> load(int take, [String? beforeTime]) async {
+  Future<List<IActivityMessage>> load([int take = 10]) async {
     var data = await coll.load({
-      take: take,
+      'skip': activityList.length,
+      'take': take,
       "options": {
-        "match": beforeTime != null
-            ? {
-                "createTime": {
-                  "_lt_": beforeTime,
-                },
-              }
-            : {},
+        "match": {
+          "isDeleted": false,
+        },
         "sort": {
           "createTime": -1,
         },
@@ -178,6 +185,7 @@ class Activity extends Entity<XTarget> implements IActivity {
   @override
   Future<bool> send(
     String content,
+    MessageType typeName,
     List<FileItemShare> resources,
     List<String> tags,
   ) async {
@@ -187,7 +195,7 @@ class Activity extends Entity<XTarget> implements IActivity {
         comments: [],
         content: content,
         resource: resources,
-        typeName: MessageType.text.label,
+        typeName: typeName.label,
         likes: [],
         forward: [],
         id: '',
@@ -217,3 +225,87 @@ class Activity extends Entity<XTarget> implements IActivity {
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
+
+// class GroupActivity extends Entity<XTarget> implements IActivity {
+//   @override
+//   late ISession session;
+//   @override
+//   late bool allPublish;
+//   List<String> subscribeIds = [];
+//   late List<IActivity> subActivitys;
+//   int lastTime = DateTime.now().millisecondsSinceEpoch;
+//   GroupActivity(IPerson _user, List<IActivity> _activitys, bool userPublish)
+//       : super(
+//           XTarget.fromJson({
+//             ..._user.metadata.toJson(),
+//             'name': '全部',
+//             'typeName': '动态',
+//             'icon': '',
+//             'id': '${_user.id}xxx',
+//           }),
+//           ['全部动态'],
+//         ) {
+//     allPublish = userPublish;
+//     session = _user.session;
+//     subActivitys = _activitys;
+//   }
+
+//   List<IActivity> get activitys {
+//     return [this, ...subActivitys];
+//   }
+
+//   @override
+//   XCollection<ActivityType> get coll {
+//     return session.activity.coll;
+//   }
+
+//   @override
+//   List<IActivityMessage> get activityList {
+//     List<IActivityMessage> more = [];
+//     for (var activity in subActivitys) {
+//       more.addAll(activity.activityList.where((i) => i.createTime >= lastTime));
+//     }
+//     more.sort((a, b) => b.createTime - a.createTime);
+//     return more;
+//   }
+
+//   @override
+//   Future<List<IActivityMessage>> load([int take = 10]) async {
+//     await Future.wait(subActivitys.map((i) => i.load(take)));
+//     List<IActivityMessage> more = [];
+//     for (var activity in subActivitys) {
+//       more.addAll(activity.activityList.where((i) => i.createTime < lastTime));
+//     }
+//     more.sort((a, b) => b.createTime - a.createTime);
+//     var news = more.getRange(0, take).toList();
+//     if (news.isNotEmpty) {
+//       lastTime = news[news.length - 1].createTime;
+//     }
+//     return news;
+//   }
+
+//   @override
+//   Future<bool> send(
+//     String content,
+//     MessageType typeName,
+//     List<FileItemShare> resources,
+//     List<String> tags,
+//   ) {
+//     return session.activity.send(content, typeName, resources, tags);
+//   }
+
+//   @override
+//   String subscribe(void Function(String key, List<dynamic>? args) callback,
+//       [bool? target = true]) {
+//     for (var activity in subActivitys) {
+//       subscribeIds.add(activity.subscribe(callback, false));
+//     }
+//     return super.subscribe(callback);
+//   }
+
+//   @override
+//   void unsubscribe(dynamic id) {
+//     super.unsubscribe(id);
+//     super.unsubscribe(subscribeIds);
+//   }
+// }

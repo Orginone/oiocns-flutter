@@ -10,6 +10,7 @@ import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/auth.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
@@ -92,10 +93,10 @@ class IndexController extends GetxController {
   /// 数据提供者
   UserProvider get provider => _provider;
 
-  // /// 授权方法
-  // AuthProvider get auth {
-  //   return provider.auth;
-  // }
+  /// 授权方法
+  AuthProvider get auth {
+    return provider.auth;
+  }
 
   /// 当前用户
   IPerson get user => provider.user!;
@@ -160,10 +161,10 @@ class IndexController extends GetxController {
     functionMenuController = CustomPopupMenuController();
     settingMenuController = CustomPopupMenuController();
     emitter = Emitter();
-    // 监听消息加载
-    emitter.subscribe((key, args) {
-      loadChats();
-    }, false);
+    // // 监听消息加载
+    // emitter.subscribe((key, args) {
+    //   loadChats();
+    // }, false);
     _provider = UserProvider(emitter);
     _userSub = EventBusUtil.instance.on<UserLoaded>((event) async {
       EventBusHelper.fire(ShowLoading(true));
@@ -183,39 +184,44 @@ class IndexController extends GetxController {
   }
 
   Future<void> loadChats([bool reload = false]) async {
-    if (provider.user != null) {
-      // this.chats.value = [];
-      if (reload) {
-        // TODO 后期晚上刷新列表
-        await provider.user?.deepLoad(reload: reload);
-      }
-      List<ISession> chats = <ISession>[];
-      chats.addAll(provider.user?.chats ?? []);
-      for (var company in provider.user?.companys ?? []) {
-        chats.addAll(company.chats ?? []);
-      }
-      chats = chats
-          .where((element) =>
-              element.chatdata.value.lastMessage != null ||
-              element.chatdata.value.recently!)
-          .toList();
-
-      /// 排序
-      chats.sort((a, b) {
-        var num = (b.chatdata.value.isToping ? 10 : 0) -
-            (a.chatdata.value.isToping ? 10 : 0);
-        if (num == 0) {
-          if (b.chatdata.value.lastMsgTime == a.chatdata.value.lastMsgTime) {
-            num = b.isBelongPerson ? 1 : -1;
-          } else {
-            num = b.chatdata.value.lastMsgTime > a.chatdata.value.lastMsgTime
-                ? 5
-                : -5;
-          }
+    try {
+      if (provider.user != null) {
+        // this.chats.value = [];
+        if (reload) {
+          // TODO 后期晚上刷新列表
+          await provider.user?.deepLoad(reload: reload);
         }
-        return num;
-      });
-      this.chats.value = chats;
+        List<ISession> chats = <ISession>[];
+        chats.addAll(provider.user?.chats ?? []);
+        for (var company in provider.user?.companys ?? []) {
+          chats.addAll(company.chats ?? []);
+        }
+        chats = chats
+            .where((element) =>
+                element.chatdata.value.lastMessage != null ||
+                element.chatdata.value.recently)
+            .toList();
+
+        /// 排序
+        chats.sort((a, b) {
+          var num = (b.chatdata.value.isToping ? 10 : 0) -
+              (a.chatdata.value.isToping ? 10 : 0);
+          if (num == 0) {
+            if (b.chatdata.value.lastMsgTime == a.chatdata.value.lastMsgTime) {
+              num = b.isBelongPerson ? 1 : -1;
+            } else {
+              num = b.chatdata.value.lastMsgTime > a.chatdata.value.lastMsgTime
+                  ? 5
+                  : -5;
+            }
+          }
+          return num;
+        });
+        this.chats.value = chats;
+      }
+    } catch (e, s) {
+      var msg = '\r\n$e === $s';
+      provider.errInfo += msg;
     }
   }
 
@@ -262,7 +268,6 @@ class IndexController extends GetxController {
     List<IApplication> apps = [];
     for (var directory in targets
         .where((i) => i.session.isMyChat)
-        .toList()
         .map((a) => a.directory)
         .toList()) {
       apps.addAll((await directory.loadAllApplication()));
@@ -341,7 +346,7 @@ class IndexController extends GetxController {
   }
 
   bool canAutoLogin([List<String>? account]) {
-    account ??= Storage.getList("account");
+    account ??= Storage.getList(Constants.account);
     if (account.isNotEmpty && account.last != "") {
       return true;
     }
@@ -349,11 +354,11 @@ class IndexController extends GetxController {
   }
 
   void cancelAutoLogin() {
-    Storage.setListValue("account", 1, "");
+    Storage.setListValue(Constants.account, 1, "");
   }
 
   Future<void> autoLogin([List<String>? account]) async {
-    account ??= Storage.getList("account");
+    account ??= Storage.getList(Constants.account);
     if (!canAutoLogin(account)) {
       return exitLogin(false);
     }
@@ -380,6 +385,7 @@ class IndexController extends GetxController {
     await HiveUtils.clean();
     homeEnum.value = HomeEnum.door;
     Storage.remove(Constants.sessionUser);
+    // Storage.remove(Constants.account);
     Get.offAllNamed(Routers.login);
   }
 

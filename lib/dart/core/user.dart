@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:common_utils/common_utils.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/values/constants.dart';
@@ -7,6 +5,7 @@ import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/auth.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main.dart';
@@ -16,19 +15,12 @@ import 'thing/standard/application.dart';
 import 'work/provider.dart';
 
 class UserProvider {
-  UserProvider(Emitter emiter) {
-    _emiter = emiter;
-    final userJson = Storage.getString(Constants.sessionUser);
-    if (userJson.isNotEmpty) {
-      _loadUser(XTarget.fromJson(jsonDecode(userJson)));
-    }
-  }
-
   ///当前用户
   final Rxn<IPerson> _user = Rxn();
   // late IPerson? _user;
   ///办事提供层
   final Rxn<IWorkProvider> _work = Rxn();
+  late AuthProvider _auth;
 
   ///暂存提供层
   // final Rxn<IBoxProvider> _box = Rxn();
@@ -36,6 +28,22 @@ class UserProvider {
   bool _inited = false;
   late Emitter _emiter;
   var myApps = <Map<IApplication, ITarget>>[].obs;
+
+  UserProvider(Emitter emiter) {
+    _emiter = emiter;
+    _auth = AuthProvider((data) async {
+      await _loadUser(data);
+    });
+    // final userJson = Storage.getString(Constants.sessionUser);
+    // if (userJson.isNotEmpty) {
+    //   _loadUser(XTarget.fromJson(jsonDecode(userJson)));
+    // }
+  }
+
+  /// 授权方法
+  AuthProvider get auth {
+    return _auth;
+  }
 
   /// 当前用户
   IPerson? get user {
@@ -105,17 +113,17 @@ class UserProvider {
   _loadUser(XTarget person) async {
     try {
       Storage.setJson(Constants.sessionUser, person.toJson());
-      kernel.userId = person.id;
-
-      errInfo = "开始创建人员数据。。。\r\n";
+      errInfo +=
+          "开始创建人员数据${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}。。。\r\n";
       _user.value = Person(person);
       logger.info(_user);
-      errInfo += "开始创建办事提供器。。。\r\n";
+      errInfo +=
+          "开始创建办事提供器${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}。。。\r\n";
       _work.value = WorkProvider(this);
       refresh();
     } catch (e, s) {
-      var t =
-          DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss");
+      var t = DateUtil.formatDate(DateTime.now(),
+          format: "yyyy-MM-dd HH:mm:ss.SSS");
       errInfo += '$t $e ==== $s';
       // ToastUtils.showMsg(msg: errInfo);
       // SystemUtils.copyToClipboard(errInfo);
@@ -126,23 +134,30 @@ class UserProvider {
   /// 重载数据
   Future<void> refresh() async {
     _inited = false;
+    print(
+        '>>>===userS ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
     try {
-      errInfo += "开始加载个人内核数据。。。\r\n";
+      errInfo +=
+          "开始加载个人内核数据${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}。。。\r\n";
       await _user.value?.deepLoad(reload: true);
-      errInfo += "开始加载办事数据。。。\r\n";
+      errInfo +=
+          "开始加载办事数据${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}。。。\r\n";
       await work?.loadTodos(reload: true);
-      errInfo += "数据加载完成。。。\r\n";
+      errInfo +=
+          "数据加载完成${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}。。。\r\n";
       _inited = true;
       _emiter.changCallback();
       command.emitterFlag();
     } catch (e, s) {
-      var t =
-          DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss");
+      var t = DateUtil.formatDate(DateTime.now(),
+          format: "yyyy-MM-dd HH:mm:ss.SSS");
       errInfo += '$t $e ==== $s';
       // ToastUtils.showMsg(msg: errInfo);
       // SystemUtils.copyToClipboard(errInfo);
       print('>>>====$s');
     }
+    print(
+        '>>>===userE ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
   }
 
   late String errInfo = "";

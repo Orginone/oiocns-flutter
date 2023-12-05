@@ -336,15 +336,18 @@ class Person extends Belong implements IPerson {
       loadGivedIdentitys(reload: reload),
       directory.loadDirectoryResource(reload: reload), ////////thing文件夹中
     ]);
-    for (var company in companys) {
-      await company.deepLoad(reload: reload);
-    }
-    for (var cohort in cohorts) {
-      await cohort.deepLoad(reload: reload);
-    }
-    for (var storage in storages) {
-      await storage.deepLoad(reload: reload);
-    }
+    // for (var company in companys) {
+    //   await company.deepLoad(reload: reload);
+    // }
+    // for (var cohort in cohorts) {
+    //   await cohort.deepLoad(reload: reload);
+    // }
+    // for (var storage in storages) {
+    //   await storage.deepLoad(reload: reload);
+    // }
+    await Future.wait(companys.map((e) => e.deepLoad(reload: reload)));
+    await Future.wait(cohorts.map((e) => e.deepLoad(reload: reload)));
+    await Future.wait(storages.map((e) => e.deepLoad(reload: reload)));
     superAuth?.deepLoad(reload: reload);
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/values/constants.dart';
 import 'package:orginone/utils/storage.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
@@ -37,7 +38,7 @@ class ForgotPasswordPage
   // 构建修改密码页面
   // 分两种场景 1：忘记密码（未登录） 2：修改密码（已登录）
   List<Widget> buildModifyPasswordWidget() {
-    var account = Storage.getList("account");
+    var account = Storage.getList(Constants.account);
     List<Widget> widgets = [];
     String title = '忘记密码';
     title = '修改密码';

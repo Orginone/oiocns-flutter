@@ -106,7 +106,7 @@ class LoadingDialog extends Dialog {
   }
 
   static Future? showLoading(BuildContext context,
-      {String? msg, bool cancelable = false, int dismissSeconds = 30}) {
+      {String? msg, bool cancelable = false, int dismissSeconds = 3}) {
     return show(context,
         msg: msg, cancelable: cancelable, dismissSeconds: dismissSeconds);
   }

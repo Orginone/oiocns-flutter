@@ -2,7 +2,6 @@ import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/components/widgets/keep_alive_widget.dart';
 import 'package:orginone/config/unified.dart';
 
 import 'digital_assets/digital_assets.dart';
@@ -15,20 +14,24 @@ import 'warehouse/warehouse.dart';
 import 'welfare/welfare.dart';
 
 class IndexPage extends BaseGetPageView<IndexController, IndexState> {
+  IndexPage({super.key});
+
   @override
   Widget buildView() {
     return Column(
       children: [
         tabBar(),
         Expanded(
-          child: ExtendedTabBarView(controller: state.tabController, children: [
-            GroupDynamics(),
-            FriendDynamic(),
-            SharedSoftware(),
-            Warehouse(),
-            Welfare(),
-            DigitalAssets(),
-          ]),
+          child: ExtendedTabBarView(
+              controller: state.tabController,
+              children: const [
+                GroupDynamics(),
+                FriendDynamic(),
+                SharedSoftware(),
+                Warehouse(),
+                Welfare(),
+                DigitalAssets(),
+              ]),
         )
       ],
     );

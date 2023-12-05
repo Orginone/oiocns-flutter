@@ -279,6 +279,7 @@ class Session extends Entity<XEntity> implements ISession {
 
   @override
   Future<int> moreMessage() async {
+    print('>>>=======moreMessage ${messages.length}');
     var data = await coll.loadSpace({
       "take": 30,
       "skip": messages.length,
@@ -297,6 +298,7 @@ class Session extends Entity<XEntity> implements ISession {
         chatdata.value.lastMsgTime =
             DateTime.parse(data[0].createTime!).millisecondsSinceEpoch;
       }
+      print('>>>=======moreMessage ${messages.length}');
       return data.length;
     }
     return 0;

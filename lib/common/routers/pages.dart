@@ -11,6 +11,7 @@ import 'package:orginone/pages/chat/message_chats/message_chats_list.dart';
 import 'package:orginone/pages/chat/message_file.dart';
 import 'package:orginone/pages/chat/message_records.dart';
 import 'package:orginone/pages/chat/person_list_page.dart';
+import 'package:orginone/pages/home/portal/bindings.dart';
 import 'package:orginone/pages/login/binding.dart';
 import 'package:orginone/pages/login/forgot_password/binding.dart';
 import 'package:orginone/pages/login/forgot_password/view.dart';
@@ -109,7 +110,7 @@ class RoutePages {
     ),
     GetPage(
         name: Routers.register,
-        page: () => RegisterPage(),
+        page: () => const RegisterPage(),
         binding: RegisterBinding()),
     GetPage(
       name: Routers.forgotPassword,
@@ -126,6 +127,7 @@ class RoutePages {
       bindings: [
         HomeBinding(),
         MessageChatsControllerBinding(),
+        PortalControllerBinding(),
         WorkBinding(),
         StoreBinding(),
         SettingBinding(),
@@ -365,7 +367,7 @@ class RoutePages {
     ),
     GetPage(
       name: Routers.createBag,
-      page: () => CreateBagPage(),
+      page: () => const CreateBagPage(),
       binding: CreateBagBinding(),
     ),
     GetPage(
@@ -382,7 +384,7 @@ class RoutePages {
     ),
     GetPage(
       name: Routers.walletDetails,
-      page: () => WalletDetailsPage(),
+      page: () => const WalletDetailsPage(),
       binding: WalletDetailsBinding(),
     ),
     GetPage(

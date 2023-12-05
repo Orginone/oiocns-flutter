@@ -26,13 +26,10 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                 children: [
                   tips(),
                   SizedBox(
-                    height: 75.h,
+                    height: 50.h,
                   ),
                   Obx(() {
-                    if (state.isStepOne.value) {
-                      return stepTwo();
-                    }
-                    return stepOne();
+                    return registerWidget();
                   }),
                   SizedBox(
                     height: 60.h,
@@ -116,7 +113,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
     });
   }
 
-  Widget stepTwo() {
+  Widget registerWidget() {
     return Column(
       children: [
         CommonWidget.commonTextField(
@@ -124,10 +121,12 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
             hint: "请输入手机号",
             title: "手机号"),
         CommonWidget.commonTextField(
-            controller: state.phoneNumberController,
+            controller: state.dynamicCodeController,
             hint: "请输入验证码",
             title: "验证码",
-            action: CommonWidget.commonLimitedTimeButtonWidget()),
+            action: CommonWidget.commonLimitedTimeButtonWidget(
+                check: controller.checkPhoneNumber,
+                click: controller.getDynamicCode)),
         // CommonWidget.commonTextField(
         //   controller: state.nickNameController,
         //   hint: "请输入昵称",
@@ -166,7 +165,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                   color: Colors.grey,
                 ))),
         CommonWidget.commonTextField(
-          controller: state.realNameController,
+          controller: state.userNameController,
           hint: "请输入真实姓名",
           title: "姓名",
         ),
@@ -221,52 +220,22 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
   Widget loginButton() {
     return GestureDetector(
       onTap: () {
-        if (state.isStepOne.value) {
-          controller.nextStep();
-        } else {
-          controller.register();
-        }
+        controller.register();
       },
       child: Column(
         children: [
           Container(
-            width: double.infinity,
-            height: 60.h,
-            decoration: BoxDecoration(
-              color: XColors.themeColor,
-              borderRadius: BorderRadius.circular(40.w),
-            ),
-            alignment: Alignment.center,
-            child: Obx(() {
-              String text = '';
-              if (state.isStepOne.value) {
-                text = "下一步";
-              } else {
-                text = "注册";
-              }
-              return Text(
-                text,
-                style: TextStyle(color: Colors.white, fontSize: 20.sp),
-              );
-            }),
-          ),
-          SizedBox(
-            height: 10.h,
-          ),
-          Obx(() {
-            if (state.isStepOne.value) {
-              return Container();
-            }
-            return GestureDetector(
-              onTap: () {
-                controller.previousStep();
-              },
-              child: Text(
-                "上一步",
-                style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
+              width: double.infinity,
+              height: 60.h,
+              decoration: BoxDecoration(
+                color: XColors.themeColor,
+                borderRadius: BorderRadius.circular(40.w),
               ),
-            );
-          })
+              alignment: Alignment.center,
+              child: Text(
+                "注册",
+                style: TextStyle(color: Colors.white, fontSize: 20.sp),
+              )),
         ],
       ),
     );

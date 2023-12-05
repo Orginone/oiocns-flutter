@@ -963,6 +963,8 @@ class CommonWidget {
   static Widget commonLimitedTimeButtonWidget({
     String name = "发送验证码",
     int countdown = 120,
+    bool Function()? check,
+    bool Function()? close,
     VoidCallback? click,
   }) {
     RxBool active = true.obs;
@@ -972,8 +974,10 @@ class CommonWidget {
         if (count > 0) {
           active.value = false;
           btnName.value = '$name($count)';
-          startCountDown(count - 1);
-          print('>>>=====$count');
+          if (!(close?.call() ?? false)) {
+            startCountDown(count - 1);
+            print('>>>=====$count');
+          }
         } else {
           btnName.value = name;
           active.value = true;
@@ -985,9 +989,10 @@ class CommonWidget {
       return GestureDetector(
         behavior: HitTestBehavior.translucent,
         onTap: () {
-          if (active.value) {
+          bool checkOk = check?.call() ?? true;
+          if (active.value && checkOk) {
             click?.call();
-            startCountDown(countdown);
+            // startCountDown(countdown);
           }
         },
         child: Container(

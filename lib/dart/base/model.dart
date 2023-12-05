@@ -368,6 +368,7 @@ class OnlineSet {
   OnlineSet({this.users, this.storages});
 }
 
+// 分页返回定义
 class PageResult<T> {
   // 偏移量
   int offset;
@@ -406,6 +407,121 @@ class PageResult<T> {
       'result': result,
     };
   }
+}
+
+class DynamicCodeModel {
+  // 动态密码Id
+  String dynamicId;
+  // 账户(手机号)
+  String account;
+  // 平台入口
+  String platName;
+
+  DynamicCodeModel({
+    required this.dynamicId,
+    required this.account,
+    required this.platName,
+  });
+
+  DynamicCodeModel.fromJson(Map<String, dynamic> json)
+      : dynamicId = json['dynamicId'],
+        account = json['account'],
+        platName = json['platName'];
+
+  Map<String, dynamic> toJson() {
+    return {
+      'dynamicId': dynamicId,
+      'account': account,
+      'platName': platName,
+    };
+  }
+}
+
+class LoginModel {
+  // 账户(手机号/账号)
+  String account;
+  // 密码
+  String? password;
+  // 动态密码Id
+  String? dynamicId;
+  // 动态密码
+  String? dynamicCode;
+  LoginModel({
+    required this.account,
+    this.password,
+    this.dynamicId,
+    this.dynamicCode,
+  });
+}
+
+class RegisterModel {
+  // 账户(手机号)
+  String account;
+  // 密码
+  String password;
+  // 动态密码Id
+  String dynamicId;
+  // 动态密码
+  String dynamicCode;
+  // 名称
+  String name;
+  // 描述
+  String remark;
+  RegisterModel({
+    required this.account,
+    required this.password,
+    required this.dynamicId,
+    required this.dynamicCode,
+    required this.name,
+    required this.remark,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'account': account,
+      'password': password,
+      'dynamicId': dynamicId,
+      'dynamicCode': dynamicCode,
+      'name': name,
+      'remark': remark,
+    };
+  }
+}
+
+//认证结果返回
+class TokenResultModel {
+  // 授权码
+  String accessToken;
+  // 过期时间
+  int expiresIn;
+  // 作者
+  String author;
+  // 协议
+  String license;
+  // 授权码类型
+  String tokenType;
+  // 用户信息
+  XTarget target;
+  // 私钥
+  String privateKey;
+
+  TokenResultModel({
+    required this.accessToken,
+    required this.expiresIn,
+    required this.author,
+    required this.license,
+    required this.tokenType,
+    required this.target,
+    required this.privateKey,
+  });
+  TokenResultModel.fromJson(Map<String, dynamic> json)
+      : accessToken = json['accessToken'],
+        expiresIn = json['expiresIn'],
+        author = json['author'],
+        license = json['license'],
+        tokenType = json['tokenType'],
+        target = json['target'],
+        privateKey = json['privateKey'];
 }
 
 // 注册消息类型
@@ -2842,7 +2958,7 @@ class MsgChatData {
   late bool mentionMe;
 
   /// 最近活跃
-  late bool? recently;
+  late bool recently;
 
   MsgChatData({
     required this.fullId,
@@ -2869,7 +2985,7 @@ class MsgChatData {
         ? ChatMessageType.fromJson(json['lastMessage'])
         : null;
     mentionMe = json['mentionMe'];
-    recently = json['recently'];
+    recently = json['recently'] ?? false;
   }
 
   Map<String, dynamic> toJson() {
@@ -7495,4 +7611,15 @@ class DiskInfoType {
     required this.fsTotalSize,
     required this.getTime,
   });
+  DiskInfoType.fromJson(Map<String, dynamic> json)
+      : ok = json['ok'] ?? 0,
+        files = json['filesCount'] ?? 0,
+        objects = json['objects'] ?? 0,
+        collections = json['collections'] ?? 0,
+        fileSize = json['filesSize'] ?? 0,
+        dataSize = json['dataSize'] ?? 0,
+        totalSize = json['totalSize'] ?? 0,
+        fsUsedSize = json['fsUsedSize'] ?? 0,
+        fsTotalSize = json['fsTotalSize'] ?? 0,
+        getTime = json['getTime'];
 }

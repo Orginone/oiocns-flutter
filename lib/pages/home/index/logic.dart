@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/pages/home/home/logic.dart';
-import 'package:orginone/utils/page_view_scroll_utils.dart';
 
 import 'state.dart';
 
 class IndexController extends BaseController<IndexState>
     with GetTickerProviderStateMixin {
+  @override
   final IndexState state = IndexState();
 
   HomeController homeController = Get.find();

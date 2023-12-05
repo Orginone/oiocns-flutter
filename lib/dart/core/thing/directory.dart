@@ -416,7 +416,7 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
 
   @override
   Future<List<IApplication>> loadAllApplication({bool? reload}) async {
-    final List<IApplication> applications = this.applications;
+    final List<IApplication> applications = [...this.applications];
 
     for (var subDirectory in children) {
       applications

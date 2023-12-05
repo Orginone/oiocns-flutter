@@ -10,7 +10,7 @@ import 'package:orginone/utils/logger.dart';
 
 class KernelApi {
   // 当前用户
-  String userId = '';
+  XTarget? user;
 // 存储集线器
   final StoreHub _storeHub;
   // 单例
@@ -116,6 +116,28 @@ class KernelApi {
     return null;
   }
 
+  /// 请求一个内核授权方法
+  /// @param {ReqestType} reqs 请求体
+  /// @returns 异步结果
+  Future<ResultType<T>> auth<T>(String action, dynamic params,
+      T Function(Map<String, dynamic> json) fromJson) async {
+    ResultType res = await _storeHub.invoke('Auth', args: [
+      {
+        'module': 'auth',
+        'action': action,
+        'params': params,
+      }
+    ]);
+    if (res.success &&
+        res.data != null &&
+        res.data is Map &&
+        res.data.containsKey('accessToken')) {
+      _storeHub.accessToken = res.data['accessToken'];
+      await tokenAuth();
+    }
+    return ResultType.fromJsonSerialize(res, fromJson);
+  }
+
   Future<bool> tokenAuth() async {
     ResultType result = badRequest;
     if (_storeHub.accessToken.isNotEmpty) {
@@ -124,6 +146,7 @@ class KernelApi {
 
       if (result.success) {
         logger.info('连接到内核成功!');
+        user = XTarget.fromJson(result.data);
         return true;
       } else {
         logger.warning(result);
@@ -759,6 +782,7 @@ class KernelApi {
         params: {},
         flag: 'diskInfo',
       ),
+      DiskInfoType.fromJson,
     );
   }
 
@@ -1250,6 +1274,7 @@ class KernelApi {
 
   /// 接收服务端消息
   _receive(List<dynamic>? params) {
+    print('>>>========收到新消息');
     if (params == null || params.isEmpty) {
       return;
     }

@@ -26,6 +26,7 @@ class Constants {
 
   static const baseUrlKey = 'app-base-url'; // 基础路径字段名
   static const sessionUser = 'sessionUser'; // 用户会话
+  static const account = 'account'; //
   static const appTokenKey =
       'X-Auth-Token'; //X-Auth-Token Authorization appToken字段名(本地存储，以及dio请求头均使用到此字段名称，不能随意改动)
   static const userInfoKey = 'app-user-info'; // 用户基础信息字段名

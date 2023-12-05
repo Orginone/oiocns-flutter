@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/config/location.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/utils/toast_utils.dart';
@@ -10,62 +11,106 @@ import 'state.dart';
 class RegisterController extends BaseController<RegisterState> {
   @override
   final RegisterState state = RegisterState();
+  final IResources resources = getResouces();
+  // 验证码动态密码ID
+  late String _dynamicId = "";
 
   void changeAgreeTerms() {
     state.agreeTerms.value = !state.agreeTerms.value;
   }
 
-  void nextStep() {
-    if (state.userNameController.text.isEmpty) {
-      ToastUtils.showMsg(msg: "请输入用户名");
-      return;
+  bool regExp(String regStr, String txt) {
+    RegExp regExp = RegExp(regStr);
+    Match? match = regExp.firstMatch(txt);
+
+    return match == null;
+  }
+
+  bool validate() {
+    if (!checkPhoneNumber()) {
+      return false;
+    }
+    if (regExp(r'(\d{6})', state.dynamicCodeController.text)) {
+      ToastUtils.showMsg(msg: '请输入正确的验证码');
+      return false;
     }
     if (state.passWordController.text != state.verifyPassWordController.text) {
       ToastUtils.showMsg(msg: "输入的两次密码不一致！");
-      return;
+      return false;
     }
     if (state.passWordController.text.length < 6) {
       ToastUtils.showMsg(msg: "密码的长度不能小于6");
-      return;
+      return false;
     }
     if (state.passWordController.text.length > 15) {
       ToastUtils.showMsg(msg: "密码的长度不能大于15");
-      return;
+      return false;
     }
-    RegExp regExp =
-        RegExp(r'(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,15}');
-    Match? match = regExp.firstMatch(state.passWordController.text);
-    if (match == null) {
+    if (regExp(r'(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,15}',
+        state.passWordController.text)) {
       ToastUtils.showMsg(msg: '密码必须包含：数字、字母、特殊字符');
-      return;
+      return false;
+    }
+    if (regExp(r'^[\u4e00-\u9fa5]{2,8}$', state.userNameController.text)) {
+      ToastUtils.showMsg(msg: "请输入正确的姓名");
+      return false;
+    }
+    if (state.remarkController.text.isEmpty) {
+      ToastUtils.showMsg(msg: "请输入正确的座右铭");
+      return false;
+    }
+    return true;
+  }
+
+  bool checkPhoneNumber() {
+    if (state.phoneNumberController.text.isEmpty) {
+      ToastUtils.showMsg(msg: "请输入手机号");
+      return false;
+    } else if (regExp(r'(^1[3|4|5|7|8|9]\d{9}$)|(^09\d{8}$)',
+        state.phoneNumberController.text)) {
+      ToastUtils.showMsg(msg: "请输入正确的手机号");
+      return false;
     }
 
-    state.isStepOne.value = false;
+    return true;
   }
 
-  void previousStep() {
-    state.isStepOne.value = true;
+  // 获得动态验证码
+  Future<void> getDynamicCode() async {
+    var res = await settingCtrl.auth.dynamicCode(DynamicCodeModel.fromJson({
+      'account': state.phoneNumberController.text,
+      'platName': resources.platName,
+      'dynamicId': '',
+    }));
+    if (res.success && res.data != null) {
+      _dynamicId = res.data!.dynamicId;
+    }
   }
 
-  void showPassWord() {
-    state.passwordUnVisible.value = !state.passwordUnVisible.value;
-  }
-
+  // 注册
   void register() async {
+    if (!validate()) return;
+
     LoadingDialog.showLoading(context);
-    var res = await settingCtrl.provider.register(RegisterType(
-        nickName: state.nickNameController.text,
-        name: state.realNameController.text,
-        phone: state.phoneNumberController.text,
-        account: state.userNameController.text,
-        password: state.passWordController.text,
-        motto: state.remarkController.text,
-        avatar: ''));
+    var res = await settingCtrl.auth.register(RegisterModel(
+      account: state.phoneNumberController.text,
+      dynamicId: _dynamicId,
+      dynamicCode: state.dynamicCodeController.text,
+      password: state.passWordController.text,
+      name: state.userNameController.text,
+      remark: state.remarkController.text,
+    ));
     LoadingDialog.dismiss(context);
     if (res.success) {
       ToastUtils.showMsg(msg: "注册成功,请重新登录");
       Get.back();
+    } else {
+      ToastUtils.showMsg(msg: res.msg);
     }
+  }
+
+  void showPassWord() {
+    state.passwordUnVisible.value = !state.passwordUnVisible.value;
   }
 
   void showVerifyPassWord() {

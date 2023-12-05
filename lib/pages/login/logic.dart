@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:orginone/common/routers/index.dart';
+import 'package:orginone/common/values/constants.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/utils/storage.dart';
@@ -19,7 +20,7 @@ class LoginController extends BaseController<LoginState> {
     // if (!kernel.isOnline) {
     //   kernel.start();
     // }
-    var account = Storage.getList("account");
+    var account = Storage.getList(Constants.account);
     if (account.isNotEmpty) {
       state.accountController.text = account.first;
       state.phoneNumberController.text = account.first;
@@ -63,7 +64,7 @@ class LoginController extends BaseController<LoginState> {
     if (res.success) {
       ToastUtils.showMsg(msg: "登录成功");
       [Permission.storage, Permission.notification].request();
-      Storage.setList("account",
+      Storage.setList(Constants.account,
           [state.accountController.text, state.passWordController.text]);
 
       Get.offAndToNamed(Routers.logintrans, arguments: true);

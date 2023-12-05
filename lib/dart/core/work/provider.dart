@@ -158,7 +158,7 @@ class WorkProvider implements IWorkProvider {
           "isCountQuery": true,
         });
     if (res.success) {
-      return res.totalCount;
+      return res.data['totalCount'];
     }
     return 0;
   }

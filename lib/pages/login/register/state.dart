@@ -1,16 +1,14 @@
-
-
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 
-class RegisterState extends BaseGetState{
-  var isStepOne = true.obs;
+class RegisterState extends BaseGetState {
   TextEditingController userNameController = TextEditingController();
   TextEditingController passWordController = TextEditingController();
   TextEditingController verifyPassWordController = TextEditingController();
 
   TextEditingController phoneNumberController = TextEditingController();
+  TextEditingController dynamicCodeController = TextEditingController();
   TextEditingController nickNameController = TextEditingController();
   TextEditingController realNameController = TextEditingController();
   TextEditingController remarkController = TextEditingController();
