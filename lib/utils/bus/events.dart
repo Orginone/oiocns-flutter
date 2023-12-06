@@ -12,6 +12,13 @@ class InputFormClearEvent {
       {required this.indexs, required this.focusIndex, required this.tag});
 }
 
+//接收到服务端消息
+class ReceiveEvent {
+  String eventName;
+  dynamic data;
+  ReceiveEvent({required this.eventName, required this.data});
+}
+
 //加载待办事件
 class LoadTodosEvent {}
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:get/get.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -19,9 +20,8 @@ abstract class IWorkProvider {
 
   /// 当前用户
   late UserProvider user;
+  RxList<IWorkTask> todos = <IWorkTask>[].obs;
 
-  /// 待办
-  late List<IWorkTask> todos;
   // 所有
   late List<IWorkTask> tasks;
   late Emitter notity;
@@ -55,11 +55,20 @@ class WorkProvider implements IWorkProvider {
         }
       }
     ]);
+    EventBusUtil().on<ReceiveEvent>((event) {
+      // LogUtil.d(event);
+      if (event.eventName == 'RecvTask') {
+        XWorkTask work = XWorkTask.fromJson(event.data);
+        if (_todoLoaded && work.approveType != '抄送') {
+          updateTask(work);
+        }
+      }
+    });
   }
   @override
   final UserProvider user;
   @override
-  List<IWorkTask> todos = [];
+  RxList<IWorkTask> todos = <IWorkTask>[].obs;
   @override
   List<IWorkTask> tasks = [];
   @override
@@ -72,16 +81,35 @@ class WorkProvider implements IWorkProvider {
   @override
   void updateTask(XWorkTask task) {
     final index = todos.indexWhere((i) => i.metadata.id == task.id);
-    if (task.status != TaskStatus.approvalStart.status) {
-      if (index < 0) {
-        todos.insert(0, WorkTask(task, user));
-      } else {
+
+    // LogUtil.d(task.id);
+    // LogUtil.d(todos);
+    if (index > -1) {
+      if (task.status! < TaskStatus.approvalStart.status) {
         todos[index].updated(task);
+      } else {
+        todos.removeAt(index);
       }
-    } else if (index > -1) {
-      todos.removeAt(index);
+      notity.changCallback();
+    } else {
+      if (task.status! < TaskStatus.approvalStart.status) {
+        todos.insert(0, WorkTask(task, user));
+
+        notity.changCallback();
+      }
     }
-    notity.changCallback();
+
+    // if (task.status != TaskStatus.approvalStart.status) {
+    //   if (index < 0) {
+    //     todos.insert(0, WorkTask(task, user));
+    //   } else {
+    //     todos[index].updated(task);
+    //   }
+    // } else if (index > -1) {
+    //   todos.removeAt(index);
+    // }
+    // settingCtrl.todosCount.value = todos.length;
+    // notity.changCallback();
   }
 
   @override
@@ -99,13 +127,13 @@ class WorkProvider implements IWorkProvider {
       final res = await kernel.queryApproveTask(IdModel('0'));
       if (res.success) {
         _todoLoaded = true;
-        todos = (res.data?.result ?? [])
+        todos.value = (res.data?.result ?? [])
             .map((task) => WorkTask(task, user))
             .toList();
         notity.changCallback();
       }
     }
-    return todos;
+    return todos.value;
   }
 
   Future<List<IWorkTask>> loadTasks(TaskType type,

@@ -391,8 +391,8 @@ class Person extends Belong implements IPerson {
       findEntityAsync(id);
     }
     return ShareIcon(
-      name: metadata?.name ?? '请稍后...',
-      typeName: metadata?.typeName ?? '未知',
+      name: metadata?.name ?? '',
+      typeName: metadata?.typeName ?? '',
       avatar: parseAvatar(metadata?.icon),
     );
   }

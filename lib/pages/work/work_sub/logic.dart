@@ -255,7 +255,7 @@ class WorkSubController extends BaseListController<WorkSubState> {
   loadTodos() async {
     List<IWorkTask> todos = await settingCtrl.work.loadTodos(reload: true);
     state.list.value = todos;
-    settingCtrl.work.todos = todos;
+    settingCtrl.work.todos.value = todos;
   }
 
   ///办事tab 下拉刷新

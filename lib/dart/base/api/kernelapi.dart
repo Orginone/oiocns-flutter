@@ -6,6 +6,7 @@ import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/utils/hive_utils.dart';
+import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/logger.dart';
 
 class KernelApi {
@@ -1271,13 +1272,15 @@ class KernelApi {
 
   /// 接收服务端消息
   _receive(List<dynamic>? params) {
-    print('>>>========收到新消息');
+    LogUtil.d('>>>========收到新消息');
     if (params == null || params.isEmpty) {
       return;
     }
     Map<String, dynamic> param = params[0];
     ReceiveType res = ReceiveType.fromJson(param);
+    // LogUtil.d(param);
     bool onlineOnly = true;
+
     switch (res.target) {
       case 'DataNotify':
         {
@@ -1329,7 +1332,7 @@ class KernelApi {
           if (methods != null) {
             try {
               for (var m in methods) {
-                Function.apply(m, [res.data]);
+                // Function.apply(m, [res.data]);
               }
             } catch (e) {
               logger.warning(e as Error);
@@ -1337,6 +1340,9 @@ class KernelApi {
           }
         }
     }
+
+    ///发送收到服务端消息事件
+    EventBusUtil().fire(ReceiveEvent(eventName: res.target, data: res.data));
     if (!onlineOnly) {
       var data = _cacheData[res.target.toLowerCase()] ?? {};
       _cacheData[res.target.toLowerCase()] = [...data, res.data];

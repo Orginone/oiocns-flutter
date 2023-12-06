@@ -55,8 +55,8 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
 
           return ListItem(adapter: ListAdapter.work(work));
         },
-        // itemCount: settingCtrl.work.todos.length,
-        itemCount: state.list.length,
+        itemCount: settingCtrl.work.todos.length,
+        // itemCount: state.list.length,
       );
     });
   }
