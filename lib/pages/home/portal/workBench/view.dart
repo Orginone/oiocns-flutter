@@ -21,13 +21,16 @@ class WorkBenchPage
 
   @override
   Widget buildView() {
-    return ListView(children: [
-      RenderOperate(),
-      RenderChat(),
-      RenderWork(),
-      RendeStore(),
-      // RendeAppInfo()
-    ]);
+    return Container(
+        color: const Color.fromARGB(255, 240, 240, 240),
+        padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+        child: ListView(children: [
+          RenderOperate(),
+          RenderChat(),
+          RenderWork(),
+          RendeStore(),
+          // RendeAppInfo()
+        ]));
   }
 
   // 操作组件
@@ -35,14 +38,27 @@ class WorkBenchPage
     // 发送快捷命令
     renderCmdBtn(String cmd, String title, String iconType) {
       return Container(
-        padding:
-            EdgeInsets.only(left: 12.w, right: 12.w, top: 10.h, bottom: 10.h),
         child: Column(
           children: [
             XImage.localImage(cmd, size: Size(56.w, 56.w)),
             Container(
+              padding: const EdgeInsets.only(top: 16),
               margin: EdgeInsets.only(top: 10.h),
-              child: Text(title),
+              child: SizedBox(
+                width: 55.80,
+                height: 16,
+                child: Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black.withOpacity(0.8999999761581421),
+                    fontSize: 11,
+                    fontFamily: 'PingFang SC',
+                    fontWeight: FontWeight.w400,
+                    height: 0.16,
+                  ),
+                ),
+              ),
             ),
           ],
         ),
@@ -53,20 +69,14 @@ class WorkBenchPage
         contentWidget: Container(
             padding: EdgeInsets.only(
                 left: 12.w, right: 12.w, top: 10.h, bottom: 10.h),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    renderCmdBtn('joinFriend', '添加好友', 'joinFriend'),
-                    renderCmdBtn('newCohort', '创建群组', '群组'),
-                    renderCmdBtn('joinCohort', '加入群聊', 'joinCohort'),
-                    renderCmdBtn('newCompany', '新建单位', '单位'),
-                    renderCmdBtn('joinCompany', '加入单位', 'joinCompany'),
-                  ],
-                ),
+                renderCmdBtn('joinFriend', '添加好友', 'joinFriend'),
+                renderCmdBtn('newCohort', '创建群组', '群组'),
+                renderCmdBtn('joinCohort', '加入群聊', 'joinCohort'),
+                renderCmdBtn('newCompany', '新建单位', '单位'),
+                renderCmdBtn('joinCompany', '加入单位', 'joinCompany'),
               ],
             )));
   }
@@ -118,13 +128,16 @@ class WorkBenchPage
   Widget renderDataItem(String title, String number,
       [int size = 0, String info = '']) {
     return Container(
+      padding: const EdgeInsets.only(bottom: 10),
       child: Column(
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(0, 5, 0, 5),
-            child: Text(number, style: TextStyle(fontSize: 36.sp)),
+            padding: const EdgeInsets.only(bottom: 5),
+            child: Text(number, style: TextStyle(fontSize: 34.sp)),
           ),
-          Text(title),
+          Text(title,
+              style:
+                  TextStyle(fontSize: 20.sp, color: const Color(0xFF6F7686))),
           // if (size > 0) Text("大小:${formatSize(size)}"),
           // if (info.isNotEmpty) Text(info),
         ],
@@ -146,7 +159,8 @@ class WorkBenchPage
                   renderDataItem('抄送', state.copysCount.value),
                   renderDataItem('发起的', state.applyCount.value),
                 ])),
-        moreWidget: TextArrow(title: '待办${state.todoCount.value}件'));
+        // moreWidget: TextArrow(title: '待办${state.todoCount.value}件'));
+        moreWidget: const TextArrow(title: '前往审批'));
   }
 
   // 渲染存储数据信息

@@ -18,7 +18,16 @@ class TextArrow extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Text.rich(TextSpan(children: [
-        TextSpan(text: title, style: TextStyle(fontSize: 18.sp)),
+        TextSpan(
+          text: title,
+          style: const TextStyle(
+            color: Color(0xFF424A57),
+            fontSize: 14,
+            fontFamily: 'PingFang SC',
+            fontWeight: FontWeight.w400,
+            height: 0.14,
+          ),
+        ),
         WidgetSpan(
             child: Container(
                 margin: EdgeInsets.only(left: 10.w),

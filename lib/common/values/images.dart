@@ -10,6 +10,7 @@ class AssetsImages {
   static const defaultPng = 'assets/images/default.png';
   static const homePlaceholderPng = 'assets/images/home_placeholder.png';
   static const logoPng = 'assets/images/logo.png';
+  static const logoBackground = 'assets/images/logo_background.png';
   static const orderConfirmedPng = 'assets/images/order-confirmed.png';
   static const pCashPng = 'assets/images/p-cash.png';
   static const pMastercardPng = 'assets/images/p-mastercard.png';
@@ -54,7 +55,7 @@ class AssetsImages {
 
   static const String star = "assets/images/stars.png";
 
-  static const String toMore = "assets/images/toMore.svg";
+  static const String toMore = "assets/images/to_more.svg";
 
   static const String empty = "assets/images/empty.png";
 

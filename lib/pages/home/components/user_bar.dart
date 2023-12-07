@@ -20,10 +20,6 @@ class UserBar extends GetView<IndexController> {
   Widget build(BuildContext context) {
     return Obx(() {
       return Container(
-        decoration: BoxDecoration(
-            border: Border(
-          bottom: BorderSide(color: Colors.grey.shade400, width: 0.4),
-        )),
         child: _userBar,
       );
     });
