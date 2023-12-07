@@ -24,27 +24,33 @@ abstract class BaseSubmenuPage<T extends BaseSubmenuController,
 
   Widget headWidget() {
     return Container(
-      color: Colors.white,
-      child: Row(
-        children: [
-          Expanded(
-            child: Obx(() {
-              return buildExtendedTabBar();
-            }),
-          ),
-          IconButton(
-            onPressed: () {
-              controller.showGrouping();
-            },
-            alignment: Alignment.center,
-            icon: const Icon(
-              Icons.menu,
-              color: Colors.black,
+      decoration: BoxDecoration(
+          border: Border(
+        bottom: BorderSide(color: Colors.grey.shade400, width: 0.4),
+      )),
+      child: Container(
+        color: Colors.white,
+        child: Row(
+          children: [
+            Expanded(
+              child: Obx(() {
+                return buildExtendedTabBar();
+              }),
             ),
-            iconSize: 24.w,
-            padding: EdgeInsets.zero,
-          )
-        ],
+            IconButton(
+              onPressed: () {
+                controller.showGrouping();
+              },
+              alignment: Alignment.center,
+              icon: const Icon(
+                Icons.menu,
+                color: Colors.black,
+              ),
+              iconSize: 24.w,
+              padding: EdgeInsets.zero,
+            )
+          ],
+        ),
       ),
     );
   }
