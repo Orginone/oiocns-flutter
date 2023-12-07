@@ -2,6 +2,7 @@ import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/config/colors.dart';
 import 'package:orginone/utils/date_util.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/components/widgets/popup_widget.dart';
@@ -216,7 +217,7 @@ class ListItem extends StatelessWidget {
         Widget label;
 
         var style = TextStyle(
-          color: isTop ? XColors.fontErrorColor : XColors.designBlue,
+          color: isTop ? XColors.fontErrorColor : XColors.darkGreen,
           fontSize: 14.sp,
         );
         if (adapter.isUserLabel) {
@@ -226,20 +227,21 @@ class ListItem extends StatelessWidget {
               borderRadius: const BorderRadius.all(Radius.circular(10)),
               border: Border.all(color: XColors.tinyBlue),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+            padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 3),
             child: TargetText(userId: item, style: style),
           );
         } else {
           label = TextTag(
             item,
-            bgColor: Colors.white,
+            bgColor: AppColors.green.withAlpha(10),
+            padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 3),
             textStyle: style,
-            borderColor: isTop ? XColors.fontErrorColor : XColors.tinyBlue,
+            borderColor: isTop ? XColors.fontErrorColor : AppColors.green,
           );
         }
 
         labels.add(label);
-        labels.add(Padding(padding: EdgeInsets.only(left: 4.w)));
+        labels.add(Padding(padding: EdgeInsets.only(left: 6.w)));
       }
     }
     return Column(

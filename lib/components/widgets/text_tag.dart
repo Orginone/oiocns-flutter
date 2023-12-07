@@ -4,7 +4,7 @@ import 'package:orginone/config/unified.dart';
 
 const Color defaultBgColor = XColors.lightBlue;
 const EdgeInsets defaultPadding = EdgeInsets.all(2);
-const double defaultRadius = 5;
+const double defaultRadius = 3;
 
 class TextTag extends StatelessWidget {
   final String label;
@@ -46,7 +46,9 @@ class TextTag extends StatelessWidget {
         decoration: BoxDecoration(
           color: bgColor,
           borderRadius: BorderRadius.all(Radius.circular(radius)),
-          border: borderColor == null ? null : Border.all(color: borderColor!),
+          border: borderColor == null
+              ? null
+              : Border.all(color: borderColor!, width: 0.5),
         ),
         padding: padding,
         child: Text(

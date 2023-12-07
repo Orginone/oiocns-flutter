@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -8,7 +6,6 @@ import 'package:orginone/main.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
 import 'package:orginone/components/widgets/mapping_components.dart';
 import 'package:orginone/pages/work/widgets/approve_widget.dart';
-import 'package:orginone/utils/index.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -46,7 +43,7 @@ class ProcessInfoPage
       if (state.mainForm.isEmpty) {
         return const SizedBox();
       }
-      LogUtil.d('AAAAAAAAAAA${jsonEncode(state.mainForm)}');
+      // LogUtil.d('AAAAAAAAAAA${jsonEncode(state.mainForm)}');
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

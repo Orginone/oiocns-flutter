@@ -298,6 +298,7 @@ class StoreHub {
           LogUtil.e('Http:操作失败,${res.msg}');
           // TODO 再实际业务端做提醒，不然刚进入app 有可能会出现很多异常弹框，体验很不好
           // ToastUtils.showMsg(msg: res.msg);
+          throw (res.msg);
         }
       } else {
         LogUtil.e('Http:===========================err');
@@ -309,6 +310,7 @@ class StoreHub {
       }
     } catch (e, s) {
       LogUtil.e('Http:$s');
+      throw (res.msg);
     }
     ToastUtils.dismiss();
     return res;

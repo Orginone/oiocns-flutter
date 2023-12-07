@@ -10,6 +10,7 @@ import 'package:orginone/dart/core/work/apply.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/utils/index.dart';
+import 'package:orginone/utils/toast_utils.dart';
 
 abstract class IWorkTask extends IFile {
   //内容
@@ -131,24 +132,31 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
   @override
   Future<bool> loadInstance({bool reload = false}) async {
     if (instanceData != null && !reload) return true;
-    var res = await kernel.findInstance(
-      taskdata.belongId ?? '',
-      taskdata.instanceId ?? '',
-    );
 
-    if (res != null) {
-      try {
-        instance = res; //XWorkInstance.fromJson(res.data[0]);
-        LogUtil.d('loadInstance:${res.toJson()}');
-        Map<String, dynamic> json = jsonDecode(instance!.data ?? "");
-        instanceData = instance != null && json.isNotEmpty
-            ? InstanceDataModel.fromJson(json)
-            : null;
-        return instanceData != null;
-      } catch (ex) {
-        LogUtil.d('loadInstance:$ex');
+    try {
+      var res = await kernel.findInstance(
+        taskdata.belongId ?? '',
+        taskdata.instanceId ?? '',
+      );
+
+      if (res != null) {
+        try {
+          instance = res; //XWorkInstance.fromJson(res.data[0]);
+          // LogUtil.d('loadInstance:${res.toJson()}');
+          Map<String, dynamic> json = jsonDecode(instance!.data ?? "");
+          instanceData = instance != null && json.isNotEmpty
+              ? InstanceDataModel.fromJson(json)
+              : null;
+          return instanceData != null;
+        } catch (ex) {
+          LogUtil.d('loadInstance:$ex');
+        }
       }
+    } catch (e) {
+      ToastUtils.showMsg(msg: e.toString());
+      LogUtil.d('loadInstance:$e');
     }
+
     return false;
   }
 

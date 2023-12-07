@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 import 'package:orginone/common/models/file/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
-import 'package:orginone/components/widgets/loading_dialog.dart';
 import 'package:orginone/utils/index.dart';
 import 'state.dart';
 
@@ -20,10 +19,10 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState>
 
   @override
   void onInit() {
-    LogUtil.d(
-        'ProcessDetailsController taskdata：${jsonEncode(state.todo!.taskdata)}');
-    LogUtil.d(
-        'ProcessDetailsController instance:${jsonEncode(state.todo!.instance)}');
+    // LogUtil.d(
+    //     'ProcessDetailsController taskdata：${jsonEncode(state.todo!.taskdata)}');
+    // LogUtil.d(
+    //     'ProcessDetailsController instance:${jsonEncode(state.todo!.instance)}');
 
     super.onInit();
   }
@@ -31,26 +30,14 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState>
   @override
   void onReady() async {
     super.onReady();
-    LoadingDialog.showLoading(context);
+    LogUtil.d('ProcessDetailsController onReady');
+    // LoadingDialog.showLoading(context, msg: '加载中...');
     await loadDataInfo();
-    LoadingDialog.dismiss(context);
+    // LoadingDialog.dismiss(context);
   }
 
   void showAllProcess() {
     state.hideProcess.value = false;
-  }
-
-  WorkNodeModel? getNodeByNodeId(String id, {WorkNodeModel? node}) {
-    if (node != null) {
-      if (id == node.id) return node;
-      final find = getNodeByNodeId(id, node: node.children);
-      if (find != null) return find;
-      for (final subNode in node.branches ?? []) {
-        final find = getNodeByNodeId(id, node: subNode.children);
-        if (find != null) return find;
-      }
-    }
-    return null;
   }
 
   Future<void> loadDataInfo() async {
@@ -90,6 +77,19 @@ class ProcessDetailsController extends BaseController<ProcessDetailsState>
       state.mainForm.refresh();
       state.subForm.refresh();
     }
+  }
+
+  WorkNodeModel? getNodeByNodeId(String id, {WorkNodeModel? node}) {
+    if (node != null) {
+      if (id == node.id) return node;
+      final find = getNodeByNodeId(id, node: node.children);
+      if (find != null) return find;
+      for (final subNode in node.branches ?? []) {
+        final find = getNodeByNodeId(id, node: subNode.children);
+        if (find != null) return find;
+      }
+    }
+    return null;
   }
 
   Future<Fields> initFields(FieldModel field) async {

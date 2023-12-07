@@ -11,7 +11,6 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/store/state.dart';
 
 class ListAdapter {
   VoidCallback? callback;
@@ -126,8 +125,12 @@ class ListAdapter {
   }
   ListAdapter.work(IWorkTask work) {
     noReadCount = ''.obs;
-    labels = [work.metadata.createUser!, work.metadata.shareId!];
-    isUserLabel = true;
+    labels = [
+      work.creater.name,
+      work.taskdata.taskType!,
+      work.taskdata.approveType!
+    ];
+    isUserLabel = false;
     circularAvatar = false;
     title = work.taskdata.title ?? '';
     dateTime = work.metadata.createTime ?? "";

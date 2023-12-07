@@ -220,6 +220,14 @@ class WorkSubController extends BaseListController<WorkSubState> {
     return works;
   }
 
+  ///跳转办事详情
+  processDetails(IWorkTask work) async {
+    //加载流程实例数据
+    await work.loadInstance();
+    //跳转办事详情
+    Get.toNamed(Routers.processDetails, arguments: {"todo": work});
+  }
+
   /// 全部办事 点击事件 跳转子页面
   void jumpNext(WorkBreadcrumbNav work) {
     if (work.children.isEmpty) {
