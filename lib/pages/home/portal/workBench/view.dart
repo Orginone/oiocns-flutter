@@ -4,6 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/dart/base/common/format.dart';
+import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/main.dart';
@@ -36,31 +37,37 @@ class WorkBenchPage
   // 操作组件
   Widget RenderOperate() {
     // 发送快捷命令
-    renderCmdBtn(String cmd, String title, String iconType) {
-      return Container(
-        child: Column(
-          children: [
-            XImage.localImage(cmd, size: Size(56.w, 56.w)),
-            Container(
-              padding: const EdgeInsets.only(top: 16),
-              margin: EdgeInsets.only(top: 10.h),
-              child: SizedBox(
-                width: 55.80,
-                height: 16,
-                child: Text(
-                  title,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.black.withOpacity(0.8999999761581421),
-                    fontSize: 11,
-                    fontFamily: 'PingFang SC',
-                    fontWeight: FontWeight.w400,
-                    height: 0.16,
+    renderCmdBtn(String cmd, String title, String iconType, ShortcutData item) {
+      return GestureDetector(
+        onTap: () {
+          settingCtrl.settingMenuController.hideMenu();
+          settingCtrl.showAddFeatures(item);
+        },
+        child: Container(
+          child: Column(
+            children: [
+              XImage.localImage(cmd, size: Size(56.w, 56.w)),
+              Container(
+                padding: const EdgeInsets.only(top: 16),
+                margin: EdgeInsets.only(top: 10.h),
+                child: SizedBox(
+                  width: 55.80,
+                  height: 16,
+                  child: Text(
+                    title,
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Colors.black.withOpacity(0.8999999761581421),
+                      fontSize: 11,
+                      fontFamily: 'PingFang SC',
+                      fontWeight: FontWeight.w400,
+                      height: 0.16,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     }
@@ -72,11 +79,16 @@ class WorkBenchPage
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                renderCmdBtn('joinFriend', '添加好友', 'joinFriend'),
-                renderCmdBtn('newCohort', '创建群组', '群组'),
-                renderCmdBtn('joinCohort', '加入群聊', 'joinCohort'),
-                renderCmdBtn('newCompany', '新建单位', '单位'),
-                renderCmdBtn('joinCompany', '加入单位', 'joinCompany'),
+                renderCmdBtn('joinFriend', '添加好友', 'joinFriend',
+                    settingCtrl.menuItems[0]),
+                renderCmdBtn(
+                    'newCohort', '创建群组', '群组', settingCtrl.menuItems[4]),
+                renderCmdBtn('joinCohort', '加入群聊', 'joinCohort',
+                    settingCtrl.menuItems[1]),
+                renderCmdBtn(
+                    'newCompany', '新建单位', '单位', settingCtrl.menuItems[2]),
+                renderCmdBtn('joinCompany', '加入单位', 'joinCompany',
+                    settingCtrl.menuItems[3]),
               ],
             )));
   }
