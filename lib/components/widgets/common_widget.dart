@@ -497,16 +497,10 @@ class CommonWidget {
               children: [
                 TextSpan(
                     text: info,
-                    // style: TextStyle(
-                    //     fontSize: 22.sp,
-                    //     color: Colors.black,
-                    //     fontWeight: FontWeight.w500))
-                    style: const TextStyle(
+                    style: TextStyle(
                       color: Colors.black,
-                      fontSize: 19,
+                      fontSize: 24.sp,
                       fontFamily: 'PingFang SC',
-                      fontWeight: FontWeight.w600,
-                      // height: 0.11,
                     ))
               ],
             ),

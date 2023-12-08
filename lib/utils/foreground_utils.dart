@@ -43,7 +43,7 @@ class ForegroundUtils {
         autoStart: true,
         isForegroundMode: true,
         notificationChannelId: notificationChannelId,
-        initialNotificationTitle: '爱共享',
+        initialNotificationTitle: '奥集能',
         initialNotificationContent: '运行中',
         foregroundServiceNotificationId: notificationId,
       ),

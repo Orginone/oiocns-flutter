@@ -64,7 +64,7 @@ android {
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
         flavorDimensions "default"
-        resValue "string", "app_name", "共享云"
+        resValue "string", "app_name", "奥集能"
     }
 
     signingConfigs {
@@ -99,7 +99,7 @@ android {
             buildConfigField 'String', 'BASE_HOST', '"orginone.cn"'
             applicationIdSuffix ".dev"
             versionNameSuffix ""
-            resValue "string", "app_name", "共享云(Dev)"
+            resValue "string", "app_name", "奥集能(Dev)"
         }
         
         // 生产环境
@@ -107,7 +107,7 @@ android {
             buildConfigField 'String', 'BASE_HOST', '"asset.orginone.cn"'
             applicationIdSuffix ".prod"
             versionNameSuffix ""
-            resValue "string", "app_name", "共享云"
+            resValue "string", "app_name", "奥集能"
         }
     }
 }

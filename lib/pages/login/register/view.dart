@@ -54,7 +54,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '欢迎使用爱共享',
+          '欢迎使用奥集能',
           style: TextStyle(fontSize: 40.sp),
         ),
         Text(

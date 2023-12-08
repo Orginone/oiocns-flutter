@@ -20,7 +20,7 @@
         android:name="${applicationName}"
         android:requestLegacyExternalStorage = "true"
         android:icon="@mipmap/ic_launcher"
-        android:label="爱共享"
+        android:label="奥集能"
         >
         <activity
             android:name="com.github.orginone.MainActivity"

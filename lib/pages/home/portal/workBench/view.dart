@@ -51,16 +51,16 @@ class WorkBenchPage
                 padding: const EdgeInsets.only(top: 16),
                 margin: EdgeInsets.only(top: 10.h),
                 child: SizedBox(
-                  width: 55.80,
                   height: 16,
                   child: Text(
                     title,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.black.withOpacity(0.8999999761581421),
-                      fontSize: 11,
+                      // color: Colors.black.withOpacity(0.8999999761581421),
+                      color: const Color(0xFF6F7686),
+                      fontSize: 18.sp,
                       fontFamily: 'PingFang SC',
-                      fontWeight: FontWeight.w400,
+                      // fontWeight: FontWeight.w400,
                       height: 0.16,
                     ),
                   ),
@@ -145,11 +145,13 @@ class WorkBenchPage
         children: [
           Container(
             padding: const EdgeInsets.only(bottom: 5),
-            child: Text(number, style: TextStyle(fontSize: 34.sp)),
+            child: number.length > 4
+                ? Text('9999+', style: TextStyle(fontSize: 22.sp))
+                : Text(number, style: TextStyle(fontSize: 22.sp)),
           ),
           Text(title,
               style:
-                  TextStyle(fontSize: 20.sp, color: const Color(0xFF6F7686))),
+                  TextStyle(fontSize: 18.sp, color: const Color(0xFF6F7686))),
           // if (size > 0) Text("大小:${formatSize(size)}"),
           // if (info.isNotEmpty) Text(info),
         ],

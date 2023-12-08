@@ -75,7 +75,7 @@ Future<void> onStart(service) async {
 
   if (Platform.isAndroid) {
     Timer.periodic(const Duration(seconds: 3), (timer) async {
-      print('爱共享前台进程运行中');
+      print('奥集能前台进程运行中');
     });
   }
 }

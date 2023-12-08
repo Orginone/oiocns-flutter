@@ -20,12 +20,10 @@ class TextArrow extends StatelessWidget {
       child: Text.rich(TextSpan(children: [
         TextSpan(
           text: title,
-          style: const TextStyle(
-            color: Color(0xFF424A57),
-            fontSize: 14,
+          style: TextStyle(
+            color: const Color(0xFF424A57),
+            fontSize: 18.sp,
             fontFamily: 'PingFang SC',
-            fontWeight: FontWeight.w400,
-            height: 0.14,
           ),
         ),
         WidgetSpan(
