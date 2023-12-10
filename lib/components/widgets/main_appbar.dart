@@ -50,14 +50,14 @@ AppBar mainAppBarWidget({
 
 Widget _avatar(String avatarUrl, Function()? onTap) {
   return avatarUrl.startsWith('http')
-      ? ImageWidget.url(
+      ? XImageWidget.url(
           avatarUrl,
           width: 40.w,
           height: 40.w,
           fit: BoxFit.fill,
           radius: 40.w,
         ).onTap(() => onTap?.call())
-      : ImageWidget.asset(
+      : XImageWidget.asset(
           avatarUrl,
           width: 40.w,
           height: 40.w,

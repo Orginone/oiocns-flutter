@@ -174,6 +174,13 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
 
   @override
   Future<bool> approvalTask(int status, {String? comment}) async {
+    // for (final item in user.targets) {
+    //   if (item.id == targets[1].id) {
+    //     item.pullMembers([targets[0]]);
+    //   }
+    // }
+
+    // return false;
     if ((taskdata.status!) < TaskStatus.approvalStart.status) {
       if (status == -1) {
         return await recallApply();

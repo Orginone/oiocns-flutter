@@ -26,6 +26,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
 import 'package:orginone/utils/bus/event_bus_helper.dart';
+import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/permission_util.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/components/widgets/target_text.dart';
@@ -756,10 +757,12 @@ class ChatBoxController with WidgetsBindingObserver {
     var item = await docDir.createFile(
       File(pickedImage.path),
       p: (progress) {
-        var msg = chat.messages
-            .firstWhere((element) => element.metadata.id == pickedImage.name);
-        //TODO:无此方法
-        // msg.metadata.body!.progress = progress;
+        LogUtil.d('上传进度');
+        LogUtil.d(progress);
+        // var msg = chat.messages
+        //     .firstWhere((element) => element.metadata.id == pickedImage.name);
+        // //TODO:无此方法
+        // // msg.metadata.body!.progress = progress;
         // chat.messages.refresh();
       },
     );
@@ -786,7 +789,7 @@ class ChatBoxController with WidgetsBindingObserver {
             .firstWhere((element) => element.metadata.id == file.name);
         //TODO:无此方法
         // msg.metadata.body!.progress = progress;
-        // chat.messages.refresh();
+        chat.messages.refresh();
       },
     );
     if (item != null) {

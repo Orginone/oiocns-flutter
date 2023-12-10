@@ -22,7 +22,7 @@ class PlaceholdWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ImageWidget.asset(assetImagePath ?? AssetsImages.homePlaceholderPng)
+    return XImageWidget.asset(assetImagePath ?? AssetsImages.homePlaceholderPng)
         .paddingHorizontal(AppSpace.page)
         .center();
   }

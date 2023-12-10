@@ -70,7 +70,7 @@ class CarouselWidget extends StatelessWidget {
         ),
         items: <Widget>[
           for (var i = 0; i < items.length; i++)
-            ImageWidget.url(
+            XImageWidget.url(
               items[i].value,
               fit: BoxFit.fill,
             ).onTap(

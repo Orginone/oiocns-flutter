@@ -8,6 +8,7 @@ import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/components/widgets/photo_widget.dart';
+import 'package:orginone/utils/index.dart';
 
 import 'shadow_widget.dart';
 
@@ -41,7 +42,8 @@ class ImageDetail extends BaseDetail {
     Map<String, String> headers = {
       "Authorization": kernel.accessToken,
     };
-
+    LogUtil.d('ImageDetail');
+    LogUtil.d(link);
     Widget child = ImageWidget(link, httpHeaders: headers);
 
     if (showShadow) {

@@ -12,6 +12,7 @@ import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/utils/index.dart';
 
 import '../person.dart';
 
@@ -72,8 +73,10 @@ abstract class Team extends Entity<XTarget> implements ITeam {
     this.relations, {
     this.memberTypes = mTypes,
   }) : super(metadata, [metadata.typeName]) {
-    kernel.subscribe('${metadata.belongId}-${metadata.id}-target',
-        [...keys, key], (data) => _receiveTarget(data as TargetOperateModel));
+    kernel.subscribe(
+        '${metadata.belongId}-${metadata.id}-target',
+        [...keys, key],
+        (data) => _receiveTarget(TargetOperateModel.fromJson(data)));
   }
 
   ///构造函数使用的参数
@@ -125,19 +128,23 @@ abstract class Team extends Entity<XTarget> implements ITeam {
         .where((i) =>
             memberTypes?.contains(TargetType.getType(i.typeName!)) ?? false)
         .toList();
-    members = filterMembers.where((element) {
-      return this.members.where((m) => m.id == element.id).isEmpty;
+    members = filterMembers.where((i) {
+      return this.members.every((m) => m.id != i.id);
     }).toList();
+    // for (var a in members) {
+    //   sendTargetNotity(OperateType.add, sub: a, subTargetId: a.id);
+    // }
+    // return false;
     if (members.isNotEmpty) {
-      if (!notity!) {
+      if (notity != null && !notity) {
         var res = await kernel.pullAnyToTeam(GiveModel(
           id: id,
           subIds: members.map((i) => i.id).toList(),
         ));
 
         if (!res.success) return false;
-        for (var c in members) {
-          sendTargetNotity(OperateType.add, sub: c, subTargetId: c.id);
+        for (var a in members) {
+          sendTargetNotity(OperateType.add, sub: a, subTargetId: a.id);
         }
         notifySession(true, members);
       }
@@ -262,22 +269,25 @@ abstract class Team extends Entity<XTarget> implements ITeam {
   @override
   Future<bool> sendTargetNotity(OperateType operate,
       {XTarget? sub, String? subTargetId}) async {
-    var res = await kernel.dataNotify(DataNotityType(
+    var param = DataNotityType(
       data: {
-        operate,
-        metadata,
-        sub,
-        user?.metadata ?? '',
+        'operate': operate.label,
+        'target': metadata.toJson(),
+        'subTarget': sub?.toJson(),
+        'operater': user?.metadata.toJson() ?? ''
       },
-      targetId: id,
-      ignoreSelf: false,
       flag: 'target',
-      relations: relations,
-      belongId: belongId,
-      onlyTarget: false,
       onlineOnly: true,
+      belongId: belongId,
+      relations: relations,
+      onlyTarget: false,
+      ignoreSelf: false,
       subTargetId: subTargetId,
-    ));
+      targetId: id,
+    );
+    param.toJson();
+    LogUtil.d(param.toJson());
+    var res = await kernel.dataNotify(param);
     return res.success;
   }
 

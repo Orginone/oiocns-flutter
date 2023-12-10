@@ -4,8 +4,9 @@ import 'dart:typed_data';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:orginone/common/index.dart';
+import 'package:orginone/utils/index.dart';
 
 class ImageWidget extends StatelessWidget {
   final dynamic path;
@@ -41,7 +42,7 @@ class ImageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (path == null) {
-      return SizedBox();
+      return const SizedBox();
     }
     Widget child;
     if (path is String) {
@@ -97,6 +98,8 @@ class ImageWidget extends StatelessWidget {
   }
 
   Widget network() {
+    // String a =
+    //     'https://ts1.cn.mm.bing.net/th/id/R-C.79f51ff10efd5b83802e31152f19e1e1?rik=VFCY3zzecv8j2w&riu=http%3a%2f%2fabc.2008php.com%2f2019_Website_appreciate%2f2019-03-21%2f20190321205013r9uwk.jpg&ehk=D6ZmSPTqfBdk5ue51OOnY5EVjSC49lkGeVyyrlrUObk%3d&risl=&pid=ImgRaw&r=0';
     return CachedNetworkImage(
       fit: fit,
       width: size,
@@ -105,6 +108,8 @@ class ImageWidget extends StatelessWidget {
       imageUrl: path,
       httpHeaders: httpHeaders,
       errorWidget: (context, url, error) {
+        LogUtil.d('CachedNetworkImage');
+        LogUtil.d(error);
         return Icon(
           Icons.broken_image,
           color: Colors.grey.shade300,
@@ -118,6 +123,17 @@ class ImageWidget extends StatelessWidget {
           color: Colors.white,
         );
       },
+    );
+  }
+
+  Widget network1() {
+    return XImageWidget.url(
+      path,
+      fit: fit,
+      width: size,
+      height: size,
+    ).onTap(
+      () {},
     );
   }
 

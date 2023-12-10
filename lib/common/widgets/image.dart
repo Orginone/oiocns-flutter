@@ -10,7 +10,7 @@ import '../index.dart';
 enum ImageWidgetType { asset, network, file, memory }
 
 /// 图片组件
-class ImageWidget extends StatelessWidget {
+class XImageWidget extends StatelessWidget {
   /// 网址
   final String url;
   final Uint8List? data;
@@ -44,7 +44,7 @@ class ImageWidget extends StatelessWidget {
     Size? size,
   )? builder;
 
-  const ImageWidget({
+  const XImageWidget({
     Key? key,
     required this.url,
     required this.type,
@@ -58,7 +58,7 @@ class ImageWidget extends StatelessWidget {
     this.data,
   }) : super(key: key);
 
-  const ImageWidget.url(
+  const XImageWidget.url(
     this.url, {
     Key? key,
     this.radius,
@@ -72,7 +72,7 @@ class ImageWidget extends StatelessWidget {
   })  : type = ImageWidgetType.network,
         super(key: key);
 
-  const ImageWidget.asset(
+  const XImageWidget.asset(
     this.url, {
     Key? key,
     this.radius,
@@ -86,7 +86,7 @@ class ImageWidget extends StatelessWidget {
   })  : type = ImageWidgetType.asset,
         super(key: key);
 
-  const ImageWidget.file(
+  const XImageWidget.file(
     this.url, {
     Key? key,
     this.radius,

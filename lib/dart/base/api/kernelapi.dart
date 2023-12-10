@@ -431,7 +431,7 @@ class KernelApi {
         ReqestType(
           module: 'target',
           action: 'PullAnyToTeam',
-          params: params,
+          params: params.toJson(),
         ), (data) {
       return data['data'].cast<String>().toList();
     });
@@ -1074,6 +1074,8 @@ class KernelApi {
   Future<ResultType<T>> bucketOpreate<T>(
       String belongId, List<String> relations, BucketOpreateModel data,
       [T Function(Map<String, dynamic>)? cvt]) async {
+    LogUtil.d('bucketOpreate');
+    LogUtil.d(data.toJson());
     return await dataProxy(
         DataProxyType(
           module: 'Bucket',
@@ -1081,7 +1083,7 @@ class KernelApi {
           belongId: belongId,
           relations: relations,
           flag: 'bucketOpreate',
-          params: data,
+          params: data.toJson(),
         ),
         cvt);
   }
@@ -1278,7 +1280,7 @@ class KernelApi {
     }
     Map<String, dynamic> param = params[0];
     ReceiveType res = ReceiveType.fromJson(param);
-    // LogUtil.d(param);
+    LogUtil.d(param);
     bool onlineOnly = true;
 
     switch (res.target) {

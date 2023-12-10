@@ -342,6 +342,12 @@ class Session extends Entity<XEntity> implements ISession {
     if (cite != null) {
       cite.metadata.comments = [];
     }
+    if (forward != null && forward.isNotEmpty) {
+      forward = forward.map((e) {
+        e.metadata.comments = [];
+        return e;
+      }).toList();
+    }
     print(
         '>>>==========================================================================');
     print(
@@ -350,26 +356,27 @@ class Session extends Entity<XEntity> implements ISession {
         '>>>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
     // var createTime = DateTime.now().format(format: 'yyyy-MM-dd HH:mm:ss.SSS');
     var data = await coll.insert(
-      ChatMessageType.fromJson({
-        "typeName": type.label,
-        "fromId": userId,
-        "toId": sessionId,
-        "comments": [],
-        // "createTime": createTime,
-        // "updateTime": createTime,
-        // "createUser": userId,
-        // "updateUser": userId,
-        // "status": 1,
-        "content": StringGzip.deflate(
-          '[obj]${json.encode({
-                "body": text,
-                "mentions": mentions,
-                "cite": cite?.metadata,
-              })}',
-        ),
-      }),
-      fromJson: ChatMessageType.fromJson,
-    );
+        ChatMessageType.fromJson({
+          "typeName": type.label,
+          "fromId": userId,
+          "toId": sessionId,
+          "comments": [],
+          // "createTime": createTime,
+          // "updateTime": createTime,
+          // "createUser": userId,
+          // "updateUser": userId,
+          // "status": 1,
+          "content": StringGzip.deflate(
+            '[obj]${json.encode({
+                  "body": text,
+                  "mentions": mentions,
+                  "cite": cite?.metadata,
+                  'forward': forward?.map((e) => e.metadata).toList()
+                })}',
+          ),
+        }),
+        fromJson: ChatMessageType.fromJson,
+        copyId: copyId);
     if (data != null) {
       await notify('insert', [data], false);
     }

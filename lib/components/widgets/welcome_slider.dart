@@ -26,7 +26,7 @@ class WelcomeSliderWidget extends StatelessWidget {
         return <Widget>[
           // 图
           if (item.image != null)
-            ImageWidget.asset(
+            XImageWidget.asset(
               item.image!,
               fit: BoxFit.cover,
             ),

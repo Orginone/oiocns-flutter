@@ -6,6 +6,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/collection.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/utils/index.dart';
 
 /// 数据核资源（前端开发）
 class DataResource {
@@ -116,6 +117,9 @@ class DataResource {
       );
       final res = await bucketOpreate<FileItemModel>(
           data, (a) => FileItemModel.fromJson(a));
+      LogUtil.d('bucketOpreate');
+      // LogUtil.d(res.toJson());
+      LogUtil.d(res.data?.toJson());
       if (!res.success) {
         data.operate = BucketOpreates.abortUpload;
         await bucketOpreate<bool>(data);

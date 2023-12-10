@@ -250,7 +250,7 @@ abstract class Target extends Team implements ITarget {
   // }
 
   @override
-  Future<void> notifySession(bool pull, List<XTarget> member) async {
+  Future<void> notifySession(bool pull, List<XTarget> members) async {
     if (id != userId) {
       for (var member in members) {
         if (member.typeName == TargetType.person.label) {

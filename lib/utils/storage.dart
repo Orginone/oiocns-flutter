@@ -46,8 +46,8 @@ class Storage {
   }
 
   static String getString(String key) {
-    LogUtil.d('getString');
-    LogUtil.d(_prefs);
+    // LogUtil.d('getString');
+    // LogUtil.d(_prefs);
     return _prefs.getString(key) ?? '';
   }
 

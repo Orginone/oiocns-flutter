@@ -90,7 +90,7 @@ class StoreHub {
 
 // 获取accessToken
   String get accessToken {
-    LogUtil.d('accessToken');
+    // LogUtil.d('accessToken');
     return utils.Storage.getString('accessToken');
   }
 

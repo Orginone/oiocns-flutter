@@ -74,12 +74,12 @@ class ApplyWidget extends StatelessWidget {
   ///头像组件
   _imageWidget(ShareIcon? target) {
     return target?.avatar?.thumbnailUint8List == null
-        ? ImageWidget.asset(
+        ? XImageWidget.asset(
             target?.avatar?.defaultAvatar ?? '',
             width: 30,
             height: 30,
           )
-        : ImageWidget(
+        : XImageWidget(
             data: target?.avatar?.thumbnailUint8List,
             width: 30,
             height: 30,
@@ -95,8 +95,10 @@ class ApplyWidget extends StatelessWidget {
   }
 
   _buildApplyResultView() {
-    ShareIcon? record = settingCtrl.provider.user
-        ?.findShareById(todo?.taskdata.records?.first.createUser ?? '');
+    ShareIcon? record = settingCtrl.provider.user?.findShareById(
+        todo?.taskdata.records == null
+            ? ''
+            : todo?.taskdata.records?.first.createUser ?? '');
     LogUtil.d(record);
     int status = todo?.taskdata.status ?? 0;
     if (status < TaskStatus.approvalStart.status) return const SizedBox();
@@ -119,7 +121,7 @@ class ApplyWidget extends StatelessWidget {
 
     return <Widget>[
       result,
-      _buildDateView('审批时间：${todo?.taskdata.records?.first.createTime}'),
+      _buildDateView('审批时间：${todo?.taskdata.records?.first.createTime ?? ''}'),
     ].toColumn(crossAxisAlignment: CrossAxisAlignment.start);
   }
 

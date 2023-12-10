@@ -13,6 +13,7 @@ import 'package:orginone/dart/core/thing/operate.dart';
 import 'package:orginone/dart/core/thing/resource.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/dart/core/thing/standard/transfer.dart';
+import 'package:orginone/utils/index.dart';
 
 /// 可为空的进度回调
 typedef OnProgress = void Function(double p);
@@ -290,6 +291,8 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
         key: encodeKey(id),
         operate: BucketOpreates.list,
       ));
+      LogUtil.d('loadFiles');
+      LogUtil.d(res.toJson());
       if (res.success && res.data!.isNotEmpty) {
         files = res.data!
             .where((i) => !i.isDirectory)
@@ -326,7 +329,8 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
         taskEmitter.changCallback();
       },
     );
-
+    LogUtil.d('fileUpdate');
+    LogUtil.d(data?.toJson());
     if (data != null) {
       final fileInfo = SysFileInfo(data, this);
       files.add(fileInfo);

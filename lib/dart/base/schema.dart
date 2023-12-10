@@ -160,7 +160,7 @@ class XEntity extends Xbase {
   }
 
   ShareIcon? shareIcon() {
-    if (icon == '') {
+    if (icon == null || icon!.isEmpty) {
       return null;
     }
     try {
