@@ -321,11 +321,11 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
     taskList.add(task);
 
     final data = await resource.fileUpdate(
-      file.readAsBytesSync(),
+      file,
       '$id/$fileName',
-      (pn) {
-        task.finished = pn.toInt();
-        p?.call(pn);
+      progress: (progress) {
+        task.finished = progress.toInt();
+        p?.call(progress);
         taskEmitter.changCallback();
       },
     );

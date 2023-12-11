@@ -1,4 +1,5 @@
-import 'dart:typed_data';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:orginone/dart/base/common/entity.dart';
 import 'package:orginone/dart/base/common/format.dart';
@@ -93,27 +94,71 @@ class DataResource {
         target.belongId!, relations, data, cvt);
   }
 
+  Future<FileItemModel?> fileUpdate2(File file, String key,
+      {void Function(double)? progress}) async {
+    var id = uuid.v1();
+    final data = BucketOpreateModel(
+      key: base64.encode(utf8.encode(key)),
+      operate: BucketOpreates.upload,
+    );
+    progress?.call(0);
+    int index = 0;
+    int chunkSize = 1024 * 1024;
+    int fileLength = file.lengthSync();
+    while (index * chunkSize < fileLength.floorToDouble()) {
+      var start = index * chunkSize;
+      var end = start + chunkSize;
+      if (end > fileLength.floorToDouble()) {
+        end = fileLength;
+      }
+      List<int> bytes = file.readAsBytesSync();
+      bytes = bytes.sublist(start, end);
+      String url = base64.encode(bytes);
+      data.fileItem = FileChunkData(
+        index: index,
+        uploadId: id,
+        size: fileLength,
+        data: [],
+        dataUrl: url,
+      );
+      var res = await bucketOpreate(data);
+      if (!res.success) {
+        data.operate = BucketOpreates.abortUpload;
+        await bucketOpreate(data);
+        progress?.call(-1);
+        return null;
+      }
+      index++;
+      progress?.call(end / fileLength);
+      if (end == fileLength && res.data != null) {
+        var node = FileItemModel.fromJson(res.data);
+        return node;
+      }
+    }
+    return null;
+  }
+
   /// 上传文件
-  Future<FileItemModel?> fileUpdate(
-    Uint8List file,
-    String key,
-    void Function(double) progress,
-  ) async {
-    const id = uuid;
+  Future<FileItemModel?> fileUpdate(File file, String key,
+      {void Function(double)? progress}) async {
+    var id = uuid.v1();
     final data = BucketOpreateModel(
       key: encodeKey(key),
       operate: BucketOpreates.upload,
     );
-    progress(0);
-    final slices = sliceFile(file, 1024 * 1024);
+    progress?.call(0);
+
+    int chunkSize = 1024 * 1024;
+    int fileLength = file.lengthSync();
+    final slices = await sliceFile(file, chunkSize);
     for (var i = 0; i < slices.length; i++) {
       final s = slices[i];
       data.fileItem = FileChunkData(
         index: i,
-        uploadId: id.v1(),
-        size: file.length,
+        uploadId: id,
+        size: file.lengthSync(),
         data: [],
-        dataUrl: await blobToDataUrl(s),
+        dataUrl: await fileToDataUrl(s),
       );
       final res = await bucketOpreate<FileItemModel>(
           data, (a) => FileItemModel.fromJson(a));
@@ -123,13 +168,13 @@ class DataResource {
       if (!res.success) {
         data.operate = BucketOpreates.abortUpload;
         await bucketOpreate<bool>(data);
-        progress(-1);
+        progress?.call(-1);
         return null;
       }
-      final finished = i * 1024 * 1024 + s.length;
+      final finished = i * chunkSize + s.length;
       // progress(finished.toDouble());
-      if (finished == file.length && res.data != null) {
-        progress(1);
+      if (finished == fileLength && res.data != null) {
+        progress?.call(1);
         return res.data;
       }
     }

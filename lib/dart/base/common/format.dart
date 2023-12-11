@@ -24,25 +24,29 @@ String encodeKey(String key) {
 }
 
 /// 将文件切片
-List<Uint8List> sliceFile(Uint8List file, int chunkSize) {
-  final slices = <Uint8List>[];
-  var index = 0;
-  while (index * chunkSize < file.length) {
+
+Future<List<Uint8List>> sliceFile(File file, int chunkSize) async {
+  List<Uint8List> slices = [];
+  int index = 0;
+  int fileLength = file.lengthSync();
+  while (index * chunkSize < fileLength.floorToDouble()) {
     var start = index * chunkSize;
     var end = start + chunkSize;
-    if (end > file.length) {
-      end = file.length;
+    if (end > fileLength.floorToDouble()) {
+      end = fileLength;
     }
-    slices.add(file.sublist(start, end));
+
+    Uint8List uf8 = file.readAsBytesSync().sublist(start, end);
+    slices.add(uf8);
     index++;
   }
   return slices;
 }
 
-/// 将文件读成 Data URL
-Future<String> blobToDataUrl(Uint8List file) async {
-  final base64Data = base64.encode(file);
-  return base64Data;
+/// 将文件读成 Data URL blobToDataUrl
+Future<String> fileToDataUrl(Uint8List bytes) async {
+  String dataUrl = base64.encode(bytes);
+  return dataUrl;
 }
 
 /// 将文件读成字节数组

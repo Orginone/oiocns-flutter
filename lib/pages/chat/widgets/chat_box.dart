@@ -762,8 +762,8 @@ class ChatBoxController with WidgetsBindingObserver {
         // var msg = chat.messages
         //     .firstWhere((element) => element.metadata.id == pickedImage.name);
         // //TODO:无此方法
-        // // msg.metadata.body!.progress = progress;
-        // chat.messages.refresh();
+        // msg.metadata.body!.progress = progress;
+        chat.messages.refresh();
       },
     );
     if (item != null) {
