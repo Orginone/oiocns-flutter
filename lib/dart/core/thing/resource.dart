@@ -94,6 +94,49 @@ class DataResource {
         target.belongId!, relations, data, cvt);
   }
 
+  /// 上传文件
+  Future<FileItemModel?> fileUpdate(File file, String key,
+      {void Function(double)? progress}) async {
+    var id = uuid.v1();
+    final data = BucketOpreateModel(
+      key: encodeKey(key),
+      operate: BucketOpreates.upload,
+    );
+    progress?.call(0);
+
+    int chunkSize = 1024 * 1024;
+    int fileLength = file.lengthSync();
+    final slices = await sliceFile(file, chunkSize);
+    for (var i = 0; i < slices.length; i++) {
+      final s = slices[i];
+      data.fileItem = FileChunkData(
+        index: i,
+        uploadId: id,
+        size: file.lengthSync(),
+        data: [],
+        dataUrl: await fileToDataUrl(s),
+      );
+      final res = await bucketOpreate<FileItemModel>(
+          data, (a) => FileItemModel.fromJson(a));
+      LogUtil.d('bucketOpreate');
+      // LogUtil.d(res.toJson());
+      LogUtil.d(res.data?.toJson());
+      if (!res.success) {
+        data.operate = BucketOpreates.abortUpload;
+        await bucketOpreate<bool>(data);
+        progress?.call(-1);
+        return null;
+      }
+      final finished = i * chunkSize + s.length;
+      // progress(finished.toDouble());
+      if (finished == fileLength && res.data != null) {
+        progress?.call(1);
+        return res.data;
+      }
+    }
+    return null;
+  }
+
   Future<FileItemModel?> fileUpdate2(File file, String key,
       {void Function(double)? progress}) async {
     var id = uuid.v1();
@@ -133,49 +176,6 @@ class DataResource {
       if (end == fileLength && res.data != null) {
         var node = FileItemModel.fromJson(res.data);
         return node;
-      }
-    }
-    return null;
-  }
-
-  /// 上传文件
-  Future<FileItemModel?> fileUpdate(File file, String key,
-      {void Function(double)? progress}) async {
-    var id = uuid.v1();
-    final data = BucketOpreateModel(
-      key: encodeKey(key),
-      operate: BucketOpreates.upload,
-    );
-    progress?.call(0);
-
-    int chunkSize = 1024 * 1024;
-    int fileLength = file.lengthSync();
-    final slices = await sliceFile(file, chunkSize);
-    for (var i = 0; i < slices.length; i++) {
-      final s = slices[i];
-      data.fileItem = FileChunkData(
-        index: i,
-        uploadId: id,
-        size: file.lengthSync(),
-        data: [],
-        dataUrl: await fileToDataUrl(s),
-      );
-      final res = await bucketOpreate<FileItemModel>(
-          data, (a) => FileItemModel.fromJson(a));
-      LogUtil.d('bucketOpreate');
-      // LogUtil.d(res.toJson());
-      LogUtil.d(res.data?.toJson());
-      if (!res.success) {
-        data.operate = BucketOpreates.abortUpload;
-        await bucketOpreate<bool>(data);
-        progress?.call(-1);
-        return null;
-      }
-      final finished = i * chunkSize + s.length;
-      // progress(finished.toDouble());
-      if (finished == fileLength && res.data != null) {
-        progress?.call(1);
-        return res.data;
       }
     }
     return null;
