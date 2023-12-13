@@ -39,78 +39,26 @@ class _LoginTransPageState extends State<LoginTransPage> {
       child: Stack(
         children: [
           //背景图模块
-          Container(
-            child: Stack(
-              children: [
-                Positioned(
-                  left: -200,
-                  child: Container(
-                    width: 900,
-                    height: 500,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(AssetsImages.logoBackground),
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: -200,
-                  child: Container(
-                    width: 900,
-                    height: 500,
-                    decoration: const BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Color.fromRGBO(249, 249, 249, 0),
-                          Color.fromRGBO(255, 255, 255, 1),
-                        ],
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          background(),
           //奥集能 模块
-          Positioned(
-            bottom: 100.00,
+          logo(),
+          //文字Orginone 区域
+          const Positioned(
             left: 0,
             right: 0,
-            child: Center(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.fromLTRB(0, 5, 5, 0),
-                    width: 36,
-                    height: 36,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: const BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(AssetsImages.logoPng),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                  const Text.rich(TextSpan(
-                    text: '奥集能',
-                    style: TextStyle(
-                      color: Color(0xFF15181D),
-                      fontSize: 22.91,
-                      fontFamily: 'PingFang SC',
-                      fontWeight: FontWeight.w500,
-                    ),
-                  )),
-                ],
+            top: 260,
+            child: Text(
+              '物以类聚，人以群分。',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: Color(0xFF366EF4),
+                fontSize: 25,
+                fontFamily: 'DingTalk',
+                fontWeight: FontWeight.w400,
+                height: 0.06,
               ),
             ),
           ),
-
-          //文字Orginone 区域
           const Positioned(
             left: 0,
             right: 0,
@@ -127,19 +75,80 @@ class _LoginTransPageState extends State<LoginTransPage> {
               ),
             ),
           ),
-          const Positioned(
-            left: 0,
-            right: 0,
-            top: 260,
-            child: Text(
-              '物以类聚，人以群分。',
-              textAlign: TextAlign.center,
+        ],
+      ),
+    );
+  }
+
+  //logo
+  Widget logo() {
+    return Positioned(
+      bottom: 100.00,
+      left: 0,
+      right: 0,
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 5, 5, 0),
+              width: 30,
+              height: 30,
+              clipBehavior: Clip.antiAlias,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(AssetsImages.logoNoBg),
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+            const Text.rich(TextSpan(
+              text: '奥集能',
               style: TextStyle(
-                color: Color(0xFF366EF4),
-                fontSize: 25,
-                fontFamily: 'DingTalk',
-                fontWeight: FontWeight.w400,
-                height: 0.06,
+                color: Color(0xFF15181D),
+                fontSize: 22.91,
+                fontFamily: 'PingFang SC',
+                fontWeight: FontWeight.w500,
+              ),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  //背景图
+  Widget background() {
+    return Container(
+      child: Stack(
+        children: [
+          Positioned(
+            left: -200,
+            child: Container(
+              width: 900,
+              height: 500,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(AssetsImages.logoBackground),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            left: -200,
+            child: Container(
+              width: 900,
+              height: 500,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromRGBO(249, 249, 249, 0),
+                    Color.fromRGBO(255, 255, 255, 1),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
               ),
             ),
           ),

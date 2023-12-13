@@ -49,8 +49,9 @@ class HomeController extends BaseController<HomeState>
   }
 
   void jumpTab(HomeEnum setting) {
-    state.tabController.animateTo(setting.index);
+    // state.tabController.animateTo(setting.index);
     settingCtrl.homeEnum.value = setting;
+    state.tabController.index = setting.index;
   }
 
   @override

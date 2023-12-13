@@ -28,12 +28,20 @@ class MessageChatsController extends BaseSubmenuController<MessageChatsState> {
       HiveUtils.putSubGroup('chat', chat);
     }
     state.subGroup = Rx(chat);
-    var index = chat.groups!.indexWhere((element) => element.value == "recent");
+    // var index = chat.groups!.indexWhere((element) => element.value == "recent");
     state.tabController = TabController(
-        initialIndex: index,
+        initialIndex: state.tabIndex,
         length: chat.groups!.length,
         vsync: this,
         animationDuration: Duration.zero);
     print('>>>=======ChatInitSub2');
+  }
+
+  int getTabIndex(String code) {
+    int tabIndex = SubGroup.fromJson(chatDefaultConfig)
+        .groups!
+        .indexWhere((element) => element.value == code);
+    print('$code=setTabIndex================$tabIndex');
+    return tabIndex;
   }
 }

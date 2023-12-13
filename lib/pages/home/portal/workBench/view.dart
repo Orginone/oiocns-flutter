@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:get/get.dart';
+import 'package:orginone/common/index.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/dart/base/common/format.dart';
@@ -8,7 +9,10 @@ import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/chat/message_chats/message_chats_controller.dart';
+import 'package:orginone/pages/home/home/logic.dart';
 import 'package:orginone/pages/home/index/widget/widget.dart';
+import 'package:orginone/pages/work/logic.dart';
 import 'package:orginone/utils/load_image.dart';
 import 'controller.dart';
 import 'state.dart';
@@ -17,6 +21,11 @@ class WorkBenchPage
     extends BaseGetListPageView<WorkBenchController, WorkBenchState> {
   late String type;
   late String label;
+
+  HomeController homeController = Get.find<HomeController>();
+  WorkController workController = Get.find<WorkController>();
+  MessageChatsController messageChatsController =
+      Get.find<MessageChatsController>();
 
   WorkBenchPage(this.type, this.label, {super.key});
 
@@ -126,10 +135,33 @@ class WorkBenchPage
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              renderDataItem("好友(人)", state.friendNum.value),
-              renderDataItem("同事(个)", state.colleagueNum.value),
-              renderDataItem('群聊(个)', state.groupChatNum.value),
-              renderDataItem('单位(家)', state.companyNum.value),
+              renderDataItem(
+                  "好友(人)", 'friend', state.friendNum.value, HomeEnum.chat, () {
+                int i = messageChatsController.getTabIndex('friend');
+                messageChatsController.changeSubmenuIndex(i);
+                messageChatsController.state.tabController.index = i;
+              }),
+              renderDataItem("同事(个)", 'company_friend',
+                  state.colleagueNum.value, HomeEnum.chat, () {
+                print('同事(个)');
+                int i = messageChatsController.getTabIndex('company_friend');
+                messageChatsController.changeSubmenuIndex(i);
+                messageChatsController.state.tabController.index = i;
+              }),
+              renderDataItem(
+                  '群聊(个)', 'group', state.groupChatNum.value, HomeEnum.chat,
+                  () {
+                int i = messageChatsController.getTabIndex('group');
+                messageChatsController.changeSubmenuIndex(i);
+                messageChatsController.state.tabController.index = i;
+              }),
+              renderDataItem(
+                  '单位(家)', 'company', state.companyNum.value, HomeEnum.chat,
+                  () {
+                int i = messageChatsController.getTabIndex('company');
+                messageChatsController.changeSubmenuIndex(i);
+                messageChatsController.state.tabController.index = i;
+              }),
             ],
           ),
         ),
@@ -137,26 +169,32 @@ class WorkBenchPage
             TextArrow(title: '未读消息 · ${settingCtrl.noReadMgsCount.value}'));
   }
 
-  Widget renderDataItem(String title, String number,
+  Widget renderDataItem(String title, String? code, String number,
+      HomeEnum? home, Function()? fun,
       [int size = 0, String info = '']) {
     return Container(
-      padding: const EdgeInsets.only(bottom: 10),
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.only(bottom: 5),
-            child: number.length > 4
-                ? Text('9999+', style: TextStyle(fontSize: 22.sp))
-                : Text(number, style: TextStyle(fontSize: 22.sp)),
+        padding: const EdgeInsets.only(bottom: 10),
+        child: GestureDetector(
+          onTap: () {
+            if (home != null) {
+              homeController.jumpTab(home);
+            }
+            fun!();
+          },
+          child: Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: number.length > 4
+                    ? Text('9999+', style: TextStyle(fontSize: 22.sp))
+                    : Text(number, style: TextStyle(fontSize: 22.sp)),
+              ),
+              Text(title,
+                  style: TextStyle(
+                      fontSize: 18.sp, color: const Color(0xFF6F7686))),
+            ],
           ),
-          Text(title,
-              style:
-                  TextStyle(fontSize: 18.sp, color: const Color(0xFF6F7686))),
-          // if (size > 0) Text("大小:${formatSize(size)}"),
-          // if (info.isNotEmpty) Text(info),
-        ],
-      ),
-    );
+        ));
   }
 
   // 渲染办事信息
@@ -168,10 +206,32 @@ class WorkBenchPage
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  renderDataItem('待办', state.todoCount.value),
-                  renderDataItem('已办', state.completedCount.value),
-                  renderDataItem('抄送', state.copysCount.value),
-                  renderDataItem('发起的', state.applyCount.value),
+                  renderDataItem(
+                      '待办', 'todo', state.todoCount.value, HomeEnum.work, () {
+                    int i = workController.getTabIndex('todo');
+                    workController.changeSubmenuIndex(i);
+                    workController.state.tabController.index = i;
+                  }),
+                  renderDataItem(
+                      '已办', 'done', state.completedCount.value, HomeEnum.work,
+                      () {
+                    int i = workController.getTabIndex('done');
+                    workController.changeSubmenuIndex(i);
+                    workController.state.tabController.index = i;
+                  }),
+                  renderDataItem(
+                      '抄送', 'alt', state.copysCount.value, HomeEnum.work, () {
+                    int i = workController.getTabIndex('alt');
+                    workController.changeSubmenuIndex(i);
+                    workController.state.tabController.index = i;
+                  }),
+                  renderDataItem(
+                      '发起的', 'create', state.applyCount.value, HomeEnum.work,
+                      () {
+                    int i = workController.getTabIndex('create');
+                    workController.changeSubmenuIndex(i);
+                    workController.state.tabController.index = i;
+                  }),
                 ])),
         // moreWidget: TextArrow(title: '待办${state.todoCount.value}件'));
         moreWidget: const TextArrow(title: '前往审批'));
@@ -186,7 +246,6 @@ class WorkBenchPage
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: state.noStore.value
-                    // children: true
                     ? [
                         const SizedBox(
                           width: 300,
@@ -198,25 +257,43 @@ class WorkBenchPage
                         )
                       ]
                     : [
-                        renderDataItem('关系(个)', state.relationNum.value ?? "0",
-                            -1, '共计:${settingCtrl.chats.length}个'),
+                        renderDataItem(
+                            '关系(个)',
+                            null,
+                            state.relationNum.value ?? "0",
+                            HomeEnum.store,
+                            () {},
+                            -1,
+                            '共计:${settingCtrl.chats.length}个'),
                         renderDataItem(
                             '数据集(个)',
+                            null,
                             state.diskInfo.value.collections.toString() ?? "0",
+                            HomeEnum.store,
+                            () {},
                             state.diskInfo.value.dataSize ?? 0),
                         renderDataItem(
                             '对象数(个)',
+                            null,
                             state.diskInfo.value.objects.toString() ?? "0",
+                            HomeEnum.store,
+                            () {},
                             state.diskInfo.value.totalSize ?? 0),
                         renderDataItem(
                             '文件(个)',
+                            null,
                             state.diskInfo.value.files.toString() ?? "0",
+                            HomeEnum.store,
+                            () {},
                             state.diskInfo.value.fileSize ?? 0),
                         renderDataItem(
                             '硬件',
+                            null,
                             formatSize(state.diskInfo.value.fsUsedSize)
                                     .toString() ??
                                 "0",
+                            HomeEnum.store,
+                            () {},
                             state.diskInfo.value.fsTotalSize ?? 0),
                       ])),
         moreWidget: const TextArrow(title: '管理数据'));
@@ -235,6 +312,7 @@ class WorkBenchPage
         moreWidget: const TextArrow(title: '全部应用'));
   }
 
+  //渲染应用数据
   Widget loadAppCard(IApplication item) {
     var useAlays = item.cache.tags?.contains('常用');
     return GestureDetector(

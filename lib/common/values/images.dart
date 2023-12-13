@@ -9,8 +9,15 @@
 class AssetsImages {
   static const defaultPng = 'assets/images/default.png';
   static const homePlaceholderPng = 'assets/images/home_placeholder.png';
-  static const logoPng = 'assets/images/logo.png';
   static const logoBackground = 'assets/images/logo_background.png';
+  static const logoNoBg = 'assets/images/logo_not_bg.png';
+  static const loginAccount = 'assets/images/icon_login_account.png';
+  static const loginPhone = 'assets/images/icon_login_phone.png';
+  static const loginSecret = 'assets/images/icon_login_secret.png';
+  static const loginQQ = 'assets/images/icon_login_qq.png';
+  static const loginWechat = 'assets/images/icon_login_wechat.png';
+  static const loginDing = 'assets/images/icon_login_ding.png';
+  static const loginZhifubao = 'assets/images/icon_login_zhifubao.png';
   static const orderConfirmedPng = 'assets/images/order-confirmed.png';
   static const pCashPng = 'assets/images/p-cash.png';
   static const pMastercardPng = 'assets/images/p-mastercard.png';

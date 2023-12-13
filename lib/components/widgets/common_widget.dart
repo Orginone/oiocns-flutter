@@ -592,6 +592,68 @@ class CommonWidget {
     );
   }
 
+  static commonLoginInput(
+    String icon,
+    String hint,
+    List<TextInputFormatter>? inputFormatters,
+  ) {
+    return Container(
+      width: 343,
+      height: 45,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      clipBehavior: Clip.antiAlias,
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1, color: Color(0xFFE7E8EB)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: 30,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 20,
+                    height: 20,
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: AssetImage(icon),
+                        fit: BoxFit.fill,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Container(
+                      width: 200,
+                      height: 50,
+                      padding: const EdgeInsets.fromLTRB(0, 11, 0, 0),
+                      child: TextField(
+                        inputFormatters: inputFormatters,
+                        decoration: InputDecoration(
+                            hintText: hint,
+                            hintStyle: TextStyle(
+                                color: Colors.grey.shade400, fontSize: 20.sp),
+                            border: InputBorder.none),
+                      )),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   //选择按钮
   static commonShowChoiceDataInfo(String text, {VoidCallback? onTap}) {
     return Container(

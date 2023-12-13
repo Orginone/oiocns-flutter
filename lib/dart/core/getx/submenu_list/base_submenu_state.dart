@@ -11,6 +11,8 @@ class BaseSubmenuState<T extends FrequentlyUsed> extends BaseGetState {
   late TabController tabController;
 
   String tag = '';
+
+  var tabIndex = 0;
 }
 
 class FrequentlyUsed {
