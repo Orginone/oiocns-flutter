@@ -49,7 +49,8 @@ class LoadingDialog extends Dialog {
     );
 
     _requestShow = true;
-    createDismissTimer(context, dismissSeconds);
+    // TODO 会引起很多场景下出现 bug 暂时无法修复，如有需要手动关闭
+    // createDismissTimer(context, dismissSeconds);
     return Material(
       type: MaterialType.transparency,
       child: WillPopScope(

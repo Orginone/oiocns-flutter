@@ -254,7 +254,7 @@ class Session extends Entity<XEntity> implements ISession {
       gtags.add('@我');
     }
     if (chatdata.value.isToping) {
-      gtags.add('置顶');
+      gtags.add('常用');
     }
     return [...gtags, ...chatdata.value.labels];
   }

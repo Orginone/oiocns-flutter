@@ -18,6 +18,7 @@ import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
+import 'package:orginone/pages/chat/widgets/detail/uploading_detail.dart';
 import 'package:orginone/utils/bus/event_bus_helper.dart';
 import 'package:orginone/utils/string_util.dart';
 import 'package:orginone/components/widgets/target_text.dart';
@@ -375,15 +376,12 @@ class DetailItemWidget extends GetView<IndexController> {
         isSelf: isSelf,
         message: msg,
       );
-    }
-    // TODO 待实现上传中
-    /*else if (msg.msgType == MessageType.uploading.label) {
+    } else if (msg.msgType == MessageType.uploading.label) {
       body = UploadingDetail(
         isSelf: isSelf,
-        message: msg.metadata,
+        message: msg,
       );
-    }*/
-    else {
+    } else {
       body = Container();
     }
 

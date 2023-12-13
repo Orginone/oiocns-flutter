@@ -1,48 +1,55 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter_screenutil/flutter_screenutil.dart';
-// import 'package:orginone/dart/base/model.dart';
-// import 'package:orginone/pages/chat/widgets/info_item.dart';
+import 'dart:convert';
 
-// import 'file_detail.dart';
-// import 'image_detail.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/chat/message.dart';
+import 'package:orginone/pages/chat/widgets/info_item.dart';
 
-// class UploadingDetail extends StatelessWidget {
-//   final FileItemShare message;
-//   final bool isSelf;
+import 'file_detail.dart';
+import 'image_detail.dart';
 
-//   const UploadingDetail(
-//       {super.key, required this.isSelf, required this.message});
+class UploadingDetail extends StatelessWidget {
+  IMessage message;
+  late FileItemShare fileItemShare;
+  final bool isSelf;
 
-//   @override
-//   Widget build(BuildContext context) {
-//     String extension = message.extension ?? "";
-//     double progress = 0; //message.progress ?? 0;
-//     Widget body;
-//     if (imageExtension.contains(extension.toLowerCase())) {
-//       body = ImageDetail(
-//         isSelf: isSelf,
-//         message: message,
-//         showShadow: true,
-//       );
-//     } else {
-//       body = FileDetail(
-//         isSelf: isSelf,
-//         message: message,
-//         showShadow: true,
-//       );
-//     }
+  UploadingDetail({super.key, required this.isSelf, required this.message}) {
+    fileItemShare = message.msgBody.isNotEmpty
+        ? FileItemShare.fromJson(jsonDecode(message.msgBody))
+        : FileItemShare();
+  }
 
-//     Widget gradient = Stack(
-//       alignment: Alignment.center,
-//       fit: StackFit.passthrough,
-//       children: [
-//         body,
-//         Text(
-//           '${(progress * 100).toStringAsFixed(0)}%',
-//           style: TextStyle(color: Colors.white, fontSize: 24.sp),
-//         ),
-//       ],
-//     );
-//     return gradient;
-//   }
-// }
+  @override
+  Widget build(BuildContext context) {
+    String extension = fileItemShare.extension ?? "";
+    double progress = message.progress ?? 0;
+    Widget body;
+    if (imageExtension.contains(extension.toLowerCase())) {
+      body = ImageDetail(
+        isSelf: isSelf,
+        message: message,
+        showShadow: true,
+      );
+    } else {
+      body = FileDetail(
+        isSelf: isSelf,
+        message: message,
+        showShadow: true,
+      );
+    }
+
+    Widget gradient = Stack(
+      alignment: Alignment.center,
+      fit: StackFit.passthrough,
+      children: [
+        body,
+        Text(
+          '${(progress * 100).toStringAsFixed(0)}%',
+          style: TextStyle(color: Colors.white, fontSize: 24.sp),
+        ),
+      ],
+    );
+    return gradient;
+  }
+}

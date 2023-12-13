@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:common_utils/common_utils.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -6,6 +9,9 @@ import 'package:orginone/dart/core/public/collection.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/target/person.dart';
+
+/// 动态集合名
+const ActivityCollName = '-resource-activity';
 
 /// 动态消息接口
 abstract class IActivityMessage extends Emitter {
@@ -50,9 +56,15 @@ class ActivityMessage extends Emitter implements IActivityMessage {
   );
 
   @override
-  void delete() {
-    changCallback();
-    activity.activityList.removeWhere((i) => i.metadata.id != metadata.id);
+  int get createTime {
+    return DateUtil.getDateTime(metadata.createTime!)!.millisecondsSinceEpoch;
+  }
+
+  @override
+  bool get canDelete {
+    return (metadata.createUser == activity.userId ||
+        (activity.session.sessionId == activity.session.target.id &&
+            activity.session.target.hasRelationAuth()));
   }
 
   @override
@@ -64,21 +76,39 @@ class ActivityMessage extends Emitter implements IActivityMessage {
   }
 
   @override
+  Future<void> delete() async {
+    if (canDelete && (await activity.coll.delete(metadata))) {
+      await activity.coll.notity({
+        'data': metadata,
+        'operate': 'delete',
+      });
+    }
+  }
+
+  @override
   Future<bool> like() async {
     ActivityType? newData;
     if (metadata.likes.contains(activity.userId)) {
-      newData = await activity.coll.update(metadata.id, {
-        '_pull_': {'likes': activity.userId},
-      });
+      newData = await activity.coll.update(
+          metadata.id,
+          {
+            '_pull_': {'likes': activity.userId},
+          },
+          null,
+          ActivityType.fromJson);
     } else {
-      newData = await activity.coll.update(metadata.id, {
-        '_push_': {'likes': activity.userId},
-      });
+      newData = await activity.coll.update(
+          metadata.id,
+          {
+            '_push_': {'likes': activity.userId},
+          },
+          null,
+          ActivityType.fromJson);
     }
     if (newData != null) {
       return await activity.coll.notity({
         'data': newData,
-        'update': true,
+        'operate': 'update',
       });
     }
     return false;
@@ -86,20 +116,24 @@ class ActivityMessage extends Emitter implements IActivityMessage {
 
   @override
   Future<bool> comment(String label, {String? replyTo}) async {
-    final newData = await activity.coll.update(metadata.id, {
-      '_push_': {
-        'comments': {
-          'label': label,
-          'userId': activity.userId,
-          'time': 'sysdate()',
-          'replyTo': replyTo,
+    final newData = await activity.coll.update(
+        metadata.id,
+        {
+          '_push_': {
+            'comments': {
+              'label': label,
+              'userId': activity.userId,
+              'time': 'sysdate()',
+              'replyTo': replyTo,
+            },
+          },
         },
-      },
-    });
+        null,
+        ActivityType.fromJson);
     if (newData != null) {
       return await activity.coll.notity({
         'data': newData,
-        'update': true,
+        'operate': 'update',
       });
     }
     return false;
@@ -116,6 +150,9 @@ abstract class IActivity extends IEntity<XTarget> {
 
   /// 是否允许发布
   late bool allPublish;
+
+  /// 相关动态接口
+  List<IActivity> get activitys;
 
   /// 动态数据
   List<IActivityMessage> get activityList;
@@ -135,28 +172,29 @@ abstract class IActivity extends IEntity<XTarget> {
 
 /// 动态实现
 class Activity extends Entity<XTarget> implements IActivity {
-  Activity(this.metadata, this.session) : super(metadata, ['动态']) {
+  @override
+  final ISession session;
+
+  @override
+  late List<IActivityMessage> activityList;
+  @override
+  late XCollection<ActivityType> coll;
+  bool finished = false;
+
+  Activity(metadata, this.session) : super(metadata, ['动态']) {
+    activityList = [];
     if (session.target.id == session.sessionId) {
-      coll = session.target.resource.genColl('resource-activity');
+      coll = session.target.resource.genColl(ActivityCollName);
     } else {
       coll = XCollection<ActivityType>(
         metadata,
-        'resource-activity',
+        ActivityCollName,
         [metadata.id],
         [key],
       );
     }
     subscribeNotify();
   }
-  @override
-  final XTarget metadata;
-  @override
-  final ISession session;
-
-  @override
-  List<IActivityMessage> activityList = [];
-  @override
-  late XCollection<ActivityType> coll;
 
   @override
   bool get allPublish {
@@ -165,22 +203,31 @@ class Activity extends Entity<XTarget> implements IActivity {
   }
 
   @override
+  List<IActivity> get activitys {
+    return [this];
+  }
+
+  @override
   Future<List<IActivityMessage>> load([int take = 10]) async {
-    var data = await coll.load({
-      'skip': activityList.length,
-      'take': take,
-      "options": {
-        "match": {
-          "isDeleted": false,
+    if (!finished) {
+      var data = await coll.load({
+        'skip': activityList.length,
+        'take': take,
+        "options": {
+          "match": Map<String, dynamic>.from({
+            "isDeleted": false,
+          }),
+          "sort": {
+            "createTime": -1,
+          },
         },
-        "sort": {
-          "createTime": -1,
-        },
-      },
-    });
-    final messages = data.map((i) => ActivityMessage(i, this));
-    activityList.addAll(messages);
-    return activityList;
+      }, ActivityType.fromJson);
+      final messages = data.map((i) => ActivityMessage(i, this));
+      finished = messages.length < take;
+      activityList.addAll(messages);
+      return activityList;
+    }
+    return [];
   }
 
   @override
@@ -191,18 +238,23 @@ class Activity extends Entity<XTarget> implements IActivity {
     List<String> tags,
   ) async {
     if (allPublish) {
-      var data = await coll.insert(ActivityType(
-        tags: tags,
-        comments: [],
-        content: content,
-        resource: resources,
-        typeName: typeName.label,
-        likes: [],
-        forward: [],
-        id: '',
-      ));
+      var data = await coll.insert(
+          ActivityType(
+            tags: tags,
+            comments: [],
+            content: content,
+            resource: resources,
+            typeName: typeName.label,
+            likes: [],
+            forward: [],
+            id: '',
+          ),
+          fromJson: ActivityType.fromJson);
       if (data != null) {
-        await coll.notity(data, onlineOnly: false);
+        await coll.notity({
+          'data': data,
+          'operate': 'insert',
+        }, onlineOnly: false);
       }
       return data != null;
     }
@@ -210,17 +262,39 @@ class Activity extends Entity<XTarget> implements IActivity {
   }
 
   subscribeNotify() {
-    // coll.subscribe([key], ({required bool update, required ActivityType data}) {
-    //   if (update) {
-    //     var index = activityList.indexWhere((i) => i.id == data.id);
-    //     if (index > -1) {
-    //       activityList[index].update(data);
-    //     }
-    //   } else {
-    //     activityList = [ActivityMessage(data, this), ...activityList];
-    //     changCallback();
-    //   }
-    // });
+    coll.subscribe(
+      [key],
+      (data) {
+        ActivityType res = ActivityType.fromJson(data['data']);
+        switch (data['operate']) {
+          case 'insert':
+            activityList = [
+              ActivityMessage(res, this),
+              ...activityList,
+            ];
+            changCallback();
+            break;
+          case 'update':
+            {
+              var index = activityList.indexWhere(
+                (i) => i.metadata.id == res.id,
+              );
+              if (index > -1) {
+                activityList[index].update(res);
+              }
+            }
+            break;
+          case 'delete':
+            activityList = activityList
+                .where(
+                  (i) => i.metadata.id != res.id,
+                )
+                .toList();
+            changCallback();
+            break;
+        }
+      },
+    );
   }
 
   @override
@@ -251,6 +325,7 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
     subActivitys = _activitys;
   }
 
+  @override
   List<IActivity> get activitys {
     return [this, ...subActivitys];
   }
@@ -278,7 +353,7 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
       more.addAll(activity.activityList.where((i) => i.createTime < lastTime));
     }
     more.sort((a, b) => b.createTime - a.createTime);
-    var news = more.getRange(0, take).toList();
+    var news = more.getRange(0, min(more.length, take)).toList();
     if (news.isNotEmpty) {
       lastTime = news[news.length - 1].createTime;
     }

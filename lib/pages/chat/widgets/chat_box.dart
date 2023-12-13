@@ -26,7 +26,6 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
 import 'package:orginone/utils/bus/event_bus_helper.dart';
-import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/permission_util.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/components/widgets/target_text.dart';
@@ -750,23 +749,31 @@ class ChatBoxController with WidgetsBindingObserver {
     var docDir = settingCtrl.user.directory;
     String ext = pickedImage.name.split('.').last;
 
-    var save = MsgSaveModel.fromFileUpload(
-        settingCtrl.user.id, pickedImage.name, pickedImage.path, ext);
-    chat.messages.insert(0, Message(chat.chatdata.value.lastMessage!, chat));
+    var save = ChatMessageType.fromFileUpload(
+        settingCtrl.user.id,
+        chat.sessionId,
+        chat.sessionId,
+        pickedImage.name,
+        pickedImage.path,
+        ext);
+    var msg = Message(save, chat);
+    chat.messages.insert(0, msg);
+    //chat.chatdata.value.lastMessage!
 
     var item = await docDir.createFile(
       File(pickedImage.path),
       p: (progress) {
-        LogUtil.d('上传进度');
-        LogUtil.d(progress);
         // var msg = chat.messages
         //     .firstWhere((element) => element.metadata.id == pickedImage.name);
         // //TODO:无此方法
         // msg.metadata.body!.progress = progress;
+        msg.progress = progress;
         chat.messages.refresh();
       },
     );
     if (item != null) {
+      chat.messages.remove(msg);
+      chat.messages.refresh();
       chat.sendMessage(
           MessageType.image, jsonEncode(item.shareInfo().toJson()), []);
     }
@@ -777,25 +784,35 @@ class ChatBoxController with WidgetsBindingObserver {
 
     String ext = file.name.split('.').last;
 
+    // var file1 = File(file.path!);
+    // var save = MsgSaveModel.fromFileUpload(
+    //     settingCtrl.user.id, file.name, file.path!, ext, file1.lengthSync());
+    // chat.messages.insert(0, Message(chat.chatdata.value.lastMessage!, chat));
+
     var file1 = File(file.path!);
-    var save = MsgSaveModel.fromFileUpload(
-        settingCtrl.user.id, file.name, file.path!, ext, file1.lengthSync());
-    chat.messages.insert(0, Message(chat.chatdata.value.lastMessage!, chat));
+    var save = ChatMessageType.fromFileUpload(
+        settingCtrl.user.id,
+        chat.sessionId,
+        chat.sessionId,
+        file.name,
+        file.path!,
+        ext,
+        file1.lengthSync());
+    var msg = Message(save, chat);
+    chat.messages.insert(0, msg);
 
     var item = await docDir.createFile(
       file1,
       p: (progress) {
-        var msg = chat.messages
-            .firstWhere((element) => element.metadata.id == file.name);
         //TODO:无此方法
         // msg.metadata.body!.progress = progress;
+        msg.progress = progress;
         chat.messages.refresh();
       },
     );
     if (item != null) {
-      var msg = chat.messages
-          .firstWhere((element) => element.from.name == save.body?.name);
-      msg.from.name = item.shareInfo().name!;
+      chat.messages.remove(msg);
+      chat.messages.refresh();
       chat.sendMessage(MessageType.file, jsonEncode(item.shareInfo().toJson()),
           msg.mentions);
     }

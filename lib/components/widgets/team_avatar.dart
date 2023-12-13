@@ -76,7 +76,7 @@ class _TeamAvatarState extends State<TeamAvatar> {
       return avatar(info.share!);
     }
 
-    if (ShareIdSet.containsKey(info.userId!)) {
+    if (ShareIdSet.containsKey(info.userId ?? "")) {
       return avatar(ShareIdSet[info.userId!]!);
     }
 

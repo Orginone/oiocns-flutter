@@ -2,6 +2,7 @@ import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
@@ -85,16 +86,17 @@ class MessageFileController extends BaseController<MessageFileState> {
     // TODO: implement onInit
     super.onInit();
     FileDownloader().database.allRecords().then((records) {
-      print('');
       try {
-        state.task = records
-            .firstWhere(
-                (element) => element.task.filename == state.fileShare.name!)
-            .task as DownloadTask;
-        state.downloadStatus.value = state.task != null
-            ? DownloadStatus.downloadCompleted
-            : DownloadStatus.notStarted;
-        state.downloadStatus.refresh();
+        if (records.isNotEmpty) {
+          state.task = records
+              .firstWhere(
+                  (element) => element.task.filename == state.fileShare.name!)
+              .task as DownloadTask;
+          state.downloadStatus.value = state.task != null
+              ? DownloadStatus.downloadCompleted
+              : DownloadStatus.notStarted;
+          state.downloadStatus.refresh();
+        }
       } catch (e) {
         print(e);
       }
@@ -102,8 +104,9 @@ class MessageFileController extends BaseController<MessageFileState> {
   }
 
   void downloadFile() async {
+    print('>>>===${Constant.host}${state.fileShare.shareLink}');
     state.task = DownloadTask(
-        url: state.fileShare.shareLink!,
+        url: '${Constant.host}${state.fileShare.shareLink}',
         baseDirectory: BaseDirectory.applicationSupport,
         filename: state.fileShare.name!);
     ToastUtils.showMsg(msg: "开始下载");

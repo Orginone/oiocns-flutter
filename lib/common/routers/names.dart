@@ -37,6 +37,9 @@ class Routers {
   static const String messageReceive = "/messageReceive";
   static const String messageChatsList = "/messageChatsList";
 
+  //动态
+  static const String targetActivity = "/targetActivity";
+
   // 首页
   static const String index = "/index";
 

@@ -9,6 +9,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 
 import 'package:orginone/utils/encryption_util.dart';
+import 'package:orginone/utils/icons.dart';
 import 'package:orginone/utils/string_util.dart';
 import 'package:orginone/common/models/thing/thing_model.dart' as thing;
 
@@ -1204,6 +1205,18 @@ class ChatMessageType extends Xbase {
         : [];
   }
 
+  ChatMessageType.fromFileUpload(String id, this.toId, this.sessionId,
+      String fileName, String filePath, String ext,
+      [int size = 0])
+      : super.fromJson({'id': fileName}) {
+    fromId = id;
+    typeName = MessageType.uploading.label;
+    content = jsonEncode(FileItemShare(
+            extension: '.$ext', shareLink: filePath, name: fileName, size: size)
+        .toJson());
+    comments = [];
+  }
+
   @override
   Map<String, dynamic> toJson() {
     return {
@@ -1222,16 +1235,19 @@ class CommentType {
   late String label; // 标签名称
   late String userId; // 人员Id
   late String time; // 时间
+  // 回复某个人
+  late String? replyTo;
 
-  CommentType({
-    required this.label,
-    required this.userId,
-    required this.time,
-  });
+  CommentType(
+      {required this.label,
+      required this.userId,
+      required this.time,
+      this.replyTo});
   CommentType.fromJson(Map<String, dynamic> json) {
     label = json['label'];
     userId = json['userId'];
     time = json['time'];
+    replyTo = json['replyTo'];
   }
 
   Map<String, dynamic> toJson() {
@@ -1239,6 +1255,7 @@ class CommentType {
       'label': label,
       'userId': userId,
       'time': time,
+      'replyTo': replyTo,
     };
   }
 }
@@ -2566,17 +2583,17 @@ class ShareIcon {
     if (typeName == TargetType.person.label) {
       defaultAvatar = AssetsImages.chatDefaultPerson;
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
-    }
-    if (typeName == TargetType.cohort.label) {
+    } else if (typeName == TargetType.cohort.label) {
       defaultAvatar = AssetsImages.chatDefaultCohort;
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
-    }
-    if (typeName == TargetType.department.label) {
+    } else if (typeName == TargetType.department.label) {
       defaultAvatar = AssetsImages.chatDefaultCohort;
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
-    }
-    if (typeName == TargetType.company.label) {
+    } else if (typeName == TargetType.company.label) {
       defaultAvatar = AssetsImages.chatDefaultCohort;
+      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    } else if (typeName == '动态') {
+      defaultAvatar = AIcons.icons['x']?['home'] ?? "";
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     }
   }
@@ -2619,6 +2636,8 @@ class FileItemShare {
   int? size;
   // 名称
   String? name;
+  // 视频封面
+  String? poster;
   // 共享链接
   String? shareLink;
   // 文件类型
@@ -2631,6 +2650,7 @@ class FileItemShare {
   FileItemShare({
     this.size,
     this.name,
+    this.poster,
     this.shareLink,
     this.contentType,
     this.extension,
@@ -2642,6 +2662,7 @@ class FileItemShare {
   FileItemShare.fromJson(Map<String, dynamic> json) {
     size = json["size"];
     name = json["name"];
+    poster = json['poster'];
     shareLink = json["shareLink"];
     contentType = json["contentType"];
     extension = json["extension"];
@@ -2680,6 +2701,7 @@ class FileItemShare {
     Map<String, dynamic> json = {};
     json["size"] = size;
     json["name"] = name;
+    json['poster'] = poster;
     json["shareLink"] = shareLink;
     json["extension"] = extension;
     json["thumbnail"] = thumbnail;
@@ -3032,6 +3054,31 @@ class ActivityType extends Xbase {
     required super.id,
   });
 
+  ActivityType.fromJson(Map<String, dynamic> json)
+      : typeName = json['typeName'],
+        content = json['content'],
+        resource = null != json['resource']
+            ? Lists.fromList(
+                json['resource'], (data) => FileItemShare.fromJson(data))
+            : [],
+        comments = null != json['comments']
+            ? Lists.fromList(
+                json['comments'], (data) => CommentType.fromJson(data))
+            : [],
+        likes = null != json['likes'] ? json['likes'].cast<String>() : [],
+        forward = null != json['forward'] ? json['forward'].cast<String>() : [],
+        tags = null != json['tags'] ? json['tags'].cast<String>() : [],
+        super(
+            id: json['id'] ?? "",
+            belongId: json['belongId'] ?? "",
+            createUser: json['createUser'] ?? "",
+            createTime: json['createTime'] ?? "",
+            updateTime: json['updateTime'] ?? "",
+            shareId: json['shareId'] ?? "",
+            status: json['status'] ?? 0,
+            updateUser: json['updateUser' ?? ""],
+            version: json['version'].toString() ?? "");
+
   @override
   Map<String, dynamic> toJson() {
     return {
@@ -3041,7 +3088,8 @@ class ActivityType extends Xbase {
       "comments": comments,
       "likes": likes,
       "forward": forward,
-      "tags": tags
+      "tags": tags,
+      ...super.toJson(),
     };
   }
 }
@@ -3569,6 +3617,10 @@ class SchemaType {
 
 ResultType get badRequest {
   return ResultType(success: false, msg: '请求失败', code: 400);
+}
+
+ResultType getRequest([String msg = '请求失败', int code = 400]) {
+  return ResultType(success: false, msg: msg, code: code);
 }
 
 class SubMethodsModel {

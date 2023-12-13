@@ -81,12 +81,10 @@ class XCollection<T extends Xbase> {
 
   Future<List<T>> load(dynamic options,
       [T Function(Map<String, dynamic>)? cvt]) async {
-    options = {};
-    options['options'] = {
-      "match": {"shareId": _target.id}
-    };
-    // options.options.match = {};
-    // options.options.match.shareId = _target.id;
+    options = options ?? {};
+    options['options'] = options['options'] ?? {};
+    options['options']['match'] = options['options']['match'] ?? {};
+    options['options']['match']['shareId'] = this._target.id;
     return await loadSpace(options, cvt);
   }
 

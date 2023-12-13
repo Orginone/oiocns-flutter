@@ -13,9 +13,10 @@ initApp() async {
   await Global.init();
 
   SystemChannels.lifecycle.setMessageHandler((msg) async {
-    debugPrint('>>>============= $msg ${kernel.isOnline}');
     if (msg == AppLifecycleState.resumed) {
-      if (!kernel.isOnline) {
+      if (settingCtrl.provider.user == null) {
+        await settingCtrl.autoLogin();
+      } else if (!kernel.isOnline) {
         kernel.restart();
       }
     }

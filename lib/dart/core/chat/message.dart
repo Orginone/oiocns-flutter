@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:common_utils/common_utils.dart';
 import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/public/enums.dart';
@@ -115,6 +116,9 @@ abstract class IMessage {
 
   /// 评论数
   late int comments;
+
+  /// 上传文件进度
+  double progress = 0;
 }
 
 class Message implements IMessage {
@@ -150,6 +154,9 @@ class Message implements IMessage {
   late String _msgBody;
   @override
   List<IMessageLabel> labels = [];
+  // 上传文件进度
+  @override
+  double progress = 0;
 
   @override
   String get id {
@@ -163,7 +170,7 @@ class Message implements IMessage {
 
   @override
   String get createTime {
-    return metadata.createTime!;
+    return metadata.createTime ?? DateUtil.formatDate(DateTime.now());
   }
 
   @override
@@ -283,6 +290,11 @@ class Message implements IMessage {
   @override
   String get msgSource {
     return _msgBody;
+  }
+
+  @override
+  set msgSource(String msgSource) {
+    _msgBody=msgSource;
   }
 
   @override

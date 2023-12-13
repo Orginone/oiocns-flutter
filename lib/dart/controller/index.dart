@@ -358,6 +358,7 @@ class IndexController extends GetxController {
   }
 
   Future<void> autoLogin([List<String>? account]) async {
+    print('>>>=====开始自动登录');
     account ??= Storage.getList(Constants.account);
     if (!canAutoLogin(account)) {
       return exitLogin(false);
@@ -367,6 +368,7 @@ class IndexController extends GetxController {
     String passWord = account.last;
     var login = await provider.login(accountName, passWord);
     if (!login.success) {
+      print('>>>=======自动登录异常');
       // exitLogin(false);
       Future.delayed(const Duration(milliseconds: 100), () async {
         await autoLogin();

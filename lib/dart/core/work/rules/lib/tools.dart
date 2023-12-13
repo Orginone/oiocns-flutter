@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:common_utils/common_utils.dart';
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/work/rules/base/ruleBase.dart';
 import 'package:orginone/dart/core/work/rules/base/ruleClass.dart';
@@ -237,3 +239,42 @@ var fixedCharacterResolver = (String ruleStr) async {
   });
   return replacedStr ?? '';
 };
+
+/// 获取html文本中的字符串
+var parseHtmlToText = (String html) {
+  var text = html.replaceAll(RegExp(r'\s*'), ''); //去掉空格
+  text = text.replaceAll(RegExp(r'<[^>]+>'), ''); //去掉所有的html标记
+  text = text.replaceAll(RegExp(r'↵'), ''); //去掉所有的↵符号
+  return text.replaceAll(RegExp(r'[\r\n]'), ''); //去掉回车换行
+};
+
+/// 获取文件的实际地址
+String shareOpenLink(String? link, [bool download = false]) {
+  if (link!.startsWith('/orginone/kernel/load/')) {
+    return download
+        ? '${Constant.host}$link?download=1'
+        : '${Constant.host}$link';
+  }
+  return '${Constant.host}/orginone/kernel/load/$link${download ? '?download=1' : ''}';
+}
+
+/// @description: 聊天间隔时间
+/// @param {moment} chatDate
+/// @return {*}
+String showChatTime(String chatDate) {
+  DateTime? cdate = DateUtil.getDateTime(chatDate);
+  var days = DateTime.now().difference(cdate!).inDays;
+  switch (days) {
+    case 0:
+      return DateUtil.formatDateStr(chatDate, format: 'HH:mm:ss');
+    case 1:
+      return '昨天 ${DateUtil.formatDateStr(chatDate, format: 'HH:mm:ss')}';
+    case 2:
+      return '前天 ${DateUtil.formatDateStr(chatDate, format: 'HH:mm:ss')}';
+  }
+  var year = DateTime.now().year - cdate.year;
+  if (year == 0) {
+    return DateUtil.formatDateStr(chatDate, format: 'MM月dd日 HH:mm');
+  }
+  return DateUtil.formatDateStr(chatDate, format: 'yy年 MM月dd日 HH:mm');
+}

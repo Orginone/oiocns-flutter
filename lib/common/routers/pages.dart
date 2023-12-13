@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
+import 'package:orginone/components/widgets/TargetActivity/target_activity_view.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/wallet_controller.dart';
 import 'package:orginone/main.dart';
@@ -153,6 +154,10 @@ class RoutePages {
       name: Routers.messageReceive,
       page: () => const MessageReceivePage(),
     ),
+    GetPage(
+        name: Routers.targetActivity,
+        page: () => const TargetActivityView(),
+        bindings: [TargetActivityViewBinding()]),
     GetPage(
       name: Routers.storageLocation,
       page: () => StorageLocationPage(),

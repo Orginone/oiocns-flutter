@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -33,11 +34,15 @@ class ImageDetail extends BaseDetail {
   @override
   Widget body(BuildContext context) {
     dynamic link = msgBody.shareLink ?? '';
-    link = '${Constant.host}$link';
+    dynamic thumbnail = msgBody.thumbnailUint8List;
     // TODO 待处理小的预览图
-    // if (message.body?.path != null && link == '') {
-    //   link = File(message.body!.path!);
-    // }
+    if (thumbnail != null) {
+      link = thumbnail;
+    } else if (!link.startsWith('/orginone/kernel/load/')) {
+      link = File(link);
+    } else {
+      link = '${Constant.host}$link';
+    }
 
     Map<String, String> headers = {
       "Authorization": kernel.accessToken,

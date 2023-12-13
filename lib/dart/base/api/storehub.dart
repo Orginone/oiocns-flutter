@@ -304,9 +304,9 @@ class StoreHub {
         LogUtil.e('Http:===========================err');
         LogUtil.e('Http:$res');
         LogUtil.e('Http:$s');
-        msg += err ?? ',$res';
+        msg += err ?? '';
         LogUtil.e('Http:$msg');
-        res.msg = msg;
+        res = getRequest(msg);
       }
     } catch (e, s) {
       LogUtil.e('Http:$s');

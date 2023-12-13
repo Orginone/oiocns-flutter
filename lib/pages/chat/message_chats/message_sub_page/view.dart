@@ -20,13 +20,13 @@ class MessageSubPage
 
   @override
   Widget buildView() {
-    if (type == 'all') {
-      // TODO 暂时放弃
-      return allWidget();
-    }
-    if (type == 'common') {
-      return commonWidget();
-    }
+    // if (type == 'all') {
+    //   // TODO 暂时放弃
+    //   return allWidget();
+    // }
+    // if (type == 'common') {
+    //   return commonWidget();
+    // }
     return messageWidget();
   }
 

@@ -41,6 +41,9 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  #html渲染插件
+  flutter_widget_from_html: ^0.10.3
+
   #过渡动画
   page_animation_transition: ^1.0.0
 

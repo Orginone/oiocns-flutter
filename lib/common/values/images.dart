@@ -99,4 +99,7 @@ class AssetsImages {
   static const String imageEverytime = "assets/images/image_everytime.png";
 
   static const String loginTransition = "assets/images/transition_page.png";
+
+  static const String iconLike = "assets/icons/like.svg";
+  static const String iconMsg = "assets/icons/msg.svg";
 }

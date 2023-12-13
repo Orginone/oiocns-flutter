@@ -1,3 +1,4 @@
+import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/main.dart';
 
@@ -9,12 +10,14 @@ class CohortActivityController extends BaseListController<CohortActivityState> {
 
   late String type;
   late String key;
+  late GroupActivity cohortActivity;
 
-  CohortActivityController(this.type);
+  CohortActivityController(this.type, this.cohortActivity);
 
   @override
   void onInit() async {
     super.onInit();
+    await cohortActivity.load();
     loadSuccess();
   }
 
@@ -31,5 +34,8 @@ class CohortActivityController extends BaseListController<CohortActivityState> {
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     super.loadData(isRefresh: isRefresh, isLoad: isLoad);
+    if (isRefresh) {
+      await cohortActivity.load();
+    }
   }
 }

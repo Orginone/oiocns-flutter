@@ -66,6 +66,7 @@ enum SpeciesType {
 enum MessageType {
   file("文件"),
   text("文本"),
+  html("网页"),
   image("图片"),
   video("视频"),
   voice("语音"),
@@ -95,6 +96,8 @@ enum MessageType {
         return MessageType.recall;
       case "通知":
         return MessageType.notify;
+      case "网页":
+        return MessageType.html;
     }
     return null;
   }

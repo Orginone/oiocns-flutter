@@ -61,7 +61,7 @@ class ListAdapter {
     popupMenuItems = [
       PopupMenuItem(
         value: isTop ? PopupMenuKey.cancelTopping : PopupMenuKey.topping,
-        child: Text(isTop ? "取消置顶" : "置顶"),
+        child: Text(isTop ? "取消常用" : "设为常用"),
       ),
       const PopupMenuItem(
         value: PopupMenuKey.delete,
@@ -71,13 +71,13 @@ class ListAdapter {
     onSelected = (key) async {
       switch (key) {
         case PopupMenuKey.cancelTopping:
-          chat.groupTags.remove('置顶');
+          chat.groupTags.remove('常用');
           chat.chatdata.value.isToping = false;
           await chat.cacheChatData();
           settingCtrl.loadChats();
           break;
         case PopupMenuKey.topping:
-          chat.groupTags.add('置顶');
+          chat.groupTags.add('常用');
           chat.chatdata.value.isToping = true;
           await chat.cacheChatData();
           settingCtrl.loadChats();
@@ -99,11 +99,6 @@ class ListAdapter {
     if (lastMessage != null) {
       if (lastMessage.fromId != settingCtrl.user.metadata.id) {
         if (chat.share.typeName != TargetType.person.label) {
-          if (chat.members.isNotEmpty) {
-            var target = chat.members
-                .firstWhere((element) => element.id == lastMessage.fromId);
-            content = ""; //"${target.name}:";
-          }
         } else {
           content = "对方:";
         }
