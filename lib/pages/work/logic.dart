@@ -28,11 +28,10 @@ class WorkController extends BaseSubmenuController<WorkState> {
     print('>>>=======Work2');
   }
 
+  @override
   int getTabIndex(String code) {
-    int tabIndex = SubGroup.fromJson(workDefaultConfig)
+    return SubGroup.fromJson(workDefaultConfig)
         .groups!
         .indexWhere((element) => element.value == code);
-    print('$code=setTabIndex================$tabIndex');
-    return tabIndex;
   }
 }

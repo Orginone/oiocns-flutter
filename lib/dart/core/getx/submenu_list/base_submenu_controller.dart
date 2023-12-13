@@ -28,6 +28,17 @@ class BaseSubmenuController<S extends BaseSubmenuState>
     // TODO: implement initSubmenu
   }
 
+  int getTabIndex(String code) {
+    // TODO: implement initSubmenu
+    return -1;
+  }
+
+  void setTabIndex(String code) {
+    int tabIndex = getTabIndex(code);
+    changeSubmenuIndex(tabIndex);
+    state.tabController.index = tabIndex;
+  }
+
   Future<int?> showGrouping() {
     return showModalBottomSheet<int?>(
         context: context,

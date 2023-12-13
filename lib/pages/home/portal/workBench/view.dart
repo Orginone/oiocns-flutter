@@ -137,30 +137,22 @@ class WorkBenchPage
             children: [
               renderDataItem(
                   "好友(人)", 'friend', state.friendNum.value, HomeEnum.chat, () {
-                int i = messageChatsController.getTabIndex('friend');
-                messageChatsController.changeSubmenuIndex(i);
-                messageChatsController.state.tabController.index = i;
+                messageChatsController.setTabIndex('friend');
               }),
               renderDataItem("同事(个)", 'company_friend',
                   state.colleagueNum.value, HomeEnum.chat, () {
                 print('同事(个)');
-                int i = messageChatsController.getTabIndex('company_friend');
-                messageChatsController.changeSubmenuIndex(i);
-                messageChatsController.state.tabController.index = i;
+                messageChatsController.setTabIndex('company_friend');
               }),
               renderDataItem(
                   '群聊(个)', 'group', state.groupChatNum.value, HomeEnum.chat,
                   () {
-                int i = messageChatsController.getTabIndex('group');
-                messageChatsController.changeSubmenuIndex(i);
-                messageChatsController.state.tabController.index = i;
+                messageChatsController.setTabIndex('group');
               }),
               renderDataItem(
                   '单位(家)', 'company', state.companyNum.value, HomeEnum.chat,
                   () {
-                int i = messageChatsController.getTabIndex('company');
-                messageChatsController.changeSubmenuIndex(i);
-                messageChatsController.state.tabController.index = i;
+                messageChatsController.setTabIndex('company');
               }),
             ],
           ),
@@ -208,32 +200,23 @@ class WorkBenchPage
                 children: [
                   renderDataItem(
                       '待办', 'todo', state.todoCount.value, HomeEnum.work, () {
-                    int i = workController.getTabIndex('todo');
-                    workController.changeSubmenuIndex(i);
-                    workController.state.tabController.index = i;
+                    workController.setTabIndex('todo');
                   }),
                   renderDataItem(
                       '已办', 'done', state.completedCount.value, HomeEnum.work,
                       () {
-                    int i = workController.getTabIndex('done');
-                    workController.changeSubmenuIndex(i);
-                    workController.state.tabController.index = i;
+                    workController.setTabIndex('done');
                   }),
                   renderDataItem(
                       '抄送', 'alt', state.copysCount.value, HomeEnum.work, () {
-                    int i = workController.getTabIndex('alt');
-                    workController.changeSubmenuIndex(i);
-                    workController.state.tabController.index = i;
+                    workController.setTabIndex('alt');
                   }),
                   renderDataItem(
                       '发起的', 'create', state.applyCount.value, HomeEnum.work,
                       () {
-                    int i = workController.getTabIndex('create');
-                    workController.changeSubmenuIndex(i);
-                    workController.state.tabController.index = i;
+                    workController.setTabIndex('create');
                   }),
                 ])),
-        // moreWidget: TextArrow(title: '待办${state.todoCount.value}件'));
         moreWidget: const TextArrow(title: '前往审批'));
   }
 
