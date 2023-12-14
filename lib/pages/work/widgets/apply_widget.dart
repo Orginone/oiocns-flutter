@@ -47,7 +47,7 @@ class ApplyWidget extends StatelessWidget {
     return <Widget>[
       _imageWidget(create),
       TextWidget.body1(
-        '${todo?.targets.first.name}sad撒大大撒' ?? '',
+        '${todo?.targets.first.name}' ?? '',
         softWrap: true,
         overflow: TextOverflow.ellipsis,
       ).paddingLeft(AppSpace.listItem).constrained(maxWidth: Get.width / 3.8),
