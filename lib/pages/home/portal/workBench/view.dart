@@ -115,9 +115,13 @@ class WorkBenchPage
         children: [
           CommonWidget.commonDoorHeadInfoWidget(title,
               action: moreWidget ??
-                  const TextArrow(
-                    title: '更多操作',
-                  )),
+                  GestureDetector(
+                      onTap: () {
+                        homeController.jumpTab(HomeEnum.relation);
+                      },
+                      child: const TextArrow(
+                        title: '更多操作',
+                      ))),
           SizedBox(
             height: 10.h,
           ),
@@ -157,8 +161,12 @@ class WorkBenchPage
             ],
           ),
         ),
-        moreWidget:
-            TextArrow(title: '未读消息 · ${settingCtrl.noReadMgsCount.value}'));
+        moreWidget: GestureDetector(
+            onTap: () {
+              homeController.jumpTab(HomeEnum.chat);
+            },
+            child: TextArrow(
+                title: '未读消息 · ${settingCtrl.noReadMgsCount.value}')));
   }
 
   Widget renderDataItem(String title, String? code, String number,
@@ -217,7 +225,11 @@ class WorkBenchPage
                     workController.setTabIndex('create');
                   }),
                 ])),
-        moreWidget: const TextArrow(title: '前往审批'));
+        moreWidget: GestureDetector(
+            onTap: () {
+              homeController.jumpTab(HomeEnum.work);
+            },
+            child: const TextArrow(title: '前往审批')));
   }
 
   // 渲染存储数据信息
@@ -279,7 +291,11 @@ class WorkBenchPage
                             () {},
                             state.diskInfo.value.fsTotalSize ?? 0),
                       ])),
-        moreWidget: const TextArrow(title: '管理数据'));
+        moreWidget: GestureDetector(
+            onTap: () {
+              homeController.jumpTab(HomeEnum.store);
+            },
+            child: const TextArrow(title: '管理数据')));
   }
 
   // 渲染应用信息
