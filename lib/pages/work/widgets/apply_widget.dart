@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:get/utils.dart';
+import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -46,8 +46,11 @@ class ApplyWidget extends StatelessWidget {
 
     return <Widget>[
       _imageWidget(create),
-      TextWidget.body1(todo?.targets.first.name ?? '')
-          .paddingLeft(AppSpace.listItem),
+      TextWidget.body1(
+        '${todo?.targets.first.name}sad撒大大撒' ?? '',
+        softWrap: true,
+        overflow: TextOverflow.ellipsis,
+      ).paddingLeft(AppSpace.listItem).constrained(maxWidth: Get.width / 3.8),
 
       const SizedBox(
           height: 20,
@@ -57,7 +60,7 @@ class ApplyWidget extends StatelessWidget {
           )).paddingLeft(AppSpace.listItem),
       // const SizedBox(height: 20, child: VerticalDivider(color: Colors.grey)),
 
-      const TextWidget.body1('申请加入').paddingHorizontal(AppSpace.listItem),
+      const TextWidget.body1('申请加入').paddingHorizontal(AppSpace.listItem / 2),
 
       const SizedBox(
           height: 20,
@@ -66,8 +69,11 @@ class ApplyWidget extends StatelessWidget {
             width: 4,
           )).paddingRight(AppSpace.listItem),
       _imageWidget(target),
-      TextWidget.body1(todo?.targets.last.name ?? '')
-          .paddingLeft(AppSpace.listItem),
+      TextWidget.body1(
+        todo?.targets.last.name ?? '',
+        softWrap: true,
+        overflow: TextOverflow.ellipsis,
+      ).paddingLeft(AppSpace.listItem).constrained(maxWidth: Get.width / 3.8),
     ].toRow().paddingVertical(AppSpace.listItem);
   }
 
