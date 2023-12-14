@@ -107,7 +107,7 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
       var isSelected = settingCtrl.homeEnum.value == homeEnum;
       var mgsCount = 0;
       if (homeEnum == HomeEnum.work) {
-        mgsCount = settingCtrl.provider.work?.todos.value.length ?? 0;
+        mgsCount = settingCtrl.provider.work?.todos.length ?? 0;
       } else if (homeEnum == HomeEnum.chat) {
         mgsCount = settingCtrl.noReadMgsCount.value;
       }

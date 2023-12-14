@@ -82,8 +82,6 @@ class WorkProvider implements IWorkProvider {
   void updateTask(XWorkTask task) {
     final index = todos.indexWhere((i) => i.metadata.id == task.id);
 
-    // LogUtil.d(task.id);
-    // LogUtil.d(todos);
     if (index > -1) {
       if (task.status! < TaskStatus.approvalStart.status) {
         todos[index].updated(task);
@@ -97,6 +95,7 @@ class WorkProvider implements IWorkProvider {
 
         notity.changCallback();
       }
+      todos.refresh();
     }
 
     // if (task.status != TaskStatus.approvalStart.status) {
@@ -127,13 +126,15 @@ class WorkProvider implements IWorkProvider {
       final res = await kernel.queryApproveTask(IdModel('0'));
       if (res.success) {
         _todoLoaded = true;
-        todos.value = (res.data?.result ?? [])
+        todos.clear();
+        todos.addAll((res.data?.result ?? [])
             .map((task) => WorkTask(task, user))
-            .toList();
+            .toList());
+        todos.refresh();
         notity.changCallback();
       }
     }
-    return todos.value;
+    return todos;
   }
 
   Future<List<IWorkTask>> loadTasks(TaskType type,

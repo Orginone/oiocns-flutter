@@ -105,8 +105,8 @@ class ApproveWidget extends StatelessWidget {
         comment: comment ?? '',
         todo: todo!,
         onSuccess: () {
-          Get.back();
           EventBusUtil().fire(LoadTodosEvent());
+          Get.back();
         });
   }
 }

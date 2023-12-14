@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/config/unified.dart';
+import 'package:orginone/utils/index.dart';
 
 import 'base_submenu_controller.dart';
 import 'base_submenu_state.dart';
@@ -57,8 +58,9 @@ abstract class BaseSubmenuPage<T extends BaseSubmenuController,
 
 //创建ExtendedTabBar
   buildExtendedTabBar() {
-    print(
+    LogUtil.d(
         '>>>==========${state.subGroup.value} ${state.subGroup.value.groups?.length} ${state.subGroup.value.groups?.first.label}');
+
     return ExtendedTabBar(
       controller: state.tabController,
       tabs: state.subGroup.value.groups!.map((e) {
@@ -99,6 +101,7 @@ abstract class BaseSubmenuPage<T extends BaseSubmenuController,
   Widget body() {
     return Obx(() {
       var groups = state.subGroup.value.groups!;
+
       return ExtendedTabBarView(
         controller: state.tabController,
         children: groups.map((e) {

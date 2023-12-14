@@ -29,29 +29,50 @@ class WorkSubController extends BaseListController<WorkSubState> {
   @override
   void onInit() async {
     super.onInit();
+    state.scrollController = ScrollController(debugLabel: type);
     sub = EventBusUtil().on((event) async {
       LogUtil.d(event);
-      if (event is LoadTodosEvent) {
+      // if (event is LoadTodosEvent) {
+      //   try {
+      //     if (type == "todo") {
+      //       await loadTodos();
+      //     }
+      //     loadSuccess();
+      //   } catch (e) {
+      //     loadFailed();
+      //   }
+      // }
+      // if (event is ReceiveEvent) {
+      //   if (event.eventName == 'RecvTask') {
+      //     state.dataList.value = settingCtrl.work.todos;
+
+      //     // state.dataList.value = settingCtrl.work.todos;
+      //   }
+      // }
+    });
+
+    try {
+      if (type == "all") {
+        initNav();
+      }
+      if (type == "todo") {
         await loadTodos();
       }
-    });
-    state.scrollController = ScrollController(debugLabel: type);
-    if (type == "all") {
-      initNav();
+      if (type == "done") {
+        await loadDones();
+      }
+      if (type == "alt") {
+        await loadAlt();
+      }
+      if (type == "create") {
+        await loadCreate();
+      }
+
+      loadSuccess();
+    } catch (e) {
+      // loadFailed();  不完善  先用loadSuccess
+      loadSuccess();
     }
-    if (type == "todo") {
-      await loadTodos();
-    }
-    if (type == "done") {
-      await loadDones();
-    }
-    if (type == "alt") {
-      await loadAlt();
-    }
-    if (type == "create") {
-      await loadCreate();
-    }
-    loadSuccess();
   }
 
   @override
@@ -70,6 +91,69 @@ class WorkSubController extends BaseListController<WorkSubState> {
 
   @override
   void onReady() {}
+
+  ///跳转办事详情
+  processDetails(IWorkTask work) async {
+    //加载流程实例数据
+    await work.loadInstance();
+    //跳转办事详情
+    Get.toNamed(Routers.processDetails, arguments: {"todo": work});
+  }
+
+  /// 全部办事 点击事件 跳转子页面
+  void jumpNext(WorkBreadcrumbNav work) {
+    if (work.children.isEmpty) {
+      jumpWorkList(work);
+    } else {
+      Get.toNamed(Routers.initiateWork,
+          preventDuplicates: false, arguments: {"data": work});
+    }
+  }
+
+  void jumpWorkList(WorkBreadcrumbNav work) {
+    Get.toNamed(Routers.workList, arguments: {"data": work});
+  }
+
+  ///加载已办数据
+  loadDones() async {
+    List<IWorkTask> tasks = await settingCtrl.work.loadContent(TaskType.done);
+    state.list.value = tasks;
+  }
+
+  ///加载艾特
+  loadAlt() async {
+    List<IWorkTask> tasks = await settingCtrl.work.loadContent(TaskType.altMe);
+    state.list.value = tasks;
+  }
+
+  //加载发起
+  loadCreate() async {
+    List<IWorkTask> tasks = await settingCtrl.work.loadContent(TaskType.create);
+
+    state.list.value = tasks;
+  }
+
+  loadTodos() async {
+    await settingCtrl.work.loadTodos(reload: true);
+  }
+
+  ///办事tab 下拉刷新
+  @override
+  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
+    //待办
+    if (type == "todo") {
+      await loadTodos();
+    }
+    if (type == "done") {
+      await loadDones();
+    }
+    if (type == "alt") {
+      await loadAlt();
+    }
+    if (type == "create") {
+      await loadCreate();
+    }
+  }
 
   void initNav() async {
     var joinedCompanies = settingCtrl.user.companys;
@@ -218,70 +302,6 @@ class WorkSubController extends BaseListController<WorkSubState> {
           }));
     }
     return works;
-  }
-
-  ///跳转办事详情
-  processDetails(IWorkTask work) async {
-    //加载流程实例数据
-    await work.loadInstance();
-    //跳转办事详情
-    Get.toNamed(Routers.processDetails, arguments: {"todo": work});
-  }
-
-  /// 全部办事 点击事件 跳转子页面
-  void jumpNext(WorkBreadcrumbNav work) {
-    if (work.children.isEmpty) {
-      jumpWorkList(work);
-    } else {
-      Get.toNamed(Routers.initiateWork,
-          preventDuplicates: false, arguments: {"data": work});
-    }
-  }
-
-  void jumpWorkList(WorkBreadcrumbNav work) {
-    Get.toNamed(Routers.workList, arguments: {"data": work});
-  }
-
-  ///加载已办数据
-  loadDones() async {
-    List<IWorkTask> tasks = await settingCtrl.work.loadContent(TaskType.done);
-    state.list.value = tasks;
-  }
-
-  ///加载艾特
-  loadAlt() async {
-    List<IWorkTask> tasks = await settingCtrl.work.loadContent(TaskType.altMe);
-    state.list.value = tasks;
-  }
-
-  //加载发起
-  loadCreate() async {
-    List<IWorkTask> tasks = await settingCtrl.work.loadContent(TaskType.create);
-    state.list.value = tasks;
-  }
-
-  loadTodos() async {
-    List<IWorkTask> todos = await settingCtrl.work.loadTodos(reload: true);
-    state.list.value = todos;
-    settingCtrl.work.todos.value = todos;
-  }
-
-  ///办事tab 下拉刷新
-  @override
-  Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
-    //待办
-    if (type == "todo") {
-      await loadTodos();
-    }
-    if (type == "done") {
-      await loadDones();
-    }
-    if (type == "alt") {
-      await loadAlt();
-    }
-    if (type == "create") {
-      await loadCreate();
-    }
   }
 
   void onSelected(key, WorkFrequentlyUsed app) {

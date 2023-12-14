@@ -372,7 +372,7 @@ class Person extends Belong implements IPerson {
   List<ITarget> content({int? mode}) => [...cohorts, ...storages];
   @override
   Future<XEntity?> findEntityAsync(String id) async {
-////
+    if (id.isEmpty) return null;
     var metadata = findMetadata<XEntity>(id);
     if (metadata != null) return metadata;
 

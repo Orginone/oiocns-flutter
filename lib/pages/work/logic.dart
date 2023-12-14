@@ -8,6 +8,11 @@ import 'state.dart';
 class WorkController extends BaseSubmenuController<WorkState> {
   @override
   final WorkState state = WorkState();
+  @override
+  void onInit() {
+    // TODO: implement onInit
+    super.onInit();
+  }
 
   @override
   void initSubGroup() {
@@ -22,7 +27,7 @@ class WorkController extends BaseSubmenuController<WorkState> {
     // var index = work.groups!.indexWhere((element) => element.value == "todo");
     state.tabController = TabController(
         initialIndex: state.tabIndex,
-        length: work.groups!.length,
+        length: work.groups?.length ?? 0,
         vsync: this,
         animationDuration: Duration.zero);
     print('>>>=======Work2');
