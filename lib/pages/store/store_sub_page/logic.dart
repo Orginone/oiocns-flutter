@@ -93,8 +93,9 @@ class StoreSubController extends BaseListController<StoreSubState> {
           spaceEnum: SpaceEnum.directory,
           children: [
             ...await loadApplications(
-                user.space!.directory.applications, user.space!),
-            ...await loadForm(user.space!.directory.forms, user.space!),
+                user.space!.directory.standard.applications, user.space!),
+            ...await loadForm(
+                user.space!.directory.standard.forms, user.space!),
             ...await loadFile(user.space!.directory.files, user.space!),
           ],
         ),
@@ -121,8 +122,10 @@ class StoreSubController extends BaseListController<StoreSubState> {
             spaceEnum: SpaceEnum.directory,
             children: [
               ...await loadApplications(
-                  company.space!.directory.applications, company.space!),
-              ...await loadForm(company.space!.directory.forms, company.space!),
+                  company.space!.directory.standard.applications,
+                  company.space!),
+              ...await loadForm(
+                  company.space!.directory.standard.forms, company.space!),
               ...await loadFile(company.space!.directory.files, company.space!),
             ],
           ),

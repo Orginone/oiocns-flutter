@@ -99,9 +99,6 @@ class Storage extends Target implements IStorage {
   }
 
   @override
-  List<ITarget> content({int? mode}) => [];
-
-  @override
   Future<void> deepLoad({bool? reload = false}) async {
     if (metadata.belongId == userId) {
       await loadMembers(reload: reload);

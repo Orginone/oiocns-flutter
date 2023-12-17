@@ -42,7 +42,7 @@ class Member extends FileInfo<XTarget> implements IMember {
   }
 
   @override
-  Future<bool> delete() async {
+  Future<bool> delete({bool? notity}) async {
     throw Exception('Not supported yet.');
   }
 

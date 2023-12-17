@@ -11,7 +11,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/thing/fileinfo.dart';
+import 'package:orginone/dart/core/thing/systemfile.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/avatars.dart';
 import 'package:orginone/pages/setting/dialog.dart';

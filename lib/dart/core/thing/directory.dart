@@ -7,20 +7,21 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/dart/core/target/outTeam/storage.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
-import 'package:orginone/dart/core/thing/member.dart';
-import 'package:orginone/dart/core/thing/operate.dart';
 import 'package:orginone/dart/core/thing/resource.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
-import 'package:orginone/dart/core/thing/standard/transfer.dart';
+import 'package:orginone/dart/core/thing/standard/page.dart';
+import 'package:orginone/dart/core/thing/standard/standart.dart';
+import 'package:orginone/dart/core/thing/systemfile.dart';
 
 /// 可为空的进度回调
 typedef OnProgress = void Function(double p);
 
 /// 目录接口类
 abstract class IDirectory implements IStandardFileInfo<XDirectory> {
-  /// 目录操作类
-  late IDirectoryOperate operater;
+  /// 目录下标准类
+  late StandardFiles standard;
 
   /// 当前加载目录的用户
   late ITarget target;
@@ -41,11 +42,12 @@ abstract class IDirectory implements IStandardFileInfo<XDirectory> {
   late Emitter taskEmitter;
 
   /// 目录结构变更
-  void structCallback();
+  void structCallback({bool? reload});
 
   /// 目录下的内容
+
   @override
-  List<IFileInfo<XEntity>> content({int? mode});
+  List<IFile> content({bool? args});
 
   /// 创建子目录
   Future<XDirectory?> create(XDirectory data);
@@ -53,50 +55,23 @@ abstract class IDirectory implements IStandardFileInfo<XDirectory> {
   /// 目录下的文件
   late List<ISysFileInfo> files;
 
-  /// 目录下的表单
-  late List<IForm> forms;
-
-  /// 目录下的分类
-  late List<ISpecies> specieses;
-
-  /// 目录下的属性
-  late List<IProperty> propertys;
-
-  /// 目录下的应用
-  late List<IApplication> applications;
-
-  /// 目录下的链接
-  late List<ITransfer> transfers;
-
-  /// 新建迁移配置
-  Future<ITransfer?> createTransfer(XTransfer data);
-
-  /// 加载迁移配置
-  Future<List<ITransfer>> loadAllTransfer({bool? reload});
+  /// 加载模板配置
+  Future<List<IPageTemplate>> loadAllTemplate({bool? reload});
 
   /// 加载文件
-  Future<List<ISysFileInfo>> loadFiles({bool reload});
+  Future<List<ISysFileInfo>> loadFiles({bool? reload});
 
   /// 上传文件
   Future<ISysFileInfo?> createFile(File file, {OnProgress? p});
 
-  /// 新建表单
-  Future<XForm?> createForm(XForm data);
-
-  /// 新建分类
-  Future<XSpecies?> createSpecies(XSpecies data);
-
-  /// 新建属性
-  Future<XProperty?> createProperty(XProperty data);
-
-  /// 新建应用
-  Future<XApplication?> createApplication(XApplication data);
-
   /// 加载全部应用
-  Future<List<IApplication>> loadAllApplication({bool? reload});
+  Future<List<IApplication>> loadAllApplication();
 
   /// 加载目录资源
   Future<void> loadDirectoryResource({bool? reload});
+
+  /// 加载目录资源
+  Future<bool> notifyReloadFiles();
 }
 
 ///MirrorDirectory作为 Directory影子类  用来初始化避免直接在Directory 创建Directory 造成递归
@@ -109,20 +84,22 @@ class MirrorDirectory implements IDirectory {
 
 ///目录实现类
 class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
-  Directory(this.metadata, this.target,
-      {this.parent, List<XDirectory>? directorys})
-      : super(
+  Directory(
+    this.metadata,
+    this.target, {
+    this.parent,
+    List<XDirectory>? directorys,
+  }) : super(
             XDirectory.fromJson(
                 {...metadata.toJson(), 'typeName': metadata.typeName ?? '目录'}),
             parent ?? MirrorDirectory(),
             target.resource.directoryColl) {
-    isContainer = true;
     taskEmitter = Emitter();
-    operater = DirectoryOperate(this, target.resource);
+    standard = StandardFiles(this);
   }
-  // StandardFiles standard;
   @override
-  late IDirectoryOperate operater;
+  late StandardFiles standard;
+
   @override
   late Emitter taskEmitter;
   @override
@@ -136,24 +113,39 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   @override
   List<ISysFileInfo> files = [];
 
-  List<String> formTypes = ['表单', '报表', '事项配置', '实体配置'];
+  @override
+  bool get isContainer {
+    return true;
+  }
 
   @override
   String get cacheFlag => 'directorys';
+  @override
+  IFile get superior {
+    return parent == null
+        ? (target.superior.directory as IFile)
+        : parent as IFile;
+  }
 
   @override
-  List<IForm> get forms => operater.getContent(formTypes);
+  List<String> get groupTags {
+    if (parent != null) {
+      return super.groupTags;
+    } else {
+      return [target.typeName];
+    }
+  }
+
   @override
-  List<ITransfer> get transfers => operater.getContent<ITransfer>(['迁移配置']);
+  String get spaceKey {
+    return target.space?.directory.key ?? '';
+  }
+
   @override
-  List<ISpecies> get specieses => operater.getContent<ISpecies>(['分类', '字典']);
-  @override
-  List<IProperty> get propertys => operater.getContent<IProperty>(['属性']);
-  @override
-  List<IApplication> get applications =>
-      operater.getContent<IApplication>(['应用']);
-  @override
-  List<IDirectory> get children => operater.getContent<IDirectory>(['目录']);
+  List<IDirectory> get children {
+    return standard.directorys;
+  }
+
   @override
   String get id {
     if (parent != null) {
@@ -164,7 +156,7 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
 
   @override
   bool get isInherited {
-    return metadata.belongId != target.space?.id ?? false;
+    return target.isInherited;
   }
 
   @override
@@ -178,36 +170,47 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  structCallback() {
-    command.emitter('-', 'refresh', [this]);
+  structCallback({bool? reload}) {
+    if (reload != null && reload) {
+      command.emitter('executor', 'reload', [this]);
+    } else {
+      command.emitter('executor', 'refresh', [this]);
+    }
+    changCallback();
   }
 
   @override
-  List<IFileInfo<XEntity>> content({int? mode}) {
-    List<IFileInfo<XEntity>> cnt = [
-      ...children,
-    ];
-    if (typeName == '成员目录') {
-      cnt.addAll(target.members.map((i) => Member(i, this)).toList());
-    } else {
-      cnt.addAll(forms);
-      cnt.addAll(applications);
-      cnt.addAll(files);
-      cnt.addAll(transfers);
-      if (mode != 1) {
-        cnt.addAll(propertys);
-        cnt.addAll(specieses);
-        if (parent != null) {
-          cnt.insert(0, target.memberDirectory);
-          cnt.addAll(target.content(mode: mode));
+  List<IFile> content({bool? args}) {
+    args ??= true;
+    List<IFile> cnt = [];
+    cnt.addAll(children.map((e) => e as IFile).toList());
+
+    if (target.session.isMyChat || target.hasRelationAuth()) {
+      cnt.addAll(files.map((e) => e as IFile).toList());
+      cnt.addAll(standard.forms.map((e) => e as IFile));
+      cnt.addAll(standard.applications.map((e) => e as IFile));
+      cnt.addAll(standard.propertys.map((e) => e as IFile));
+      cnt.addAll(standard.specieses.map((e) => e as IFile));
+      cnt.addAll(standard.transfers.map((e) => e as IFile));
+      cnt.addAll(standard.templates.map((e) => e as IFile));
+      if (parent != null && args == true) {
+        for (var item in target.content()) {
+          var target = item;
+          if (item is ITarget || item is IDirectory || item is IStorage) {
+            if (item is IDirectory) {
+              cnt.add(target.directory as IFile);
+            }
+            if (item is IStorage) {
+              cnt.add(target.directory as IFile);
+            }
+          }
         }
       }
-      cnt.sort((a, b) {
-        return DateTime.parse(a.metadata.updateTime ?? "")
-            .compareTo(DateTime.parse(b.metadata.updateTime ?? ""));
-      });
-    }
-
+    } // return cnt.sort((a, b) => (a.metadata.updateTime < b.metadata.updateTime ? 1 : -1));
+    cnt.sort((a, b) {
+      return DateTime.parse(a.metadata.updateTime ?? "")
+          .compareTo(DateTime.parse(b.metadata.updateTime ?? ""));
+    });
     return cnt;
   }
 
@@ -262,11 +265,20 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  Future<bool> delete() async {
+  Future<bool> delete({bool? notity}) async {
     if (parent != null) {
       await resource.directoryColl.delete(metadata);
-      await operateDirectoryResource(this, resource, 'deleteMany');
-      await notify('refresh', [metadata]);
+      await notify('delete', [metadata]);
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> hardDelete({bool? notity}) async {
+    if (parent != null) {
+      await resource.directoryColl.remove(metadata);
+      await operateDirectoryResource(this, resource, 'removeMany');
+      await notify('reload', [metadata]);
     }
     return false;
   }
@@ -274,6 +286,7 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   @override
   Future<XDirectory?> create(XDirectory data) async {
     metadata.directoryId = id;
+    metadata.typeName = '目录';
     final res = await resource.directoryColl.insert(metadata);
     if (res != null) {
       await notify('insert', [res]);
@@ -283,8 +296,9 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  Future<List<ISysFileInfo>> loadFiles({bool reload = false}) async {
-    if (files.isEmpty || reload) {
+  Future<List<ISysFileInfo>> loadFiles({bool? reload}) async {
+    reload ?? false;
+    if (files.isEmpty || reload == true) {
       final res =
           await resource.bucketOpreate<List<FileItemModel>>(BucketOpreateModel(
         key: encodeKey(id),
@@ -336,104 +350,23 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  Future<XForm?> createForm(XForm data) async {
-    data.directoryId = id;
-    final res = await resource.formColl.insert(data);
+  Future<List<IApplication>> loadAllApplication() async {
+    final List<IApplication> applications = [...standard.applications];
 
-    if (res != null) {
-      await resource.formColl.notity({
-        data: [res],
-        'operate': 'insert'
-      });
-      return res;
-    }
-    return null;
-  }
-
-  @override
-  Future<XSpecies?> createSpecies(XSpecies data) async {
-    data.directoryId = id;
-    final res = await resource.speciesColl.insert(data);
-    if (res != null) {
-      await resource.speciesColl.notity({
-        data: [res],
-        'operate': 'insert'
-      });
-      return res;
-    }
-    return null;
-  }
-
-  @override
-  Future<XProperty?> createProperty(XProperty data) async {
-    data.directoryId = id;
-    final res = await resource.propertyColl.insert(data);
-    if (res != null) {
-      await resource.propertyColl.notity({
-        data: [res],
-        'operate': 'insert'
-      });
-      return res;
-    }
-    return null;
-  }
-
-  @override
-  Future<XApplication?> createApplication(XApplication data) async {
-    data.directoryId = id;
-
-    final res = await resource.applicationColl.insert(data);
-    if (res != null) {
-      await resource.applicationColl.notity({
-        data: [res],
-        'operate': 'insert'
-      });
-      return res;
-    }
-    return null;
-  }
-
-  @override
-  Future<Transfer?> createTransfer(XTransfer data) async {
-    data.directoryId = id;
-    data.envs = [];
-    data.nodes = [];
-    data.edges = [];
-
-    final res = await resource.transferColl.insert(data);
-    if (res != null) {
-      final link = Transfer(res, this);
-      transfers.add(link);
-      await resource.transferColl.notity({
-        data: [res],
-        'operate': 'insert'
-      });
-      return link;
-    }
-    return null;
-  }
-
-  @override
-  Future<List<IApplication>> loadAllApplication({bool? reload}) async {
-    final List<IApplication> applications = [...this.applications];
-
-    for (var subDirectory in children) {
-      applications
-          .addAll(await subDirectory.loadAllApplication(reload: reload));
+    for (var item in children) {
+      applications.addAll(await item.loadAllApplication());
     }
 
     return applications;
   }
 
   @override
-  Future<List<ITransfer>> loadAllTransfer({bool? reload = false}) async {
-    final List<ITransfer> links = transfers;
-
-    for (var subDirectory in children) {
-      links.addAll(await subDirectory.loadAllTransfer(reload: reload));
+  Future<List<IPageTemplate>> loadAllTemplate({bool? reload}) async {
+    List<IPageTemplate> templates = [...standard.templates];
+    for (var item in children) {
+      templates.addAll((await item.loadAllTemplate(reload: reload)));
     }
-
-    return links;
+    return templates;
   }
 
   @override
@@ -484,68 +417,142 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  loadDirectoryResource({bool? reload = false}) async {
-    await operater.loadResource(reload: reload!);
+  Future<void> loadDirectoryResource({bool? reload = false}) async {
+    if (parent == null || reload == true) {
+      await resource.preLoad(reload: reload!);
+    }
+    await standard.loadApplications();
+    await standard.loadDirectorys();
+    await standard.loadTemplates();
   }
 
   ///对目录下所有资源进行操作
   //action只支持 'replaceMany' | 'deleteMany'
   Future<void> operateDirectoryResource(
-      IDirectory directory, DataResource resource, String action,
-      {bool move = false}) async {
-    for (final child in directory.children) {
+    IDirectory directory,
+    DataResource resource,
+    String action, //'replaceMany' | 'removeMany',
+    {
+    bool? move = false,
+  }) async {
+    if (action == 'removeMany') {
+      this.resource.deleteDirectory(directory.id);
+    }
+    for (var child in directory.children) {
       await operateDirectoryResource(child, resource, action, move: move);
     }
-//TODO 以下代码使用时翻译
-    // await resource.directoryColl[action](
-    //     directory.children.map((a) => a.metadata).toList());
-    // await resource
-    //     .formColl[action](directory.forms.map((a) => a.metadata).toList());
-    // await resource.speciesColl[action](
-    //     directory.specieses.map((a) => a.metadata).toList());
-    // await resource.propertyColl[action](
-    //     directory.propertys.map((a) => a.metadata).toList());
-
-    if (action == 'deleteMany') {
-      await resource.speciesItemColl.deleteMatch({
-        'speciesId': {
-          '_in_': directory.specieses.map((a) => a.id),
-        },
-      });
-
-      await resource.applicationColl.deleteMatch({
-        'directoryId': directory.id,
-      });
-    }
-
-    if (action == 'replaceMany') {
-      if (move) {
-        final apps = directory.resource.applicationColl.cache
-            .where(
-              (i) => i.directoryId == directory.id,
-            )
-            .toList();
-
-        await resource.applicationColl.replaceMany(apps);
-      } else {
-        if (this.resource.targetMetadata.belongId !=
-            resource.targetMetadata.belongId) {
-          final items =
-              await this.directory.resource.speciesItemColl.loadSpace({
-            'options': {
-              'match': {
-                'speciesId': {
-                  '_in_': directory.specieses.map((a) => a.id),
-                },
-              },
-            },
-          });
-
-          await resource.speciesItemColl.replaceMany(items);
-        }
-      }
-    }
+    await directory.standard.operateStandradFile(resource, action, move);
   }
+
+  @override
+  bool receive(String operate, dynamic data) {
+    var d = data as XStandard;
+    coll.removeCache((i) => i.id != d.id);
+    super.receive(operate, d);
+    coll.cache.add(metadata);
+    return true;
+  }
+
+  @override
+  Future<bool> notifyReloadFiles() {
+    metadata.directoryId = id;
+    return coll.notity(
+      {
+        'data': metadata,
+        'operate': 'reloadFiles',
+      },
+      ignoreSelf: true,
+    );
+  }
+
+  // @override
+  // Future<XForm?> createForm(XForm data) async {
+  //   data.directoryId = id;
+  //   final res = await resource.formColl.insert(data);
+
+  //   if (res != null) {
+  //     await resource.formColl.notity({
+  //       data: [res],
+  //       'operate': 'insert'
+  //     });
+  //     return res;
+  //   }
+  //   return null;
+  // }
+
+  // @override
+  // Future<XSpecies?> createSpecies(XSpecies data) async {
+  //   data.directoryId = id;
+  //   final res = await resource.speciesColl.insert(data);
+  //   if (res != null) {
+  //     await resource.speciesColl.notity({
+  //       data: [res],
+  //       'operate': 'insert'
+  //     });
+  //     return res;
+  //   }
+  //   return null;
+  // }
+
+  // @override
+  // Future<XProperty?> createProperty(XProperty data) async {
+  //   data.directoryId = id;
+  //   final res = await resource.propertyColl.insert(data);
+  //   if (res != null) {
+  //     await resource.propertyColl.notity({
+  //       data: [res],
+  //       'operate': 'insert'
+  //     });
+  //     return res;
+  //   }
+  //   return null;
+  // }
+
+  // @override
+  // Future<XApplication?> createApplication(XApplication data) async {
+  //   data.directoryId = id;
+
+  //   final res = await resource.applicationColl.insert(data);
+  //   if (res != null) {
+  //     await resource.applicationColl.notity({
+  //       data: [res],
+  //       'operate': 'insert'
+  //     });
+  //     return res;
+  //   }
+  //   return null;
+  // }
+
+  // @override
+  // Future<Transfer?> createTransfer(XTransfer data) async {
+  //   data.directoryId = id;
+  //   data.envs = [];
+  //   data.nodes = [];
+  //   data.edges = [];
+
+  //   final res = await resource.transferColl.insert(data);
+  //   if (res != null) {
+  //     final link = Transfer(res, this);
+  //     standard.transfers.add(link);
+  //     await resource.transferColl.notity({
+  //       data: [res],
+  //       'operate': 'insert'
+  //     });
+  //     return link;
+  //   }
+  //   return null;
+  // }
+
+  // @override
+  // Future<List<ITransfer>> loadAllTransfer({bool? reload = false}) async {
+  //   final List<ITransfer> links = standard.transfers;
+
+  //   for (var subDirectory in children) {
+  //     links.addAll(await subDirectory.loadAllTransfer(reload: reload));
+  //   }
+
+  //   return links;
+  // }
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);

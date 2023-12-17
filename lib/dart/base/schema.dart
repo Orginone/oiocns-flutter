@@ -178,8 +178,10 @@ class XEntity extends Xbase {
 class XStandard extends XEntity {
   // 目录ID
   String directoryId;
+  bool isDeleted;
   XStandard(
       {required this.directoryId,
+      required this.isDeleted,
       required super.id,
       super.belong,
       super.belongId,
@@ -196,7 +198,17 @@ class XStandard extends XEntity {
       super.version});
   XStandard.fromJson(Map<String, dynamic> json)
       : directoryId = json['directoryId'] ?? "",
+        isDeleted = json['isDeleted'] ?? false,
         super.fromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() {
+    final json = super.toJson();
+    json['directoryId'] = directoryId;
+    json['isDeleted'] = isDeleted;
+
+    return json;
+  }
 }
 
 class XApplication extends XStandard {
@@ -216,6 +228,7 @@ class XApplication extends XStandard {
     this.nodes,
     this.directory,
     required super.id,
+    required super.isDeleted,
   });
 
   XApplication.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -515,6 +528,7 @@ class XDirectory extends XStandard {
     super.belong,
     required super.directoryId,
     required super.id,
+    required super.isDeleted,
   });
 
   XDirectory.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -2597,58 +2611,58 @@ class XMarket {
 }
 
 //交易市场查询返回集合
-class XMarketArray {
-  // 便宜量
-  final int offset;
+// class XMarketArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int total;
+//   // 总数
+//   final int total;
 
-  // 结果
-  final List<XMarket>? result;
+//   // 结果
+//   final List<XMarket>? result;
 
-  //构造方法
-  XMarketArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XMarketArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XMarketArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XMarket.fromList(json["result"]);
+//   //通过JSON构造
+//   XMarketArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"],
+//         limit = json["limit"],
+//         total = json["total"],
+//         result = XMarket.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XMarketArray> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XMarketArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XMarketArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XMarketArray> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XMarketArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XMarketArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
 //组织/个人与市场关系
 class XMarketRelation {
@@ -2753,59 +2767,59 @@ class XMarketRelation {
   }
 }
 
-//组织/个人与市场关系查询返回集合
-class XMarketRelationArray {
-  // 便宜量
-  final int offset;
+// //组织/个人与市场关系查询返回集合
+// class XMarketRelationArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int total;
+//   // 总数
+//   final int total;
 
-  // 结果
-  final List<XMarketRelation>? result;
+//   // 结果
+//   final List<XMarketRelation>? result;
 
-  //构造方法
-  XMarketRelationArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XMarketRelationArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XMarketRelationArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XMarketRelation.fromList(json["result"]);
+//   //通过JSON构造
+//   XMarketRelationArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"],
+//         limit = json["limit"],
+//         total = json["total"],
+//         result = XMarketRelation.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XMarketRelationArray> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XMarketRelationArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XMarketRelationArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XMarketRelationArray> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XMarketRelationArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XMarketRelationArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
 //商品信息
 class XMerchandise {
@@ -2946,58 +2960,58 @@ class XMerchandise {
 }
 
 //商品信息查询返回集合
-class XMerchandiseArray {
-  // 便宜量
-  final int offset;
+// class XMerchandiseArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int total;
+//   // 总数
+//   final int total;
 
-  // 结果
-  final List<XMerchandise>? result;
+//   // 结果
+//   final List<XMerchandise>? result;
 
-  //构造方法
-  XMerchandiseArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XMerchandiseArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XMerchandiseArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XMerchandise.fromList(json["result"]);
+//   //通过JSON构造
+//   XMerchandiseArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"],
+//         limit = json["limit"],
+//         total = json["total"],
+//         result = XMerchandise.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XMerchandiseArray> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XMerchandiseArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XMerchandiseArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XMerchandiseArray> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XMerchandiseArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XMerchandiseArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
 class Rule {
   String? title;
@@ -3143,58 +3157,58 @@ class XOrder {
 }
 
 //采购订单查询返回集合
-class XOrderArray {
-  // 便宜量
-  final int offset;
+// class XOrderArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int total;
+//   // 总数
+//   final int total;
 
-  // 结果
-  final List<XOrder>? result;
+//   // 结果
+//   final List<XOrder>? result;
 
-  //构造方法
-  XOrderArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XOrderArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XOrderArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XOrder.fromList(json["result"]);
+//   //通过JSON构造
+//   XOrderArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"],
+//         limit = json["limit"],
+//         total = json["total"],
+//         result = XOrder.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XOrderArray> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XOrderArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XOrderArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XOrderArray> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XOrderArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XOrderArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
 //订单详情
 class XOrderDetail {
@@ -3346,7 +3360,7 @@ class XOrderDetail {
   }
 }
 
-//订单详情查询返回集合
+// 订单详情查询返回集合
 class XOrderDetailArray {
   // 便宜量
   final int offset;
@@ -3497,58 +3511,58 @@ class XOrderPay {
 }
 
 //支付详情查询返回集合
-class XOrderPayArray {
-  // 便宜量
-  final int offset;
+// class XOrderPayArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int total;
+//   // 总数
+//   final int total;
 
-  // 结果
-  final List<XOrderPay>? result;
+//   // 结果
+//   final List<XOrderPay>? result;
 
-  //构造方法
-  XOrderPayArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XOrderPayArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XOrderPayArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XOrderPay.fromList(json["result"]);
+//   //通过JSON构造
+//   XOrderPayArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"],
+//         limit = json["limit"],
+//         total = json["total"],
+//         result = XOrderPay.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XOrderPayArray> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XOrderPayArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XOrderPayArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XOrderPayArray> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XOrderPayArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XOrderPayArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
 //产品信息
 class XProduct {
@@ -3968,58 +3982,58 @@ class XResource {
 }
 
 //应用资源查询返回集合
-class XResourceArray {
-  // 便宜量
-  final int offset;
+// class XResourceArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int total;
+//   // 总数
+//   final int total;
 
-  // 结果
-  final List<XResource>? result;
+//   // 结果
+//   final List<XResource>? result;
 
-  //构造方法
-  XResourceArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XResourceArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XResourceArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XResource.fromList(json["result"]);
+//   //通过JSON构造
+//   XResourceArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"],
+//         limit = json["limit"],
+//         total = json["total"],
+//         result = XResource.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XResourceArray> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XResourceArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XResourceArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XResourceArray> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XResourceArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XResourceArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
 //规则与度量标准关系
 class XRuleAttr {
@@ -4358,6 +4372,7 @@ class XForm extends XStandard {
     this.bindNodes,
     required super.directoryId,
     required super.id,
+    required super.isDeleted,
   });
 
   XForm.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -4701,6 +4716,7 @@ class XProperty extends XStandard {
     this.propThingValues,
     this.directory,
     this.species,
+    required super.isDeleted,
   });
 
   XProperty.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -4774,8 +4790,7 @@ class XRelation extends Xbase {
   final String targetId;
   // 组织ID
   final String teamId;
-  // 关系的度量
-  final List<XThingAttr>? attrValues;
+
   // 关联的组织团队
   final XTeam? team;
   // 关联的组织实体
@@ -4785,7 +4800,6 @@ class XRelation extends Xbase {
   XRelation({
     required this.targetId,
     required this.teamId,
-    required this.attrValues,
     required this.team,
     required this.target,
     required super.id,
@@ -4795,7 +4809,6 @@ class XRelation extends Xbase {
   XRelation.fromJson(Map<String, dynamic> json)
       : targetId = json["targetId"],
         teamId = json["teamId"],
-        attrValues = XThingAttr.fromList(json["attrValues"]),
         team = XTeam.fromJson(json["team"]),
         target = XTarget.fromJson(json["target"]),
         super.fromJson(json);
@@ -4820,7 +4833,6 @@ class XRelation extends Xbase {
     Map<String, dynamic> json = {...super.toJson()};
     json["targetId"] = targetId;
     json["teamId"] = teamId;
-    json["attrValues"] = attrValues;
     json["team"] = team?.toJson();
     json["target"] = target?.toJson();
     return json;
@@ -4840,6 +4852,7 @@ class XSpecies extends XStandard {
     this.speciesProps,
     required super.directoryId,
     required super.id,
+    required super.isDeleted,
   });
 
   XSpecies.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
@@ -5254,47 +5267,48 @@ class XThing extends Xbase {
   final String name;
   // 编号
   final String code;
+  // 共享容器ID
+  @override
+  final String shareId;
+  // 归属用户ID
+  @override
+  final String belongId;
   // 备注
   final String remark;
   // 零件
   final List<XThing>? nodes;
   // 整件
   final List<XThing>? parent;
-  // 物的类别关系
-  final List<XThingSpec>? thingSpecies;
-  // 合成物关系
-  final List<XThingRelation>? relations;
-  // 零件关系
-  final List<XThingRelation>? subRelations;
-  // 物的特性度量值
-  final List<XThingAttr>? thingAttrValues;
-  // 物作为产品的映射
-  final List<XProduct>? products;
-  // 物作为管理对象的映射
-  final XTarget? target;
+
+  ///标签集
+  List<String> property;
+
+  ///归档集
+  List<String> archives;
   // 给物的分类类别
-  final List<XSpecies>? givenSpecies;
+  List<XThingProp>? thingPropValues;
+  // 物作为管理对象的映射
+  XTarget? target;
   // 给物的度量标准
-  final List<XAttribute>? givenAttributes;
+  List<XProperty>? givenPropertys;
   // 物的归属
-  final XTarget? belong;
+  XTarget? belong;
   //构造方法
   XThing({
+    required this.shareId,
+    required this.belongId,
+    required this.thingPropValues,
+    required this.givenPropertys,
     required this.chainId,
     required this.name,
     required this.code,
     required this.remark,
     required this.nodes,
     required this.parent,
-    required this.thingSpecies,
-    required this.relations,
-    required this.subRelations,
-    required this.thingAttrValues,
-    required this.products,
     required this.target,
-    required this.givenSpecies,
-    required this.givenAttributes,
     required this.belong,
+    required this.property,
+    required this.archives,
     required super.id,
   });
 
@@ -5302,20 +5316,22 @@ class XThing extends Xbase {
   XThing.fromJson(Map<String, dynamic> json)
       : chainId = json["chainId"],
         name = json["name"],
+        shareId = json["shareId"],
+        belongId = json["belongId"],
         code = json["code"],
         remark = json["remark"],
+        archives = json["archives"],
+        property = json["property"],
         nodes = XThing.fromList(json["nodes"]),
         parent = XThing.fromList(json["parent"]),
-        thingSpecies = XThingSpec.fromList(json["thingSpecies"]),
-        relations = XThingRelation.fromList(json["relations"]),
-        subRelations = XThingRelation.fromList(json["subRelations"]),
-        thingAttrValues = XThingAttr.fromList(json["thingAttrValues"]),
-        products = XProduct.fromList(json["products"]),
         target = XTarget.fromJson(json["target"]),
-        givenSpecies = XSpecies.fromList(json["givenSpecies"]),
-        givenAttributes = json['givenAttributes'] != null
-            ? List<XAttribute>.from(
-                json['givenAttributes'].map((x) => XAttribute.fromJson(x)))
+        thingPropValues = json['thingPropValues'] != null
+            ? List<XThingProp>.from(
+                json['thingPropValues'].map((x) => XThingProp.fromJson(x)))
+            : null,
+        givenPropertys = json['givenPropertys'] != null
+            ? List<XProperty>.from(
+                json['XProperty'].map((x) => XProperty.fromJson(x)))
             : null,
         belong = XTarget.fromJson(json["belong"]),
         super.fromJson(json);
@@ -5344,14 +5360,7 @@ class XThing extends Xbase {
     json["remark"] = remark;
     json["nodes"] = nodes;
     json["parent"] = parent;
-    json["thingSpecies"] = thingSpecies;
-    json["relations"] = relations;
-    json["subRelations"] = subRelations;
-    json["thingAttrValues"] = thingAttrValues;
-    json["products"] = products;
     json["target"] = target?.toJson();
-    json["givenSpecies"] = givenSpecies;
-    json["givenAttributes"] = givenAttributes;
     json["belong"] = belong?.toJson();
     return json;
   }
@@ -6077,389 +6086,389 @@ class XFormArray {
   }
 }
 
-//商品暂存
-class XStaging {
-  // 雪花ID
-  final String id;
+// //商品暂存
+// class XStaging {
+//   // 雪花ID
+//   final String id;
 
-  // 商品ID
-  final String merchandiseId;
+//   // 商品ID
+//   final String merchandiseId;
 
-  // 创建组织/个人
-  final String belongId;
+//   // 创建组织/个人
+//   final String belongId;
 
-  // 订单采购的市场
-  final String marketId;
+//   // 订单采购的市场
+//   final String marketId;
 
-  // 数量
-  final String number;
+//   // 数量
+//   final String number;
 
-  // 状态
-  final int status;
+//   // 状态
+//   final int status;
 
-  // 创建人员ID
-  final String createUser;
+//   // 创建人员ID
+//   final String createUser;
 
-  // 更新人员ID
-  final String updateUser;
+//   // 更新人员ID
+//   final String updateUser;
 
-  // 修改次数
-  final String version;
+//   // 修改次数
+//   final String version;
 
-  // 创建时间
-  final String createTime;
+//   // 创建时间
+//   final String createTime;
 
-  // 更新时间
-  final String updateTime;
+//   // 更新时间
+//   final String updateTime;
 
-  // 暂存区针对的市场
-  final XMarket? market;
+//   // 暂存区针对的市场
+//   final XMarket? market;
 
-  // 创建的组织/个人
-  final XTarget? belong;
+//   // 创建的组织/个人
+//   final XTarget? belong;
 
-  // 暂存的商品
-  final XMerchandise? merchandise;
+//   // 暂存的商品
+//   final XMerchandise? merchandise;
 
-  //构造方法
-  XStaging({
-    required this.id,
-    required this.merchandiseId,
-    required this.belongId,
-    required this.marketId,
-    required this.number,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
-    required this.createTime,
-    required this.updateTime,
-    required this.market,
-    required this.belong,
-    required this.merchandise,
-  });
+//   //构造方法
+//   XStaging({
+//     required this.id,
+//     required this.merchandiseId,
+//     required this.belongId,
+//     required this.marketId,
+//     required this.number,
+//     required this.status,
+//     required this.createUser,
+//     required this.updateUser,
+//     required this.version,
+//     required this.createTime,
+//     required this.updateTime,
+//     required this.market,
+//     required this.belong,
+//     required this.merchandise,
+//   });
 
-  //通过JSON构造
-  XStaging.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        merchandiseId = json["merchandiseId"],
-        belongId = json["belongId"],
-        marketId = json["marketId"],
-        number = json["number"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        market = XMarket.fromJson(json["market"]),
-        belong = XTarget.fromJson(json["belong"]),
-        merchandise = XMerchandise.fromJson(json["merchandise"]);
+//   //通过JSON构造
+//   XStaging.fromJson(Map<String, dynamic> json)
+//       : id = json["id"],
+//         merchandiseId = json["merchandiseId"],
+//         belongId = json["belongId"],
+//         marketId = json["marketId"],
+//         number = json["number"],
+//         status = json["status"],
+//         createUser = json["createUser"],
+//         updateUser = json["updateUser"],
+//         version = json["version"],
+//         createTime = json["createTime"],
+//         updateTime = json["updateTime"],
+//         market = XMarket.fromJson(json["market"]),
+//         belong = XTarget.fromJson(json["belong"]),
+//         merchandise = XMerchandise.fromJson(json["merchandise"]);
 
-  //通过动态数组解析成List
-  static List<XStaging> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XStaging> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XStaging.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XStaging> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XStaging> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XStaging.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["merchandiseId"] = merchandiseId;
-    json["belongId"] = belongId;
-    json["marketId"] = marketId;
-    json["number"] = number;
-    json["status"] = status;
-    json["createUser"] = createUser;
-    json["updateUser"] = updateUser;
-    json["version"] = version;
-    json["createTime"] = createTime;
-    json["updateTime"] = updateTime;
-    json["market"] = market?.toJson();
-    json["belong"] = belong?.toJson();
-    json["merchandise"] = merchandise?.toJson();
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["id"] = id;
+//     json["merchandiseId"] = merchandiseId;
+//     json["belongId"] = belongId;
+//     json["marketId"] = marketId;
+//     json["number"] = number;
+//     json["status"] = status;
+//     json["createUser"] = createUser;
+//     json["updateUser"] = updateUser;
+//     json["version"] = version;
+//     json["createTime"] = createTime;
+//     json["updateTime"] = updateTime;
+//     json["market"] = market?.toJson();
+//     json["belong"] = belong?.toJson();
+//     json["merchandise"] = merchandise?.toJson();
+//     return json;
+//   }
+// }
 
 //商品暂存查询返回集合
-class XStagingArray {
-  // 便宜量
-  final int offset;
+// class XStagingArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int total;
+//   // 总数
+//   final int total;
 
-  // 结果
-  final List<XStaging>? result;
+//   // 结果
+//   final List<XStaging>? result;
 
-  //构造方法
-  XStagingArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XStagingArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XStagingArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XStaging.fromList(json["result"]);
+//   //通过JSON构造
+//   XStagingArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"],
+//         limit = json["limit"],
+//         total = json["total"],
+//         result = XStaging.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XStagingArray> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XStagingArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XStagingArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XStagingArray> fromList(List<dynamic>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XStagingArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XStagingArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
 //组织/个人查询返回集合
-class XTargetArray {
-  // 便宜量
-  final int offset;
+// class XTargetArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int? total;
+//   // 总数
+//   final int? total;
 
-  // 结果
-  final List<XTarget>? result;
+//   // 结果
+//   final List<XTarget>? result;
 
-  //构造方法
-  XTargetArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XTargetArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XTargetArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"] ?? 0,
-        limit = json["limit"],
-        total = json["total"] ?? 0,
-        result = XTarget.fromList(json["result"]);
+//   //通过JSON构造
+//   XTargetArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"] ?? 0,
+//         limit = json["limit"],
+//         total = json["total"] ?? 0,
+//         result = XTarget.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XTargetArray> fromList(List<dynamic>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XTargetArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XTargetArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XTargetArray> fromList(List<dynamic>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XTargetArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XTargetArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
 //虚拟组织查询返回集合
-class XTeamArray {
-  // 便宜量
-  final int offset;
+// class XTeamArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int total;
+//   // 总数
+//   final int total;
 
-  // 结果
-  final List<XTeam>? result;
+//   // 结果
+//   final List<XTeam>? result;
 
-  //构造方法
-  XTeamArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XTeamArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XTeamArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XTeam.fromList(json["result"]);
+//   //通过JSON构造
+//   XTeamArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"],
+//         limit = json["limit"],
+//         total = json["total"],
+//         result = XTeam.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XTeamArray> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XTeamArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XTeamArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XTeamArray> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XTeamArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XTeamArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
 //身份组织查询返回集合
-class XTeamIdentityArray {
-  // 便宜量
-  final int offset;
+// class XTeamIdentityArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int total;
+//   // 总数
+//   final int total;
 
-  // 结果
-  final List<XTeamIdentity>? result;
+//   // 结果
+//   final List<XTeamIdentity>? result;
 
-  //构造方法
-  XTeamIdentityArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XTeamIdentityArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XTeamIdentityArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XTeamIdentity.fromList(json["result"]);
+//   //通过JSON构造
+//   XTeamIdentityArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"],
+//         limit = json["limit"],
+//         total = json["total"],
+//         result = XTeamIdentity.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XTeamIdentityArray> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XTeamIdentityArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XTeamIdentityArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XTeamIdentityArray> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XTeamIdentityArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XTeamIdentityArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
-//(物/存在)查询返回集合
-class XThingArray {
-  // 便宜量
-  final int offset;
+// //(物/存在)查询返回集合
+// class XThingArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int total;
+//   // 总数
+//   final int total;
 
-  // 结果
-  final List<XThing>? result;
+//   // 结果
+//   final List<XThing>? result;
 
-  //构造方法
-  XThingArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XThingArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XThingArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XThing.fromList(json["result"]);
+//   //通过JSON构造
+//   XThingArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"],
+//         limit = json["limit"],
+//         total = json["total"],
+//         result = XThing.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XThingArray> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XThingArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XThingArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XThingArray> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XThingArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XThingArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
 //物的度量特性
 class XThingAttr {
@@ -6594,60 +6603,60 @@ class XThingAttr {
 }
 
 //物的度量特性查询返回集合
-class XThingAttrArray {
-  // 便宜量
-  final int offset;
+// class XThingAttrArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int total;
+//   // 总数
+//   final int total;
 
-  // 结果
-  final List<XThingAttr>? result;
+//   // 结果
+//   final List<XThingAttr>? result;
 
-  //构造方法
-  XThingAttrArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XThingAttrArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XThingAttrArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XThingAttr.fromList(json["result"]);
+//   //通过JSON构造
+//   XThingAttrArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"],
+//         limit = json["limit"],
+//         total = json["total"],
+//         result = XThingAttr.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XThingAttrArray> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XThingAttrArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XThingAttrArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XThingAttrArray> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XThingAttrArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XThingAttrArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
-//物的度量特性历史
+// 物的度量特性历史
 class XThingAttrHistroy {
   // 雪花ID
   final String id;
@@ -6744,359 +6753,359 @@ class XThingAttrHistroy {
 }
 
 //物的度量特性历史查询返回集合
-class XThingAttrHistroyArray {
-  // 便宜量
-  final int offset;
+// class XThingAttrHistroyArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int total;
+//   // 总数
+//   final int total;
 
-  // 结果
-  final List<XThingAttrHistroy>? result;
+//   // 结果
+//   final List<XThingAttrHistroy>? result;
 
-  //构造方法
-  XThingAttrHistroyArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XThingAttrHistroyArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XThingAttrHistroyArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XThingAttrHistroy.fromList(json["result"]);
+//   //通过JSON构造
+//   XThingAttrHistroyArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"],
+//         limit = json["limit"],
+//         total = json["total"],
+//         result = XThingAttrHistroy.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XThingAttrHistroyArray> fromList(
-      List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XThingAttrHistroyArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XThingAttrHistroyArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XThingAttrHistroyArray> fromList(
+//       List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XThingAttrHistroyArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XThingAttrHistroyArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
 //物与物关系
-class XThingRelation {
-  // 雪花ID
-  final String id;
+// class XThingRelation {
+//   // 雪花ID
+//   final String id;
 
-  // 物ID
-  final String thingId;
+//   // 物ID
+//   final String thingId;
 
-  // 零件ID
-  final String subThingId;
+//   // 零件ID
+//   final String subThingId;
 
-  // 状态
-  final int status;
+//   // 状态
+//   final int status;
 
-  // 创建人员ID
-  final String createUser;
+//   // 创建人员ID
+//   final String createUser;
 
-  // 更新人员ID
-  final String updateUser;
+//   // 更新人员ID
+//   final String updateUser;
 
-  // 修改次数
-  final String version;
+//   // 修改次数
+//   final String version;
 
-  // 创建时间
-  final String createTime;
+//   // 创建时间
+//   final String createTime;
 
-  // 更新时间
-  final String updateTime;
+//   // 更新时间
+//   final String updateTime;
 
-  // 合成物
-  final XThing? thing;
+//   // 合成物
+//   final XThing? thing;
 
-  // 零部件
-  final XThing? subThing;
+//   // 零部件
+//   final XThing? subThing;
 
-  //构造方法
-  XThingRelation({
-    required this.id,
-    required this.thingId,
-    required this.subThingId,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
-    required this.createTime,
-    required this.updateTime,
-    required this.thing,
-    required this.subThing,
-  });
+//   //构造方法
+//   XThingRelation({
+//     required this.id,
+//     required this.thingId,
+//     required this.subThingId,
+//     required this.status,
+//     required this.createUser,
+//     required this.updateUser,
+//     required this.version,
+//     required this.createTime,
+//     required this.updateTime,
+//     required this.thing,
+//     required this.subThing,
+//   });
 
-  //通过JSON构造
-  XThingRelation.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        thingId = json["thingId"],
-        subThingId = json["subThingId"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        thing = XThing.fromJson(json["thing"]),
-        subThing = XThing.fromJson(json["subThing"]);
+//   //通过JSON构造
+//   XThingRelation.fromJson(Map<String, dynamic> json)
+//       : id = json["id"],
+//         thingId = json["thingId"],
+//         subThingId = json["subThingId"],
+//         status = json["status"],
+//         createUser = json["createUser"],
+//         updateUser = json["updateUser"],
+//         version = json["version"],
+//         createTime = json["createTime"],
+//         updateTime = json["updateTime"],
+//         thing = XThing.fromJson(json["thing"]),
+//         subThing = XThing.fromJson(json["subThing"]);
 
-  //通过动态数组解析成List
-  static List<XThingRelation> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XThingRelation> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XThingRelation.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XThingRelation> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XThingRelation> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XThingRelation.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["thingId"] = thingId;
-    json["subThingId"] = subThingId;
-    json["status"] = status;
-    json["createUser"] = createUser;
-    json["updateUser"] = updateUser;
-    json["version"] = version;
-    json["createTime"] = createTime;
-    json["updateTime"] = updateTime;
-    json["thing"] = thing?.toJson();
-    json["subThing"] = subThing?.toJson();
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["id"] = id;
+//     json["thingId"] = thingId;
+//     json["subThingId"] = subThingId;
+//     json["status"] = status;
+//     json["createUser"] = createUser;
+//     json["updateUser"] = updateUser;
+//     json["version"] = version;
+//     json["createTime"] = createTime;
+//     json["updateTime"] = updateTime;
+//     json["thing"] = thing?.toJson();
+//     json["subThing"] = subThing?.toJson();
+//     return json;
+//   }
+// }
 
 //物与物关系查询返回集合
-class XThingRelationArray {
-  // 便宜量
-  final int offset;
+// class XThingRelationArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int total;
+//   // 总数
+//   final int total;
 
-  // 结果
-  final List<XThingRelation>? result;
+//   // 结果
+//   final List<XThingRelation>? result;
 
-  //构造方法
-  XThingRelationArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XThingRelationArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XThingRelationArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XThingRelation.fromList(json["result"]);
+//   //通过JSON构造
+//   XThingRelationArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"],
+//         limit = json["limit"],
+//         total = json["total"],
+//         result = XThingRelation.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XThingRelationArray> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XThingRelationArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XThingRelationArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XThingRelationArray> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XThingRelationArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XThingRelationArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
 //物的类别关系
-class XThingSpec {
-  // 雪花ID
-  final String id;
+// class XThingSpec {
+//   // 雪花ID
+//   final String id;
 
-  // 类别ID
-  final String speciesId;
+//   // 类别ID
+//   final String speciesId;
 
-  // 元数据ID
-  final String thingId;
+//   // 元数据ID
+//   final String thingId;
 
-  // 状态
-  final int status;
+//   // 状态
+//   final int status;
 
-  // 创建人员ID
-  final String createUser;
+//   // 创建人员ID
+//   final String createUser;
 
-  // 更新人员ID
-  final String updateUser;
+//   // 更新人员ID
+//   final String updateUser;
 
-  // 修改次数
-  final String version;
+//   // 修改次数
+//   final String version;
 
-  // 创建时间
-  final String createTime;
+//   // 创建时间
+//   final String createTime;
 
-  // 更新时间
-  final String updateTime;
+//   // 更新时间
+//   final String updateTime;
 
-  // 类别
-  final XSpecies? species;
+//   // 类别
+//   final XSpecies? species;
 
-  // 物
-  final XThing? thing;
+//   // 物
+//   final XThing? thing;
 
-  //构造方法
-  XThingSpec({
-    required this.id,
-    required this.speciesId,
-    required this.thingId,
-    required this.status,
-    required this.createUser,
-    required this.updateUser,
-    required this.version,
-    required this.createTime,
-    required this.updateTime,
-    required this.species,
-    required this.thing,
-  });
+//   //构造方法
+//   XThingSpec({
+//     required this.id,
+//     required this.speciesId,
+//     required this.thingId,
+//     required this.status,
+//     required this.createUser,
+//     required this.updateUser,
+//     required this.version,
+//     required this.createTime,
+//     required this.updateTime,
+//     required this.species,
+//     required this.thing,
+//   });
 
-  //通过JSON构造
-  XThingSpec.fromJson(Map<String, dynamic> json)
-      : id = json["id"],
-        speciesId = json["speciesId"],
-        thingId = json["thingId"],
-        status = json["status"],
-        createUser = json["createUser"],
-        updateUser = json["updateUser"],
-        version = json["version"],
-        createTime = json["createTime"],
-        updateTime = json["updateTime"],
-        species = XSpecies.fromJson(json["species"]),
-        thing = XThing.fromJson(json["thing"]);
+//   //通过JSON构造
+//   XThingSpec.fromJson(Map<String, dynamic> json)
+//       : id = json["id"],
+//         speciesId = json["speciesId"],
+//         thingId = json["thingId"],
+//         status = json["status"],
+//         createUser = json["createUser"],
+//         updateUser = json["updateUser"],
+//         version = json["version"],
+//         createTime = json["createTime"],
+//         updateTime = json["updateTime"],
+//         species = XSpecies.fromJson(json["species"]),
+//         thing = XThing.fromJson(json["thing"]);
 
-  //通过动态数组解析成List
-  static List<XThingSpec> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XThingSpec> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XThingSpec.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XThingSpec> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XThingSpec> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XThingSpec.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["id"] = id;
-    json["speciesId"] = speciesId;
-    json["thingId"] = thingId;
-    json["status"] = status;
-    json["createUser"] = createUser;
-    json["updateUser"] = updateUser;
-    json["version"] = version;
-    json["createTime"] = createTime;
-    json["updateTime"] = updateTime;
-    json["species"] = species?.toJson();
-    json["thing"] = thing?.toJson();
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["id"] = id;
+//     json["speciesId"] = speciesId;
+//     json["thingId"] = thingId;
+//     json["status"] = status;
+//     json["createUser"] = createUser;
+//     json["updateUser"] = updateUser;
+//     json["version"] = version;
+//     json["createTime"] = createTime;
+//     json["updateTime"] = updateTime;
+//     json["species"] = species?.toJson();
+//     json["thing"] = thing?.toJson();
+//     return json;
+//   }
+// }
 
 //物的类别关系查询返回集合
-class XThingSpecArray {
-  // 便宜量
-  final int offset;
+// class XThingSpecArray {
+//   // 便宜量
+//   final int offset;
 
-  // 最大数量
-  final int limit;
+//   // 最大数量
+//   final int limit;
 
-  // 总数
-  final int total;
+//   // 总数
+//   final int total;
 
-  // 结果
-  final List<XThingSpec>? result;
+//   // 结果
+//   final List<XThingSpec>? result;
 
-  //构造方法
-  XThingSpecArray({
-    required this.offset,
-    required this.limit,
-    required this.total,
-    required this.result,
-  });
+//   //构造方法
+//   XThingSpecArray({
+//     required this.offset,
+//     required this.limit,
+//     required this.total,
+//     required this.result,
+//   });
 
-  //通过JSON构造
-  XThingSpecArray.fromJson(Map<String, dynamic> json)
-      : offset = json["offset"],
-        limit = json["limit"],
-        total = json["total"],
-        result = XThingSpec.fromList(json["result"]);
+//   //通过JSON构造
+//   XThingSpecArray.fromJson(Map<String, dynamic> json)
+//       : offset = json["offset"],
+//         limit = json["limit"],
+//         total = json["total"],
+//         result = XThingSpec.fromList(json["result"]);
 
-  //通过动态数组解析成List
-  static List<XThingSpecArray> fromList(List<Map<String, dynamic>>? list) {
-    if (list == null) {
-      return [];
-    }
-    List<XThingSpecArray> retList = [];
-    if (list.isNotEmpty) {
-      for (var item in list) {
-        retList.add(XThingSpecArray.fromJson(item));
-      }
-    }
-    return retList;
-  }
+//   //通过动态数组解析成List
+//   static List<XThingSpecArray> fromList(List<Map<String, dynamic>>? list) {
+//     if (list == null) {
+//       return [];
+//     }
+//     List<XThingSpecArray> retList = [];
+//     if (list.isNotEmpty) {
+//       for (var item in list) {
+//         retList.add(XThingSpecArray.fromJson(item));
+//       }
+//     }
+//     return retList;
+//   }
 
-  //转成JSON
-  Map<String, dynamic> toJson() {
-    Map<String, dynamic> json = {};
-    json["offset"] = offset;
-    json["limit"] = limit;
-    json["total"] = total;
-    json["result"] = result;
-    return json;
-  }
-}
+//   //转成JSON
+//   Map<String, dynamic> toJson() {
+//     Map<String, dynamic> json = {};
+//     json["offset"] = offset;
+//     json["limit"] = limit;
+//     json["total"] = total;
+//     json["result"] = result;
+//     return json;
+//   }
+// }
 
 class VersionEntity {
   String? key;
@@ -7517,4 +7526,79 @@ class VersionMesPubAuthorTeam {
     json["updateTime"] = updateTime;
     return json;
   }
+}
+
+/// 暂存
+class XStaging extends Xbase {
+  /// 类型
+  String typeName;
+
+  /// 数据
+  XThing data;
+
+  /// 归属+关系举证
+  String relations;
+
+  XStaging(
+    this.typeName,
+    this.data,
+    this.relations, {
+    required super.id,
+  });
+
+//通过JSON构造
+  XStaging.fromJson(Map<String, dynamic> json)
+      : typeName = json["typeName"],
+        data = json["data"],
+        relations = json["relations"],
+        super.fromJson(json);
+  //通过动态数组解析成List
+  static List<XStaging> fromList(List<Map<String, dynamic>>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<XStaging> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(XStaging.fromJson(item));
+      }
+    }
+    return retList;
+  }
+
+  //转成JSON
+  @override
+  Map<String, dynamic> toJson() {
+    Map<String, dynamic> json = {};
+    json["typeName"] = typeName;
+    json["data"] = data.toJson();
+    json["relations"] = relations;
+    json["id"] = id;
+
+    return json;
+  }
+}
+
+//页面模板
+class XPageTemplate extends XStandard {
+  // 是否发布至门户
+  bool public;
+  // 是否公开
+  bool open;
+  // 模板类型
+  String? kind;
+//通过JSON构造
+  XPageTemplate.fromJson(Map<String, dynamic> json)
+      : public = json["public"] ?? false,
+        open = json["open"] ?? false,
+        kind = json["kind"],
+        super.fromJson(json);
+  XPageTemplate(
+    this.public,
+    this.open, {
+    required super.directoryId,
+    required super.id,
+    this.kind,
+    required super.isDeleted,
+  });
 }

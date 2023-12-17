@@ -13,6 +13,8 @@ import '../../../dart/base/model.dart' as model;
 import 'logic.dart';
 
 class PropertyPage extends BaseGetPageView<PropertyController, PropertyState> {
+  PropertyPage({super.key});
+
   @override
   Widget buildView() {
     return Container(
@@ -80,6 +82,7 @@ class PropertyPage extends BaseGetPageView<PropertyController, PropertyState> {
 }
 
 class PropertyController extends BaseController<PropertyState> {
+  @override
   final PropertyState state = PropertyState();
 
   ClassificationInfoController get info => Get.find();
@@ -139,7 +142,7 @@ class PropertyController extends BaseController<PropertyState> {
         unit: property?.unit ?? "",
         dictId: property?.id,
         isEdit: true,
-        dictList: info.state.data.space!.directory.specieses ?? []);
+        dictList: info.state.data.space!.directory.standard.specieses ?? []);
   }
 
   Future<void> loadPropertys({bool reload = false}) async {

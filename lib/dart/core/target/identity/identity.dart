@@ -197,8 +197,7 @@ class Identity extends Entity<XIdentity> implements IIdentity {
     return operates;
   }
 
-  @override
-  List<IFileInfo<XEntity>> content({int? mode}) {
+  List<IFile> contents({int? mode}) {
     return [];
   }
 

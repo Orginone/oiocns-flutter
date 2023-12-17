@@ -19,7 +19,7 @@ class Item extends BaseBreadcrumbNavItem<SettingNavModel> {
       return super.popupItems();
     }
     List<PopupMenuItem<PopupMenuKey>> popup =
-        item.source?.popupMenuItem ?? item.space!.popupMenuItem;
+        item.source?.popupMenuItem; //?? item.space!.popupMenuItem;
     return popup;
   }
 

@@ -355,8 +355,13 @@ class Company extends Belong implements ICompany {
   }
 
   @override
-  List<IFileInfo<XEntity>> content({int? mode}) {
-    return [];
+  List<IFile> content({bool? args}) {
+    return [
+      ...groups.map((e) => e as IFile),
+      ...departments.map((e) => e as IFile),
+      ...cohorts.map((e) => e as IFile),
+      ...storages.map((e) => e as IFile)
+    ];
   }
 
   @override

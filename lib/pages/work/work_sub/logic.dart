@@ -272,7 +272,7 @@ class WorkSubController extends BaseListController<WorkSubState> {
     }
 
     List<WorkBreadcrumbNav> works = [];
-    var applications = dir.applications;
+    var applications = dir.standard.applications;
     for (var element in applications) {
       works.add(WorkBreadcrumbNav(
           children: [],

@@ -74,8 +74,8 @@ class SettingCenterPage extends BaseBreadcrumbNavMultiplexPage<
 
     try {
       List<PopupMenuItem<PopupMenuKey>> popup =
-          state.model.value!.source?.popupMenuItem ??
-              state.model.value!.space!.popupMenuItem;
+          state.model.value!.source?.popupMenuItem; //??
+      // state.model.value!.space!.popupMenuItem;
       return popup;
     } catch (e) {
       return super.popupMenuItems();

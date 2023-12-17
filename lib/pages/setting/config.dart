@@ -18,10 +18,10 @@ import 'package:orginone/dart/core/target/outTeam/group.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/dart/core/thing/standard/property.dart';
 import 'package:orginone/dart/core/thing/standard/species.dart';
+import 'package:orginone/dart/core/thing/systemfile.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/pages/setting/home/state.dart';
 import 'package:orginone/utils/toast_utils.dart';
@@ -131,8 +131,8 @@ List<ISpecies> getAllSpecies(List<ISpecies> species) {
   List<ISpecies> list = [];
   for (var element in species) {
     list.add(element);
-    if (element.directory.specieses.isNotEmpty) {
-      list.addAll(getAllSpecies(element.directory.specieses));
+    if (element.directory.standard.specieses.isNotEmpty) {
+      list.addAll(getAllSpecies(element.directory.standard.specieses));
     }
   }
   return list;
@@ -166,10 +166,10 @@ Future<List<SettingNavModel>> loadDir(
         nav.children = [
           ...await loadDir(dir.children, belong),
           ...await loadFile(dir.files, belong),
-          ...await loadSpecies(dir.specieses, belong),
-          ...await loadApplications(dir.applications, belong),
-          ...await loadPropertys(dir.propertys, belong),
-          ...await loadForm(dir.forms, belong),
+          ...await loadSpecies(dir.standard.specieses, belong),
+          ...await loadApplications(dir.standard.applications, belong),
+          ...await loadPropertys(dir.standard.propertys, belong),
+          ...await loadForm(dir.standard.forms, belong),
         ];
       },
     );
@@ -331,11 +331,13 @@ Future<List<SettingNavModel>> loadCohorts(
                 spaceEnum: SpaceEnum.directory,
                 children: [
                   ...await loadFile(cohort.directory.files, belong),
-                  ...await loadSpecies(cohort.directory.specieses, belong),
+                  ...await loadSpecies(
+                      cohort.directory.standard.specieses, belong),
                   ...await loadApplications(
-                      cohort.directory.applications, belong),
-                  ...await loadForm(cohort.directory.forms, belong),
-                  ...await loadPropertys(cohort.directory.propertys, belong),
+                      cohort.directory.standard.applications, belong),
+                  ...await loadForm(cohort.directory.standard.forms, belong),
+                  ...await loadPropertys(
+                      cohort.directory.standard.propertys, belong),
                 ]),
             SettingNavModel(
               id: SpaceEnum.cohorts.label,
@@ -385,12 +387,14 @@ Future<List<SettingNavModel>> loadDepartment(
                 spaceEnum: SpaceEnum.directory,
                 children: [
                   ...await loadFile(department.directory.files, belong),
-                  ...await loadSpecies(department.directory.specieses, belong),
+                  ...await loadSpecies(
+                      department.directory.standard.specieses, belong),
                   ...await loadApplications(
-                      department.directory.applications, belong),
-                  ...await loadForm(department.directory.forms, belong),
+                      department.directory.standard.applications, belong),
+                  ...await loadForm(
+                      department.directory.standard.forms, belong),
                   ...await loadPropertys(
-                      department.directory.propertys, belong),
+                      department.directory.standard.propertys, belong),
                 ]),
             SettingNavModel(
               showPopup: false,
@@ -440,11 +444,13 @@ Future<List<SettingNavModel>> loadGroup(
                 spaceEnum: SpaceEnum.directory,
                 children: [
                   ...await loadFile(group.directory.files, belong),
-                  ...await loadSpecies(group.directory.specieses, belong),
+                  ...await loadSpecies(
+                      group.directory.standard.specieses, belong),
                   ...await loadApplications(
-                      group.directory.applications, belong),
-                  ...await loadForm(group.directory.forms, belong),
-                  ...await loadPropertys(group.directory.propertys, belong),
+                      group.directory.standard.applications, belong),
+                  ...await loadForm(group.directory.standard.forms, belong),
+                  ...await loadPropertys(
+                      group.directory.standard.propertys, belong),
                 ]),
             SettingNavModel(
               id: SpaceEnum.groups.label,
@@ -483,12 +489,14 @@ Future<void> loadUserSetting(Rxn<SettingNavModel> model) async {
           space: user.space,
           children: [
             ...await loadFile(user.space!.directory.files, user.space!),
-            ...await loadSpecies(user.space!.directory.specieses, user.space!),
+            ...await loadSpecies(
+                user.space!.directory.standard.specieses, user.space!),
             ...await loadApplications(
-                user.space!.directory.applications, user.space!),
-            ...await loadForm(user.space!.directory.forms, user.space!),
+                user.space!.directory.standard.applications, user.space!),
+            ...await loadForm(
+                user.space!.directory.standard.forms, user.space!),
             ...await loadPropertys(
-                user.space!.directory.propertys, user.space!),
+                user.space!.directory.standard.propertys, user.space!),
           ],
           spaceEnum: SpaceEnum.directory,
           showPopup: false),
@@ -528,12 +536,14 @@ Future<void> loadCompanySetting(Rxn<SettingNavModel> model) async {
             children: [
               ...await loadFile(company.space!.directory.files, company.space!),
               ...await loadSpecies(
-                  company.space!.directory.specieses, company.space!),
+                  company.space!.directory.standard.specieses, company.space!),
               ...await loadApplications(
-                  company.space!.directory.applications, company.space!),
-              ...await loadForm(company.space!.directory.forms, company.space!),
+                  company.space!.directory.standard.applications,
+                  company.space!),
+              ...await loadForm(
+                  company.space!.directory.standard.forms, company.space!),
               ...await loadPropertys(
-                  company.space!.directory.propertys, company.space!),
+                  company.space!.directory.standard.propertys, company.space!),
             ],
             spaceEnum: SpaceEnum.directory,
             showPopup: false),
@@ -696,7 +706,7 @@ void createSpecies(SettingNavModel item, String typeName,
           break;
         case SpaceEnum.user:
         case SpaceEnum.company:
-          species = (await item.space!.directory
+          species = (await item.space!.directory.standard
               .createSpecies(model as XSpecies)) as ISpecies?;
           break;
         case SpaceEnum.person:
@@ -895,7 +905,7 @@ void createAttr(SettingNavModel item,
           break;
         case SpaceEnum.user:
         case SpaceEnum.company:
-          property = (await item.space!.directory
+          property = (await item.space!.directory.standard
               .createProperty(data as XProperty)) as IProperty?;
           break;
         case SpaceEnum.person:
@@ -971,7 +981,7 @@ void createApplication(SettingNavModel item,
           break;
         case SpaceEnum.user:
         case SpaceEnum.company:
-          application = (await item.space!.directory
+          application = (await item.space!.directory.standard
               .createApplication(data as XApplication)) as IApplication?;
           break;
         case SpaceEnum.person:

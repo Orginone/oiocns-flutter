@@ -32,6 +32,9 @@ abstract class IWork extends IFileInfo<XWorkDefine> {
 
   ///生成办事申请单
   Future<IWorkApply?> createApply();
+
+  /// 接收通知
+  bool receive(String operate, XWorkDefine data);
 }
 
 XWorkDefine fullDefineRule(XWorkDefine data) {
@@ -75,7 +78,7 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
   String get cacheFlag => 'works';
   List<IForm> get forms => [...primaryForms, ...detailForms];
   @override
-  Future<bool> delete() async {
+  Future<bool> delete({bool? notity}) async {
     final res = await kernel.deleteWorkDefine(IdModel(id));
     if (res.success) {
       application.works.removeWhere((a) => a.id == id);
@@ -120,7 +123,8 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
         data.resource = node;
         final success = await update(data);
         if (success) {
-          directory.propertys.removeWhere((i) => i.id == destination.id);
+          directory.standard.propertys
+              .removeWhere((i) => i.id == destination.id);
           application = app;
           app.works.add(this);
         }
@@ -131,12 +135,14 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
   }
 
   @override
-  List<IFileInfo<XEntity>> content({int? mode}) {
+  List<IFile> content({bool? args}) {
     if (node != null) {
       return forms
           .where(
             (a) => node!.forms!.indexWhere((s) => s.id == a.id) > -1,
           )
+          .toList()
+          .map((e) => e as IFile)
           .toList();
     }
     return [];
@@ -243,6 +249,15 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
         }
       }
     }
+  }
+
+  @override
+  bool receive(String operate, XWorkDefine data) {
+    if (operate == 'workReplace' && data.id == id) {
+      setMetadata(fullDefineRule(data));
+      loadContent(reload: true).then((value) => changCallback());
+    }
+    return true;
   }
 
   @override

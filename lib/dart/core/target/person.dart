@@ -369,7 +369,8 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  List<ITarget> content({int? mode}) => [...cohorts, ...storages];
+  List<IFile> content({bool? args}) =>
+      [...cohorts.map((e) => e as IFile), ...storages.map((e) => e as IFile)];
   @override
   Future<XEntity?> findEntityAsync(String id) async {
     if (id.isEmpty) return null;

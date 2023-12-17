@@ -166,9 +166,8 @@ class Department extends Target implements IDepartment {
     return targets;
   }
 
-  @override
-  List<IFileInfo<XEntity>> content({int? mode}) {
-    return [...children];
+  List<IFile> contents() {
+    return [...children.map((e) => e as IFile)];
   }
 
   @override

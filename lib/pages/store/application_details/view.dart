@@ -10,6 +10,8 @@ import 'state.dart';
 
 class ApplicationDetailsPage
     extends BaseGetView<ApplicationDetailsController, ApplicationDetailsState> {
+  const ApplicationDetailsPage({super.key});
+
   EdgeInsetsGeometry get defaultPadding =>
       EdgeInsets.symmetric(vertical: 17.h, horizontal: 16.w);
 

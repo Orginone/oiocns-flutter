@@ -112,7 +112,8 @@ class WorkController extends BaseController<WorkState> {
   }
 
   Future<void> createWork({IWork? work}) async {
-    showCreateWorkDialog(context, info.state.data.space!.directory.specieses,
+    showCreateWorkDialog(
+        context, info.state.data.space!.directory.standard.specieses,
         isEdit: work != null,
         share: species.directory.target.space!.shareTarget,
         name: work?.metadata.name ?? "",

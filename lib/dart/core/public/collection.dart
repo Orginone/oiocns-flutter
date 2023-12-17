@@ -302,9 +302,26 @@ class XCollection<T extends Xbase> {
     return false;
   }
 
-  Future removeCache(String id) async {
-    this._cache = this._cache.where((element) => element.id != id).toList();
+  Future<bool> removeMatch(dynamic match, {String? copyId}) async {
+    var res = await kernel.collectionRemove(
+      _target.belongId!,
+      this._relations,
+      this._collName,
+      match,
+      copyId,
+    );
+    if (res.success) {
+      return res.data > 0;
+    }
+    return false;
   }
+
+  void removeCache(bool Function(T value) predicate) {
+    this._cache = this._cache.where((a) => predicate(a)).toList();
+  }
+  // Future removeCache(String id) async {
+  //   this._cache = this._cache.where((element) => element.id != id).toList();
+  // }
 
   Future<bool> notity(
     dynamic data, {

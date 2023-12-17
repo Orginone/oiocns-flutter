@@ -1,6 +1,5 @@
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/base/model.dart';
-
+import 'package:orginone/dart/base/schema.dart';
 
 /// 内核请求模型
 abstract class IMerchandise {

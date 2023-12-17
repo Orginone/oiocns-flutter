@@ -40,6 +40,12 @@ class DataResource {
   /// 数据传输配置集合
   late XCollection<XTransfer> transferColl;
 
+  /// 页面模板集合
+  late XCollection<XPageTemplate> templateColl;
+
+  /// 暂存集合
+  late XCollection<XStaging> stagingColl;
+
   /// 资源对应的用户信息
   XTarget get targetMetadata => target;
 
@@ -54,6 +60,8 @@ class DataResource {
     directoryColl = genTargetColl<XDirectory>('resource-directory');
     applicationColl = genTargetColl<XApplication>('standard-application');
     speciesItemColl = genTargetColl<XSpeciesItem>('standard-species-item');
+    templateColl = genTargetColl<XPageTemplate>('standard-page-template');
+    stagingColl = genTargetColl<XStaging>('resource-staging');
   }
 
   /// 资源预加载
@@ -66,6 +74,7 @@ class DataResource {
         // transferColl.all(reload: reload, fromJson: XTransfer.fromJson),
         directoryColl.all(reload: reload, fromJson: XDirectory.fromJson),
         applicationColl.all(reload: reload, fromJson: XApplication.fromJson),
+        templateColl.all(reload: reload, fromJson: XPageTemplate.fromJson),
       ]);
     }
     _proLoaded = true;
@@ -92,6 +101,14 @@ class DataResource {
       [R Function(Map<String, dynamic>)? cvt]) async {
     return await kernel.bucketOpreate<R>(
         target.belongId!, relations, data, cvt);
+  }
+
+  /// 删除文件目录
+  Future<void> deleteDirectory(String directoryId) async {
+    await bucketOpreate(BucketOpreateModel(
+      key: encodeKey(directoryId),
+      operate: BucketOpreates.delete,
+    ));
   }
 
   /// 上传文件

@@ -2,7 +2,6 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
-import 'package:orginone/dart/core/thing/fileinfo.dart';
 
 abstract class ICohort extends ITarget {}
 
@@ -50,10 +49,6 @@ class Cohort extends Target implements ICohort {
   List<ISession> get chats => targets.map((i) => i.session).toList();
   @override
   List<ITarget> get targets => [this];
-  @override
-  List<IFileInfo<XEntity>> content({int? mode}) {
-    return [];
-  }
 
   @override
   Future<void> deepLoad({bool? reload = false}) async {

@@ -4,12 +4,11 @@ import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 
 abstract class IProperty extends IStandardFileInfo<XProperty> {
-  final List<XAttribute> attributes;
+  late List<XAttribute> attributes;
 
   // 删除表单
   @override
-  Future<bool> delete();
-  IProperty(this.attributes);
+  Future<bool> delete({bool? notity});
 }
 
 class Property extends StandardFileInfo<XProperty> implements IProperty {

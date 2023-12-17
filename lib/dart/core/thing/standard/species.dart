@@ -38,7 +38,7 @@ class Species extends StandardFileInfo<XSpecies> implements ISpecies {
   @override
   String get cacheFlag => 'species';
   @override
-  Future<bool> delete() async {
+  Future<bool> delete({bool? notity}) async {
     var success = true;
     if (items.isNotEmpty) {
       success = await directory.resource.speciesItemColl.deleteMatch({

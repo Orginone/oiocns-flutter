@@ -18,6 +18,8 @@ import 'package:orginone/components/widgets/loading_dialog.dart';
 import 'logic.dart';
 
 class AttrsPage extends BaseGetPageView<AttrsController, AttrsState> {
+  AttrsPage({super.key});
+
   @override
   Widget buildView() {
     return Container(
@@ -41,8 +43,8 @@ class AttrsPage extends BaseGetPageView<AttrsController, AttrsState> {
                   showOperation: true,
                   popupMenus: [
                     const PopupMenuItem(
-                      child: Text("删除"),
                       value: "delete",
+                      child: Text("删除"),
                     ),
                   ],
                   onOperation: (operation, code) {
@@ -68,6 +70,7 @@ class AttrsPage extends BaseGetPageView<AttrsController, AttrsState> {
 }
 
 class AttrsController extends BaseController<AttrsState> {
+  @override
   final AttrsState state = AttrsState();
 
   @override

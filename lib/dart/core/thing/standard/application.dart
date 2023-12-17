@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:get/get.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -20,6 +21,12 @@ abstract class IApplication implements IStandardFileInfo<XApplication> {
   ///流程定义
   late final List<IWork> works;
 
+  /// 结构变更
+  void structCallback();
+
+  ///根据id查找办事
+  Future<IWork?> findWork(String id);
+
   ///加载办事
   Future<List<IWork>> loadWorks({bool reload = false});
 
@@ -29,8 +36,8 @@ abstract class IApplication implements IStandardFileInfo<XApplication> {
   ///新建模块
   Future<XApplication?> createModule(XApplication data);
 
-  ///接收模块变更消息
-  Future<bool> receiveMessage(String operate, XApplication data);
+  // ///接收模块变更消息
+  // Future<bool> receiveMessage(String operate, XApplication data);
 }
 
 class Application extends StandardFileInfo<XApplication>
@@ -66,15 +73,19 @@ class Application extends StandardFileInfo<XApplication>
   }
 
   @override
-  List<IFileInfo<XEntity>> content({int? mode}) {
-    final List<IFileInfo<XEntity>> fileList = [...children, ...works];
+  List<IFile> content({bool? args}) {
+    final List<IFile> fileList = [
+      ...children.map((e) => e as IFile),
+      ...works.map((e) => e as IFile)
+    ];
     fileList.sort((a, b) => DateTime.parse(a.metadata.updateTime ?? "")
         .compareTo(DateTime.parse(b.metadata.updateTime ?? "")));
     return fileList.reversed.toList();
   }
 
+  @override
   structCallback() {
-    command.emitter('-', 'refresh', [this]);
+    command.emitter('executor', 'refresh', [this]);
   }
 
   @override
@@ -96,14 +107,38 @@ class Application extends StandardFileInfo<XApplication>
   }
 
   @override
-  Future<bool> delete() async {
-    final success = await directory.resource.applicationColl.deleteMany(
-      getChildren(this),
-    );
-    if (success) {
-      return await super.delete();
+  Future<bool> hardDelete({bool? notity}) async {
+    if (await directory.resource.applicationColl
+        .removeMany(getChildren(this))) {
+      notify('remove', [metadata]);
     }
-    return success;
+    return false;
+  }
+
+  // @override
+  // Future<bool> delete({bool? notity}) async {
+  //   final success = await directory.resource.applicationColl.deleteMany(
+  //     getChildren(this),
+  //   );
+  //   if (success) {
+  //     return await super.delete();
+  //   }
+  //   return success;
+  // }
+  @override
+  Future<IWork?> findWork(String id) async {
+    await loadWorks();
+    var find = works.where((i) => i.id == id).toList();
+    if (find.isNotEmpty) {
+      return find.first;
+    }
+    for (var item in children) {
+      var find = await item.findWork(id);
+      if (find != null) {
+        return find;
+      }
+    }
+    return null;
   }
 
   @override
@@ -192,34 +227,70 @@ class Application extends StandardFileInfo<XApplication>
   }
 
   @override
-  Future<bool> receiveMessage(String operate, XApplication data) async {
-    if (data.parentId == id) {
-      switch (operate) {
-        case 'insert':
-          coll.cache.add(data);
-          children.add(Application(data, directory, parent: this));
-          break;
-        case 'replace':
-          {
-            final index = coll.cache.indexWhere((a) => a.id == data.id);
-            coll.cache[index] = data;
-            final childIndex = children.indexWhere((a) => a.id == data.id);
-            (children[childIndex] as Application).setMetadata(data);
-          }
-          break;
-        case 'delete':
-          await coll.removeCache(data.id);
-          children = children.where((a) => a.id != data.id).toList();
-          break;
+  bool receive(String operate, dynamic data) {
+    var d = data as XApplication;
+    if (d.id == id) {
+      coll.removeCache((i) => i.id != d.id);
+      super.receive(operate, d);
+      coll.cache.add(metadata);
+      if (parent != null) {
+        parent!.changCallback();
+        return true;
       }
+      directory.changCallback();
+
+      return true;
+    } else if (d.parentId == id) {
+      if (operate.startsWith('work')) {
+        workReceive(operate, d);
+      } else {
+        switch (operate) {
+          case 'insert':
+            coll.cache.add(d);
+            children.add(Application(d, directory, parent: this));
+            break;
+          case 'replace':
+            {
+              final index = coll.cache.indexWhere((a) => a.id == d.id);
+              coll.cache[index] = d;
+              final childIndex = children.indexWhere((a) => a.id == d.id);
+              (children[childIndex] as Application).setMetadata(data);
+            }
+            break;
+          case 'remove':
+            coll.removeCache((i) => i.id != d.id);
+            children = children.where((a) => a.id != d.id).toList();
+            break;
+        }
+      }
+
       structCallback();
       return true;
     } else {
       for (var child in children) {
-        await child.receiveMessage(operate, data);
+        child.receive(operate, data);
+        return true;
       }
     }
     return false;
+  }
+
+  bool workReceive(String operate, dynamic data) {
+    switch (operate) {
+      case 'workInsert':
+        if (works.every((i) => i.id != data.id)) {
+          var work = Work(data as XWorkDefine, this);
+          works.add(work);
+        }
+        break;
+      case 'workRemove':
+        works = works.where((i) => i.id != data.id).toList();
+        break;
+      case 'workReplace':
+        works.firstWhereOrNull((i) => i.id == data.id)?.receive(operate, data);
+        break;
+    }
+    return true;
   }
 
   @override

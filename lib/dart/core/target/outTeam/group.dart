@@ -8,6 +8,7 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
 
 /// 单位群接口
@@ -153,8 +154,8 @@ class Group extends Target implements IGroup {
   }
 
   @override
-  List<ITarget> content({int? mode}) {
-    return [...children];
+  List<IFile> content({bool? args}) {
+    return [...children.map((e) => e as IFile)];
   }
 
   @override

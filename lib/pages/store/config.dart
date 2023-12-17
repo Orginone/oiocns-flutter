@@ -11,8 +11,8 @@ import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/thing/standard/form.dart';
+import 'package:orginone/dart/core/thing/systemfile.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/main.dart';
 
@@ -58,8 +58,8 @@ Future<List<StoreTreeNav>> loadDir(
         nav.children = [
           ...await loadDir(dir.children, target),
           ...await loadFile(dir.files, target),
-          ...await loadApplications(dir.applications, target),
-          ...await loadForm(dir.forms, target)
+          ...await loadApplications(dir.standard.applications, target),
+          ...await loadForm(dir.standard.forms, target)
         ];
       },
       children: [],
@@ -238,8 +238,9 @@ Future<List<StoreTreeNav>> loadCohorts(
             space: cohort,
             children: [
               ...await loadFile(cohort.directory.files, cohort),
-              ...await loadApplications(cohort.directory.applications, cohort),
-              ...await loadForm(cohort.directory.forms, cohort),
+              ...await loadApplications(
+                  cohort.directory.standard.applications, cohort),
+              ...await loadForm(cohort.directory.standard.forms, cohort),
             ],
           ),
         ];
@@ -277,8 +278,9 @@ Future<List<StoreTreeNav>> loadGroup(
             spaceEnum: SpaceEnum.directory,
             children: [
               ...await loadFile(group.directory.files, group),
-              ...await loadApplications(group.directory.applications, group),
-              ...await loadForm(group.directory.forms, group),
+              ...await loadApplications(
+                  group.directory.standard.applications, group),
+              ...await loadForm(group.directory.standard.forms, group),
             ],
           ),
         ];

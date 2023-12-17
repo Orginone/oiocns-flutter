@@ -3521,6 +3521,7 @@ class XTransfer extends XStandard {
     required super.directoryId,
     required super.id,
     required super.typeName,
+    required super.isDeleted,
   });
   XTransfer.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     envs = Lists.fromList(json['envs'], Environment.fromJson);
