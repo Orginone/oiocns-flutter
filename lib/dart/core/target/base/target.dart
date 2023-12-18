@@ -250,11 +250,12 @@ abstract class Target extends Team implements ITarget {
   // }
 
   @override
+  // ignore: avoid_renaming_method_parameters
   Future<void> notifySession(bool pull, List<XTarget> members) async {
     if (id != userId) {
       for (var member in members) {
         if (member.typeName == TargetType.person.label) {
-          if (pull) {
+          if (pull == true) {
             await session.sendMessage(
               MessageType.notify,
               '${user?.name} 邀请 ${member.name} 加入群聊',

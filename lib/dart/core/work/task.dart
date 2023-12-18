@@ -174,18 +174,13 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
 
   @override
   Future<bool> approvalTask(int status, {String? comment}) async {
-    // for (final item in user.targets) {
-    //   if (item.id == targets[1].id) {
-    //     item.pullMembers([targets[0]]);
-    //   }
-    // }
-
-    // return false;
     if ((taskdata.status!) < TaskStatus.approvalStart.status) {
       if (status == -1) {
         return await recallApply();
       }
-      if (taskdata.taskType == '加用户' || await loadInstance(reload: true)) {
+      if (taskdata.taskType == '加用户') {
+        return approvalJoinTask(status, comment: comment);
+      } else if (await loadInstance(reload: true)) {
         final res = await kernel.approvalTask(ApprovalTaskReq(
           id: taskdata.id,
           status: status,
@@ -194,17 +189,32 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
               ? jsonEncode(instanceData?.toJson() ?? {})
               : null,
         ));
-        if (res.success && status < TaskStatus.refuseStart.status) {
-          if (targets.length == 2) {
-            for (final item in user.targets) {
-              if (item.id == targets[1].id) {
-                item.pullMembers([targets[0]]);
-              }
-            }
+        return res.success == true;
+      }
+    }
+    return false;
+  }
+
+  //审批并且 拉人进群
+  Future<bool> approvalJoinTask(int status, {String? comment}) async {
+    if (targets.isNotEmpty && targets.length == 2) {
+      final res = await kernel.approvalTask(ApprovalTaskReq(
+        id: taskdata.id,
+        status: status,
+        comment: comment,
+        data: instanceData != null
+            ? jsonEncode(instanceData?.toJson() ?? {})
+            : null,
+      ));
+      if (res.success && status < TaskStatus.refuseStart.status) {
+        for (final item in user.targets) {
+          if (item.id == targets[1].id) {
+            item.pullMembers([targets[0]]);
           }
         }
-        return res.success;
       }
+
+      return res.success;
     }
     return false;
   }

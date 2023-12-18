@@ -128,28 +128,25 @@ abstract class Team extends Entity<XTarget> implements ITeam {
         .where((i) =>
             memberTypes?.contains(TargetType.getType(i.typeName!)) ?? false)
         .toList();
-    members = filterMembers.where((i) {
-      return this.members.every((m) => m.id != i.id);
+    filterMembers = filterMembers.where((element) {
+      return this.members.where((m) => m.id == element.id).isEmpty;
     }).toList();
-    // for (var a in members) {
-    //   sendTargetNotity(OperateType.add, sub: a, subTargetId: a.id);
-    // }
-    // return false;
-    if (members.isNotEmpty) {
+
+    if (filterMembers.isNotEmpty) {
       if (notity != null && !notity) {
         var res = await kernel.pullAnyToTeam(GiveModel(
           id: id,
-          subIds: members.map((i) => i.id).toList(),
+          subIds: filterMembers.map((i) => i.id).toList(),
         ));
 
         if (!res.success) return false;
-        for (var a in members) {
+        for (var a in filterMembers) {
           sendTargetNotity(OperateType.add, sub: a, subTargetId: a.id);
         }
-        notifySession(true, members);
+        notifySession(true, filterMembers);
       }
-      this.members.addAll(members);
-      loadMemberChats(members, true);
+      this.members.addAll(filterMembers);
+      loadMemberChats(filterMembers, true);
     }
     return true;
   }
@@ -286,6 +283,7 @@ abstract class Team extends Entity<XTarget> implements ITeam {
       targetId: id,
     );
     param.toJson();
+    LogUtil.d('sendTargetNotity');
     LogUtil.d(param.toJson());
     var res = await kernel.dataNotify(param);
     return res.success;
