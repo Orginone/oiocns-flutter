@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/values/index.dart';
+import 'package:orginone/main.dart';
 
 import '../../../common/routers/index.dart';
 
@@ -14,9 +15,14 @@ class LoginTransPage extends StatefulWidget {
 class _LoginTransPageState extends State<LoginTransPage> {
   @override
   Widget build(BuildContext context) {
-    Future.delayed(const Duration(seconds: 2), () {
-      Get.offAndToNamed(Routers.home, arguments: true);
-    });
+    try {
+      settingCtrl.subscribe((key, args) {
+        Get.offAndToNamed(Routers.home, arguments: true);
+        Future.delayed(const Duration(milliseconds: 10), () {
+          settingCtrl.unsubscribe(key);
+        });
+      });
+    } catch (e) {}
     return Scaffold(
       // backgroundColor: Colors.white,
       // body: SizedBox(

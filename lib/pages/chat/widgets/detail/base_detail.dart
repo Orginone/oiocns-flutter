@@ -64,7 +64,7 @@ abstract class BaseDetail extends StatelessWidget {
               userId: message.metadata.fromId,
               text: ": ",
               style: XFonts.size24Black0,
-              shareIcon: shareIcon,
+              shareIcon: message.from,
             ),
             alignment: PlaceholderAlignment.bottom),
         WidgetSpan(child: child, alignment: PlaceholderAlignment.bottom),

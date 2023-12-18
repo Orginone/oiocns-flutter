@@ -5,7 +5,6 @@ import 'package:orginone/dart/core/getx/base_get_state.dart';
 
 class BaseSubmenuState<T extends FrequentlyUsed> extends BaseGetState {
   late Rx<SubGroup> subGroup;
-
   var submenuIndex = 0.obs;
 
   late TabController tabController;

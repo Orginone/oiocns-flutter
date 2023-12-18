@@ -8,6 +8,7 @@ import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
 import 'package:orginone/components/widgets/gy_scaffold.dart';
@@ -21,52 +22,82 @@ class MessageFilePage
   Widget buildView() {
     return GyScaffold(
       body: Container(
-        width: double.infinity,
-        color: Colors.white,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.file_open,
-              size: 60.w,
-            ),
-            SizedBox(
-              height: 40.h,
-            ),
-            Text(
-              state.fileShare.name!,
-              style: XFonts.size26Black0,
-            ),
-            SizedBox(
-              height: 100.h,
-            ),
-            Obx(() {
-              if (state.downloadStatus.value == DownloadStatus.downloading) {
-                return CircularProgressIndicator(
-                  value: state.downloadProgress.value,
-                  backgroundColor: XColors.statisticsBoxColor,
-                  valueColor: const AlwaysStoppedAnimation<Color>(
-                      XColors.blueTextColor),
-                );
-              }
-              return CommonWidget.commonSubmitWidget(
-                  text: state.downloadStatus.value ==
-                          DownloadStatus.downloadCompleted
-                      ? "打开"
-                      : "下载",
-                  submit: () async {
+          width: double.infinity,
+          color: Colors.white,
+          child: Flex(
+            direction: Axis.vertical,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      height: 100.h,
+                    ),
+                    Icon(
+                      Icons.file_open,
+                      size: 60.w,
+                    ),
+                    SizedBox(
+                      height: 40.h,
+                    ),
+                    Text(
+                      state.fileShare.name!,
+                      style: XFonts.size26Black0,
+                    ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Text(
+                      '文件大小：${getFileSizeString(bytes: state.fileShare.size ?? 0)}',
+                      style: XFonts.size16Black9,
+                    ),
+                  ]),
+              Column(
+                children: [
+                  Obx(() {
                     if (state.downloadStatus.value ==
-                        DownloadStatus.downloadCompleted) {
-                      controller.openFile();
-                    } else {
-                      controller.downloadFile();
+                        DownloadStatus.downloading) {
+                      return Column(
+                        children: [
+                          Text(
+                            "正在接收下载文件",
+                            style: XFonts.size16Black9,
+                          ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          CircularProgressIndicator(
+                            value: state.downloadProgress.value,
+                            backgroundColor: XColors.statisticsBoxColor,
+                            valueColor: const AlwaysStoppedAnimation<Color>(
+                                XColors.blueTextColor),
+                          )
+                        ],
+                      );
                     }
-                  });
-            })
-          ],
-        ),
-      ),
+                    return CommonWidget.commonSubmitWidget(
+                        text: state.downloadStatus.value ==
+                                DownloadStatus.downloadCompleted
+                            ? "打开"
+                            : "下载",
+                        submit: () async {
+                          if (state.downloadStatus.value ==
+                              DownloadStatus.downloadCompleted) {
+                            controller.openFile();
+                          } else {
+                            controller.downloadFile();
+                          }
+                        });
+                  }),
+                  SizedBox(
+                    height: 200.h,
+                  ),
+                ],
+              ),
+            ],
+          )),
     );
   }
 }

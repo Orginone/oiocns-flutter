@@ -22,6 +22,8 @@ abstract class IEntity<T> extends Emitter {
   String get typeName;
   //实体描述
   String get remark;
+  // 最后变更时间
+  String get updateTime;
   //数据实体
   T get metadata;
   //用户ID
@@ -85,6 +87,11 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
   @override
   String get remark {
     return metadata.remark ?? '';
+  }
+
+  @override
+  String get updateTime {
+    return metadata.updateTime ?? '';
   }
 
   @override

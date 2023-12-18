@@ -25,8 +25,11 @@ class Emitter {
 
   /// 取消订阅 支持取消多个
   /// [key] 订阅ID
-  void unsubscribe(dynamic key) {
-    if (key is String) {
+  void unsubscribe([dynamic key]) {
+    if (null == key) {
+      _refreshCallback.clear();
+      _partRefreshCallback.clear();
+    } else if (key is String) {
       _refreshCallback.remove(key);
       _partRefreshCallback.remove(key);
     } else if (key is List<String>) {

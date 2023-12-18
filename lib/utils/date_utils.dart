@@ -93,10 +93,10 @@ extension RemoveSpace on String {
       return this;
     }
     String breakWord = '';
-    runes.forEach((element) {
+    for (var element in runes) {
       breakWord += String.fromCharCode(element);
       breakWord += '\u200B';
-    });
+    }
     return breakWord;
   }
 }

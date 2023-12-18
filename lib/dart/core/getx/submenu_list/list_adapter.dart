@@ -93,19 +93,19 @@ class ListAdapter {
     circularAvatar = chat.share.typeName == TargetType.person.label;
     initNoReadCommand(chat.chatdata.value.fullId, chat);
     title = chat.chatdata.value.chatName ?? "";
-    dateTime = chat.chatdata.value.lastMessage?.createTime;
-    content = '';
-    var lastMessage = chat.chatdata.value.lastMessage;
-    if (lastMessage != null) {
-      if (lastMessage.fromId != settingCtrl.user.metadata.id) {
-        if (chat.share.typeName != TargetType.person.label) {
-        } else {
-          content = "对方:";
-        }
-      }
-      content = content + chat.remark;
-      // StringUtil.msgConversion(lastMessage, settingCtrl.user.userId);
-    }
+    dateTime = chat.updateTime;
+    content = chat.remark;
+    // var lastMessage = chat.chatdata.value.lastMessage;
+    // if (lastMessage != null) {
+    //   if (lastMessage.fromId != settingCtrl.user.metadata.id) {
+    //     if (chat.share.typeName != TargetType.person.label) {
+    //     } else {
+    //       content = "对方:";
+    //     }
+    //   }
+    //   content = content + chat.remark;
+    //   // StringUtil.msgConversion(lastMessage, settingCtrl.user.userId);
+    // }
 
     image = chat.share.avatar?.thumbnailUint8List ??
         chat.share.avatar?.defaultAvatar;

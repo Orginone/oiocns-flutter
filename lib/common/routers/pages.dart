@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
+import 'package:orginone/components/widgets/TargetActivity/activity_comment_box.dart';
 import 'package:orginone/components/widgets/TargetActivity/target_activity_view.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/wallet_controller.dart';
@@ -12,6 +13,7 @@ import 'package:orginone/pages/chat/message_chats/message_chats_list.dart';
 import 'package:orginone/pages/chat/message_file.dart';
 import 'package:orginone/pages/chat/message_records.dart';
 import 'package:orginone/pages/chat/person_list_page.dart';
+import 'package:orginone/pages/home/components/scan_login.dart';
 import 'package:orginone/pages/home/portal/bindings.dart';
 import 'package:orginone/pages/login/binding.dart';
 import 'package:orginone/pages/login/forgot_password/binding.dart';
@@ -101,7 +103,7 @@ class RoutePages {
   static List<GetPage> getInitRouters = [
     GetPage(
       name: Routers.login,
-      page: () => LoginPage(),
+      page: () => const LoginPage(),
       binding: LoginBinding(),
     ),
     GetPage(
@@ -157,7 +159,7 @@ class RoutePages {
     GetPage(
         name: Routers.targetActivity,
         page: () => const TargetActivityView(),
-        bindings: [TargetActivityViewBinding()]),
+        bindings: [TargetActivityViewBinding(), ActivityCommentBoxBinding()]),
     GetPage(
       name: Routers.storageLocation,
       page: () => StorageLocationPage(),
@@ -172,6 +174,10 @@ class RoutePages {
       name: Routers.qrScan,
       page: () => const QrScanPage(),
       binding: QrScanBinding(),
+    ),
+    GetPage(
+      name: Routers.scanLogin,
+      page: () => ScanLoginPage(),
     ),
     GetPage(
       name: Routers.webView,

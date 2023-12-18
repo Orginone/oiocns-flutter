@@ -10,6 +10,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'activity_message.dart';
 
+//特定Target动态列表
 class TargetActivityList extends StatelessWidget {
   const TargetActivityList({super.key});
 

@@ -102,6 +102,9 @@ class Routers {
   //扫描二维码
   static const String qrScan = "/qrScan";
 
+  //扫码登录
+  static const String scanLogin = "/scanLogin";
+
   //webView
   static const String webView = "/webView";
 

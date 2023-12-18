@@ -59,7 +59,7 @@ class WorkBenchController extends BaseListController<WorkBenchState> {
         }
       });
       state.applications.value = await settingCtrl.loadApplications();
-    }, false);
+    }, true);
     loadSuccess();
   }
 

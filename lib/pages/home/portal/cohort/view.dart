@@ -7,6 +7,7 @@ import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'controller.dart';
 import 'state.dart';
 
+//动态页面
 class CohortActivityPage
     extends BaseGetListPageView<CohortActivityController, CohortActivityState> {
   late String type;

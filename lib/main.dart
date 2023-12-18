@@ -6,6 +6,7 @@ import 'package:orginone/common/index.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/controller/wallet_controller.dart';
 import 'package:orginone/global.dart';
+import 'package:orginone/pages/login/login_transition/view.dart';
 import 'dart/controller/index.dart';
 import 'utils/index.dart';
 
@@ -13,23 +14,29 @@ initApp() async {
   await Global.init();
 
   SystemChannels.lifecycle.setMessageHandler((msg) async {
-    if (msg == AppLifecycleState.resumed) {
+    if (msg == 'AppLifecycleState.resumed') {
       if (settingCtrl.provider.user == null) {
         await settingCtrl.autoLogin();
       } else if (!kernel.isOnline) {
-        kernel.restart();
+        if (!settingCtrl.provider.inited) {
+          settingCtrl.autoLogin();
+        } else {
+          kernel.restart();
+        }
       }
     }
     return msg;
   });
-
   // 开启 app
   SystemChrome.setPreferredOrientations(
           [DeviceOrientation.portraitDown, DeviceOrientation.portraitUp])
-      .then((value) => runApp(const MyApp()));
+      .then((value) {
+    runApp(const MyApp());
+  });
 }
 
-KernelApi get kernel => KernelApi();
+KernelApi _kernel = KernelApi();
+KernelApi get kernel => _kernel;
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 // final RouteObserver<PageRoute> routeObserver = RouteObserver();
 
@@ -70,11 +77,13 @@ class MyApp extends StatelessWidget {
           ],
           darkTheme: ThemeData(useMaterial3: false),
           textDirection: TextDirection.ltr,
-          initialRoute: userJson.isNotEmpty ? Routers.home : Routers.login,
+          initialRoute:
+              userJson.isNotEmpty ? Routers.logintrans : Routers.login,
           defaultTransition: Transition.fadeIn,
           getPages: RoutePages.getInitRouters,
         );
       },
+      child: const LoginTransPage(),
     );
   }
 

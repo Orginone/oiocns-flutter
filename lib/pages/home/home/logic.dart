@@ -38,7 +38,7 @@ class HomeController extends BaseController<HomeState>
   void onReceivedEvent(event) {
     if (event is ShowLoading) {
       if (event.isShow) {
-        LoadingDialog.showLoading(Get.context!, msg: "加载数据中");
+        // LoadingDialog.showLoading(Get.context!, msg: "加载数据中");
       } else {
         LoadingDialog.dismiss(Get.context!);
       }

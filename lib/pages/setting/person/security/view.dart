@@ -37,44 +37,43 @@ class _SecurityViewGetX extends GetView<SecurityController> {
     for (ICompany company in settingCtrl.provider.user?.companys ?? []) {
       cont += company.chats.length;
     }
-    List<Widget> widgetList = [
-      Row(
-        children: [
-          Text("单位数据：成功加载${settingCtrl.provider.user?.companys.length}个"),
-        ],
-      ),
-      Row(
-        children: [
-          Text("群数据：成功加载${settingCtrl.provider.user?.cohorts.length}个"),
-        ],
-      ),
-      Row(
-        children: [
-          Text("群会话数据：成功加载${settingCtrl.provider.user?.cohortChats.length}个")
-        ],
-      ),
-      Row(
-        children: [Text("全部消息列表：成功加载${settingCtrl.chats.length}个")],
-      ),
-      Row(
-        children: [
-          Text("人员消息列表：成功加载${settingCtrl.provider.user?.chats.length}个")
-        ],
-      ),
-      Row(
-        children: [Text("单位消息列表：成功加载$cont个")],
-      )
-    ];
-    if (settingCtrl.provider.errInfo != "" && widgetList.isNotEmpty) {
+    // List<Widget> widgetList = [
+    //   Row(
+    //     children: [
+    //       Text("单位数据：成功加载${settingCtrl.provider.user?.companys.length}个"),
+    //     ],
+    //   ),
+    //   Row(
+    //     children: [
+    //       Text("群数据：成功加载${settingCtrl.provider.user?.cohorts.length}个"),
+    //     ],
+    //   ),
+    //   Row(
+    //     children: [
+    //       Text("群会话数据：成功加载${settingCtrl.provider.user?.cohortChats.length}个")
+    //     ],
+    //   ),
+    //   Row(
+    //     children: [Text("全部消息列表：成功加载${settingCtrl.chats.length}个")],
+    //   ),
+    //   Row(
+    //     children: [
+    //       Text("人员消息列表：成功加载${settingCtrl.provider.user?.chats.length}个")
+    //     ],
+    //   ),
+    //   Row(
+    //     children: [Text("单位消息列表：成功加载$cont个")],
+    //   )
+    // ];
+    if (settingCtrl.provider.errInfo != "") {
+      TextEditingController controller = TextEditingController();
+      controller.text = settingCtrl.provider.errInfo;
       return Container(
           child: Column(children: [
-        ...widgetList,
-        Row(children: [
-          Scrollbar(
-              child: SingleChildScrollView(
-            child: Text(settingCtrl.provider.errInfo),
-          )),
-        ])
+        Scrollbar(
+            child: SingleChildScrollView(
+          child: TextField(maxLines: null, controller: controller),
+        )),
       ])); //_buildView(),
     } else {
       return Center(

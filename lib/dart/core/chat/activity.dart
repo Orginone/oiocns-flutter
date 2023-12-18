@@ -34,7 +34,7 @@ abstract class IActivityMessage extends Emitter {
   void update(ActivityType data);
 
   /// 删除消息
-  void delete();
+  Future<void> delete();
 
   /// 点赞
   Future<bool> like();
@@ -48,7 +48,7 @@ class ActivityMessage extends Emitter implements IActivityMessage {
   @override
   final IActivity activity;
   @override
-  final ActivityType metadata;
+  ActivityType metadata;
 
   ActivityMessage(
     this.metadata,
@@ -308,7 +308,7 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
   late bool allPublish;
   List<String> subscribeIds = [];
   late List<IActivity> subActivitys;
-  int lastTime = DateTime.now().millisecondsSinceEpoch;
+  int lastTime = DateTime.now().microsecondsSinceEpoch;
   GroupActivity(IPerson _user, List<IActivity> _activitys, bool userPublish)
       : super(
           XTarget.fromJson({
@@ -380,7 +380,7 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
   }
 
   @override
-  void unsubscribe(dynamic id) {
+  void unsubscribe([dynamic id]) {
     super.unsubscribe(id);
     super.unsubscribe(subscribeIds);
   }

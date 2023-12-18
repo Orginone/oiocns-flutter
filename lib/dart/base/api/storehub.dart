@@ -10,7 +10,6 @@ import 'package:orginone/main.dart';
 import 'package:orginone/utils/http_util.dart';
 import 'package:orginone/utils/index.dart' as utils;
 import 'package:orginone/utils/toast_utils.dart';
-import 'package:orginone/components/widgets/loading_dialog.dart';
 import 'package:signalr_netcore/signalr_client.dart';
 import 'package:uuid/uuid.dart';
 
@@ -26,9 +25,9 @@ class StoreHub {
   // signalr 连接
   final HubConnection _connection;
   // 连接成功回调
-  List<Function> _connectedCallbacks = [];
+  List<Function([Exception?])> _connectedCallbacks = [];
   // 连接断开回调
-  List<Function(Exception?)> _disconnectedCallbacks = [];
+  List<Function([Exception?])> _disconnectedCallbacks = [];
   // 日志
   final Logger log = Logger("StoreHub");
 
@@ -46,29 +45,32 @@ class StoreHub {
     _connection.keepAliveIntervalInMilliseconds = interval;
     _connection.serverTimeoutInMilliseconds = timeout;
     _connection.onclose(({error}) {
+      LogUtil.d('>>>===内核断开');
       _refreshIsStartedState();
-      if (!isConnected && error != null) {
-        for (final callback in _disconnectedCallbacks) {
-          callback(error);
-        }
-        ToastUtils.showMsg(msg: "连接断开,${_timeout}ms后重试。${error.toString()}`");
-        LogUtil.e("连接断开,${_timeout}ms后重试。${error.toString()}`");
-        Future.delayed(Duration(milliseconds: _timeout), () {
-          _starting();
-        });
-      }
+      ToastUtils.showMsg(msg: "连接断开,${_timeout}ms后重试。${error.toString()}`");
+      LogUtil.e("连接断开,${_timeout}ms后重试。${error.toString()}`");
+      Future.delayed(Duration(milliseconds: _timeout), () {
+        _starting();
+      });
     });
-    _connection.onreconnecting(({error}) {
-      LoadingDialog.showLoading(Get.context!,
-          msg: "正在重新连接服务器", dismissSeconds: -1);
-    });
+    // _connection.onreconnecting(({error}) {
+    // LoadingDialog.showLoading(Get.context!,
+    //     msg: "正在重新连接服务器", dismissSeconds: -1);
+    // });
     _connection.onreconnected(({connectionId}) {
+      LogUtil.d('>>>===内核已连接');
       // kernel.restart();
       Future.delayed(const Duration(microseconds: 50), () {
-        LoadingDialog.dismiss(Get.context!);
+        // LoadingDialog.dismiss(Get.context!);
         _refreshIsStartedState();
       });
     });
+    _connection.onreconnecting(({Exception? error}) {
+      LogUtil.d('>>>===内核链接中');
+      _refreshIsStartedState();
+    });
+
+    print('>>>===StoreHub $hashCode ${_disconnectedCallbacks.length}');
   }
 
   /// 连接ID
@@ -77,14 +79,42 @@ class StoreHub {
   /// 是否处于连接着的状态
   /// @return {boolean} 状态
   bool get isConnected {
+    if (_isStarted && _connection.state != HubConnectionState.Connected) {
+      _refreshIsStartedState();
+    }
+    print(
+        '>>>===$_isStarted ${_connection.state.toString()} ${_isStarted && _connection.state == HubConnectionState.Connected}');
     return _isStarted && _connection.state == HubConnectionState.Connected;
   }
 
   void _refreshIsStartedState() {
     if (_connection.state == HubConnectionState.Connected) {
-      _isStarted = true;
+      if (!_isStarted) {
+        _isStarted = true;
+        _callConnectedCallbacks();
+      }
+    } else if (_connection.state == HubConnectionState.Disconnected) {
+      if (_isStarted) {
+        _isStarted = false;
+        _callDisconnectedCallbacks();
+      }
     } else {
       _isStarted = false;
+      _callDisconnectedCallbacks();
+    }
+  }
+
+  void _callDisconnectedCallbacks([Exception? error]) {
+    print(
+        '>>>===StoreHub2 $hashCode ${_disconnectedCallbacks.length} ${_disconnectedCallbacks.hashCode}');
+    for (final callback in _disconnectedCallbacks) {
+      callback(error);
+    }
+  }
+
+  void _callConnectedCallbacks() {
+    for (final callback in _connectedCallbacks) {
+      callback();
     }
   }
 
@@ -109,6 +139,7 @@ class StoreHub {
   /// 异步 Future
   Future<void> dispose() async {
     _isStarted = false;
+    _callDisconnectedCallbacks();
     _connectedCallbacks = [];
     _disconnectedCallbacks = [];
     return await _connection.stop();
@@ -118,7 +149,6 @@ class StoreHub {
   /// @returns {void} 无返回值
   void start() {
     if (!_isStarted) {
-      _isStarted = true;
       if (!isConnected) {
         _starting();
       }
@@ -128,11 +158,10 @@ class StoreHub {
   /// 重新建立连接
   /// @returns {void} 无返回值
   Future<void> restart() async {
-    if (isConnected) {
-      _isStarted = false;
-      await _connection.stop().then((_) {
-        start();
-      });
+    if (!isConnected && _connection.state == HubConnectionState.Disconnected) {
+      // await _connection.stop().then((_) {
+      // start();
+      // });
     } else if (_connection.state != HubConnectionState.Reconnecting) {
       start();
     }
@@ -142,9 +171,7 @@ class StoreHub {
   /// @returns {void} 无返回值
   Future<void> _starting() async {
     await _connection.start()?.then((_) {
-      for (final callback in _connectedCallbacks) {
-        callback();
-      }
+      _refreshIsStartedState();
     }, onError: (err) {
       LogUtil.e("url: ${_connection.baseUrl}");
       _refreshIsStartedState();
@@ -152,9 +179,7 @@ class StoreHub {
         LogUtil.e("连接失败,连接状态为$_isStarted。长链接状态:${_connection.state}");
       } else {
         LogUtil.e("连接失败,${_timeout}ms后重试。${err != null ? err.toString() : ''}");
-        for (final callback in _disconnectedCallbacks) {
-          callback(err);
-        }
+        _callDisconnectedCallbacks(err);
         Future.delayed(Duration(milliseconds: _timeout), () {
           restart();
         });
@@ -165,7 +190,7 @@ class StoreHub {
   /// 连接成功事件
   /// @param {Function} callback 回调
   /// @returns {void} 无返回值
-  void onConnected(Function? callback) {
+  void onConnected(Function([Exception?])? callback) {
     if (callback != null) {
       _connectedCallbacks.add(callback);
     }
@@ -174,10 +199,12 @@ class StoreHub {
   /// 断开连接事件
   /// @param {Function} callback 回调
   /// @returns {void} 无返回值
-  void onDisconnected(Function(Exception?)? callback) {
+  void onDisconnected(Function([Exception?])? callback) {
     if (callback != null) {
       _disconnectedCallbacks.add(callback);
     }
+    print(
+        '>>>===StoreHub3 $hashCode ${_disconnectedCallbacks.length} ${_disconnectedCallbacks.hashCode}');
   }
 
   /// 监听服务端方法
@@ -304,13 +331,15 @@ class StoreHub {
         LogUtil.e('Http:===========================err');
         LogUtil.e('Http:$res');
         LogUtil.e('Http:$s');
-        msg += err ?? '';
+        if (null != err) {
+          msg += err ?? '';
+        }
         LogUtil.e('Http:$msg');
         res = getRequest(msg);
       }
     } catch (e, s) {
       LogUtil.e('Http:$s');
-      throw (res.msg);
+      // throw (res.msg);
     }
     ToastUtils.dismiss();
     return res;
@@ -318,7 +347,8 @@ class StoreHub {
 
   Future<void> disconnect() async {
     _isStarted = false;
-    _connection.stop();
+    _callDisconnectedCallbacks();
+    return await _connection.stop();
   }
 
   String toJson(dynamic jsonObj) {

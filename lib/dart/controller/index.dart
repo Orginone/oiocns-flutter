@@ -82,6 +82,8 @@ class IndexController extends GetxController {
 
   var homeEnum = HomeEnum.door.obs;
   RxInt noReadMgsCount = 0.obs;
+  //内核是否在线
+  RxBool isConnected = false.obs;
 
   /// 所有相关会话
   late RxList<ISession> chats = <ISession>[].obs;
@@ -181,6 +183,11 @@ class IndexController extends GetxController {
     });
     //初始化未读信息命令
     initNoReadCommand();
+    //监听内核是否在线
+    kernel.onConnectedChanged((isConnected) {
+      this.isConnected.value = isConnected;
+      print('>>>===链接状态变更$isConnected');
+    });
   }
 
   Future<void> loadChats([bool reload = false]) async {
@@ -204,16 +211,13 @@ class IndexController extends GetxController {
 
         /// 排序
         chats.sort((a, b) {
-          var num = (b.chatdata.value.isToping ? 10 : 0) -
-              (a.chatdata.value.isToping ? 10 : 0);
-          if (num == 0) {
-            if (b.chatdata.value.lastMsgTime == a.chatdata.value.lastMsgTime) {
-              num = b.isBelongPerson ? 1 : -1;
-            } else {
-              num = b.chatdata.value.lastMsgTime > a.chatdata.value.lastMsgTime
-                  ? 5
-                  : -5;
-            }
+          var num = 0;
+          if (b.chatdata.value.lastMsgTime == a.chatdata.value.lastMsgTime) {
+            num = b.isBelongPerson ? 1 : -1;
+          } else {
+            num = b.chatdata.value.lastMsgTime > a.chatdata.value.lastMsgTime
+                ? 5
+                : -5;
           }
           return num;
         });
@@ -370,9 +374,18 @@ class IndexController extends GetxController {
     if (!login.success) {
       print('>>>=======自动登录异常');
       // exitLogin(false);
-      Future.delayed(const Duration(milliseconds: 100), () async {
-        await autoLogin();
-      });
+
+      if (kernel.isOnline) {
+        Future.delayed(const Duration(milliseconds: 100), () async {
+          await autoLogin();
+        });
+      } else {
+        kernel.onConnectedChanged((isConnected) {
+          if (isConnected && null == kernel.user) {
+            autoLogin();
+          }
+        });
+      }
     }
   }
 
@@ -394,33 +407,28 @@ class IndexController extends GetxController {
   void qrScan() {
     Get.toNamed(Routers.qrScan)?.then((value) async {
       if (value != null) {
-        String id = value.split('/').toList().last;
-        XEntity? entity = await user.findEntityAsync(id);
-        if (entity != null) {
-          List<XTarget> target =
-              await user.searchTargets(entity.code!, [entity.typeName!]);
-          if (target.isNotEmpty) {
-            var success = await user.applyJoin(target);
-            if (success) {
-              ToastUtils.showMsg(msg: "申请发送成功");
+        if (null != value && value.length == 24 && value.indexOf('==') > 0) {
+          print('$value>>>${value.length}');
+          Get.toNamed(Routers.scanLogin, arguments: value);
+        } else {
+          String id = value.split('/').toList().last;
+          XEntity? entity = await user.findEntityAsync(id);
+          if (entity != null) {
+            List<XTarget> target =
+                await user.searchTargets(entity.code!, [entity.typeName!]);
+            if (target.isNotEmpty) {
+              var success = await user.applyJoin(target);
+              if (success) {
+                ToastUtils.showMsg(msg: "申请发送成功");
+              } else {
+                ToastUtils.showMsg(msg: "申请发送失败");
+              }
             } else {
-              ToastUtils.showMsg(msg: "申请发送失败");
+              ToastUtils.showMsg(msg: "获取用户失败");
             }
           } else {
             ToastUtils.showMsg(msg: "获取用户失败");
           }
-        } else if (null != value &&
-            value.length == 24 &&
-            value.indexOf('==') > 0) {
-          print('$value>>>${value.length}');
-          ResultType res = await provider.qrAuth(value);
-          if (res.success) {
-            ToastUtils.showMsg(msg: "登录成功");
-          } else {
-            ToastUtils.showMsg(msg: "登录失败：${res.msg}");
-          }
-        } else {
-          ToastUtils.showMsg(msg: "获取用户失败");
         }
       }
     });

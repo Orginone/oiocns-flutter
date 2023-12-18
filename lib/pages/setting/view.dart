@@ -7,7 +7,6 @@ import 'state.dart';
 class SettingPage extends BaseSubmenuPage<SettingController, SettingState> {
   const SettingPage({super.key});
 
-
   @override
   Widget buildPageView(String type, String label) {
     return SettingSubPage(type);

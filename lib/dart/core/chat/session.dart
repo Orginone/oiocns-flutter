@@ -227,6 +227,14 @@ class Session extends Entity<XEntity> implements ISession {
     return metadata.remark!.substring(0, min(15, metadata.remark!.length));
   }
 
+  @override
+  String get updateTime {
+    if (chatdata.value.lastMessage != null) {
+      return chatdata.value.lastMessage?.createTime ?? "";
+    }
+    return super.updateTime;
+  }
+
   String? get copyId {
     if (target.id == userId && sessionId != userId) {
       return sessionId;
@@ -427,7 +435,7 @@ class Session extends Entity<XEntity> implements ISession {
             if (index > -1) {
               messages.removeAt(index);
             }
-            chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
+            chatdata.value.lastMsgTime = DateTime.now().microsecondsSinceEpoch;
             messageNotify?.call(messages);
             return true;
           }
@@ -443,7 +451,7 @@ class Session extends Entity<XEntity> implements ISession {
       var success = await coll.deleteMatch(sessionMatch);
       if (success) {
         messages.clear();
-        chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
+        chatdata.value.lastMsgTime = DateTime.now().microsecondsSinceEpoch;
         messageNotify?.call(messages);
         sendMessage(MessageType.notify, '${target.user?.name} 清空了消息', []);
         return true;

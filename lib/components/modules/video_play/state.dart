@@ -1,5 +1,6 @@
 import 'package:chewie/chewie.dart';
 import 'package:get/get.dart';
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:video_player/video_player.dart';
@@ -13,8 +14,9 @@ class VideoPlayState extends BaseGetState {
 
   VideoPlayState() {
     file = Get.arguments['file'];
-    print(Uri.parse(file.shareLink!));
-    videoPlayerController =
-        VideoPlayerController.networkUrl(Uri.parse(file.shareLink!),httpHeaders: {"content-type":"video/mp4"});
+    var link = Uri.parse('${Constant.host}${file.shareLink!}');
+    print(link);
+    videoPlayerController = VideoPlayerController.networkUrl(link,
+        httpHeaders: {"content-type": "video/mp4"});
   }
 }

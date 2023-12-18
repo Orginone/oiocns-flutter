@@ -139,24 +139,29 @@ class WorkBenchPage
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              renderDataItem(
-                  "好友(人)", 'friend', state.friendNum.value, HomeEnum.chat, () {
-                messageChatsController.setTabIndex('friend');
+              renderDataItem("好友(人)", 'friend', state.friendNum, HomeEnum.chat,
+                  () {
+                int i = messageChatsController.getTabIndex('friend');
+                messageChatsController.changeSubmenuIndex(i);
+                messageChatsController.state.tabController.index = i;
               }),
-              renderDataItem("同事(个)", 'company_friend',
-                  state.colleagueNum.value, HomeEnum.chat, () {
+              renderDataItem(
+                  "同事(个)", 'company_friend', state.colleagueNum, HomeEnum.chat,
+                  () {
                 print('同事(个)');
                 messageChatsController.setTabIndex('company_friend');
               }),
               renderDataItem(
-                  '群聊(个)', 'group', state.groupChatNum.value, HomeEnum.chat,
-                  () {
-                messageChatsController.setTabIndex('group');
+                  '群聊(个)', 'group', state.groupChatNum, HomeEnum.chat, () {
+                int i = messageChatsController.getTabIndex('group');
+                messageChatsController.changeSubmenuIndex(i);
+                messageChatsController.state.tabController.index = i;
               }),
               renderDataItem(
-                  '单位(家)', 'company', state.companyNum.value, HomeEnum.chat,
-                  () {
-                messageChatsController.setTabIndex('company');
+                  '单位(家)', 'company', state.companyNum, HomeEnum.chat, () {
+                int i = messageChatsController.getTabIndex('company');
+                messageChatsController.changeSubmenuIndex(i);
+                messageChatsController.state.tabController.index = i;
               }),
             ],
           ),
@@ -169,7 +174,7 @@ class WorkBenchPage
                 title: '未读消息 · ${settingCtrl.noReadMgsCount.value}')));
   }
 
-  Widget renderDataItem(String title, String? code, String number,
+  Widget renderDataItem(String title, String? code, RxString number,
       HomeEnum? home, Function()? fun,
       [int size = 0, String info = '']) {
     return Container(
@@ -185,9 +190,9 @@ class WorkBenchPage
             children: [
               Container(
                 padding: const EdgeInsets.only(bottom: 5),
-                child: number.length > 4
+                child: number.value.length > 4
                     ? Text('9999+', style: TextStyle(fontSize: 22.sp))
-                    : Text(number, style: TextStyle(fontSize: 22.sp)),
+                    : Text(number.value, style: TextStyle(fontSize: 22.sp)),
               ),
               Text(title,
                   style: TextStyle(
@@ -206,23 +211,29 @@ class WorkBenchPage
             child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  renderDataItem(
-                      '待办', 'todo', state.todoCount.value, HomeEnum.work, () {
-                    workController.setTabIndex('todo');
-                  }),
-                  renderDataItem(
-                      '已办', 'done', state.completedCount.value, HomeEnum.work,
+                  renderDataItem('待办', 'todo', state.todoCount, HomeEnum.work,
                       () {
-                    workController.setTabIndex('done');
+                    int i = workController.getTabIndex('todo');
+                    workController.changeSubmenuIndex(i);
+                    workController.state.tabController.index = i;
                   }),
                   renderDataItem(
-                      '抄送', 'alt', state.copysCount.value, HomeEnum.work, () {
-                    workController.setTabIndex('alt');
+                      '已办', 'done', state.completedCount, HomeEnum.work, () {
+                    int i = workController.getTabIndex('done');
+                    workController.changeSubmenuIndex(i);
+                    workController.state.tabController.index = i;
                   }),
-                  renderDataItem(
-                      '发起的', 'create', state.applyCount.value, HomeEnum.work,
+                  renderDataItem('抄送', 'alt', state.copysCount, HomeEnum.work,
                       () {
-                    workController.setTabIndex('create');
+                    int i = workController.getTabIndex('alt');
+                    workController.changeSubmenuIndex(i);
+                    workController.state.tabController.index = i;
+                  }),
+                  renderDataItem(
+                      '发起的', 'create', state.applyCount, HomeEnum.work, () {
+                    int i = workController.getTabIndex('create');
+                    workController.changeSubmenuIndex(i);
+                    workController.state.tabController.index = i;
                   }),
                 ])),
         moreWidget: GestureDetector(
@@ -255,7 +266,7 @@ class WorkBenchPage
                         renderDataItem(
                             '关系(个)',
                             null,
-                            state.relationNum.value ?? "0",
+                            state.relationNum,
                             HomeEnum.store,
                             () {},
                             -1,
@@ -263,21 +274,21 @@ class WorkBenchPage
                         renderDataItem(
                             '数据集(个)',
                             null,
-                            state.diskInfo.value.collections.toString() ?? "0",
+                            state.diskInfo.value.collections.toString().obs,
                             HomeEnum.store,
                             () {},
                             state.diskInfo.value.dataSize ?? 0),
                         renderDataItem(
                             '对象数(个)',
                             null,
-                            state.diskInfo.value.objects.toString() ?? "0",
+                            state.diskInfo.value.objects.toString().obs,
                             HomeEnum.store,
                             () {},
                             state.diskInfo.value.totalSize ?? 0),
                         renderDataItem(
                             '文件(个)',
                             null,
-                            state.diskInfo.value.files.toString() ?? "0",
+                            state.diskInfo.value.files.toString().obs,
                             HomeEnum.store,
                             () {},
                             state.diskInfo.value.fileSize ?? 0),
@@ -285,8 +296,8 @@ class WorkBenchPage
                             '硬件',
                             null,
                             formatSize(state.diskInfo.value.fsUsedSize)
-                                    .toString() ??
-                                "0",
+                                .toString()
+                                .obs,
                             HomeEnum.store,
                             () {},
                             state.diskInfo.value.fsTotalSize ?? 0),

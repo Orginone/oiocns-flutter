@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/utils/index.dart';
+import 'package:orginone/main.dart';
 
 import 'base_submenu_controller.dart';
 import 'base_submenu_state.dart';
@@ -18,6 +19,24 @@ abstract class BaseSubmenuPage<T extends BaseSubmenuController,
     return Column(
       children: [
         headWidget(),
+        Obx(
+          () => Offstage(
+            offstage: settingCtrl.isConnected.value,
+            child: Container(
+              alignment: Alignment.center,
+              color: XColors.bgErrorColor,
+              padding: EdgeInsets.all(8.w),
+              child: const Row(
+                children: [
+                  Icon(Icons.error, size: 18, color: XColors.fontErrorColor),
+                  SizedBox(width: 18),
+                  Text("当前无法连接网络，可检查网络设置是否正常。",
+                      style: TextStyle(color: XColors.black666))
+                ],
+              ),
+            ),
+          ),
+        ),
         Expanded(child: body()),
       ],
     );

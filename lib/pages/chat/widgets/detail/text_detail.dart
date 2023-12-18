@@ -32,7 +32,7 @@ class TextDetail extends BaseDetail {
     return child ??
         Text(
           message.msgBody ?? "",
-          style: XFonts.size24Black0,
+          style: XFonts.size20Black0,
         );
   }
 

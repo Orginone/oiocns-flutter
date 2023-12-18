@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
+import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/index.dart';
 import 'package:orginone/components/widgets/TargetActivity/list_item_meta.dart';
@@ -14,36 +13,52 @@ import 'package:orginone/dart/core/work/rules/lib/tools.dart';
 import 'package:orginone/main.dart';
 
 import 'activity_comment.dart';
+import 'activity_comment_box.dart';
 import 'activity_resource.dart';
 
-//渲染动态列表项
+//渲染动态信息
 class ActivityMessageWidget extends StatelessWidget {
-  IActivityMessage item;
+  //动态消息
+  late Rx<IActivityMessage> item;
+  RxBool isDelete = false.obs;
+  //动态
   IActivity activity;
+  //动态元数据
   model.ActivityType? metadata;
+  //隐藏点赞信息和回复信息，只显示统计数量
   bool hideResource;
   ActivityMessageWidget(
       {super.key,
-      required this.item,
+      required IActivityMessage item,
       required this.activity,
       this.hideResource = false}) {
-    metadata = item.metadata;
+    this.item = item.obs;
+    metadata = this.item.value.metadata;
+    //订阅数据变更
+    item.unsubscribe();
+    item.subscribe((key, args) {
+      this.item.refresh();
+    }, false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Obx(() {
+      return Offstage(
+        offstage: isDelete.value,
         child: ListItemMetaWidget(
-      title: title(),
-      avatar: avatar(),
-      description: description(context),
-      onTap: () {
-        Get.toNamed(
-          Routers.targetActivity,
-          arguments: activity,
-        );
-      },
-    ));
+          title: title(),
+          avatar: avatar(),
+          description: description(context),
+          onTap: () {
+            Get.toNamed(
+              Routers.targetActivity,
+              arguments: activity,
+            );
+          },
+        ),
+      );
+    });
   }
 
   //渲染标题
@@ -116,8 +131,10 @@ class ActivityMessageWidget extends StatelessWidget {
           if (!hideResource)
             ...ActivityResourceWidget(metadata!.resource, 600).build(context),
           RenderCtxMore(
+            activity: activity,
             item: item,
             hideResource: hideResource,
+            isDelete: isDelete,
           )
         ],
       ),
@@ -127,19 +144,26 @@ class ActivityMessageWidget extends StatelessWidget {
 
 //渲染动态属性信息
 class RenderCtxMore extends StatelessWidget {
-  IActivityMessage item;
+  Rx<IActivityMessage> item;
+  IActivity activity;
+  RxBool isDelete;
   bool hideResource;
   late XEntity? replyTo;
   bool commenting = false;
 
-  RenderCtxMore({super.key, required this.item, required this.hideResource});
+  RenderCtxMore(
+      {super.key,
+      required this.activity,
+      required this.item,
+      required this.hideResource,
+      required this.isDelete});
 
   @override
   Widget build(BuildContext context) {
     if (hideResource) {
       return renderTags();
     }
-    return renderOperate();
+    return renderOperate(context);
   }
 
   //判断是否有回复
@@ -153,23 +177,21 @@ class RenderCtxMore extends StatelessWidget {
   }
 
   //渲染操作
-  Widget renderOperate() {
-    var showLikes =
-        item.metadata.likes.isEmpty && item.metadata.comments.isEmpty;
-    return Container(
-      child: Column(
+  Widget renderOperate(BuildContext context) {
+    return Container(child: Obx(() {
+      return Column(
         children: [
           Padding(padding: EdgeInsets.only(top: 5.h)),
           Row(
             children: [
-              ...getUserAvatar(item.metadata.createUser!),
+              ...getUserAvatar(item.value.metadata.createUser!),
               Container(
                 alignment: Alignment.centerLeft,
                 padding: EdgeInsets.only(left: 5.w),
                 child: Row(
                   children: [
                     Text(
-                      "发布于${showChatTime(item.metadata.createTime!)}",
+                      "发布于${showChatTime(item.value.metadata.createTime!)}",
                     ),
                   ],
                 ),
@@ -179,10 +201,11 @@ class RenderCtxMore extends StatelessWidget {
           Row(
             children: [
               Offstage(
-                offstage: !item.metadata.likes.contains(settingCtrl.user.id),
+                offstage:
+                    !item.value.metadata.likes.contains(settingCtrl.user.id),
                 child: ButtonWidget.iconTextOutlined(
-                  onTap: () {
-                    // item.like();
+                  onTap: () async {
+                    await item.value.like();
                   },
                   const ImageWidget(
                     AssetsImages.iconLike,
@@ -194,10 +217,11 @@ class RenderCtxMore extends StatelessWidget {
                 ),
               ),
               Offstage(
-                offstage: item.metadata.likes.contains(settingCtrl.user.id),
+                offstage:
+                    item.value.metadata.likes.contains(settingCtrl.user.id),
                 child: ButtonWidget.iconTextOutlined(
                   onTap: () async {
-                    // await item.like();
+                    await item.value.like();
                   },
                   const ImageWidget(
                     AssetsImages.iconLike,
@@ -209,6 +233,9 @@ class RenderCtxMore extends StatelessWidget {
               ),
               Padding(padding: EdgeInsets.only(left: 5.w)),
               ButtonWidget.iconTextOutlined(
+                onTap: () async {
+                  ShowCommentBoxNotification().dispatch(context);
+                },
                 const ImageWidget(
                   AssetsImages.iconMsg,
                   size: 18,
@@ -218,11 +245,18 @@ class RenderCtxMore extends StatelessWidget {
               ),
               Padding(padding: EdgeInsets.only(left: 5.w)),
               Offstage(
-                offstage: !item.canDelete,
+                offstage: !item.value.canDelete,
                 child: ButtonWidget.iconTextOutlined(
-                  const ImageWidget(
+                  onTap: () async {
+                    await item.value.delete();
+                    isDelete.value = true;
+                    //提醒动态分类更新信息
+                    activity.activityList.first.changCallback();
+                  },
+                  const Icon(
                     Icons.delete_outline,
                     size: 18,
+                    color: XColors.black3,
                   ),
                   '删除',
                   textColor: XColors.black3,
@@ -231,7 +265,8 @@ class RenderCtxMore extends StatelessWidget {
             ],
           ),
           Offstage(
-            offstage: showLikes,
+            offstage: item.value.metadata.likes.isEmpty &&
+                item.value.metadata.comments.isEmpty,
             child: Container(
                 alignment: Alignment.centerLeft,
                 color: XColors.entryBgColor,
@@ -241,13 +276,13 @@ class RenderCtxMore extends StatelessWidget {
                   children: [
                     const ImageWidget(AssetsImages.iconLike,
                         size: 18, color: Colors.red),
-                    for (var e in item.metadata.likes) ...getUserAvatar(e)
+                    for (var e in item.value.metadata.likes) ...getUserAvatar(e)
                   ],
                 )),
           ),
           Padding(padding: EdgeInsets.only(left: 5.w)),
           Offstage(
-            offstage: item.metadata.comments.isEmpty,
+            offstage: item.value.metadata.comments.isEmpty,
             child: Container(
                 alignment: Alignment.centerLeft,
                 color: XColors.entryBgColor,
@@ -255,23 +290,23 @@ class RenderCtxMore extends StatelessWidget {
                 child: Wrap(
                   direction: Axis.horizontal,
                   children: [
-                    ...item.metadata.comments.map((e) => ActivityComment(
+                    ...item.value.metadata.comments.map((e) => ActivityComment(
                         comment: e,
                         onTap: (comment) => handleReply(comment.userId)))
                   ],
                 )),
           )
         ],
-      ),
-    );
+      );
+    }));
   }
 
   //渲染发布者信息
   Widget renderTags() {
     XEntity? entity =
-        settingCtrl.user.findMetadata<XEntity>(item.metadata.createUser!);
-    var showLikes =
-        item.metadata.likes.isEmpty && item.metadata.comments.isEmpty;
+        settingCtrl.user.findMetadata<XEntity>(item.value.metadata.createUser!);
+    var showLikes = item.value.metadata.likes.isEmpty &&
+        item.value.metadata.comments.isEmpty;
     return Container(
       child: Column(
         children: [
@@ -279,7 +314,7 @@ class RenderCtxMore extends StatelessWidget {
           Row(
             children: [
               TeamAvatar(
-                info: TeamTypeInfo(userId: item.metadata.createUser!),
+                info: TeamTypeInfo(userId: item.value.metadata.createUser!),
                 size: 24.w,
               ),
               Container(
@@ -293,7 +328,7 @@ class RenderCtxMore extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         )),
                     Text(
-                      "发布于${showChatTime(item.metadata.createTime!)}",
+                      "发布于${showChatTime(item.value.metadata.createTime!)}",
                     ),
                   ],
                 ),
@@ -309,27 +344,29 @@ class RenderCtxMore extends StatelessWidget {
                 child: Row(
                   children: [
                     Offstage(
-                      offstage: item.metadata.likes.isEmpty,
+                      offstage: item.value.metadata.likes.isEmpty,
                       child: Row(
                         children: [
                           const ImageWidget(AssetsImages.iconLike,
                               size: 18, color: Colors.red),
                           Container(
                               padding: EdgeInsets.only(left: 6.w),
-                              child: Text("${item.metadata.likes.length}"))
+                              child:
+                                  Text("${item.value.metadata.likes.length}"))
                         ],
                       ),
                     ),
                     Padding(padding: EdgeInsets.only(left: 5.w)),
                     Offstage(
-                      offstage: item.metadata.comments.isEmpty,
+                      offstage: item.value.metadata.comments.isEmpty,
                       child: Row(
                         children: [
                           const ImageWidget(AssetsImages.iconMsg,
                               size: 18, color: XColors.themeColor),
                           Container(
                               padding: EdgeInsets.only(left: 6.w),
-                              child: Text("${item.metadata.comments.length}"))
+                              child: Text(
+                                  "${item.value.metadata.comments.length}"))
                         ],
                       ),
                     )

@@ -17,7 +17,6 @@ class BaseSubmenuController<S extends BaseSubmenuState>
   void onInit() {
     // TODO: implement onInit
     initSubGroup();
-    state.submenuIndex.value = state.tabController.index;
     super.onInit();
     state.tabController.addListener(() {
       changeSubmenuIndex(state.tabController.index);

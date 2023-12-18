@@ -40,7 +40,7 @@ class KernelApi {
         _storeHub = StoreHub(url, protocol: 'json') {
     _storeHub.on("Receive", (res) => _receive(res));
 
-    _storeHub.onConnected(() {
+    _storeHub.onConnected(([err]) {
       tokenAuth();
     });
     start();
@@ -58,10 +58,10 @@ class KernelApi {
 
   /// 实时获取连接状态
   /// @param callback
-  onConnectedChanged(Function(dynamic) callback) async {
+  onConnectedChanged(Function(bool isConnected) callback) async {
     Function.apply(callback, [_storeHub.isConnected]);
-    _storeHub.onDisconnected(Function.apply(callback, [false]));
-    _storeHub.onConnected(() => Function.apply(callback, [true]));
+    _storeHub.onDisconnected(([err]) => Function.apply(callback, [false]));
+    _storeHub.onConnected(([err]) => Function.apply(callback, [true]));
   }
 
   /// 获取单例
@@ -1298,7 +1298,8 @@ class KernelApi {
               for (var m in methods) {
                 m['operation'].call(data.data);
               }
-            } catch (e) {
+            } catch (e, s) {
+              logger.warning(s);
               logger.warning(e as Error);
             }
           } else {
