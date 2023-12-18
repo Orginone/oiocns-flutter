@@ -50,12 +50,14 @@ class ActivityMessageWidget extends StatelessWidget {
           title: title(),
           avatar: avatar(),
           description: description(context),
-          onTap: () {
-            Get.toNamed(
-              Routers.targetActivity,
-              arguments: activity,
-            );
-          },
+          onTap: hideResource
+              ? () {
+                  Get.toNamed(
+                    Routers.targetActivity,
+                    arguments: activity,
+                  );
+                }
+              : null,
         ),
       );
     });
@@ -128,8 +130,8 @@ class ActivityMessageWidget extends StatelessWidget {
             padding: EdgeInsets.only(top: 10.h, bottom: 10.h),
             child: renderContent() ?? Container(),
           ),
-          if (!hideResource)
-            ...ActivityResourceWidget(metadata!.resource, 600).build(context),
+          if (!hideResource && metadata!.resource.isNotEmpty)
+            ActivityResourceWidget(metadata!.resource, 100),
           RenderCtxMore(
             activity: activity,
             item: item,
@@ -167,13 +169,21 @@ class RenderCtxMore extends StatelessWidget {
   }
 
   //判断是否有回复
-  Future<void> handleReply([String userId = '']) async {
+  Future<void> handleReply(BuildContext context, [String userId = '']) async {
     replyTo = null;
     if (userId.isNotEmpty) {
       var user = await settingCtrl.user.findEntityAsync(userId);
       replyTo = user;
     }
-    commenting = true;
+    ShowCommentBoxNotification((text) async {
+      return await item.value.comment(text, replyTo: replyTo?.id);
+    },
+            getTipInfo: replyTo != null
+                ? () {
+                    return "回复${replyTo?.name}：";
+                  }
+                : null)
+        .dispatch(context);
   }
 
   //渲染操作
@@ -234,7 +244,7 @@ class RenderCtxMore extends StatelessWidget {
               Padding(padding: EdgeInsets.only(left: 5.w)),
               ButtonWidget.iconTextOutlined(
                 onTap: () async {
-                  ShowCommentBoxNotification().dispatch(context);
+                  handleReply(context);
                 },
                 const ImageWidget(
                   AssetsImages.iconMsg,
@@ -292,7 +302,8 @@ class RenderCtxMore extends StatelessWidget {
                   children: [
                     ...item.value.metadata.comments.map((e) => ActivityComment(
                         comment: e,
-                        onTap: (comment) => handleReply(comment.userId)))
+                        onTap: (comment) =>
+                            handleReply(context, comment.userId)))
                   ],
                 )),
           )

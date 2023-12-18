@@ -39,23 +39,22 @@ double defaultBottomHeight = 300.h;
 // 动态评论盒子
 class ActivityCommentBox extends StatelessWidget with WidgetsBindingObserver {
   final RxDouble bottomHeight = defaultBottomHeight.obs;
-  // 用户输入数据
-  RxString content = "".obs;
-  // 显示数据采集box
-  late RxBool showCommentBox;
   // 组件控制器
   late ActivityCommentBoxController controller;
   // 内容显示组件
   Widget? body;
-  Function(RxString content)? onInput;
-  // 点击表情事件
-  Function(RxString content)? onEmoji;
-  // 发送事件
-  Function(RxString content)? onSend;
-  // 键盘按键事件
-  Function(RxString content)? onKeyBoard;
-  // 点击内容显示区域事件
-  Function(RxString content)? onClickBlank;
+  // // 文本框输入状态（输入框弹出）事件
+  // Function(ShowCommentBoxNotification notification)? onInput;
+  // // 文本框输入变动事件
+  // Function(RxString content)? onInputChanged;
+  // // 点击表情事件
+  // Function(RxString content)? onEmoji;
+  // // 发送事件
+  // Function(RxString content)? onSend;
+  // // 键盘按键事件
+  // Function(RxString content)? onKeyBoard;
+  // // 点击内容显示区域事件
+  // Function(RxString content)? onClickBlank;
   // 按钮是否可以点击
   late RxBool isDisabledSend;
 
@@ -63,35 +62,45 @@ class ActivityCommentBox extends StatelessWidget with WidgetsBindingObserver {
     Key? key,
     this.body,
     bool? showCommentBox,
-    this.onInput,
-    this.onEmoji,
-    this.onSend,
-    this.onKeyBoard,
+    // this.onInput,
+    // this.onInputChanged,
+    // this.onEmoji,
+    // this.onSend,
+    // this.onKeyBoard,
   }) : super(key: key) {
-    controller = ActivityCommentBoxController();
-    this.showCommentBox = showCommentBox?.obs ?? false.obs;
+    controller = ActivityCommentBoxController(showCommentBox: showCommentBox);
     isDisabledSend = false.obs;
   }
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        print('>>>======');
-        showCommentBox.value = true;
-        FocusScope.of(context).requestFocus(FocusNode());
-        onClickBlank?.call(content);
-      },
-      child: Column(
-        children: [
-          body!,
-          Offstage(
-            offstage: showCommentBox.value,
-            child: _box(context),
-          )
-        ],
-      ),
-    );
+    return Obx(() {
+      return GestureDetector(
+        onTap: () {
+          controller._hiddenBox(context);
+        },
+        child: Column(
+          children: [
+            // body!,
+            Expanded(
+                child: Container(
+                    alignment: Alignment.center,
+                    child: NotificationListener<ShowCommentBoxNotification>(
+                      onNotification: (notification) {
+                        controller._currNotification = notification;
+                        controller._showBox(context);
+                        return true;
+                      },
+                      child: body!,
+                    ))),
+            Offstage(
+              offstage: controller.showCommentBox.value,
+              child: _box(context),
+            )
+          ],
+        ),
+      );
+    });
   }
 
   Widget _box(BuildContext context) {
@@ -170,12 +179,13 @@ class ActivityCommentBox extends StatelessWidget with WidgetsBindingObserver {
 
   /// 输入
   Widget _input(BuildContext context) {
-    return Expanded(child: Obx(() {
-      if (controller.inputStatus == InputStatus.voice) {
-        //   return _voice(context);
-      }
-      return _inputBox(context);
-    }));
+    return Expanded(child: _inputBox(context));
+    // return Expanded(child: Obx(() {
+    //   if (controller.inputStatus == InputStatus.voice) {
+    //       return _voice(context);
+    //   }
+    //   return _inputBox(context);
+    // }));
   }
 
   /// 输入框
@@ -196,25 +206,25 @@ class ActivityCommentBox extends StatelessWidget with WidgetsBindingObserver {
             keyboardType: TextInputType.multiline,
             focusNode: controller.focusNode,
             onChanged: (text) {
-              content.value = text;
               if (text.trim().isNotEmpty) {
                 isDisabledSend.value = true;
               } else {
                 isDisabledSend.value = false;
               }
               if (text.endsWith('@')) return; //如果是@结尾的话不需要做text的事件通知
-              onInput?.call(content);
+              controller.eventFire(context, InputEvent.clickInput);
             },
             onTap: () {
-              onInput?.call(content);
+              controller.eventFire(context, InputEvent.clickInput);
             },
             // valueChangedCallback: (rules, value) {
             //   controller.rules = rules;
             // },
             style: XFonts.size22Black3,
-            // controller: controller.inputController,
+            controller: controller.inputController,
             decoration: InputDecoration(
-              isCollapsed: true,
+              labelText: controller._currNotification.getTipInfo?.call(),
+              isCollapsed: false,
               contentPadding: EdgeInsets.fromLTRB(10.w, 16.h, 10.w, 16.h),
               border: InputBorder.none,
               constraints: BoxConstraints(
@@ -371,7 +381,7 @@ class ActivityCommentBox extends StatelessWidget with WidgetsBindingObserver {
   /// 表情包按钮
   Widget _emojiBtn(BuildContext context) {
     return GestureDetector(
-      onTap: () => onEmoji?.call(content),
+      onTap: () => controller.eventFire(context, InputEvent.clickEmoji),
       child: _rightIcon(AssetsImages.iconEmoji),
     );
   }
@@ -406,7 +416,7 @@ class ActivityCommentBox extends StatelessWidget with WidgetsBindingObserver {
   /// 键盘按钮
   Widget _keyBoardBtn(BuildContext context) {
     return GestureDetector(
-      onTap: () => onKeyBoard?.call(content),
+      onTap: () => controller.eventFire(context, InputEvent.inputText),
       child: _rightIcon(Icons.keyboard_alt_outlined),
     );
   }
@@ -438,8 +448,8 @@ class ActivityCommentBox extends StatelessWidget with WidgetsBindingObserver {
     return Container(
       margin: EdgeInsets.only(left: 8.w),
       child: ElevatedButton(
-        onPressed: () {
-          onSend?.call(content);
+        onPressed: () async {
+          controller.eventFire(context, InputEvent.clickSendBtn);
         },
         style: isDisabledSend.value
             ? ButtonStyle(
@@ -505,7 +515,7 @@ class ActivityCommentBox extends StatelessWidget with WidgetsBindingObserver {
               offset: inputController.text.length,
             ),
           );
-        onEmoji?.call(content);
+        // controller.eventFire(context, InputEvent.inputEmoji);
       },
     );
   }
@@ -677,6 +687,7 @@ enum MoreFunction {
 
 class ActivityCommentBoxController with WidgetsBindingObserver {
   final Rx<InputStatus> _inputStatus = InputStatus.notPopup.obs;
+  // 文本框
   final TextEditingController inputController = TextEditingController();
   final FocusNode focusNode = FocusNode();
   final FocusNode blankNode = FocusNode();
@@ -712,8 +723,14 @@ class ActivityCommentBoxController with WidgetsBindingObserver {
   List<Rule> rules = [];
 
   Rxn<IMessage> reply = Rxn();
+  // 当前操作对象
+  late ShowCommentBoxNotification _currNotification;
+  // 显示数据采集box
+  late RxBool showCommentBox;
+  // 发送文本框提示信息
+  late RxString tipInfo;
 
-  ActivityCommentBoxController() {
+  ActivityCommentBoxController({bool? showCommentBox}) {
     EventBusHelper.register(this, (event) {
       if (event is XTarget) {
         atKey.currentState!.addTarget(event);
@@ -721,6 +738,9 @@ class ActivityCommentBoxController with WidgetsBindingObserver {
     });
     atKey = GlobalKey();
     Permission.microphone.request();
+    this.showCommentBox = (showCommentBox ?? true).obs;
+    tipInfo = "".obs;
+    _currNotification = ShowCommentBoxNotification((text) async => true);
   }
 
   dispose() {
@@ -732,17 +752,31 @@ class ActivityCommentBoxController with WidgetsBindingObserver {
     stopRecord();
   }
 
+  _showBox(BuildContext context) {
+    showCommentBox.value = false;
+    _inputStatus.value = InputStatus.inputtingText;
+    // FocusScope.of(context).requestFocus(controller.focusNode);
+    // controller.focusNode.requestFocus();
+  }
+
+  _hiddenBox(BuildContext context) {
+    showCommentBox.value = true;
+    _inputStatus.value = InputStatus.notPopup;
+    FocusScope.of(context).requestFocus(blankNode);
+    // onClickBlank?.call(controller.content);
+  }
+
   /// 事件触发器
-  eventFire(BuildContext context, InputEvent inputEvent, ISession chat) async {
+  eventFire(BuildContext context, InputEvent inputEvent) async {
     switch (inputEvent) {
       case InputEvent.clickInput:
       case InputEvent.inputText:
-        var text = inputController.value.text;
-        if (text.isNotEmpty) {
-          _inputStatus.value = InputStatus.inputtingText;
-        } else {
-          _inputStatus.value = InputStatus.focusing;
-        }
+        // var text = inputController.value.text;
+        // if (text.isNotEmpty) {
+        _inputStatus.value = InputStatus.inputtingText;
+        // } else {
+        //   _inputStatus.value = InputStatus.focusing;
+        // }
         break;
       case InputEvent.clickKeyBoard:
         _inputStatus.value = InputStatus.notPopup;
@@ -773,8 +807,7 @@ class ActivityCommentBoxController with WidgetsBindingObserver {
         break;
       case InputEvent.clickSendBtn:
         String message = inputController.text;
-        bool success = await chat.sendMessage(MessageType.text, message,
-            rules.map((e) => e.target?.id ?? "").toList(), reply.value);
+        bool success = await _currNotification.onSend(message);
         if (success) {
           inputController.clear();
           atKey.currentState?.clearRules();
@@ -785,6 +818,7 @@ class ActivityCommentBoxController with WidgetsBindingObserver {
           } else {
             _inputStatus.value = InputStatus.emoji;
           }
+          _hiddenBox(context);
         }
         break;
       case InputEvent.clickVoice:
@@ -1005,4 +1039,10 @@ class ActivityCommentBoxBinding extends Bindings {
 }
 
 // 显示消息窗口通知
-class ShowCommentBoxNotification extends Notification {}
+class ShowCommentBoxNotification extends Notification {
+  // 获得发送文本框提示信息
+  String Function()? getTipInfo;
+  // 发送操作
+  Future<bool> Function(String text) onSend;
+  ShowCommentBoxNotification(this.onSend, {this.getTipInfo});
+}

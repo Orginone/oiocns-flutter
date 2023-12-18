@@ -15,25 +15,30 @@ class ActivityComment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        alignment: Alignment.centerLeft,
-        color: XColors.entryBgColor,
-        padding: EdgeInsets.all(5.w),
-        child: Wrap(
-          direction: Axis.horizontal,
-          children: [
-            ...getUserAvatar(comment.userId),
-            Offstage(
-              offstage: comment.replyTo == null || comment.replyTo!.isEmpty,
-              child: const Text("回复 "),
-            ),
-            // Offstage(
-            //   offstage: comment.replyTo == null || comment.replyTo!.isEmpty,
-            //   child: UserInfo(userId: comment.replyTo!),
-            // ),
-            Text(" ${comment.label}")
-          ],
-        ));
+    List<Widget> replyTo = [];
+    if (comment.replyTo != null && comment.replyTo!.isNotEmpty) {
+      replyTo
+        ..add(const Text("回复 "))
+        ..addAll(getUserAvatar(comment.replyTo!));
+    }
+    return GestureDetector(
+        onTap: () => onTap?.call(comment),
+        child: Container(
+            alignment: Alignment.centerLeft,
+            color: XColors.entryBgColor,
+            padding: EdgeInsets.all(5.w),
+            child: Wrap(
+              direction: Axis.horizontal,
+              children: [
+                ...getUserAvatar(comment.userId),
+                ...replyTo,
+                // Offstage(
+                //   offstage: comment.replyTo == null || comment.replyTo!.isEmpty,
+                //   child: UserInfo(userId: comment.replyTo!),
+                // ),
+                Text(" ${comment.label}")
+              ],
+            )));
   }
 
   List<Widget> getUserAvatar(String userId) {

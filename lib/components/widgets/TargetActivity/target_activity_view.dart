@@ -26,7 +26,7 @@ class TargetActivityView
       titleWidget: _title(),
       actions: _actions(),
       body: ActivityCommentBox(
-        body: const Expanded(child: TargetActivityList()),
+        body: const TargetActivityList(),
       ),
     );
   }
