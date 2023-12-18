@@ -1,1 +1,1 @@
-static const recordShelfOffArtificial = '/record_shelf_off_artificial';
+static const errorPage = '/error_page';

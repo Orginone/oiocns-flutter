@@ -209,4 +209,5 @@ class Routers {
   static const String transferAccounts = "/transferAccounts";
 
   static const String searchCoin = "/searchCoin";
+  static const errorPage = '/error_page';
 }

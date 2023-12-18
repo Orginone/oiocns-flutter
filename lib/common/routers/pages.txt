@@ -1,5 +1,5 @@
 
       GetPage(
-        name: RouteNames.recordShelfOffArtificial,
-        page: () => const ArtificialPage(),
+        name: RouteNames.errorPage,
+        page: () => const ErrorPagePage(),
       ),

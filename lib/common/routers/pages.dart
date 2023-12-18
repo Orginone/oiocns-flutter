@@ -13,6 +13,7 @@ import 'package:orginone/pages/chat/message_chats/message_chats_list.dart';
 import 'package:orginone/pages/chat/message_file.dart';
 import 'package:orginone/pages/chat/message_records.dart';
 import 'package:orginone/pages/chat/person_list_page.dart';
+import 'package:orginone/pages/error_page/index.dart';
 import 'package:orginone/pages/home/components/scan_login.dart';
 import 'package:orginone/pages/home/portal/bindings.dart';
 import 'package:orginone/pages/login/binding.dart';
@@ -211,7 +212,7 @@ class RoutePages {
     ),
     GetPage(
       name: Routers.applicationDetails,
-      page: () => ApplicationDetailsPage(),
+      page: () => const ApplicationDetailsPage(),
       binding: ApplicationDetailsBinding(),
     ),
     GetPage(
@@ -406,6 +407,10 @@ class RoutePages {
       name: Routers.searchCoin,
       page: () => const SearchCoinPage(),
       binding: SearchCoinBinding(),
+    ),
+    GetPage(
+      name: Routers.errorPage,
+      page: () => const ErrorPage(),
     ),
   ];
   static void jumpCreateBag() {

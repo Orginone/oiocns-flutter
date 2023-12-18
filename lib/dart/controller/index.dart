@@ -449,7 +449,7 @@ class IndexController extends GetxController {
         break;
       case SettingEnum.theme:
         Get.toNamed(
-          Routers.security,
+          Routers.errorPage,
         );
         break;
       case SettingEnum.exitLogin:
