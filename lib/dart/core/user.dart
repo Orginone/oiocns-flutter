@@ -79,6 +79,18 @@ class UserProvider {
     return res;
   }
 
+  /// @param phoneNumber 手机号
+  /// @param verifyCode 验证码
+  /// @param dynamicId 动态码
+  Future<dynamic> verifyCodeLogin(
+      String account, String password, String dynamicId) async {
+    var res = await kernel.verifyCodeLogin(account, password, dynamicId);
+    if (res.success) {
+      await _loadUser(XTarget.fromJson(res.data["target"]));
+    }
+    return res;
+  }
+
   /// 二维码认证登录
   /// @param connectionId 二维码认证内容
   Future<ResultType> qrAuth(String connectionId) async {

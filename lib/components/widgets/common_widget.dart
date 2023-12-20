@@ -592,11 +592,15 @@ class CommonWidget {
     );
   }
 
-  static commonLoginInput(
-    String icon,
-    String hint,
-    List<TextInputFormatter>? inputFormatters,
-  ) {
+  //图标+输入+行为 三段式输入框
+  static Widget commonIconInputAction(
+      {required TextEditingController controller,
+      required String icon,
+      required String hint,
+      ValueChanged<String>? onChanged,
+      List<TextInputFormatter>? inputFormatters,
+      bool obscureText = false,
+      Widget? action}) {
     return Container(
       width: 343,
       height: 45,
@@ -618,33 +622,99 @@ class CommonWidget {
             child: SizedBox(
               height: 30,
               child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      image: DecorationImage(
-                        image: AssetImage(icon),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 10),
-                  Container(
-                      width: 200,
-                      height: 50,
-                      padding: const EdgeInsets.fromLTRB(0, 11, 0, 0),
-                      child: TextField(
-                        inputFormatters: inputFormatters,
-                        decoration: InputDecoration(
-                            hintText: hint,
-                            hintStyle: TextStyle(
-                                color: Colors.grey.shade400, fontSize: 20.sp),
-                            border: InputBorder.none),
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                        height: 22,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(icon),
+                            fit: BoxFit.contain,
+                          ),
+                        ),
                       )),
+                  Expanded(
+                      flex: 6,
+                      child: Container(
+                          padding: const EdgeInsets.fromLTRB(7, 11, 0, 0),
+                          child: TextField(
+                            onChanged: onChanged,
+                            controller: controller,
+                            obscureText: obscureText,
+                            inputFormatters: inputFormatters,
+                            decoration: InputDecoration(
+                                hintText: hint,
+                                hintStyle: TextStyle(
+                                    color: Colors.grey.shade400,
+                                    fontSize: 20.sp),
+                                border: InputBorder.none),
+                          ))),
+                  Expanded(flex: 3, child: action ?? Container()),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //文本+输入+行为 三段式输入框
+  static Widget commonTextInputAction(
+      {required TextEditingController controller,
+      required String title,
+      required String hint,
+      ValueChanged<String>? onChanged,
+      List<TextInputFormatter>? inputFormatters,
+      bool obscureText = false,
+      Widget? action}) {
+    return Container(
+      // width: 343,
+      height: 45,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      clipBehavior: Clip.antiAlias,
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1, color: Color(0xFFE7E8EB)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: 30,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      flex: 3,
+                      child: Text(
+                        title,
+                        style: TextStyle(fontSize: 20.sp),
+                      )),
+                  Expanded(
+                      flex: 8,
+                      child: Container(
+                          padding: const EdgeInsets.fromLTRB(7, 13, 0, 0),
+                          child: TextField(
+                            controller: controller,
+                            obscureText: obscureText,
+                            inputFormatters: inputFormatters,
+                            decoration: InputDecoration(
+                                hintText: hint,
+                                hintStyle: TextStyle(
+                                    color: Colors.grey.shade400,
+                                    fontSize: 18.sp),
+                                border: InputBorder.none),
+                          ))),
+                  Expanded(flex: 4, child: action ?? Container()),
                 ],
               ),
             ),
@@ -1006,6 +1076,81 @@ class CommonWidget {
           return items;
         },
         onSelected: onSelected,
+      ),
+    );
+  }
+
+  static Widget imageBackground() {
+    return Container(
+      child: Stack(
+        children: [
+          Positioned(
+            left: -200,
+            child: Container(
+              width: 900,
+              height: 500,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(AssetsImages.logoBackground),
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+          ),
+          Positioned(
+            left: -200,
+            child: Container(
+              width: 900,
+              height: 500,
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Color.fromRGBO(249, 249, 249, 0),
+                    Color.fromRGBO(255, 255, 255, 1),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Widget logo() {
+    return Positioned(
+      top: 100.00,
+      left: 0,
+      right: 0,
+      child: Center(
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 5, 5, 0),
+              width: 30,
+              height: 30,
+              clipBehavior: Clip.antiAlias,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(AssetsImages.logoNoBg),
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+            const Text.rich(TextSpan(
+              text: '奥集能',
+              style: TextStyle(
+                  color: Color(0xFF15181D),
+                  fontSize: 22.91,
+                  fontFamily: 'PingFang SC',
+                  fontWeight: FontWeight.w500,
+                  decoration: TextDecoration.none),
+            )),
+          ],
+        ),
       ),
     );
   }

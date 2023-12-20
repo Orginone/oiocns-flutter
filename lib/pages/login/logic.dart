@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/common/values/constants.dart';
 import 'package:orginone/config/constant.dart';
+import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/utils/storage.dart';
 import 'package:orginone/utils/toast_utils.dart';
@@ -31,6 +34,24 @@ class LoginController extends BaseController<LoginState> {
       state.phoneNumberController.text = Constant.userName;
       state.passWordController.text = Constant.pwd;
     }
+    allowLogin();
+  }
+
+  //是否允许点击登录
+  void allowLogin() {
+    if (state.accountLogin.value) {
+      state.allowCommit = (state.accountController.text.isNotEmpty &&
+              state.passWordController.text.isNotEmpty)
+          .obs;
+    }
+    if (state.phoneNumberLogin.value) {
+      state.allowCommit = (state.phoneNumberController.text.isNotEmpty &&
+              state.verifyController.text.isNotEmpty &&
+              state.verifyController.text.length == 6)
+          .obs;
+    }
+    print(
+        'account:${state.accountController.text},pwd:${state.passWordController.text.isNotEmpty},allowCommit:${state.allowCommit.value}');
   }
 
   void showPassWord() {
@@ -52,11 +73,6 @@ class LoginController extends BaseController<LoginState> {
       ToastUtils.showMsg(msg: "账号或密码不能为空");
       return;
     }
-    if (!state.agreeTerms.value) {
-      ToastUtils.showMsg(msg: "请同意服务条款与隐私条款");
-      return;
-    }
-
     var res = await settingCtrl.provider.login(
       state.accountController.text,
       state.passWordController.text,
@@ -74,11 +90,41 @@ class LoginController extends BaseController<LoginState> {
     }
   }
 
-  void sendVerify() {
-    if (state.phoneNumberController.text.length > 11) {
-      ToastUtils.showMsg(msg: "请输入正确的手机号");
+  //验证码登录
+  void verifyCodeLogin() async {
+    if (state.phoneNumberController.text.isEmpty) {
+      ToastUtils.showMsg(msg: "手机号不得为空");
       return;
     }
+    if (state.verifyController.text.isEmpty) {
+      ToastUtils.showMsg(msg: "验证码不得为空");
+      return;
+    }
+
+    var res = await settingCtrl.provider.verifyCodeLogin(
+        state.phoneNumberController.text,
+        state.verifyController.text,
+        state.dynamicId.value);
+    if (res.success) {
+      state.dynamicId = ''.obs;
+      ToastUtils.showMsg(msg: "登录成功");
+      [Permission.storage, Permission.notification].request();
+      Storage.setList(Constants.account,
+          [state.accountController.text, state.passWordController.text]);
+
+      Get.offAndToNamed(Routers.logintrans, arguments: true);
+      Future.delayed(const Duration(seconds: 2));
+    } else {
+      ToastUtils.showMsg(msg: res.msg ?? '登录失败');
+    }
+  }
+
+  void sendVerify() {
+    RegExp regex = RegExp(r'(^1[3|4|5|7|8|9]\d{9}$)|(^09\d{8}$)');
+    if (!regex.hasMatch(state.phoneNumberController.text)) {
+      ToastUtils.showMsg(msg: "请输入正确的手机号");
+    }
+
     if (!state.agreeTerms.value) {
       ToastUtils.showMsg(msg: "请同意服务条款与隐私条款");
       return;
@@ -87,13 +133,65 @@ class LoginController extends BaseController<LoginState> {
         arguments: {"phoneNumber": state.phoneNumberController.text});
   }
 
-  void forgotPassword() {
-    Get.toNamed(Routers.forgotPassword);
+  ///验证码登录获取验证码
+  Future<void> sendLoginVerify() async {
+    RegExp regex = RegExp(r'(^1[3|4|5|7|8|9]\d{9}$)|(^09\d{8}$)');
+    if (!regex.hasMatch(state.phoneNumberController.text)) {
+      ToastUtils.showMsg(msg: "请输入正确的手机号");
+      return;
+    }
+    if (state.sendVerify.value) {
+      ToastUtils.showMsg(msg: "验证码已发送，请稍后再试");
+      return;
+    }
+
+    state.startCountDown.value = true;
+    state.countDown.value = 60;
+    state.dynamicId.value = '';
+    var res = await settingCtrl.auth.dynamicCode(DynamicCodeModel.fromJson({
+      'account': state.phoneNumberController.text,
+      'platName': '资产共享云',
+      'dynamicId': '',
+    }));
+
+    if (res.success && res.data != null) {
+      print(
+          "获取验证码信息：${res.data!.dynamicId},${res.data!.account},${res.data!.platName}");
+      state.dynamicId.value = res.data!.dynamicId;
+      state.sendVerify = true.obs;
+    }
+    startCountDown();
+  }
+
+  void forgotPassword(String account) {
+    Get.toNamed(Routers.forgotPassword, arguments: {"account": account});
   }
 
   void register() {
     Get.toNamed(
       Routers.register,
     );
+  }
+
+  void startCountDown() {
+    if (state.timer != null) {
+      if (state.timer!.isActive) {
+        timerClose();
+      }
+    }
+    state.timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (state.countDown.value <= 0) {
+        timerClose();
+      }
+      state.countDown.value--;
+    });
+  }
+
+  void timerClose() {
+    state.timer?.cancel();
+    state.timer = null;
+    state.startCountDown.value = false;
+    state.countDown.value = 60;
+    state.sendVerify.value = false;
   }
 }

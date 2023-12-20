@@ -7,6 +7,7 @@ import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
 class ForgotPasswordController extends BaseController<ForgotPasswordState> {
+  @override
   final ForgotPasswordState state = ForgotPasswordState();
 
   void showPassWord() {
@@ -57,5 +58,9 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
     } else {
       ToastUtils.showMsg(msg: result.msg);
     }
+  }
+
+  void backToLoginPage() {
+    Get.back();
   }
 }

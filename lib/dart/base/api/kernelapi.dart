@@ -183,6 +183,35 @@ class KernelApi {
     return res;
   }
 
+  /// 登录到后台核心获取accessToken
+  /// @param phoneNumber 手机号
+  /// @param verifyCode 验证码
+  /// @param dynamicId 动态码
+  /// @returns Future<ResultType<dynamic>> 异步登录结果
+  Future<ResultType<dynamic>> verifyCodeLogin(
+      String phoneNumber, String verifyCode, String dynamicId) async {
+    Map<String, dynamic> req = {
+      'module': 'auth',
+      'action': 'Login',
+      'params': {
+        "account": phoneNumber,
+        "dynamicId": dynamicId,
+        "dynamicCode": verifyCode,
+      },
+    };
+    ResultType res = await _storeHub.invoke('Auth', args: [req]);
+
+    if (res.success) {
+      UserModel um = UserModel.fromJson(res.data);
+      HiveUtils.putUser(um);
+      _storeHub.accessToken = um.accessToken!;
+      if (_storeHub.isConnected) {
+        await tokenAuth();
+      }
+    }
+    return res;
+  }
+
   /// 扫码登录认证
   /// @param connectionId 二维码认证内容
   /// @returns {ResultType<bool>} 请求结果

@@ -190,9 +190,11 @@ class WorkBenchPage
             children: [
               Container(
                 padding: const EdgeInsets.only(bottom: 5),
-                child: number.value.length > 4
-                    ? Text('9999+', style: TextStyle(fontSize: 22.sp))
-                    : Text(number.value, style: TextStyle(fontSize: 22.sp)),
+                // child: number.value.length > 4
+                //     ? Text('9999+', style: TextStyle(fontSize: 22.sp))
+                //     : Text(number.value, style: TextStyle(fontSize: 22.sp)),
+                child: Text(ExString.unitConverter(number.value),
+                    style: TextStyle(fontSize: 22.sp)),
               ),
               Text(title,
                   style: TextStyle(

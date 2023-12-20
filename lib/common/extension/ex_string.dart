@@ -41,4 +41,33 @@ extension ExString on String {
     var date = DateTime.parse(this);
     return DateFormat('yyyy-MM-dd').format(date);
   }
+
+  ///数量单位转换 转换到万
+  ///例如：123456 -> 12.34万
+  ///     123056 -> 12.3万
+  ///     120056 -> 12万
+  ///     1234 -> 1234
+  ///     123 -> 123
+  static String unitConverter(String number) {
+    number = number.trim();
+    if (number.isEmpty || number == '') {
+      return '0';
+    }
+
+    if (number.length > 4) {
+      String strw =
+          '${number.substring(0, number.length - 4)}.${number.substring(number.length - 4, number.length - 2)}';
+      //四舍五入
+      // strw = double.parse(strw).toStringAsFixed(2);
+
+      if (strw.endsWith('00')) {
+        return '${strw.substring(0, strw.length - 3)}万';
+      }
+      if (strw.endsWith('0')) {
+        return '${strw.substring(0, strw.length - 1)}万';
+      }
+      return '$strw万';
+    }
+    return number;
+  }
 }

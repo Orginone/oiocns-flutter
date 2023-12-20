@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:orginone/config/location.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -77,6 +79,19 @@ class RegisterController extends BaseController<RegisterState> {
 
   // 获得动态验证码
   Future<void> getDynamicCode() async {
+    RegExp regex = RegExp(r'(^1[3|4|5|7|8|9]\d{9}$)|(^09\d{8}$)');
+    if (!regex.hasMatch(state.phoneNumberController.text)) {
+      ToastUtils.showMsg(msg: "请输入正确的手机号");
+      return;
+    }
+    if (state.sendVerify.value) {
+      ToastUtils.showMsg(msg: "验证码已发送，请稍后再试");
+      return;
+    }
+    state.startCountDown.value = true;
+    state.countDown.value = 60;
+    _dynamicId = '';
+
     var res = await settingCtrl.auth.dynamicCode(DynamicCodeModel.fromJson({
       'account': state.phoneNumberController.text,
       'platName': resources.platName,
@@ -84,7 +99,33 @@ class RegisterController extends BaseController<RegisterState> {
     }));
     if (res.success && res.data != null) {
       _dynamicId = res.data!.dynamicId;
+      print(
+          "获取验证码信息：${res.data!.dynamicId},${res.data!.account},${res.data!.platName}");
+      state.sendVerify = true.obs;
+      startCountDown();
     }
+  }
+
+  void startCountDown() {
+    if (state.timer != null) {
+      if (state.timer!.isActive) {
+        timerClose();
+      }
+    }
+    state.timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (state.countDown.value <= 0) {
+        timerClose();
+      }
+      state.countDown.value--;
+    });
+  }
+
+  void timerClose() {
+    state.timer?.cancel();
+    state.timer = null;
+    state.startCountDown.value = false;
+    state.countDown.value = 60;
+    state.sendVerify.value = false;
   }
 
   // 注册
@@ -115,5 +156,9 @@ class RegisterController extends BaseController<RegisterState> {
 
   void showVerifyPassWord() {
     state.verifyPassWordUnVisible.value = !state.verifyPassWordUnVisible.value;
+  }
+
+  void backToLoginPage() {
+    Get.back();
   }
 }
