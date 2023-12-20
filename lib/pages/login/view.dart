@@ -590,17 +590,17 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
                       ),
                     ),
                     const SizedBox(height: 10),
-                    Obx(() {
-                      if (state.dynamicId.value.isNotEmpty) {
-                        return Container(
-                          width: 343,
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
-                          child: Text('动态码:${state.dynamicId.value}'),
-                        );
-                      } else {
-                        return Container();
-                      }
-                    })
+                    // Obx(() {
+                    //   if (state.dynamicId.value.isNotEmpty) {
+                    //     return Container(
+                    //       width: 343,
+                    //       padding: const EdgeInsets.symmetric(horizontal: 10),
+                    //       child: Text('动态码:${state.dynamicId.value}'),
+                    //     );
+                    //   } else {
+                    //     return Container();
+                    //   }
+                    // })
                   ],
                 )));
       }
