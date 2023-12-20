@@ -76,7 +76,7 @@ class WorkFormRules extends Emitter implements WorkFormRulesType {
   // 初始化表单规则
   initRules(List<dynamic> forms, IBelong belone) {
     _clearData();
-    var companyMeta = belone.metadata.belong as XEntity;
+    // var companyMeta = belone.metadata.belong as XEntity;
     var count = 0;
     // 遍历每个表单，获取其中的规则
     for (var formItem in forms) {

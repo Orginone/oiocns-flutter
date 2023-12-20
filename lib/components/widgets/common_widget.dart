@@ -1082,7 +1082,7 @@ class CommonWidget {
           bool checkOk = check?.call() ?? true;
           if (active.value && checkOk) {
             click?.call();
-            // startCountDown(countdown);
+            startCountDown(countdown);
           }
         },
         child: Container(

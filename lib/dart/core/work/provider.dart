@@ -95,7 +95,7 @@ class WorkProvider implements IWorkProvider {
 
         notity.changCallback();
       }
-      todos.refresh();
+      // todos.refresh();
     }
 
     // if (task.status != TaskStatus.approvalStart.status) {
@@ -130,7 +130,7 @@ class WorkProvider implements IWorkProvider {
         todos.addAll((res.data?.result ?? [])
             .map((task) => WorkTask(task, user))
             .toList());
-        todos.refresh();
+        // todos.refresh();
         notity.changCallback();
       }
     }

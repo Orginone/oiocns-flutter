@@ -4723,7 +4723,7 @@ class XProperty extends XStandard {
     valueType = json['valueType'];
     info = json['info'];
     unit = json['unit'];
-    directoryId = json['directoryId'];
+    directoryId = json['directoryId'] ?? "";
     speciesId = json['speciesId'];
     sourceId = json['sourceId'];
     linkAttributes = (json['linkAttributes'] as List<dynamic>?)

@@ -173,7 +173,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
   }
 
   ShareIcon findShare(String id) {
-    var metadata = this.findMetadata<XTarget>(id);
+    var metadata = this.findMetadata<XEntity>(id);
     ShareIcon shareIcon = ShareIcon(
         name: metadata?.name ?? '加载中...',
         typeName: metadata?.typeName ?? '未知',

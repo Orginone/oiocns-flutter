@@ -91,7 +91,7 @@ class TextDetail extends BaseDetail {
         return Text.rich(
           TextSpan(
             children: span,
-            style: XFonts.size24Black0,
+            style: XFonts.size20Black0,
           ),
         );
       }
@@ -139,7 +139,7 @@ class TextDetail extends BaseDetail {
     return Text.rich(
       TextSpan(
         children: span,
-        style: XFonts.size24Black0,
+        style: XFonts.size20Black0,
       ),
     );
   }

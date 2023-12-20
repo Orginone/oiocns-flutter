@@ -26,20 +26,25 @@ class WorkPage extends BaseSubmenuPage<WorkController, WorkState> {
     // };
     var onError = FlutterError.onError; //先将 onerror 保存起来
     FlutterError.onError = (FlutterErrorDetails details) {
-      // onError?.call(details); //调用默认的onError处理
-      // Get.dialog(Text(details.exceptionAsString()));
-      // Get.dialog(const Text('发生错误'));
-      var t = DateUtil.formatDate(DateTime.now(),
-          format: "yyyy-MM-dd HH:mm:ss.SSS");
+      try {
+        // onError?.call(details); //调用默认的onError处理
+        // Get.dialog(Text(details.exceptionAsString()));
+        // Get.dialog(const Text('发生错误'));
+        var t = DateUtil.formatDate(DateTime.now(),
+            format: "yyyy-MM-dd HH:mm:ss.SSS");
 
-      List errorArray = [];
-      var json = Storage.getString('work_page_error');
-      if (json != '') {
-        errorArray = jsonDecode(json);
-      }
+        List errorArray = [];
+        var json = Storage.getString('work_page_error');
+        if (json != '') {
+          errorArray = jsonDecode(json);
+        }
 
-      errorArray.add({'t': t, 'errorText': details.exceptionAsString()});
-      Storage.setJson('work_page_error', errorArray);
+        errorArray.add({
+          't': t,
+          'errorText': '${details.exceptionAsString()}\r\n${details.stack}'
+        });
+        Storage.setJson('work_page_error', errorArray);
+      } catch (e) {}
     };
     return KeepAliveWidget(child: WorkSubPage(type));
     // return WorkSubPage(type);

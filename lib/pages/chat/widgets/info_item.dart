@@ -376,13 +376,14 @@ class DetailItemWidget extends GetView<IndexController> {
         isSelf: isSelf,
         message: msg,
       );
-    } else if (msg.msgType == MessageType.uploading.label) {
+    } else if (msg.msgType == MessageType.uploading.label ||
+        msg.msgType == MessageType.video.label) {
       body = UploadingDetail(
         isSelf: isSelf,
         message: msg,
       );
     } else {
-      body = Container();
+      body = Container(child: const Text("[暂不支持显示]"));
     }
 
     return body;

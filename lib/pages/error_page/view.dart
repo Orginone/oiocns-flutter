@@ -17,8 +17,10 @@ class ErrorPage extends GetView<ErrorPageController> {
     if (json != '') {
       errorArray = jsonDecode(json);
     }
+    errorArray = errorArray.reversed.toList();
 
     return ListView.builder(
+      scrollDirection: Axis.vertical,
       itemBuilder: (context, index) {
         var data = errorArray[index];
 
@@ -30,7 +32,7 @@ class ErrorPage extends GetView<ErrorPageController> {
               overflow: TextOverflow.ellipsis,
             ) //Text(data['errorText']),
             ).height(60).onTap(() {
-          Get.to(ErrorSubPage(index));
+          Get.to(ErrorSubPage(data['t'], data['errorText']));
         });
       },
       itemCount: errorArray.length,
@@ -63,13 +65,13 @@ class ErrorPage extends GetView<ErrorPageController> {
 }
 
 class ErrorSubPage extends GetView<ErrorPageController> {
-  const ErrorSubPage(this.index, {Key? key}) : super(key: key);
-  final int index;
+  const ErrorSubPage(this.title, this.errInfo, {Key? key}) : super(key: key);
+  final String title;
+  final String errInfo;
 
-  get item => jsonDecode(Storage.getString('work_page_error'))[index];
   // 主视图
   Widget _buildView() {
-    return <Widget>[Text(item['errorText'])].toColumn();
+    return <Widget>[Text(errInfo)].toColumn();
   }
 
   @override
@@ -80,11 +82,11 @@ class ErrorSubPage extends GetView<ErrorPageController> {
       builder: (_) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(item['t'] ?? ''),
+            title: Text(title ?? ''),
             actions: [
               ButtonWidget.text(
                 '复制',
-                onTap: () => SystemUtils.copyToClipboard(item['errorText']),
+                onTap: () => SystemUtils.copyToClipboard(errInfo),
               )
             ],
           ),

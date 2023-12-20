@@ -135,7 +135,6 @@ class WorkSubController extends BaseListController<WorkSubState> {
 
   loadTodos() async {
     await settingCtrl.work.loadTodos(reload: true);
-    throw Exception("自定义异常");
   }
 
   ///办事tab 下拉刷新

@@ -23,6 +23,8 @@ initApp() async {
         } else {
           kernel.restart();
         }
+      } else {
+        settingCtrl.isConnected.value = true;
       }
     }
     return msg;

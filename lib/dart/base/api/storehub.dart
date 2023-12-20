@@ -332,7 +332,7 @@ class StoreHub {
         LogUtil.e('Http:$res');
         LogUtil.e('Http:$s');
         if (null != err) {
-          msg += err ?? '';
+          msg += err is String ? err : err.toString() ?? '';
         }
         LogUtil.e('Http:$msg');
         res = getRequest(msg);

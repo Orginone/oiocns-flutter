@@ -131,7 +131,9 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
 
   @override
   Future<bool> loadInstance({bool reload = false}) async {
-    if (instanceData != null && !reload) return true;
+    if (instanceData != null && !reload) {
+      return true;
+    }
 
     try {
       var res = await kernel.findInstance(
