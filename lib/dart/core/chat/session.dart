@@ -224,7 +224,8 @@ class Session extends Entity<XEntity> implements ISession {
       var msg = Message(chatdata.value.lastMessage!, this);
       return msg.msgTitle;
     }
-    return metadata.remark!.substring(0, min(15, metadata.remark!.length));
+    return metadata.remark?.substring(0, min(15, metadata.remark!.length)) ??
+        "";
   }
 
   @override

@@ -45,7 +45,7 @@ class ActivityResourceWidget extends StatelessWidget {
 
   Widget? renderResource(BuildContext context, FileItemShare item,
       List<Widget> widgetList, int index) {
-    if (item.contentType!.startsWith('image')) {
+    if (item.contentType?.startsWith('image') ?? false) {
       // 获取屏幕高度
       final height = MediaQuery.of(context).size.height;
       String link = shareOpenLink(item.shareLink);
@@ -72,14 +72,14 @@ class ActivityResourceWidget extends StatelessWidget {
           child: ImageWidget(
             link,
           ));
-    } else if (item.contentType!.startsWith('video')) {
+    } else if (item.contentType?.startsWith('video') ?? false) {
       return ImageWidget(
           item.poster != null && item.poster!.isNotEmpty
               ? shareOpenLink(item.poster)
               : item.thumbnailUint8List,
           size: computedSize());
-    } else if (item.contentType!.contains('pdf') ||
-        item.contentType!.startsWith('text')) {
+    } else if ((item.contentType?.contains('pdf') ?? false) ||
+        (item.contentType?.startsWith('text') ?? false)) {
       return getThumbnail(shareOpenLink(item.shareLink));
     }
     return null;

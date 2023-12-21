@@ -16,6 +16,8 @@ class TargetActivityList extends StatelessWidget {
 
   TargetActivityViewController get controller => Get.find();
   Rx<IActivity> get activity => controller.state.activity.obs;
+  Rx<IActivityMessage?> get activityMessage =>
+      controller.state.activityMessage.obs;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +45,7 @@ class TargetActivityList extends StatelessWidget {
             itemScrollController: controller.state.itemScrollController,
             // addAutomaticKeepAlives: true,
             // addRepaintBoundaries: true,
-            itemCount: activity.value.activityList.length,
+            itemCount: controller.state.activityCount.value,
             itemBuilder: (BuildContext context, int index) {
               return _item(index);
             },
@@ -54,9 +56,18 @@ class TargetActivityList extends StatelessWidget {
   }
 
   Widget _item(int index) {
-    return ActivityMessageWidget(
-      item: activity.value.activityList[index],
-      activity: activity.value.activityList[index].activity,
-    );
+    if (activityMessage != null) {
+      return ActivityMessageWidget(
+        item: activityMessage.value!,
+        activity: activityMessage.value!.activity,
+      );
+    } else {
+      return ActivityMessageWidget(
+        item: activity.value.activityList[index],
+        activity: activity.value.activityList[index].activity,
+      );
+    }
+
+    return Container();
   }
 }

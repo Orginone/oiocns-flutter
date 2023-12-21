@@ -44,20 +44,33 @@ class ActivityMessageWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Obx(() {
-      return Offstage(
-        offstage: isDelete.value,
-        child: ListItemMetaWidget(
-          title: title(),
-          avatar: avatar(),
-          description: description(context),
-          onTap: hideResource
-              ? () {
-                  Get.toNamed(
-                    Routers.targetActivity,
-                    arguments: activity,
-                  );
-                }
-              : null,
+      return Container(
+        color: XColors.bgColor,
+        child: Offstage(
+          offstage: isDelete.value,
+          child: Column(
+            children: [
+              hideResource
+                  ? const Divider(
+                      thickness: 6,
+                    )
+                  : Container(),
+              ListItemMetaWidget(
+                title: title(),
+                subTitle: subTitle(),
+                avatar: avatar(),
+                description: description(context),
+                onTap: hideResource
+                    ? () {
+                        Get.toNamed(
+                          Routers.targetActivity,
+                          arguments: item.value,
+                        );
+                      }
+                    : null,
+              ),
+            ],
+          ),
         ),
       );
     });
@@ -82,18 +95,42 @@ class ActivityMessageWidget extends StatelessWidget {
     );
   }
 
+  Widget subTitle() {
+    XEntity? entity =
+        settingCtrl.user.findMetadata<XEntity>(item.value.metadata.createUser!);
+    return Row(
+      children: [
+        // TeamAvatar(
+        //   info: TeamTypeInfo(userId: item.value.metadata.createUser!),
+        //   size: 24.w,
+        // ),
+        Container(
+          alignment: Alignment.centerLeft,
+          // padding: EdgeInsets.only(left: 5.w),
+          child: Row(
+            children: [
+              Text(
+                  "${showChatTime(item.value.metadata.createTime!)}·${entity?.name}",
+                  style: XFonts.activitySubTitle),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
   //渲染内容
   Widget? renderContent() {
     switch (MessageType.getType(metadata!.typeName)) {
       case MessageType.text:
         return Text(metadata!.content,
-            maxLines: 1, overflow: TextOverflow.ellipsis);
+            maxLines: 3, overflow: TextOverflow.ellipsis);
       case MessageType.html:
         if (hideResource) {
           return (Offstage(
             offstage: !hideResource,
             child: Text(parseHtmlToText(metadata!.content),
-                maxLines: 1, overflow: TextOverflow.ellipsis),
+                maxLines: 3, overflow: TextOverflow.ellipsis),
           ));
         } else {
           return HtmlWidget(
@@ -191,23 +228,23 @@ class RenderCtxMore extends StatelessWidget {
     return Container(child: Obx(() {
       return Column(
         children: [
-          Padding(padding: EdgeInsets.only(top: 5.h)),
-          Row(
-            children: [
-              ...getUserAvatar(item.value.metadata.createUser!),
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(left: 5.w),
-                child: Row(
-                  children: [
-                    Text(
-                      "发布于${showChatTime(item.value.metadata.createTime!)}",
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
+          // Padding(padding: EdgeInsets.only(top: 5.h)),
+          // Row(
+          //   children: [
+          //     ...getUserAvatar(item.value.metadata.createUser!),
+          //     Container(
+          //       alignment: Alignment.centerLeft,
+          //       padding: EdgeInsets.only(left: 5.w),
+          //       child: Row(
+          //         children: [
+          //           Text(
+          //             "发布于${showChatTime(item.value.metadata.createTime!)}",
+          //           ),
+          //         ],
+          //       ),
+          //     )
+          //   ],
+          // ),
           Row(
             children: [
               Offstage(
@@ -322,65 +359,41 @@ class RenderCtxMore extends StatelessWidget {
       child: Column(
         children: [
           Padding(padding: EdgeInsets.only(top: 5.h)),
-          Row(
-            children: [
-              TeamAvatar(
-                info: TeamTypeInfo(userId: item.value.metadata.createUser!),
-                size: 24.w,
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                padding: EdgeInsets.only(left: 5.w),
-                child: Row(
-                  children: [
-                    Text("${entity?.name}",
-                        style: const TextStyle(
-                          color: XColors.themeColor,
-                          fontWeight: FontWeight.bold,
-                        )),
-                    Text(
-                      "发布于${showChatTime(item.value.metadata.createTime!)}",
-                    ),
-                  ],
-                ),
-              )
-            ],
-          ),
-          Padding(padding: EdgeInsets.only(top: 5.h)),
           Offstage(
             offstage: showLikes,
             child: Container(
-                color: XColors.entryBgColor,
                 padding: EdgeInsets.all(5.w),
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Offstage(
-                      offstage: item.value.metadata.likes.isEmpty,
-                      child: Row(
-                        children: [
-                          const ImageWidget(AssetsImages.iconLike,
-                              size: 18, color: Colors.red),
-                          Container(
-                              padding: EdgeInsets.only(left: 6.w),
-                              child:
-                                  Text("${item.value.metadata.likes.length}"))
-                        ],
-                      ),
+                    Row(
+                      children: [
+                        const ImageWidget(Icons.forward_5, size: 18),
+                        Container(
+                            padding: EdgeInsets.only(left: 6.w),
+                            child: const Text("转发"))
+                      ],
                     ),
-                    Padding(padding: EdgeInsets.only(left: 5.w)),
-                    Offstage(
-                      offstage: item.value.metadata.comments.isEmpty,
-                      child: Row(
-                        children: [
-                          const ImageWidget(AssetsImages.iconMsg,
-                              size: 18, color: XColors.themeColor),
-                          Container(
-                              padding: EdgeInsets.only(left: 6.w),
-                              child: Text(
-                                  "${item.value.metadata.comments.length}"))
-                        ],
-                      ),
-                    )
+                    Row(
+                      children: [
+                        const ImageWidget(AssetsImages.iconLike,
+                            size: 18, color: Colors.red),
+                        Container(
+                            padding: EdgeInsets.only(left: 6.w),
+                            child: Text(
+                                "${item.value.metadata.likes.isEmpty ? '点赞' : item.value.metadata.likes.length}"))
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        const ImageWidget(AssetsImages.iconMsg,
+                            size: 18, color: XColors.themeColor),
+                        Container(
+                            padding: EdgeInsets.only(left: 6.w),
+                            child: Text(
+                                "${item.value.metadata.comments.isEmpty ? '评论' : item.value.metadata.comments.length}"))
+                      ],
+                    ),
                   ],
                 )),
           )

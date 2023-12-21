@@ -21,6 +21,7 @@ class IndexPage extends BaseGetPageView<IndexController, IndexState> {
     return Column(
       children: [
         tabBar(),
+        subTabBar(),
         Expanded(
           child: ExtendedTabBarView(
               controller: state.tabController,
@@ -35,6 +36,10 @@ class IndexPage extends BaseGetPageView<IndexController, IndexState> {
         )
       ],
     );
+  }
+
+  Widget subTabBar() {
+    return Container();
   }
 
   Widget tabBar() {

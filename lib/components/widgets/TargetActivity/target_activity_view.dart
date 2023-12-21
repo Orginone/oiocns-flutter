@@ -34,7 +34,7 @@ class TargetActivityView
   Widget _title() {
     return Column(
       children: [
-        Text(state.activity.name, style: XFonts.size24Black3),
+        Text(state.activity.name ?? "", style: XFonts.size24Black3),
       ],
     );
   }
@@ -90,14 +90,22 @@ class TargetActivityViewController
 
 class TargetActivityViewState extends BaseGetState {
   late IActivity activity;
+  late IActivityMessage? activityMessage;
 
   late GlobalKey scrollKey;
 
   final ItemScrollController itemScrollController = ItemScrollController();
   RxBool showCommentBox = false.obs;
+  RxInt activityCount = 1.obs;
 
   TargetActivityViewState() {
-    activity = Get.arguments;
+    if (Get.arguments is ActivityMessage) {
+      activityMessage = Get.arguments;
+      activity = activityMessage!.activity;
+    } else {
+      activity = Get.arguments;
+      activityCount.value = activity.activityList.length;
+    }
     scrollKey = GlobalKey();
   }
 

@@ -64,6 +64,10 @@ class XWidgets {
 }
 
 class XFonts {
+  ///动态模块
+  ///动态子标题样式
+  static get activitySubTitle => size16Black9;
+
   static get size12Black0 {
     return TextStyle(fontSize: 12.sp, color: XColors.black);
   }

@@ -44,7 +44,7 @@ RegExpMatch? getSpecialChartcterContent(String str, [String reg = r'「(.*?)」'
   var match = re.allMatches(str);
   //如果匹配成功则返回匹配到的内容
   //如果未找到匹配的内容，则返回 null 或其他自定义的值
-  return match.firstOrNull;
+  return match.first;
 }
 
 class BaseObj {
@@ -119,16 +119,16 @@ var setFormRules = (List<dynamic> ruleList) {
   List list = [];
 
   // 遍历所有规则，根据规则类型创建不同的规则对象
-  for (var _r in ruleList) {
-    switch (_r.ruleType) {
+  for (var r in ruleList) {
+    switch (r.ruleType) {
       case RuleType.FORMULA:
-        list.add(FormulaRule(_r));
+        list.add(FormulaRule(r));
         break;
       case RuleType.METHOD:
-        list.add(MethodRule(_r));
+        list.add(MethodRule(r));
         break;
       default:
-        stderr.writeln('暂不支持规则类型：' + _r.ruleType);
+        stderr.writeln('暂不支持规则类型：' + r.ruleType);
         break;
     }
   }
