@@ -24,9 +24,10 @@ class ListItemMetaWidget extends StatelessWidget {
         children: [
           avatar,
           Padding(
-              padding: EdgeInsets.only(left: 5.w),
+              padding: EdgeInsets.only(left: 10.w),
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [title, subTitle]))
         ],
       ),

@@ -45,16 +45,13 @@ class ActivityMessageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       return Container(
-        color: XColors.bgColor,
+        margin: EdgeInsets.only(top: hideResource ? 6.h : 0, left: 0, right: 0),
+        padding: EdgeInsets.all(10.h),
+        color: XColors.bgListItem,
         child: Offstage(
           offstage: isDelete.value,
           child: Column(
             children: [
-              hideResource
-                  ? const Divider(
-                      thickness: 6,
-                    )
-                  : Container(),
               ListItemMetaWidget(
                 title: title(),
                 subTitle: subTitle(),
@@ -228,24 +225,8 @@ class RenderCtxMore extends StatelessWidget {
     return Container(child: Obx(() {
       return Column(
         children: [
-          // Padding(padding: EdgeInsets.only(top: 5.h)),
-          // Row(
-          //   children: [
-          //     ...getUserAvatar(item.value.metadata.createUser!),
-          //     Container(
-          //       alignment: Alignment.centerLeft,
-          //       padding: EdgeInsets.only(left: 5.w),
-          //       child: Row(
-          //         children: [
-          //           Text(
-          //             "发布于${showChatTime(item.value.metadata.createTime!)}",
-          //           ),
-          //         ],
-          //       ),
-          //     )
-          //   ],
-          // ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Offstage(
                 offstage:
@@ -316,7 +297,7 @@ class RenderCtxMore extends StatelessWidget {
                 item.value.metadata.comments.isEmpty,
             child: Container(
                 alignment: Alignment.centerLeft,
-                color: XColors.entryBgColor,
+                color: XColors.bgListItem1,
                 padding: EdgeInsets.all(5.w),
                 child: Wrap(
                   direction: Axis.horizontal,
@@ -332,7 +313,7 @@ class RenderCtxMore extends StatelessWidget {
             offstage: item.value.metadata.comments.isEmpty,
             child: Container(
                 alignment: Alignment.centerLeft,
-                color: XColors.entryBgColor,
+                color: XColors.bgListItem1,
                 padding: EdgeInsets.all(5.w),
                 child: Wrap(
                   direction: Axis.horizontal,

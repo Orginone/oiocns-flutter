@@ -45,6 +45,12 @@ class XColors {
   static const Color blueTextColor = Color(0xFF1890FF);
   static const Color cardShadowColor = Color(0xFF4C9DF9);
   static const Color bgErrorColor = Color(0xFFFAECE9);
+
+  // 列表内容背景底色
+  static const Color bgListBody = Color.fromARGB(255, 240, 240, 240);
+  // 列表项背景色
+  static const Color bgListItem = Color(0xFFFFFFFF);
+  static const Color bgListItem1 = Color.fromARGB(255, 244, 243, 243);
 }
 
 class XIcons {

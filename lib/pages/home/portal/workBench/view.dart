@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/base/common/format.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
@@ -32,7 +33,7 @@ class WorkBenchPage
   @override
   Widget buildView() {
     return Container(
-        color: const Color.fromARGB(255, 240, 240, 240),
+        color: XColors.bgListBody,
         padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
         child: ListView(children: [
           RenderOperate(),

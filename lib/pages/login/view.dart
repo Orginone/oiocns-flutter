@@ -378,19 +378,20 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
   }
 
   Widget button(Color color) {
+    double widthBtn = MediaQuery.of(context).size.width - 70;
     return Container(
-      width: 343,
-      height: 48,
-      padding: const EdgeInsets.only(top: 12),
-      decoration: ShapeDecoration(
-        color: color,
-        shape: RoundedRectangleBorder(
-          side: const BorderSide(width: 1, color: Color(0xFFE7E8EB)),
-          borderRadius: BorderRadius.circular(8),
+        width: widthBtn,
+        height: 48.h,
+        alignment: Alignment.center,
+        padding: const EdgeInsets.only(top: 12),
+        decoration: ShapeDecoration(
+          color: color,
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(width: 1, color: Color(0xFFE7E8EB)),
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
-      ),
-      child: const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-        Text(
+        child: const Text(
           '登录',
           textAlign: TextAlign.center,
           style: TextStyle(
@@ -400,9 +401,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
             fontWeight: FontWeight.w600,
             height: 0.09,
           ),
-        )
-      ]),
-    );
+        ));
   }
 
   //第三方登录按钮

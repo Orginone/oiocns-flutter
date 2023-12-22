@@ -25,7 +25,6 @@ class ActivityComment extends StatelessWidget {
         onTap: () => onTap?.call(comment),
         child: Container(
             alignment: Alignment.centerLeft,
-            color: XColors.entryBgColor,
             padding: EdgeInsets.all(5.w),
             child: Wrap(
               direction: Axis.horizontal,

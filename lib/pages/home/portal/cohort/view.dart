@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:orginone/components/widgets/TargetActivity/activity_message.dart';
 import 'package:orginone/components/widgets/team_avatar.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/base/model.dart' as model;
@@ -30,7 +31,8 @@ class CohortActivityPage
           SliverToBoxAdapter(
             child: SingleChildScrollView(
               scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.all(10.w),
+              padding: EdgeInsets.only(
+                  top: 10.h, left: 10.w, right: 10.w, bottom: 12.w),
               child: Row(
                 children: activityGroup(controller.cohortActivity),
               ),
@@ -43,22 +45,17 @@ class CohortActivityPage
         return 0;
       },
       body: Obx(() {
-        return ListView(
-            padding: EdgeInsets.symmetric(vertical: 15.h),
-            children: GroupActivityItem(
-                cohortActivity: controller.cohortActivity,
-                activity: controller.cohortActivity.activitys.isNotEmpty
-                    ? controller.cohortActivity.activitys.first
-                    : null));
+        return Container(
+          color: XColors.bgListBody,
+          child: ListView(
+              children: GroupActivityItem(
+                  cohortActivity: controller.cohortActivity,
+                  activity: controller.cohortActivity.activitys.isNotEmpty
+                      ? controller.cohortActivity.activitys.first
+                      : null)),
+        );
       }),
     );
-    // return NestedScrollView(
-    //     headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-    //       return activityGroup(controller.cohortActivity);
-    //     },
-    //     body: ListView(
-    //         padding: EdgeInsets.symmetric(vertical: 15.h),
-    //         children: GroupActivityItem(activity: controller.cohortActivity)));
   }
 
   //渲染动态列表
@@ -78,14 +75,15 @@ class CohortActivityPage
         .where((item) => item.activityList.isNotEmpty)
         .map((item) {
       return Padding(
-        padding: EdgeInsets.only(left: 5.w, right: 5.w),
+        padding: EdgeInsets.only(left: 8.w, right: 8.w),
         child: GestureDetector(
             onTap: () {
               state.activityMessageList.value = item.activityList;
-              print(
-                  '>>>===${state.activityMessageList.length}-${item.activityList.length}');
             },
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 TeamAvatar(
                   info: TeamTypeInfo(
@@ -94,10 +92,14 @@ class CohortActivityPage
                               name: '', typeName: item.typeName ?? "")),
                   size: 65.w,
                 ),
-                Text(item.metadata.name!,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                    ))
+                SizedBox(
+                    width: 100.w,
+                    child: Text(item.metadata.name!,
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                        )))
               ],
             )),
       );
