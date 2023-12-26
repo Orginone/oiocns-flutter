@@ -51,19 +51,105 @@ class ForgotPasswordPage
                 backToLogin(),
                 CommonWidget.logo(),
                 Positioned(
-                  top: 300,
-                  left: 36,
+                  top: MediaQuery.of(context).size.height * 0.3,
+                  left: 35,
                   right: 35,
                   child: Text(
-                    '忘记密码',
+                    '找回密码',
                     style: TextStyle(fontSize: 40.sp),
                   ),
+                ),
+                Positioned(
+                  top: MediaQuery.of(context).size.height * 0.38,
+                  left: 20,
+                  right: 35,
+                  child: Obx(() {
+                    return GestureDetector(
+                        child: SizedBox(
+                      width: 375,
+                      height: 50,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          switchTips(state.privateKey, '私钥找回', 1),
+                          switchTips(state.phoneNumber, '短信找回', 0),
+                        ],
+                      ),
+                    ));
+                  }),
                 ),
                 verifyForm(),
               ],
             )),
       ),
     );
+  }
+
+  Widget switchTips(RxBool isChoice, String title, int x) {
+    if (isChoice.isTrue) {
+      return GestureDetector(
+          onTap: () {
+            controller.switchMode(x);
+          },
+          child: SizedBox(
+            width: 88,
+            height: 40,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  title,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    color: Color(0xFF366EF4),
+                    fontSize: 14,
+                    fontFamily: 'PingFang SC',
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Container(
+                  width: 16,
+                  height: 3,
+                  decoration: ShapeDecoration(
+                    color: const Color(0xFF366EF4),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(999),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ));
+    } else {
+      return GestureDetector(
+        onTap: () {
+          controller.switchMode(x);
+        },
+        child: SizedBox(
+          width: 88,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Color(0xFF15181D),
+                  fontSize: 14,
+                  fontFamily: 'PingFang SC',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   Widget backToLogin() {
@@ -80,25 +166,51 @@ class ForgotPasswordPage
 
   Widget verifyForm() {
     return Positioned(
-        top: 400,
+        top: MediaQuery.of(context).size.height * 0.45,
         left: 36,
         right: 36,
         child: Obx(() {
           return Column(
             children: [
-              CommonWidget.commonTextInputAction(
-                controller: state.keyController,
-                title: '私钥',
-                hint: '请输入注册时保存的账户私钥',
+              CommonWidget.commonTextInput(
+                controller: state.accountController,
+                title: '账号',
+                hint: '请输入登录账号',
                 inputFormatters: [
                   FilteringTextInputFormatter.singleLineFormatter,
                 ],
               ),
               const SizedBox(height: 10),
+              Obx(() {
+                if (state.privateKey.isTrue) {
+                  return CommonWidget.commonTextInput(
+                    controller: state.keyController,
+                    title: '私钥',
+                    hint: '请输入注册时保存的账户私钥',
+                    inputFormatters: [
+                      FilteringTextInputFormatter.singleLineFormatter,
+                    ],
+                  );
+                } else {
+                  return CommonWidget.commonTextInputAction(
+                    controller: state.verifyController,
+                    title: '手机号',
+                    hint: '请输入验证码',
+                    inputFormatters: [
+                      FilteringTextInputFormatter.singleLineFormatter,
+                    ],
+                    action: Container(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: verificationCodeCountDown(),
+                    ),
+                  );
+                }
+              }),
+              const SizedBox(height: 10),
               CommonWidget.commonTextInputAction(
                 controller: state.passWordController,
-                title: '密码',
-                hint: '请输入密码',
+                title: '新密码',
+                hint: '请输入新密码',
                 inputFormatters: [
                   FilteringTextInputFormatter.singleLineFormatter,
                 ],
@@ -120,7 +232,7 @@ class ForgotPasswordPage
               CommonWidget.commonTextInputAction(
                 controller: state.verifyPassWordController,
                 title: '确认密码',
-                hint: '请再次输入密码',
+                hint: '请再次输入新密码',
                 inputFormatters: [
                   FilteringTextInputFormatter.singleLineFormatter,
                 ],
@@ -140,27 +252,6 @@ class ForgotPasswordPage
               ),
               const SizedBox(height: 20),
               comfirmSubmit(),
-              // ElevatedButton(
-              //   onPressed: () {
-              //     if (state.passWordController.text.isNotEmpty &&
-              //         state.verifyPassWordController.text.isNotEmpty) {
-              //       controller.submit();
-              //     }
-              //   },
-              //   // 根据输入框的值是否为空动态更改按钮颜色
-              //   style: ButtonStyle(
-              //     backgroundColor: MaterialStateProperty.resolveWith<Color>(
-              //       (Set<MaterialState> states) {
-              //         return state.passWordController.text.isNotEmpty &&
-              //                 state.verifyPassWordController.text.isNotEmpty &&
-              //                 state.keyController.text.isNotEmpty
-              //             ? XColors.themeColor
-              //             : const Color(0xFFB5C7FF);
-              //       },
-              //     ),
-              //   ),
-              //   child: const Text('确认'),
-              // ),
             ],
           );
         }));
@@ -290,5 +381,28 @@ class ForgotPasswordPage
             ),
           )),
     );
+  }
+
+  Widget verificationCodeCountDown() {
+    return Obx(() {
+      TextStyle textStyle =
+          TextStyle(color: XColors.themeColor, fontSize: 20.sp);
+      String text = '发送验证码';
+      if (state.startCountDown.value) {
+        textStyle = TextStyle(color: Colors.grey, fontSize: 15.sp);
+        text = "${state.countDown.value}秒后重新发送";
+      }
+      return GestureDetector(
+          onTap: () {
+            if (!state.sendVerify.value) {
+              controller.getDynamicCode();
+            }
+          },
+          child: Text(
+            text,
+            textAlign: TextAlign.end,
+            style: textStyle,
+          ));
+    });
   }
 }

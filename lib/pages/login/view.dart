@@ -176,8 +176,9 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
   //切换账号登录和验证码登录类型
   Widget switchLoginType() {
     return Positioned(
-      top: 300,
-      left: 20,
+      top: MediaQuery.of(context).size.height * 0.35,
+      left: 35,
+      right: 35,
       child: Obx(() {
         return GestureDetector(
             onTap: () {
@@ -352,8 +353,10 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
   //登录提交按钮
   Widget loginSubmit() {
     return Positioned(
-      top: 520,
+      // top: 520,
+      top: MediaQuery.of(context).size.height * 0.68,
       left: 35,
+      right: 35,
       child: GestureDetector(
         onTap: () {
           if (controller.state.accountLogin.value) {
@@ -407,8 +410,9 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
   //第三方登录按钮
   Widget thirdLoginPlatform() {
     return Positioned(
-      top: 580,
+      top: MediaQuery.of(context).size.height * 0.75,
       left: 35,
+      right: 35,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -469,16 +473,15 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
     );
   }
 
-  //logo
-
   //登录账号密码验证码表单
   Widget loginForm() {
     return Obx(() {
       if (state.accountLogin.value) {
         return Positioned(
-            top: 370.00,
-            left: 20,
-            right: 20,
+            // top: 370.00,
+            top: MediaQuery.of(context).size.height * 0.43,
+            left: 35,
+            right: 35,
             child: SizedBox(
                 height: 140,
                 child: Column(
@@ -519,43 +522,43 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
                               color: Colors.grey,
                             ))),
                     const SizedBox(height: 12),
-                    // Container(
-                    //   padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    //     children: [
-                    //       Container(
-                    //           child: GestureDetector(
-                    //         onTap: () {
-                    //           controller.register();
-                    //         },
-                    //         child: const Text(
-                    //           "注册用户",
-                    //           style: TextStyle(color: XColors.themeColor),
-                    //         ),
-                    //       )),
-                    //       Container(
-                    //           padding: const EdgeInsets.only(right: 5),
-                    //           child: GestureDetector(
-                    //             onTap: () {
-                    //               controller.forgotPassword(
-                    //                   state.accountController.text);
-                    //             },
-                    //             child: const Text(
-                    //               "忘记密码",
-                    //               style: TextStyle(color: XColors.themeColor),
-                    //             ),
-                    //           ))
-                    //     ],
-                    //   ),
-                    // )
+                    Container(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                              child: GestureDetector(
+                            onTap: () {
+                              controller.register();
+                            },
+                            child: const Text(
+                              "注册用户",
+                              style: TextStyle(color: XColors.themeColor),
+                            ),
+                          )),
+                          Container(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: GestureDetector(
+                                onTap: () {
+                                  controller.forgotPassword(
+                                      state.accountController.text);
+                                },
+                                child: const Text(
+                                  "忘记密码",
+                                  style: TextStyle(color: XColors.themeColor),
+                                ),
+                              ))
+                        ],
+                      ),
+                    )
                   ],
                 )));
       } else {
         return Positioned(
-            top: 370.00,
-            left: 20,
-            right: 20,
+            top: MediaQuery.of(context).size.height * 0.43,
+            left: 35,
+            right: 35,
             child: SizedBox(
                 height: 140,
                 child: Column(

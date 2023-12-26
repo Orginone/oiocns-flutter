@@ -602,7 +602,7 @@ class CommonWidget {
       bool obscureText = false,
       Widget? action}) {
     return Container(
-      width: 343,
+      // width: 343,
       height: 45,
       padding: const EdgeInsets.symmetric(horizontal: 12),
       clipBehavior: Clip.antiAlias,
@@ -715,6 +715,67 @@ class CommonWidget {
                                 border: InputBorder.none),
                           ))),
                   Expanded(flex: 4, child: action ?? Container()),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  //文本+输入 两段式输入框
+  static Widget commonTextInput(
+      {required TextEditingController controller,
+      required String title,
+      required String hint,
+      ValueChanged<String>? onChanged,
+      List<TextInputFormatter>? inputFormatters,
+      bool obscureText = false}) {
+    return Container(
+      // width: 343,
+      height: 45,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      clipBehavior: Clip.antiAlias,
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1, color: Color(0xFFE7E8EB)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: 30,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: Text(
+                        title,
+                        style: TextStyle(fontSize: 20.sp),
+                      )),
+                  Expanded(
+                      flex: 4,
+                      child: Container(
+                          padding: const EdgeInsets.fromLTRB(7, 13, 0, 0),
+                          child: TextField(
+                            controller: controller,
+                            obscureText: obscureText,
+                            inputFormatters: inputFormatters,
+                            decoration: InputDecoration(
+                                hintText: hint,
+                                hintStyle: TextStyle(
+                                    color: Colors.grey.shade400,
+                                    fontSize: 18.sp),
+                                border: InputBorder.none),
+                          ))),
                 ],
               ),
             ),

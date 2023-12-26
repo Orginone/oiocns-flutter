@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
@@ -9,7 +11,7 @@ import 'state.dart';
 class ForgotPasswordController extends BaseController<ForgotPasswordState> {
   @override
   final ForgotPasswordState state = ForgotPasswordState();
-
+  late String _dynamicId = "";
   void showPassWord() {
     state.passwordUnVisible.value = !state.passwordUnVisible.value;
   }
@@ -19,12 +21,18 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
   }
 
   void submit() async {
+    print(
+        'privateKey=======${state.privateKey.value}&&&&&&&&&phoneNumber=======${state.phoneNumber.value}');
     if (state.accountController.text.isEmpty) {
       ToastUtils.showMsg(msg: "请输入用户名");
       return;
     }
-    if (state.keyController.text.isEmpty) {
+    if (state.privateKey.isTrue && state.keyController.text.isEmpty) {
       ToastUtils.showMsg(msg: "请输入注册时保存的账户私钥");
+      return;
+    }
+    if (state.phoneNumber.isTrue && state.verifyController.text.isEmpty) {
+      ToastUtils.showMsg(msg: "请输入短信验证码");
       return;
     }
     if (state.passWordController.text != state.verifyPassWordController.text) {
@@ -46,14 +54,25 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
       ToastUtils.showMsg(msg: '密码必须包含：数字、字母、特殊字符');
       return;
     }
-    ResultType result = await settingCtrl.provider.resetPassword(
-      state.accountController.text,
-      state.passWordController.text,
-      state.keyController.text,
-    );
+    ResultType result;
+    if (state.privateKey.isTrue) {
+      result = await settingCtrl.auth.resetPassword(ResetPwdModel(
+        account: state.accountController.text,
+        password: state.passWordController.text,
+        privateKey: state.keyController.text,
+      ));
+    } else {
+      result = await settingCtrl.auth.resetPassword(ResetPwdModel(
+        account: state.accountController.text,
+        password: state.passWordController.text,
+        dynamicId: _dynamicId,
+        dynamicCode: state.verifyController.text,
+      ));
+    }
 
     if (result.success) {
-      ToastUtils.showMsg(msg: '重置密码成功！');
+      print(result.data);
+      ToastUtils.showMsg(msg: '重置密码成功，请重新登录');
       Get.back();
     } else {
       ToastUtils.showMsg(msg: result.msg);
@@ -62,5 +81,68 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
 
   void backToLoginPage() {
     Get.back();
+  }
+
+  void switchMode(int x) {
+    if (x == 1) {
+      state.privateKey.value = true;
+      state.phoneNumber.value = false;
+    } else {
+      state.privateKey.value = false;
+      state.phoneNumber.value = true;
+    }
+    print(
+        'privateKey>>>>${state.privateKey.value}&&&&&&&&&phoneNumber>>>>${state.phoneNumber.value}');
+  }
+
+  // 获得动态验证码
+  Future<void> getDynamicCode() async {
+    RegExp regex = RegExp(r'(^1[3|4|5|7|8|9]\d{9}$)|(^09\d{8}$)');
+    if (!regex.hasMatch(state.accountController.text)) {
+      ToastUtils.showMsg(msg: "请输入正确的手机号");
+      return;
+    }
+    if (state.sendVerify.value) {
+      ToastUtils.showMsg(msg: "验证码已发送，请稍后再试");
+      return;
+    }
+    state.startCountDown.value = true;
+    state.countDown.value = 60;
+    _dynamicId = '';
+
+    var res = await settingCtrl.auth.dynamicCode(DynamicCodeModel.fromJson({
+      'account': state.accountController.text,
+      'platName': '资产共享云',
+      'dynamicId': '',
+    }));
+    if (res.success && res.data != null) {
+      _dynamicId = res.data!.dynamicId;
+      print(
+          "获取验证码信息：${res.data!.dynamicId},${res.data!.account},${res.data!.platName}");
+      state.sendVerify = true.obs;
+      startCountDown();
+    }
+  }
+
+  void startCountDown() {
+    if (state.timer != null) {
+      if (state.timer!.isActive) {
+        timerClose();
+      }
+    }
+    state.timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      if (state.countDown.value <= 0) {
+        timerClose();
+      }
+      state.countDown.value--;
+    });
+  }
+
+  void timerClose() {
+    state.timer?.cancel();
+    state.timer = null;
+    state.startCountDown.value = false;
+    state.countDown.value = 60;
+    state.sendVerify.value = false;
   }
 }

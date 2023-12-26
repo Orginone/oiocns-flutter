@@ -4,7 +4,7 @@ import 'package:orginone/dart/base/model.dart';
 
 /// 解析头像
 var parseAvatar = (String? avatar) {
-  if (avatar != null) {
+  if (avatar != null && avatar != '') {
     try {
       return FileItemShare.fromJson(jsonDecode(avatar));
     } catch (error) {

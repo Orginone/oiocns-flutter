@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
+import 'package:orginone/components/widgets/loading_dialog.dart';
 import 'package:orginone/config/location.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/utils/alert_dialog_utils.dart';
 import 'package:orginone/utils/toast_utils.dart';
-import 'package:orginone/components/widgets/loading_dialog.dart';
 
 import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
@@ -53,14 +54,19 @@ class RegisterController extends BaseController<RegisterState> {
       ToastUtils.showMsg(msg: '密码必须包含：数字、字母、特殊字符');
       return false;
     }
-    if (regExp(r'^[\u4e00-\u9fa5]{2,8}$', state.userNameController.text)) {
-      ToastUtils.showMsg(msg: "请输入正确的姓名");
+    if (regExp(r'^[\u4e00-\u9fa5]{2,8}$', state.realNameController.text)) {
+      ToastUtils.showMsg(msg: "请输入正确的姓名：${state.realNameController.text}");
       return false;
     }
     if (state.remarkController.text.isEmpty) {
       ToastUtils.showMsg(msg: "请输入正确的座右铭");
       return false;
     }
+    // if (!state.agreeTerms.value) {
+    //   ToastUtils.showMsg(msg: "请阅读并同意服务条款与隐私条款");
+    //   return false;
+    // }
+
     return true;
   }
 
@@ -138,16 +144,18 @@ class RegisterController extends BaseController<RegisterState> {
       dynamicId: _dynamicId,
       dynamicCode: state.dynamicCodeController.text,
       password: state.passWordController.text,
-      name: state.userNameController.text,
+      name: state.realNameController.text,
       remark: state.remarkController.text,
     ));
     LoadingDialog.dismiss(context);
     if (res.success) {
-      ToastUtils.showMsg(msg: "注册成功,请重新登录");
-      Get.back();
+      // ToastUtils.showMsg(msg: "注册成功,请重新登录");
+      // Get.back();
+      AlertDialogUtils.showPrivateKey(context, res.data?.privateKey ?? '');
     } else {
       ToastUtils.showMsg(msg: res.msg);
     }
+    // AlertDialogUtils.showPrivateKey(context, '7404-0374-6729-4231');
   }
 
   void showPassWord() {

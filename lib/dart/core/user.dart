@@ -108,17 +108,33 @@ class UserProvider {
     return res;
   }
 
-  /// 变更密码
+  /// 私钥变更密码
   /// @param account 账号
   /// @param password 密码
   /// @param privateKey 私钥
   /// @returns
-  Future<ResultType> resetPassword(
+  // Future<ResultType> resetPasswordForPrivateKey(
+  //   String account,
+  //   String password,
+  //   String privateKey,
+  // ) async {
+  //   return await kernel.resetPasswordForPrivateKey(
+  //       account, password, privateKey);
+  // }
+
+  /// 私钥变更密码
+  /// @param account 账号
+  /// @param password 密码
+  /// @param privateKey 私钥
+  /// @returns
+  Future<ResultType> resetPasswordForDynamicCode(
     String account,
+    String dynamicId,
+    String dynamicCode,
     String password,
-    String privateKey,
   ) async {
-    return await kernel.resetPassword(account, password, privateKey);
+    return await kernel.resetPasswordForDynamicCode(
+        account, dynamicId, dynamicCode, password);
   }
 
   /// 加载用户

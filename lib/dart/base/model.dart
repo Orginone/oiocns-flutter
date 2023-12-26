@@ -504,7 +504,7 @@ class TokenResultModel {
   // 用户信息
   XTarget target;
   // 私钥
-  String privateKey;
+  String? privateKey;
 
   TokenResultModel({
     required this.accessToken,
@@ -513,7 +513,7 @@ class TokenResultModel {
     required this.license,
     required this.tokenType,
     required this.target,
-    required this.privateKey,
+    this.privateKey,
   });
   TokenResultModel.fromJson(Map<String, dynamic> json)
       : accessToken = json['accessToken'],
@@ -521,7 +521,7 @@ class TokenResultModel {
         author = json['author'],
         license = json['license'],
         tokenType = json['tokenType'],
-        target = json['target'],
+        target = XTarget.fromJson(json['target']),
         privateKey = json['privateKey'];
 }
 
@@ -3958,25 +3958,31 @@ class GetSpeciesModel {
 
 class ResetPwdModel {
   // 唯一ID
-  final String code;
+  final String account;
 
   // 实体类型
-  final String password;
+  final String? privateKey;
 
   // 归属ID
-  final String privateKey;
+  final String? dynamicId;
+  final String? dynamicCode;
+  final String password;
 
   //构造方法
   ResetPwdModel({
-    required this.code,
+    required this.account,
     required this.password,
-    required this.privateKey,
+    this.privateKey,
+    this.dynamicId,
+    this.dynamicCode,
   });
 
   //通过JSON构造
   ResetPwdModel.fromJson(Map<String, dynamic> json)
-      : code = json["code"],
+      : account = json["account"],
         password = json["password"],
+        dynamicId = json["dynamicId"],
+        dynamicCode = json["dynamicCode"],
         privateKey = json["privateKey"];
 
   //通过动态数组解析成List
@@ -3996,9 +4002,11 @@ class ResetPwdModel {
   //转成JSON
   Map<String, dynamic> toJson() {
     Map<String, dynamic> json = {};
-    json["code"] = code;
+    json["account"] = account;
     json["password"] = password;
     json["privateKey"] = privateKey;
+    json["dynamicId"] = dynamicId;
+    json["dynamicCode"] = dynamicCode;
     return json;
   }
 }

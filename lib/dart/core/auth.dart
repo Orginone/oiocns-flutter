@@ -64,4 +64,19 @@ class AuthProvider {
     }
     return res;
   }
+
+  /// 重置密码
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+// Future<ResultType<TokenResultModel>> resetPasswordForDynamicCode(
+//     ResetPwdModel params,
+//   ) async {
+//     var res = await kernel.auth<TokenResultModel>(
+//         'ResetPwd', params, TokenResultModel.fromJson);
+//     if (res.success) {
+//       await _onAuthed(res.data!.target);
+//     }
+//     return res;
+//   }
+// }
 }

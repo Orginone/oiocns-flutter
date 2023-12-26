@@ -49,12 +49,12 @@ class _LoginTransPageState extends State<LoginTransPage> {
           //奥集能 模块
           logo(),
           //文字Orginone 区域
-          const Positioned(
+          Positioned(
             left: 0,
             right: 0,
-            top: 260,
-            child: Text(
-              '物以类聚，人以群分。',
+            top: MediaQuery.of(context).size.height * 0.30,
+            child: const Text(
+              '物以类聚  人以群分',
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Color(0xFF366EF4),
@@ -65,11 +65,11 @@ class _LoginTransPageState extends State<LoginTransPage> {
               ),
             ),
           ),
-          const Positioned(
+          Positioned(
             left: 0,
             right: 0,
-            top: 290,
-            child: Text(
+            top: MediaQuery.of(context).size.height * 0.33,
+            child: const Text(
               'Orginone',
               textAlign: TextAlign.center,
               style: TextStyle(
@@ -89,7 +89,7 @@ class _LoginTransPageState extends State<LoginTransPage> {
   //logo
   Widget logo() {
     return Positioned(
-      bottom: 100.00,
+      bottom: 150.00,
       left: 0,
       right: 0,
       child: Center(
@@ -112,7 +112,7 @@ class _LoginTransPageState extends State<LoginTransPage> {
               text: '奥集能',
               style: TextStyle(
                 color: Color(0xFF15181D),
-                fontSize: 22.91,
+                fontSize: 17,
                 fontFamily: 'PingFang SC',
                 fontWeight: FontWeight.w500,
               ),

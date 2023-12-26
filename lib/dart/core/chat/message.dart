@@ -272,8 +272,8 @@ class Message implements IMessage {
 
       default:
     }
-    FileItemShare file = parseAvatar(msgBody)!;
-    if (file.shareLink != null || file.name != null) {
+    FileItemShare? file = parseAvatar(msgBody);
+    if (file != null && (file.shareLink != null || file.name != null)) {
       return '$header[$msgType]:${file.name}(${formatSize(file.size!)})';
     }
     return '$header[$msgType]:解析异常';

@@ -62,7 +62,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                 child: Stack(
                   children: [
                     Positioned(
-                      top: 150,
+                      top: MediaQuery.of(context).size.height * 0.19,
                       left: 35,
                       right: 35,
                       child: Text(
@@ -71,7 +71,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                       ),
                     ),
                     Positioned(
-                      top: 200,
+                      top: MediaQuery.of(context).size.height * 0.25,
                       left: 35,
                       right: 35,
                       child: Text(
@@ -235,20 +235,22 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
           TextSpan(children: [
             const TextSpan(text: "同意"),
             WidgetSpan(
-                child: GestureDetector(
-              child: Text(
-                "《服务条款》",
-                style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
+              child: GestureDetector(
+                child: Text(
+                  "《服务条款》",
+                  style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
+                ),
               ),
-            )),
+            ),
             const TextSpan(text: "与"),
             WidgetSpan(
-                child: GestureDetector(
-              child: Text(
-                "《隐私条款》",
-                style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
+              child: GestureDetector(
+                child: Text(
+                  "《隐私条款》",
+                  style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
+                ),
               ),
-            ))
+            )
           ]),
           style: TextStyle(color: Colors.black, fontSize: 20.sp),
         )
@@ -282,7 +284,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
 
   Widget registerForm() {
     return Positioned(
-        top: 250,
+        top: MediaQuery.of(context).size.height * 0.30,
         left: 36,
         right: 36,
         child: Obx(() {
@@ -296,7 +298,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                   FilteringTextInputFormatter.singleLineFormatter,
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               CommonWidget.commonTextInputAction(
                 controller: state.dynamicCodeController,
                 title: '验证码',
@@ -309,7 +311,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                   child: verificationCodeCountDown(),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               CommonWidget.commonTextInputAction(
                 controller: state.passWordController,
                 title: '密码',
@@ -331,7 +333,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                       color: Colors.grey,
                     )),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               CommonWidget.commonTextInputAction(
                 controller: state.verifyPassWordController,
                 title: '确认密码',
@@ -353,7 +355,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                       color: Colors.grey,
                     )),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               CommonWidget.commonTextInputAction(
                 controller: state.realNameController,
                 title: '姓名',
@@ -362,7 +364,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                   FilteringTextInputFormatter.singleLineFormatter,
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               CommonWidget.commonTextInputAction(
                 controller: state.remarkController,
                 title: '座右铭',
@@ -371,9 +373,9 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                   FilteringTextInputFormatter.singleLineFormatter,
                 ],
               ),
-              const SizedBox(height: 20),
-              clause(),
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
+              // clause(),
+              const SizedBox(height: 10),
               comfirmSubmit(),
             ],
           );

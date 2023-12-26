@@ -225,7 +225,7 @@ class KernelApi {
   /// 重置密码
   /// @param {IdReqModel} params 请求参数
   /// @returns {ResultType<bool>} 请求结果
-  Future<ResultType> resetPassword(
+  Future<ResultType> resetPasswordForPrivateKey(
     String userName,
     String password,
     String privateKey,
@@ -234,6 +234,26 @@ class KernelApi {
       "account": userName,
       "password": password,
       "privateKey": privateKey
+    };
+    ResultType res = await _storeHub.invoke('ResetPassword', args: [req]);
+
+    return res;
+  }
+
+  /// 重置密码
+  /// @param {IdReqModel} params 请求参数
+  /// @returns {ResultType<bool>} 请求结果
+  Future<ResultType> resetPasswordForDynamicCode(
+    String userName,
+    String dynamicId,
+    String dynamicCode,
+    String password,
+  ) async {
+    var req = {
+      "account": userName,
+      "dynamicId": dynamicId,
+      "dynamicCode": dynamicCode,
+      "password": password
     };
     ResultType res = await _storeHub.invoke('ResetPassword', args: [req]);
 
