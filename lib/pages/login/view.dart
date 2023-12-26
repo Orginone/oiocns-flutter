@@ -137,7 +137,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
         Obx(() {
           return GestureDetector(
             onTap: () {
-              controller.switchMode();
+              controller.switchMode(1);
             },
             child: Text.rich(
               TextSpan(children: [
@@ -180,80 +180,86 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
       left: 35,
       right: 35,
       child: Obx(() {
-        return GestureDetector(
-            onTap: () {
-              controller.switchMode();
-            },
-            child: SizedBox(
-              width: 375,
-              height: 50,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  switchTips(state.accountLogin, '账号登录'),
-                  switchTips(state.phoneNumberLogin, '短信登录'),
-                ],
-              ),
-            ));
+        return SizedBox(
+          width: 375,
+          height: 50,
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              switchTips(state.accountLogin, '账号登录', 1),
+              switchTips(state.phoneNumberLogin, '短信登录', 0),
+            ],
+          ),
+        );
       }),
     );
   }
 
-  Widget switchTips(RxBool isChoice, String title) {
+  Widget switchTips(RxBool isChoice, String title, int x) {
     if (isChoice.isTrue) {
-      return Container(
-        width: 88,
-        height: 40,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Color(0xFF366EF4),
-                fontSize: 14,
-                fontFamily: 'PingFang SC',
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Container(
-              width: 16,
-              height: 3,
-              decoration: ShapeDecoration(
-                color: const Color(0xFF366EF4),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(999),
+      return GestureDetector(
+        onTap: () {
+          controller.switchMode(x);
+        },
+        child: Container(
+          width: 88,
+          height: 40,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Color(0xFF366EF4),
+                  fontSize: 14,
+                  fontFamily: 'PingFang SC',
+                  fontWeight: FontWeight.w600,
                 ),
               ),
-            ),
-          ],
+              Container(
+                width: 16,
+                height: 3,
+                decoration: ShapeDecoration(
+                  color: const Color(0xFF366EF4),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(999),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     } else {
-      return Container(
-        width: 88,
-        padding: const EdgeInsets.symmetric(horizontal: 16),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Color(0xFF15181D),
-                fontSize: 14,
-                fontFamily: 'PingFang SC',
-                fontWeight: FontWeight.w400,
+      return GestureDetector(
+        onTap: () {
+          controller.switchMode(x);
+        },
+        child: Container(
+          width: 88,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                title,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Color(0xFF15181D),
+                  fontSize: 14,
+                  fontFamily: 'PingFang SC',
+                  fontWeight: FontWeight.w400,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     }

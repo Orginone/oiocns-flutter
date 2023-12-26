@@ -58,9 +58,18 @@ class LoginController extends BaseController<LoginState> {
     state.passwordUnVisible.value = !state.passwordUnVisible.value;
   }
 
-  void switchMode() {
-    state.accountLogin.value = !state.accountLogin.value;
-    state.phoneNumberLogin.value = !state.phoneNumberLogin.value;
+  // void switchMode() {
+  //   state.accountLogin.value = !state.accountLogin.value;
+  //   state.phoneNumberLogin.value = !state.phoneNumberLogin.value;
+  // }
+  void switchMode(int x) {
+    if (x == 1) {
+      state.accountLogin.value = true;
+      state.phoneNumberLogin.value = false;
+    } else {
+      state.accountLogin.value = false;
+      state.phoneNumberLogin.value = true;
+    }
   }
 
   void changeAgreeTerms() {

@@ -91,8 +91,6 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
       state.privateKey.value = false;
       state.phoneNumber.value = true;
     }
-    print(
-        'privateKey>>>>${state.privateKey.value}&&&&&&&&&phoneNumber>>>>${state.phoneNumber.value}');
   }
 
   // 获得动态验证码
