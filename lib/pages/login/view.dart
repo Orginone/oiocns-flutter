@@ -553,7 +553,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
             )));
       } else {
         return Positioned(
-          top: MediaQuery.of(context).size.height * 0.43,
+          top: MediaQuery.of(context).size.height * 0.42,
           left: 35,
           right: 35,
           child: SizedBox(
