@@ -34,4 +34,9 @@ class Constants {
   static const userResKey = 'app-user-res'; // 用户权限资源表字段名
   static const warehouse = 'app-user-warehouse'; // 当前使用仓库
   static const carNumber = 'app-car-number'; // 最后一次使用的车牌号
+
+  static const accountRegex = r'(^1[3|4|5|7|8|9]\d{9}$)|(^09\d{8}$)'; //手机账号格式验证
+  static const passwordRegex =
+      r'(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,15}'; //密码格式
+  static const realNameRegex = r'^[\u4e00-\u9fa5]{2,8}$'; //用户姓名格式
 }

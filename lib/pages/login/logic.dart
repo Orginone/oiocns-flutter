@@ -58,10 +58,6 @@ class LoginController extends BaseController<LoginState> {
     state.passwordUnVisible.value = !state.passwordUnVisible.value;
   }
 
-  // void switchMode() {
-  //   state.accountLogin.value = !state.accountLogin.value;
-  //   state.phoneNumberLogin.value = !state.phoneNumberLogin.value;
-  // }
   void switchMode(int x) {
     if (x == 1) {
       state.accountLogin.value = true;
@@ -129,7 +125,7 @@ class LoginController extends BaseController<LoginState> {
   }
 
   void sendVerify() {
-    RegExp regex = RegExp(r'(^1[3|4|5|7|8|9]\d{9}$)|(^09\d{8}$)');
+    RegExp regex = RegExp(Constants.accountRegex);
     if (!regex.hasMatch(state.phoneNumberController.text)) {
       ToastUtils.showMsg(msg: "请输入正确的手机号");
     }
@@ -144,7 +140,7 @@ class LoginController extends BaseController<LoginState> {
 
   ///验证码登录获取验证码
   Future<void> sendLoginVerify() async {
-    RegExp regex = RegExp(r'(^1[3|4|5|7|8|9]\d{9}$)|(^09\d{8}$)');
+    RegExp regex = RegExp(Constants.accountRegex);
     if (!regex.hasMatch(state.phoneNumberController.text)) {
       ToastUtils.showMsg(msg: "请输入正确的手机号");
       return;

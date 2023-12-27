@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
+import 'package:orginone/common/values/constants.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/utils/toast_utils.dart';
@@ -95,7 +96,7 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
 
   // 获得动态验证码
   Future<void> getDynamicCode() async {
-    RegExp regex = RegExp(r'(^1[3|4|5|7|8|9]\d{9}$)|(^09\d{8}$)');
+    RegExp regex = RegExp(Constants.accountRegex);
     if (!regex.hasMatch(state.accountController.text)) {
       ToastUtils.showMsg(msg: "请输入正确的手机号");
       return;

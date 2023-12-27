@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
+import 'package:orginone/common/values/constants.dart';
 import 'package:orginone/components/widgets/loading_dialog.dart';
 import 'package:orginone/config/location.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -49,12 +50,11 @@ class RegisterController extends BaseController<RegisterState> {
       ToastUtils.showMsg(msg: "密码的长度不能大于15");
       return false;
     }
-    if (regExp(r'(?=.*[0-9])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,15}',
-        state.passWordController.text)) {
+    if (regExp(Constants.passwordRegex, state.passWordController.text)) {
       ToastUtils.showMsg(msg: '密码必须包含：数字、字母、特殊字符');
       return false;
     }
-    if (regExp(r'^[\u4e00-\u9fa5]{2,8}$', state.realNameController.text)) {
+    if (regExp(Constants.realNameRegex, state.realNameController.text)) {
       ToastUtils.showMsg(msg: "请输入正确的姓名：${state.realNameController.text}");
       return false;
     }
@@ -74,8 +74,8 @@ class RegisterController extends BaseController<RegisterState> {
     if (state.phoneNumberController.text.isEmpty) {
       ToastUtils.showMsg(msg: "请输入手机号");
       return false;
-    } else if (regExp(r'(^1[3|4|5|7|8|9]\d{9}$)|(^09\d{8}$)',
-        state.phoneNumberController.text)) {
+    } else if (regExp(
+        Constants.accountRegex, state.phoneNumberController.text)) {
       ToastUtils.showMsg(msg: "请输入正确的手机号");
       return false;
     }
@@ -85,7 +85,7 @@ class RegisterController extends BaseController<RegisterState> {
 
   // 获得动态验证码
   Future<void> getDynamicCode() async {
-    RegExp regex = RegExp(r'(^1[3|4|5|7|8|9]\d{9}$)|(^09\d{8}$)');
+    RegExp regex = RegExp(Constants.accountRegex);
     if (!regex.hasMatch(state.phoneNumberController.text)) {
       ToastUtils.showMsg(msg: "请输入正确的手机号");
       return;
@@ -105,8 +105,6 @@ class RegisterController extends BaseController<RegisterState> {
     }));
     if (res.success && res.data != null) {
       _dynamicId = res.data!.dynamicId;
-      print(
-          "获取验证码信息：${res.data!.dynamicId},${res.data!.account},${res.data!.platName}");
       state.sendVerify = true.obs;
       startCountDown();
     }
@@ -149,13 +147,10 @@ class RegisterController extends BaseController<RegisterState> {
     ));
     LoadingDialog.dismiss(context);
     if (res.success) {
-      // ToastUtils.showMsg(msg: "注册成功,请重新登录");
-      // Get.back();
       AlertDialogUtils.showPrivateKey(context, res.data?.privateKey ?? '');
     } else {
       ToastUtils.showMsg(msg: res.msg);
     }
-    // AlertDialogUtils.showPrivateKey(context, '7404-0374-6729-4231');
   }
 
   void showPassWord() {
