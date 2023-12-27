@@ -1142,10 +1142,12 @@ class CommonWidget {
   }
 
   static Widget imageBackground() {
-    return Container(
+    return SizedBox(
+      height: 500,
       child: Stack(
         children: [
           Positioned(
+            top: 0,
             left: -200,
             child: Container(
               width: 900,

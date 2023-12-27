@@ -54,8 +54,8 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
               CommonWidget.logo(),
               switchLoginType(),
               loginForm(),
-              loginSubmit(),
-              thirdLoginPlatform(),
+              // loginSubmit(),
+              // thirdLoginPlatform(),
             ],
           )),
     );
@@ -176,7 +176,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
   //切换账号登录和验证码登录类型
   Widget switchLoginType() {
     return Positioned(
-      top: MediaQuery.of(context).size.height * 0.35,
+      top: MediaQuery.of(context).size.height * 0.33,
       left: 35,
       right: 35,
       child: Obx(() {
@@ -358,11 +358,10 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
 
   //登录提交按钮
   Widget loginSubmit() {
-    return Positioned(
-      // top: 520,
-      top: MediaQuery.of(context).size.height * 0.68,
-      left: 35,
-      right: 35,
+    return Container(
+      // top: MediaQuery.of(context).size.height * 0.69,
+      // left: 35,
+      // right: 35,
       child: GestureDetector(
         onTap: () {
           if (controller.state.accountLogin.value) {
@@ -373,15 +372,6 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
           }
         },
         child: button(XColors.themeColor),
-        // child: Obx(() {
-        // if (state.allowCommit.isTrue) {
-        // return button(XColors.themeColor);
-        // } else {
-        //   return button(
-        //     const Color(0xFFB5C7FF),
-        //   );
-        // }
-        // }),
       ),
     );
   }
@@ -390,7 +380,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
     double widthBtn = MediaQuery.of(context).size.width - 70;
     return Container(
         width: widthBtn,
-        height: 48.h,
+        height: 45,
         alignment: Alignment.center,
         padding: const EdgeInsets.only(top: 12),
         decoration: ShapeDecoration(
@@ -415,10 +405,8 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
 
   //第三方登录按钮
   Widget thirdLoginPlatform() {
-    return Positioned(
-      top: MediaQuery.of(context).size.height * 0.75,
-      left: 35,
-      right: 35,
+    return Container(
+      alignment: Alignment.centerLeft,
       child: Row(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.start,
@@ -484,133 +472,130 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
     return Obx(() {
       if (state.accountLogin.value) {
         return Positioned(
-            // top: 370.00,
-            top: MediaQuery.of(context).size.height * 0.43,
+            top: MediaQuery.of(context).size.height * 0.42,
             left: 35,
             right: 35,
             child: SizedBox(
-                height: 140,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CommonWidget.commonIconInputAction(
-                        onChanged: (value) {
-                          controller.allowLogin();
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CommonWidget.commonIconInputAction(
+                    onChanged: (value) {
+                      controller.allowLogin();
+                    },
+                    controller: state.accountController,
+                    icon: AssetsImages.loginAccount,
+                    hint: '请输入账号',
+                    inputFormatters: [
+                      FilteringTextInputFormatter.singleLineFormatter,
+                    ]),
+                const SizedBox(height: 10),
+                CommonWidget.commonIconInputAction(
+                    onChanged: (value) {
+                      controller.allowLogin();
+                    },
+                    controller: state.passWordController,
+                    icon: AssetsImages.loginSecret,
+                    hint: '请输入密码',
+                    inputFormatters: [
+                      FilteringTextInputFormatter.singleLineFormatter,
+                    ],
+                    obscureText: state.passwordUnVisible.value,
+                    action: IconButton(
+                        padding: const EdgeInsets.only(left: 40),
+                        onPressed: () {
+                          controller.showPassWord();
                         },
-                        controller: state.accountController,
-                        icon: AssetsImages.loginAccount,
-                        hint: '请输入账号',
-                        inputFormatters: [
-                          FilteringTextInputFormatter.singleLineFormatter,
-                        ]),
-                    const SizedBox(height: 10),
-                    CommonWidget.commonIconInputAction(
-                        onChanged: (value) {
-                          controller.allowLogin();
+                        icon: Icon(
+                          state.passwordUnVisible.value
+                              ? Icons.visibility_off
+                              : Icons.visibility,
+                          size: 24.w,
+                          color: Colors.grey,
+                        ))),
+                Container(
+                  height: 50,
+                  padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      SizedBox(
+                          child: GestureDetector(
+                        onTap: () {
+                          controller.register();
                         },
-                        controller: state.passWordController,
-                        icon: AssetsImages.loginSecret,
-                        hint: '请输入密码',
-                        inputFormatters: [
-                          FilteringTextInputFormatter.singleLineFormatter,
-                        ],
-                        obscureText: state.passwordUnVisible.value,
-                        action: IconButton(
-                            padding: const EdgeInsets.only(left: 40),
-                            onPressed: () {
-                              controller.showPassWord();
-                            },
-                            icon: Icon(
-                              state.passwordUnVisible.value
-                                  ? Icons.visibility_off
-                                  : Icons.visibility,
-                              size: 24.w,
-                              color: Colors.grey,
-                            ))),
-                    const SizedBox(height: 12),
-                    Container(
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                              child: GestureDetector(
-                            onTap: () {
-                              controller.register();
-                            },
-                            child: const Text(
-                              "注册用户",
-                              style: TextStyle(color: XColors.themeColor),
-                            ),
-                          )),
-                          Container(
-                              padding: const EdgeInsets.only(right: 5),
-                              child: GestureDetector(
-                                onTap: () {
-                                  controller.forgotPassword(
-                                      state.accountController.text);
-                                },
-                                child: const Text(
-                                  "忘记密码",
-                                  style: TextStyle(color: XColors.themeColor),
-                                ),
-                              ))
-                        ],
+                        child: const Text(
+                          "注册用户",
+                          style: TextStyle(color: XColors.themeColor),
+                        ),
+                      )),
+                      Container(
+                        padding: const EdgeInsets.only(right: 5),
+                        child: GestureDetector(
+                          onTap: () {
+                            controller
+                                .forgotPassword(state.accountController.text);
+                          },
+                          child: const Text(
+                            "忘记密码",
+                            style: TextStyle(color: XColors.themeColor),
+                          ),
+                        ),
                       ),
-                    )
-                  ],
-                )));
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 10),
+                loginSubmit(),
+                const SizedBox(height: 20),
+                thirdLoginPlatform(),
+              ],
+            )));
       } else {
         return Positioned(
-            top: MediaQuery.of(context).size.height * 0.43,
-            left: 35,
-            right: 35,
-            child: SizedBox(
-                height: 140,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    CommonWidget.commonIconInputAction(
-                      onChanged: (value) {
-                        controller.allowLogin();
-                      },
-                      controller: state.phoneNumberController,
-                      icon: AssetsImages.loginAccount,
-                      hint: '请输入手机号',
-                      inputFormatters: [
-                        FilteringTextInputFormatter.singleLineFormatter,
-                      ],
-                    ),
-                    const SizedBox(height: 10),
-                    CommonWidget.commonIconInputAction(
-                      onChanged: (value) {
-                        controller.allowLogin();
-                      },
-                      controller: state.verifyController,
-                      icon: AssetsImages.loginSecret,
-                      hint: '请输入验证码',
-                      inputFormatters: [
-                        FilteringTextInputFormatter.singleLineFormatter,
-                      ],
-                      action: Container(
-                        padding: const EdgeInsets.only(bottom: 5),
-                        child: verificationCodeCountDown(),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    // Obx(() {
-                    //   if (state.dynamicId.value.isNotEmpty) {
-                    //     return Container(
-                    //       width: 343,
-                    //       padding: const EdgeInsets.symmetric(horizontal: 10),
-                    //       child: Text('动态码:${state.dynamicId.value}'),
-                    //     );
-                    //   } else {
-                    //     return Container();
-                    //   }
-                    // })
+          top: MediaQuery.of(context).size.height * 0.43,
+          left: 35,
+          right: 35,
+          child: SizedBox(
+            // height: 140,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CommonWidget.commonIconInputAction(
+                  onChanged: (value) {
+                    controller.allowLogin();
+                  },
+                  controller: state.phoneNumberController,
+                  icon: AssetsImages.loginAccount,
+                  hint: '请输入手机号',
+                  inputFormatters: [
+                    FilteringTextInputFormatter.singleLineFormatter,
                   ],
-                )));
+                ),
+                const SizedBox(height: 10),
+                CommonWidget.commonIconInputAction(
+                  onChanged: (value) {
+                    controller.allowLogin();
+                  },
+                  controller: state.verifyController,
+                  icon: AssetsImages.loginSecret,
+                  hint: '请输入验证码',
+                  inputFormatters: [
+                    FilteringTextInputFormatter.singleLineFormatter,
+                  ],
+                  action: Container(
+                    padding: const EdgeInsets.only(bottom: 5),
+                    child: verificationCodeCountDown(),
+                  ),
+                ),
+                const SizedBox(height: 60),
+                loginSubmit(),
+                const SizedBox(height: 20),
+                thirdLoginPlatform(),
+              ],
+            ),
+          ),
+        );
       }
     });
   }

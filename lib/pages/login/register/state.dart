@@ -21,6 +21,9 @@ class RegisterState extends BaseGetState {
 
   var verifyPassWordUnVisible = true.obs;
 
+  //右滑返回
+  double distance = 0;
+
   //是够允许点击登录
   var allowCommit = false.obs;
 

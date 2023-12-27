@@ -49,29 +49,36 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
     //   ),
     // );
 
-    return Material(
-      child: Container(
-          clipBehavior: Clip.antiAlias,
-          decoration: const BoxDecoration(color: Colors.white),
+    return Scaffold(
+      body: SingleChildScrollView(
+        child: GestureDetector(
+          //向右滑动累计大于100像素表示为返回
+          onHorizontalDragUpdate: (details) {
+            state.distance += details.delta.dx;
+            if (state.distance > 100) {
+              controller.backToLoginPage();
+            }
+          },
           child: Stack(
             children: [
               CommonWidget.imageBackground(),
               CommonWidget.logo(),
               backToLogin(),
-              SafeArea(
+              SizedBox(
+                height: 680,
                 child: Stack(
                   children: [
                     Positioned(
-                      top: MediaQuery.of(context).size.height * 0.19,
+                      top: MediaQuery.of(context).size.height * 0.25,
                       left: 35,
                       right: 35,
                       child: Text(
                         '欢迎使用奥集能',
-                        style: TextStyle(fontSize: 40.sp),
+                        style: TextStyle(fontSize: 38.sp),
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height * 0.25,
+                      top: MediaQuery.of(context).size.height * 0.31,
                       left: 35,
                       right: 35,
                       child: Text(
@@ -84,7 +91,9 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                 ),
               )
             ],
-          )),
+          ),
+        ),
+      ),
     );
   }
 
@@ -284,7 +293,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
 
   Widget registerForm() {
     return Positioned(
-        top: MediaQuery.of(context).size.height * 0.30,
+        top: MediaQuery.of(context).size.height * 0.37,
         left: 36,
         right: 36,
         child: Obx(() {
@@ -373,9 +382,9 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                   FilteringTextInputFormatter.singleLineFormatter,
                 ],
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
               // clause(),
-              const SizedBox(height: 10),
+              // const SizedBox(height: 10),
               comfirmSubmit(),
             ],
           );
@@ -389,8 +398,8 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
       },
       child: Container(
           width: 343,
-          height: 48,
-          padding: const EdgeInsets.only(top: 12),
+          height: 45,
+          // padding: const EdgeInsets.only(top: 12),
           decoration: ShapeDecoration(
             color: XColors.themeColor,
             shape: RoundedRectangleBorder(
@@ -407,7 +416,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                 fontSize: 16,
                 fontFamily: 'PingFang SC',
                 fontWeight: FontWeight.w600,
-                height: 0.09,
+                // height: 0.01,
               ),
             ),
           )),

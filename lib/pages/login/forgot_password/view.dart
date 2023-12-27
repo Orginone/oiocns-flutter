@@ -33,56 +33,68 @@ class ForgotPasswordPage
     //     ),
     //   ),
     // );
-    return Material(
-      child: GestureDetector(
-        //向右滑动累计大于100像素表示为返回
-        onHorizontalDragUpdate: (details) {
-          state.distance += details.delta.dx;
-          if (state.distance > 100) {
-            controller.backToLoginPage();
-          }
-        },
-        child: Container(
-            clipBehavior: Clip.antiAlias,
-            decoration: const BoxDecoration(color: Colors.white),
-            child: Stack(
-              children: [
-                CommonWidget.imageBackground(),
-                backToLogin(),
-                CommonWidget.logo(),
-                Positioned(
-                  top: MediaQuery.of(context).size.height * 0.3,
-                  left: 35,
-                  right: 35,
-                  child: Text(
-                    '找回密码',
-                    style: TextStyle(fontSize: 40.sp),
-                  ),
-                ),
-                Positioned(
-                  top: MediaQuery.of(context).size.height * 0.38,
-                  left: 20,
-                  right: 35,
-                  child: Obx(() {
-                    return GestureDetector(
-                        child: SizedBox(
-                      width: 375,
-                      height: 50,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          switchTips(state.privateKey, '私钥找回', 1),
-                          switchTips(state.phoneNumber, '短信找回', 0),
-                        ],
-                      ),
-                    ));
-                  }),
-                ),
-                verifyForm(),
-              ],
-            )),
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
+        child: SizedBox(
+          height: 670,
+          child: GestureDetector(
+            //向右滑动累计大于100像素表示为返回
+            onHorizontalDragUpdate: (details) {
+              state.distance += details.delta.dx;
+              if (state.distance > 100) {
+                controller.backToLoginPage();
+              }
+            },
+            child: Container(
+                // height: 500,
+                clipBehavior: Clip.antiAlias,
+                decoration: const BoxDecoration(color: Colors.white),
+                child: Stack(
+                  children: [
+                    CommonWidget.imageBackground(),
+                    backToLogin(),
+                    CommonWidget.logo(),
+                    Positioned(
+                        top: MediaQuery.of(context).size.height * 0.3,
+                        left: 35,
+                        right: 35,
+                        child: Column(
+                          children: [
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              child: Text(
+                                '找回密码',
+                                style: TextStyle(fontSize: 40.sp),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Obx(() {
+                              return GestureDetector(
+                                child: SizedBox(
+                                  width: 375,
+                                  // height: 50,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      switchTips(state.privateKey, '私钥找回', 1),
+                                      switchTips(state.phoneNumber, '短信找回', 0),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            }),
+                            const SizedBox(height: 15),
+                            verifyForm(),
+                          ],
+                        )),
+                  ],
+                )),
+          ),
+        ),
       ),
     );
   }
@@ -165,96 +177,92 @@ class ForgotPasswordPage
   }
 
   Widget verifyForm() {
-    return Positioned(
-        top: MediaQuery.of(context).size.height * 0.45,
-        left: 36,
-        right: 36,
-        child: Obx(() {
-          return Column(
-            children: [
-              CommonWidget.commonTextInput(
-                controller: state.accountController,
-                title: '账号',
-                hint: '请输入登录账号',
-                inputFormatters: [
-                  FilteringTextInputFormatter.singleLineFormatter,
-                ],
-              ),
-              const SizedBox(height: 10),
-              Obx(() {
-                if (state.privateKey.isTrue) {
-                  return CommonWidget.commonTextInput(
-                    controller: state.keyController,
-                    title: '私钥',
-                    hint: '请输入注册时保存的账户私钥',
-                    inputFormatters: [
-                      FilteringTextInputFormatter.singleLineFormatter,
-                    ],
-                  );
-                } else {
-                  return CommonWidget.commonTextInputAction(
-                    controller: state.verifyController,
-                    title: '手机号',
-                    hint: '请输入验证码',
-                    inputFormatters: [
-                      FilteringTextInputFormatter.singleLineFormatter,
-                    ],
-                    action: Container(
-                      padding: const EdgeInsets.only(bottom: 5),
-                      child: verificationCodeCountDown(),
-                    ),
-                  );
-                }
-              }),
-              const SizedBox(height: 10),
-              CommonWidget.commonTextInputAction(
-                controller: state.passWordController,
-                title: '新密码',
-                hint: '请输入新密码',
-                inputFormatters: [
-                  FilteringTextInputFormatter.singleLineFormatter,
-                ],
-                obscureText: state.passwordUnVisible.value,
-                action: IconButton(
-                    padding: const EdgeInsets.only(left: 40),
-                    onPressed: () {
-                      controller.showPassWord();
-                    },
-                    icon: Icon(
-                      state.passwordUnVisible.value
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                      size: 24.w,
-                      color: Colors.grey,
-                    )),
-              ),
-              const SizedBox(height: 10),
-              CommonWidget.commonTextInputAction(
-                controller: state.verifyPassWordController,
-                title: '确认密码',
-                hint: '请再次输入新密码',
-                inputFormatters: [
-                  FilteringTextInputFormatter.singleLineFormatter,
-                ],
-                obscureText: state.verifyPassWordUnVisible.value,
-                action: IconButton(
-                    padding: const EdgeInsets.only(left: 40),
-                    onPressed: () {
-                      controller.showVerifyPassWord();
-                    },
-                    icon: Icon(
-                      state.verifyPassWordUnVisible.value
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                      size: 24.w,
-                      color: Colors.grey,
-                    )),
-              ),
-              const SizedBox(height: 20),
-              comfirmSubmit(),
+    return Obx(() {
+      return Column(
+        children: [
+          CommonWidget.commonTextInput(
+            controller: state.accountController,
+            title: '账号',
+            hint: '请输入登录账号',
+            inputFormatters: [
+              FilteringTextInputFormatter.singleLineFormatter,
             ],
-          );
-        }));
+          ),
+          const SizedBox(height: 10),
+          Obx(() {
+            if (state.privateKey.isTrue) {
+              return CommonWidget.commonTextInput(
+                controller: state.keyController,
+                title: '私钥',
+                hint: '请输入注册时保存的账户私钥',
+                inputFormatters: [
+                  FilteringTextInputFormatter.singleLineFormatter,
+                ],
+              );
+            } else {
+              return CommonWidget.commonTextInputAction(
+                controller: state.verifyController,
+                title: '手机号',
+                hint: '请输入验证码',
+                inputFormatters: [
+                  FilteringTextInputFormatter.singleLineFormatter,
+                ],
+                action: Container(
+                  padding: const EdgeInsets.only(bottom: 5),
+                  child: verificationCodeCountDown(),
+                ),
+              );
+            }
+          }),
+          const SizedBox(height: 10),
+          CommonWidget.commonTextInputAction(
+            controller: state.passWordController,
+            title: '新密码',
+            hint: '请输入新密码',
+            inputFormatters: [
+              FilteringTextInputFormatter.singleLineFormatter,
+            ],
+            obscureText: state.passwordUnVisible.value,
+            action: IconButton(
+                padding: const EdgeInsets.only(left: 40),
+                onPressed: () {
+                  controller.showPassWord();
+                },
+                icon: Icon(
+                  state.passwordUnVisible.value
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                  size: 24.w,
+                  color: Colors.grey,
+                )),
+          ),
+          const SizedBox(height: 10),
+          CommonWidget.commonTextInputAction(
+            controller: state.verifyPassWordController,
+            title: '确认密码',
+            hint: '请再次输入新密码',
+            inputFormatters: [
+              FilteringTextInputFormatter.singleLineFormatter,
+            ],
+            obscureText: state.verifyPassWordUnVisible.value,
+            action: IconButton(
+                padding: const EdgeInsets.only(left: 40),
+                onPressed: () {
+                  controller.showVerifyPassWord();
+                },
+                icon: Icon(
+                  state.verifyPassWordUnVisible.value
+                      ? Icons.visibility_off
+                      : Icons.visibility,
+                  size: 24.w,
+                  color: Colors.grey,
+                )),
+          ),
+          const SizedBox(height: 20),
+          comfirmSubmit(),
+        ],
+      );
+    });
   }
 
   // 构建修改密码页面
@@ -358,7 +366,7 @@ class ForgotPasswordPage
       },
       child: Container(
           width: 343,
-          height: 48,
+          height: 45,
           padding: const EdgeInsets.only(top: 12),
           decoration: ShapeDecoration(
             color: XColors.themeColor,
