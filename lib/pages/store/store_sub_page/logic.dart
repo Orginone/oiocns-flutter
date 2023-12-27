@@ -33,6 +33,7 @@ class StoreSubController extends BaseListController<StoreSubState> {
     LogUtil.d(type);
   }
 
+  ///点击tab标签调用
   ///加载全部数据
   loadAllData() async {
     List<ICompany> joinedCompanies = settingCtrl.user.companys;
@@ -79,25 +80,33 @@ class StoreSubController extends BaseListController<StoreSubState> {
     await loadCompanySetting();
   }
 
+  ///点击tab个人标签调用
+  ///加载个人数据
   Future<void> loadUserSetting() async {
     var user = state.nav!.children[0];
 
     ///点击进入下一级
     user.onNext = (nav) async {
-      await user.space!.loadContent(reload: true);
+      // await user.space!.loadContent(reload: true);
+      await user.space!.directory.loadContent(reload: true);
+      // await user.space!.directory.standard.loadApplications(reload: true);
+
+      LogUtil.d('StoreSubController-loadUserSetting-onNext');
+      LogUtil.d('user');
+      List<StoreTreeNav> children = [
+        ...await loadApplications(
+            user.space!.directory.standard.applications, user.space!),
+        ...await loadForm(user.space!.directory.standard.forms, user.space!),
+        ...await loadFile(user.space!.directory.files, user.space!),
+      ];
+      LogUtil.d(children);
       List<StoreTreeNav> function = [
         StoreTreeNav(
           name: "个人文件", //个人文件XXXX
           space: user.space,
           showPopup: false,
           spaceEnum: SpaceEnum.directory,
-          children: [
-            ...await loadApplications(
-                user.space!.directory.standard.applications, user.space!),
-            ...await loadForm(
-                user.space!.directory.standard.forms, user.space!),
-            ...await loadFile(user.space!.directory.files, user.space!),
-          ],
+          children: children,
         ),
       ];
 
@@ -109,10 +118,13 @@ class StoreSubController extends BaseListController<StoreSubState> {
     };
   }
 
+  ///点击tab单位标签调用
+  ///加载单位数据
   Future<void> loadCompanySetting() async {
     for (int i = 1; i < state.nav!.children.length; i++) {
       var company = state.nav!.children[i];
-      await company.space!.loadContent(reload: true);
+      // await company.space!.loadContent(reload: true);
+      await company.space!.directory.loadContent(reload: true);
       company.onNext = (nav) async {
         List<StoreTreeNav> function = [
           StoreTreeNav(
@@ -190,7 +202,9 @@ class StoreSubController extends BaseListController<StoreSubState> {
     }
   }
 
+  ///跳转下一页
   void onNext(StoreTreeNav nav) async {
+    LogUtil.d('StoreSubController-onNext');
     if (nav.source != null && nav.children.isEmpty) {
       jumpDetails(nav);
     } else {

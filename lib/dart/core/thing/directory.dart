@@ -12,8 +12,9 @@ import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/thing/resource.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/dart/core/thing/standard/page.dart';
-import 'package:orginone/dart/core/thing/standard/standart.dart';
+import 'package:orginone/dart/core/thing/standard/index_standart.dart';
 import 'package:orginone/dart/core/thing/systemfile.dart';
+import 'package:orginone/utils/index.dart';
 
 /// 可为空的进度回调
 typedef OnProgress = void Function(double p);
@@ -216,15 +217,17 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
 
   @override
   Future<bool> loadContent({bool reload = false}) async {
+    LogUtil.d('directory-loadContent');
     await loadFiles(reload: reload);
+    // await standard.loadStandardFiles(reload: reload);
     if (reload) {
-      if (typeName == '成员目录') {
-        await target.loadContent(reload: reload);
-      } else {
-        await loadDirectoryResource(reload: reload);
-      }
+      // if (typeName == '成员目录') {
+      //   await target.loadContent(reload: reload);
+      // } else {
+      await loadDirectoryResource(reload: reload);
+      // }
     }
-    return false;
+    return true;
   }
 
   @override
@@ -299,11 +302,13 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   Future<List<ISysFileInfo>> loadFiles({bool? reload}) async {
     reload ?? false;
     if (files.isEmpty || reload == true) {
-      final res =
-          await resource.bucketOpreate<List<FileItemModel>>(BucketOpreateModel(
-        key: encodeKey(id),
-        operate: BucketOpreates.list,
-      ));
+      final res = await resource.bucketOpreate<List<FileItemModel>>(
+          BucketOpreateModel(
+            key: encodeKey(id),
+            operate: BucketOpreates.list,
+          ), (data) {
+        return FileItemModel.fromList(data['data'] ?? []);
+      });
       if (res.success && res.data!.isNotEmpty) {
         files = res.data!
             .where((i) => !i.isDirectory)

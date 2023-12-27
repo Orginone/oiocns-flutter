@@ -18,7 +18,7 @@ class StoreController extends BaseSubmenuController<StoreState> {
     //   store = SubGroup.fromJson(storeDefaultConfig);
     //   HiveUtils.putSubGroup('store', store);
     // }
-
+    ///加载数据动态标签
     var store = loadDataTabs();
     state.subGroup = Rx(store);
     // var index = store.groups!.indexWhere((element) => element.value == "all");

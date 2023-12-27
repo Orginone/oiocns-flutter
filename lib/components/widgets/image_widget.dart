@@ -108,7 +108,7 @@ class ImageWidget extends StatelessWidget {
       imageUrl: path,
       httpHeaders: httpHeaders,
       errorWidget: (context, url, error) {
-        LogUtil.d('CachedNetworkImage');
+        LogUtil.d('CachedNetworkImage -error ');
         LogUtil.d(error);
         return Icon(
           Icons.broken_image,
@@ -116,13 +116,15 @@ class ImageWidget extends StatelessWidget {
           size: 50.w,
         );
       },
-      placeholder: (context, str) {
-        return Container(
-          width: size,
-          height: size,
-          color: Colors.white,
-        );
-      },
+      placeholder: (context, url) => const SizedBox(
+        width: 80,
+        height: 80,
+        child: Center(
+          child: CircularProgressIndicator(
+            strokeWidth: 1,
+          ),
+        ),
+      ),
     );
   }
 

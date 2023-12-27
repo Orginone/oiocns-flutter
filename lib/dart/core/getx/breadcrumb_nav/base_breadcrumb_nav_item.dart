@@ -1,11 +1,16 @@
+import 'dart:io';
+
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/components/widgets/popup_widget.dart';
+import 'package:orginone/main.dart';
 
 class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
     extends StatelessWidget {
@@ -55,13 +60,7 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(8.w)),
                 ),
-                child: item.image != null
-                    ? ImageWidget(
-                        item.image,
-                      )
-                    : _Icon(
-                        spaceEnum: item.spaceEnum,
-                      ),
+                child: _imageWidget(),
               ),
               Expanded(
                 child: title(),
@@ -71,6 +70,37 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
           ),
         ),
       ),
+    );
+  }
+
+  _imageWidget() {
+    if (item.image == null) {
+      return _Icon(
+        spaceEnum: item.spaceEnum,
+      );
+    }
+    dynamic link = '';
+    dynamic thumbnail = item.image;
+    // TODO 待处理小的预览图
+    if (thumbnail != null) {
+      link = thumbnail;
+    } else if (!link.startsWith('/orginone/kernel/load/')) {
+      link = File(link);
+    } else {
+      link = '${Constant.host}$link';
+    }
+    // link =
+    // '${Constant.host}/orginone/kernel/load/8ww8g2gjdatorvyezuenfyge8lhme1yk53nnj1xo1jsowux2mlzm66dk6lhnzzyql1vgq3uan11ge1dcnjugm3dmojug53c91n8w3sl9ipfuo9opcmhl51damruge1daojrgqzdkmr1f1wha1d';
+    Map<String, String> headers = {
+      "Authorization": kernel.accessToken,
+    };
+    LogUtil.d('BaseBreadcrumbNavItem');
+    LogUtil.d(link);
+    Widget child = ImageWidget(link, httpHeaders: headers);
+
+    return child;
+    return ImageWidget(
+      item.image,
     );
   }
 

@@ -44,4 +44,7 @@ class AssetsSvgs {
   static const pTranslateSvg = 'assets/svgs/other/p-translate.svg';
   static const profileHeaderBackgroundSvg =
       'assets/svgs/other/profile-header-background.svg';
+  static const joinCompany = 'assets/icons/joinCompany.svg';
+  static const newCompany = 'assets/icons/newCompany.svg';
+  static const joinCohort = 'assets/icons/joinCohort.svg';
 }

@@ -10,6 +10,7 @@ import 'package:orginone/pages/store/store_tree/store_nav_item.dart';
 import 'logic.dart';
 import 'state.dart';
 
+///数据的容器页面
 class StoreSubPage
     extends BaseGetListPageView<StoreSubController, StoreSubState> {
   late String type;

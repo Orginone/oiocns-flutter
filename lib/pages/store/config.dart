@@ -15,8 +15,11 @@ import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/dart/core/thing/systemfile.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 import 'store_tree/state.dart';
+
+///数据模块配置文件  处理数据模块数据
 
 ///加载数据的标签数据
 SubGroup loadDataTabs() {
@@ -72,7 +75,15 @@ Future<List<StoreTreeNav>> loadDir(
 Future<List<StoreTreeNav>> loadFile(
     List<ISysFileInfo> files, ITarget target) async {
   List<StoreTreeNav> nav = [];
+
+  LogUtil.d('config-loadFile');
+
   for (var file in files) {
+    // LogUtil.d(file);
+    // LogUtil.d(file.shareInfo().thumbnail);
+    // LogUtil.d(
+    //   file.filedata.thumbnailUint8List,
+    // );
     StoreTreeNav dirNav = StoreTreeNav(
       id: base64.encode(utf8.encode(file.metadata.name!)),
       source: file,
@@ -80,6 +91,8 @@ Future<List<StoreTreeNav>> loadFile(
       space: target,
       spaceEnum: SpaceEnum.file,
       image: file.shareInfo().thumbnail,
+      // image: file.shareInfo().thumbnailUint8List,//可以加载
+      // image: file.metadata.avatarThumbnail,
       children: [],
     );
     nav.add(dirNav);

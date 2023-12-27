@@ -7,6 +7,7 @@ abstract class BaseBreadcrumbNavState<T extends BaseBreadcrumbNavModel>
     extends BaseGetState {
   var bcNav = <BaseBreadcrumbNavInfo>[].obs;
 
+  ///导航标题
   String title = '';
 
   Rxn<T> model = Rxn();

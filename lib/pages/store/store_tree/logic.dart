@@ -6,6 +6,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/outTeam/group.dart';
 import 'package:orginone/pages/store/config.dart';
+import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/loading_dialog.dart';
 
@@ -19,7 +20,9 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     var user = state.model.value!.children[0];
 
     user.onNext = (nav) async {
-      await user.space!.loadContent(reload: true);
+      LogUtil.d('StoreTreeController-loadUserSetting');
+      // await user.space!.loadContent(reload: true);
+      await user.space!.directory.loadContent(reload: true);
       List<StoreTreeNav> function = [
         StoreTreeNav(
           name: "个人文件",
@@ -45,9 +48,12 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
   }
 
   Future<void> loadCompanySetting() async {
+    LogUtil.d('StoreTreeController-loadCompanySetting');
     for (int i = 1; i < state.model.value!.children.length; i++) {
       var company = state.model.value!.children[i];
-      await company.space!.loadContent(reload: true);
+      // await company.space!.directory.loadContent(reload: true);
+      // await company.space!.loadContent(reload: true);
+      LogUtil.d('loadCompanySetting-company');
       company.onNext = (nav) async {
         List<StoreTreeNav> function = [
           StoreTreeNav(
@@ -56,12 +62,12 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
             showPopup: false,
             spaceEnum: SpaceEnum.directory,
             children: [
-              ...await loadApplications(
-                  company.space!.directory.standard.applications,
-                  company.space!),
-              ...await loadForm(
-                  company.space!.directory.standard.forms, company.space!),
-              ...await loadFile(company.space!.directory.files, company.space!),
+              // ...await loadApplications(
+              //     company.space!.directory.standard.applications,
+              //     company.space!),
+              // ...await loadForm(
+              //     company.space!.directory.standard.forms, company.space!),
+              // ...await loadFile(company.space!.directory.files, company.space!),
             ],
           ),
         ];
@@ -157,7 +163,20 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     }
   }
 
+  ///跳转下一页
   void onNext(StoreTreeNav nav) async {
+    LogUtil.d('StoreTreeController-onNext');
+    // await nav.space!.loadContent(reload: true);
+
+    await nav.space?.directory.loadContent();
+    List<StoreTreeNav> children = [
+      ...await loadApplications(
+          nav.space!.directory.standard.applications, nav.space!),
+      ...await loadForm(nav.space!.directory.standard.forms, nav.space!),
+      ...await loadFile(nav.space!.directory.files, nav.space!),
+    ];
+
+    nav.children = children;
     if (nav.source != null && nav.children.isEmpty) {
       jumpDetails(nav);
     } else {

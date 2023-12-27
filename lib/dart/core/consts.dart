@@ -1,5 +1,3 @@
-import 'package:orginone/dart/base/model.dart';
-
 // 异常消息常量
 const unAuthorizedError = '抱歉,您没有权限操作.';
 const isExistError = '抱歉,已存在请勿重复创建.';
@@ -32,4 +30,4 @@ enum TaskType {
   const TaskType(this.label);
 }
 
-var ShareIdSet = <String, ShareIcon>{};
+// var ShareIdSet = <String, ShareIcon>{};

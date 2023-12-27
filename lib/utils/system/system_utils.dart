@@ -9,7 +9,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'text_utils.dart';
+import '../text_utils.dart';
 
 /// 系统工具类
 class SystemUtils {
@@ -17,11 +17,11 @@ class SystemUtils {
   static bool copyToClipboard(String? text,
       {String? successMessage, BuildContext? context}) {
     if (StringUtils.isNotEmpty(text!)) {
-      Clipboard.setData(new ClipboardData(text: text));
+      Clipboard.setData(ClipboardData(text: text));
       if (context != null) {
-        ScaffoldMessenger.of(context).showSnackBar(new SnackBar(
-            duration: Duration(seconds: 1),
-            content: new Text(successMessage ?? "copy success")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            duration: const Duration(seconds: 1),
+            content: Text(successMessage ?? "copy success")));
         return true;
       } else {
         return false;

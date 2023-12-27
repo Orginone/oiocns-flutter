@@ -1,6 +1,6 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/dart/core/consts.dart';
+import 'package:orginone/dart/core/public/consts.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/utils/index.dart';
 

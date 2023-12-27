@@ -52,6 +52,7 @@ enum SettingEnum {
   cardbag("卡包设置", Ionicons.card_outline),
   gateway("门户设置", Ionicons.home_outline),
   theme("主题设置", Ionicons.color_palette_outline),
+  vsrsion("版本记录", Ionicons.rocket_outline),
   exitLogin("退出登录", Ionicons.exit_outline);
 
   final String label;
@@ -450,6 +451,11 @@ class IndexController extends GetxController {
       case SettingEnum.theme:
         Get.toNamed(
           Routers.errorPage,
+        );
+        break;
+      case SettingEnum.vsrsion:
+        Get.toNamed(
+          Routers.version,
         );
         break;
       case SettingEnum.exitLogin:

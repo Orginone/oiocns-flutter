@@ -2590,7 +2590,11 @@ class ShareIcon {
       defaultAvatar = AssetsImages.chatDefaultCohort;
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     } else if (typeName == TargetType.company.label) {
-      defaultAvatar = AssetsImages.chatDefaultCohort;
+      // defaultAvatar = AssetsImages.chatDefaultCohort;
+      defaultAvatar = AssetsSvgs.newCompany;
+      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    } else if (typeName == TargetType.storage.label) {
+      defaultAvatar = AssetsImages.iconFile;
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     } else if (typeName == '动态') {
       defaultAvatar = AIcons.icons['x']?['home'] ?? "";
@@ -2627,6 +2631,25 @@ class ShareIcon {
     json["typeName"] = typeName;
     json["avatar"] = avatar?.toJson();
     return json;
+  }
+
+  String defaultAvatar() {
+    String defaultAvatar = '';
+    if (typeName == TargetType.person.label) {
+      defaultAvatar = AssetsImages.chatDefaultPerson;
+    } else if (typeName == TargetType.cohort.label) {
+      defaultAvatar = AssetsImages.chatDefaultCohort;
+    } else if (typeName == TargetType.department.label) {
+      defaultAvatar = AssetsImages.chatDefaultCohort;
+    } else if (typeName == TargetType.company.label) {
+      // defaultAvatar = AssetsImages.chatDefaultCohort;
+      defaultAvatar = AssetsSvgs.newCompany;
+    } else if (typeName == TargetType.storage.label) {
+      defaultAvatar = AssetsImages.iconFile;
+    } else if (typeName == '动态') {
+      defaultAvatar = AIcons.icons['x']?['home'] ?? "";
+    }
+    return defaultAvatar;
   }
 }
 
@@ -2667,6 +2690,7 @@ class FileItemShare {
     contentType = json["contentType"];
     extension = json["extension"];
     thumbnail = json["thumbnail"];
+    defaultAvatar = json["defaultAvatar"];
   }
 
   //通过动态数组解析成List
@@ -2705,6 +2729,7 @@ class FileItemShare {
     json["shareLink"] = shareLink;
     json["extension"] = extension;
     json["thumbnail"] = thumbnail;
+    json["defaultAvatar"] = defaultAvatar;
     return json;
   }
 
@@ -2770,6 +2795,20 @@ class FileItemModel extends FileItemShare {
           extension: json["extension"],
           thumbnail: json["thumbnail"],
         );
+
+  //通过动态数组解析成List
+  static List<FileItemModel> fromList(List<dynamic>? list) {
+    if (list == null) {
+      return [];
+    }
+    List<FileItemModel> retList = [];
+    if (list.isNotEmpty) {
+      for (var item in list) {
+        retList.add(FileItemModel.fromJson(item));
+      }
+    }
+    return retList;
+  }
 
   Map<String, dynamic> shareInfo() {
     String url = "${Constant.host}/orginone/anydata/bucket/load/$shareLink";

@@ -8,8 +8,13 @@ import 'package:orginone/main.dart';
 
 class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
   StoreTreeState() {
-    model.value = Get.arguments?['data'];
+    model.value = Get.arguments is Map
+        ? Get.arguments['data'] is StoreTreeNav
+            ? Get.arguments['data']
+            : null
+        : null;
 
+    ///返回的时候才会执行
     if (model.value == null) {
       var joinedCompanies = settingCtrl.user.companys;
 
@@ -18,7 +23,7 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
         organization.add(
           StoreTreeNav(
             name: value.metadata.name ?? "",
-            id: value.metadata.id!,
+            id: value.metadata.id,
             space: value,
             spaceEnum: SpaceEnum.company,
             children: [],

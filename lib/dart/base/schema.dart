@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:orginone/common/models/file/index.dart';
+import 'package:orginone/dart/core/public/entity.dart';
 
 import 'model.dart';
 
@@ -147,7 +148,7 @@ class XEntity extends Xbase {
   }
 
   Uint8List? avatarThumbnail() {
-    if (icon == '') {
+    if (icon == '' || icon == null) {
       return null;
     }
     try {
@@ -5060,6 +5061,9 @@ class XTarget extends XEntity {
     targets = XTarget.fromList(json["targets"]);
     thing = json["thing"] == null ? null : XThing.fromJson(json["thing"]);
     var share = shareIcon();
+    if (share != null && !ShareIdSet.containsKey(id)) {
+      ShareIdSet[id] = share;
+    }
     // if (share != null && !ShareIdSet.containsKey(id)) {
     //   ShareIdSet[id!] = share;
     // }

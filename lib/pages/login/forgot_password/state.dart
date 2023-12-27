@@ -36,6 +36,6 @@ class ForgotPasswordState extends BaseGetState {
   var startCountDown = false.obs;
 
   ForgotPasswordState() {
-    accountController.text = Get.arguments['account'];
+    accountController.text = Get.arguments?['account'] ?? '';
   }
 }

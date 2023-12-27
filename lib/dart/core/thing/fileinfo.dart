@@ -120,13 +120,34 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
   Future<bool> delete({bool? notity});
 
   @override
-  Future<bool> rename(String name);
+  Future<bool> rename(String name) async {
+    await Future.delayed(Duration.zero);
+    return true;
+  }
 
   @override
-  Future<bool> copy(IDirectory destination);
+  Future<bool> copy(IDirectory destination) async {
+    await Future.delayed(Duration.zero);
+    return true;
+  }
 
   @override
-  Future<bool> move(IDirectory destination);
+  Future<bool> move(IDirectory destination) async {
+    await Future.delayed(Duration.zero);
+    return true;
+  }
+
+  @override
+  Future<bool> restore() async {
+    await Future.delayed(Duration.zero);
+    return true;
+  }
+
+  @override
+  Future<bool> hardDelete({bool? notity}) async {
+    await Future.delayed(Duration.zero);
+    return true;
+  }
 
   Future<void> loadUserData() async {
     final data =

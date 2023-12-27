@@ -7,7 +7,8 @@ import 'package:uuid/uuid.dart';
 import '../../base/model.dart';
 import '../../base/schema.dart';
 
-Map<String, dynamic> shareIdSet = <String, dynamic>{};
+// ignore: non_constant_identifier_names
+Map<String, dynamic> ShareIdSet = <String, dynamic>{};
 
 abstract class IEntity<T> extends Emitter {
   //实体唯一键
@@ -61,7 +62,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
     this.key = const Uuid().v1();
     _metadata = metadata;
     _gtags = gtags;
-    shareIdSet[_metadata.id] = _metadata;
+    ShareIdSet[_metadata.id] = _metadata;
   }
   late T _metadata;
   @override
@@ -96,8 +97,8 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
 
   @override
   T get metadata {
-    if (shareIdSet.containsKey(_metadata.id)) {
-      return shareIdSet[_metadata.id];
+    if (ShareIdSet.containsKey(_metadata.id)) {
+      return ShareIdSet[_metadata.id];
     }
     return _metadata;
   }
@@ -146,30 +147,30 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
   void setMetadata(T metadata) {
     if (metadata.id == id) {
       _metadata = metadata;
-      shareIdSet[id] = metadata;
+      ShareIdSet[id] = metadata;
       changCallback();
     }
   }
 
   @override
-  T? findMetadata<T>(String id) {
-    if (shareIdSet.containsKey(id)) {
-      return shareIdSet[id] as T;
+  U? findMetadata<U>(String id) {
+    if (ShareIdSet.containsKey(id)) {
+      return ShareIdSet[id] as U;
     }
     return null;
   }
 
   @override
-  void updateMetadata<T extends XEntity>(T data) {
-    shareIdSet[data.id] = data;
+  void updateMetadata<U extends XEntity>(U data) {
+    ShareIdSet[data.id] = data;
   }
 
   void setEntity() {
-    shareIdSet['$id*'] = this;
+    ShareIdSet['$id*'] = this;
   }
 
   U? getEntity<U>(String id) {
-    return shareIdSet['$id*'];
+    return ShareIdSet['$id*'];
   }
 
   ShareIcon findShare(String id) {

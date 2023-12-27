@@ -39,52 +39,76 @@ class ApplyWidget extends StatelessWidget {
   }
 
   _buildApplyHeaderView() {
-    ShareIcon? create = settingCtrl.provider.user
-        ?.findShareById(todo?.targets.first.createUser ?? '');
+    var first = todo?.targets.first;
+    ShareIcon? create =
+        settingCtrl.provider.user?.findShareById(todo?.targets.first.id ?? '');
+
+    create?.name = first?.name ?? '';
+    create?.typeName = first?.typeName ?? '';
+    create?.avatar ??= FileItemShare();
+
     ShareIcon? target =
         settingCtrl.provider.user?.findShareById(todo?.targets.last.id ?? '');
 
     return <Widget>[
-      _imageWidget(create),
-      TextWidget.body1(
-        '${todo?.targets.first.name}' ?? '',
-        softWrap: true,
-        overflow: TextOverflow.ellipsis,
-      ).paddingLeft(AppSpace.listItem).constrained(maxWidth: Get.width / 3.8),
+      <Widget>[
+        const TextWidget.body1('申请者：'),
+        _imageWidget(create),
+        TextWidget.body1(
+          '${todo?.targets.first.name}' ?? '',
+          softWrap: true,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
+          color: AppColors.blue,
+        ).paddingLeft(AppSpace.listItem).constrained(width: Get.width * 0.65),
+      ].toRow(),
 
-      const SizedBox(
-          height: 20,
-          child: VerticalDivider(
-            color: Colors.grey,
-            width: 4,
-          )).paddingLeft(AppSpace.listItem),
+      // const SizedBox(
+      //     height: 20,
+      //     child: VerticalDivider(
+      //       color: Colors.grey,
+      //       width: 4,
+      //     )).paddingLeft(AppSpace.listItem),
       // const SizedBox(height: 20, child: VerticalDivider(color: Colors.grey)),
 
-      const TextWidget.body1('申请加入').paddingHorizontal(AppSpace.listItem / 2),
+      // const SizedBox(
+      //     height: 20,
+      //     child: VerticalDivider(
+      //       color: Colors.grey,
+      //       width: 4,
+      //     )).paddingRight(AppSpace.listItem),
 
-      const SizedBox(
-          height: 20,
-          child: VerticalDivider(
-            color: Colors.grey,
-            width: 4,
-          )).paddingRight(AppSpace.listItem),
-      _imageWidget(target),
-      TextWidget.body1(
-        todo?.targets.last.name ?? '',
-        softWrap: true,
-        overflow: TextOverflow.ellipsis,
-      ).paddingLeft(AppSpace.listItem).constrained(maxWidth: Get.width / 3.8),
-    ].toRow().paddingVertical(AppSpace.listItem);
+      <Widget>[
+        const TextWidget.body1('申请加入:'),
+        _imageWidget(target),
+        TextWidget.body1(
+          todo?.targets.last.name ?? '',
+          softWrap: true,
+          overflow: TextOverflow.ellipsis,
+          maxLines: 2,
+        ).paddingLeft(AppSpace.listItem).constrained(width: Get.width * 0.65),
+      ].toRow(),
+    ]
+        .toColumn(mainAxisAlignment: MainAxisAlignment.start)
+        .paddingVertical(AppSpace.listItem);
   }
 
   ///头像组件
   _imageWidget(ShareIcon? target) {
     return target?.avatar?.thumbnailUint8List == null
-        ? XImageWidget.asset(
-            target?.avatar?.defaultAvatar ?? '',
-            width: 30,
-            height: 30,
-          )
+        ? target!.defaultAvatar().contains('svg')
+            ? IconWidget.svg(
+                target.defaultAvatar(),
+                width: 40,
+                height: 40,
+                // color: AppColors.gray,
+              )
+            : XImageWidget.asset(
+                target.avatar?.defaultAvatar ?? target.defaultAvatar(),
+                // target!.defaultAvatar(),
+                width: 30,
+                height: 30,
+              )
         : XImageWidget(
             data: target?.avatar?.thumbnailUint8List,
             width: 30,
