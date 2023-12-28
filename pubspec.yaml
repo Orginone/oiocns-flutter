@@ -186,6 +186,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/work/
     - assets/icons/
   fonts:
     - family: Orginone

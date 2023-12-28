@@ -2597,7 +2597,7 @@ class ShareIcon {
       defaultAvatar = AssetsImages.iconFile;
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     } else if (typeName == '动态') {
-      defaultAvatar = AIcons.icons['x']?['home'] ?? "";
+      defaultAvatar = IconsUtils.icons['x']?['home'] ?? "";
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     }
   }
@@ -2647,7 +2647,7 @@ class ShareIcon {
     } else if (typeName == TargetType.storage.label) {
       defaultAvatar = AssetsImages.iconFile;
     } else if (typeName == '动态') {
-      defaultAvatar = AIcons.icons['x']?['home'] ?? "";
+      defaultAvatar = IconsUtils.icons['x']?['home'] ?? "";
     }
     return defaultAvatar;
   }

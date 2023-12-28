@@ -11,6 +11,7 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/utils/icons.dart';
 import 'package:orginone/utils/index.dart';
 
 class ListAdapter {
@@ -133,9 +134,10 @@ class ListAdapter {
     content = work.taskdata.content ?? "";
 
     LogUtil.d('ShareIdSet');
-    LogUtil.d(ShareIdSet[work.metadata.shareId]?.avatar);
-    image = ShareIdSet[work.metadata.shareId]?.avatar?.thumbnailUint8List ??
+    LogUtil.d(ShareIdSet[work.metadata.id]?.avatar);
+    image = ShareIdSet[work.metadata.id]?.avatar?.thumbnailUint8List ??
         AssetsImages.iconWorkitem;
+    image = IconsUtils.workDefaultAvatar(work.taskdata.taskType ?? '');
     if (work.targets.length == 2) {
       content =
           "${work.targets[0].name}[${work.targets[0].typeName}]申请加入${work.targets[1].name}[${work.targets[1].typeName}]";

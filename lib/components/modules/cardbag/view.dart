@@ -96,7 +96,7 @@ class CardbagPage extends BaseGetView<CardbagController, CardbagState> {
 
   Widget get card {
     var avatar = settingCtrl.user.metadata.avatarThumbnail();
-    var defalut = AIcons.icons['x']!['defalutAvatar'].toString();
+    var defalut = IconsUtils.icons['x']!['defalutAvatar'].toString();
 
     ImageProvider provider;
 

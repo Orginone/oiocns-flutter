@@ -319,7 +319,7 @@ class UserBar extends GetView<IndexController> {
       dynamic avatar;
       var share = controller.provider.user?.share;
       avatar = share?.avatar?.thumbnailUint8List ??
-          AIcons.icons['x']?['defalutAvatar'];
+          IconsUtils.icons['x']?['defalutAvatar'];
 
       return Container(
           margin: insets,
