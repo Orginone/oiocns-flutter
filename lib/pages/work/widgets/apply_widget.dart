@@ -3,10 +3,12 @@ import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/widgets/approve_widget.dart';
+import 'package:orginone/utils/icons.dart';
 import 'package:orginone/utils/index.dart';
 
 //申请加入办事组件
@@ -39,21 +41,10 @@ class ApplyWidget extends StatelessWidget {
   }
 
   _buildApplyHeaderView() {
-    var first = todo?.targets.first;
-    ShareIcon? create =
-        settingCtrl.provider.user?.findShareById(todo?.targets.first.id ?? '');
-
-    create?.name = first?.name ?? '';
-    create?.typeName = first?.typeName ?? '';
-    create?.avatar ??= FileItemShare();
-
-    ShareIcon? target =
-        settingCtrl.provider.user?.findShareById(todo?.targets.last.id ?? '');
-
     return <Widget>[
       <Widget>[
-        const TextWidget.body1('申请者：'),
-        _imageWidget(create),
+        const TextWidget.body1('申  请  者：'),
+        _imageWidget(target: todo!.targets.first),
         TextWidget.body1(
           '${todo?.targets.first.name}' ?? '',
           softWrap: true,
@@ -62,30 +53,15 @@ class ApplyWidget extends StatelessWidget {
           color: AppColors.blue,
         ).paddingLeft(AppSpace.listItem).constrained(width: Get.width * 0.65),
       ].toRow(),
-
-      // const SizedBox(
-      //     height: 20,
-      //     child: VerticalDivider(
-      //       color: Colors.grey,
-      //       width: 4,
-      //     )).paddingLeft(AppSpace.listItem),
-      // const SizedBox(height: 20, child: VerticalDivider(color: Colors.grey)),
-
-      // const SizedBox(
-      //     height: 20,
-      //     child: VerticalDivider(
-      //       color: Colors.grey,
-      //       width: 4,
-      //     )).paddingRight(AppSpace.listItem),
-
       <Widget>[
-        const TextWidget.body1('申请加入:'),
-        _imageWidget(target),
+        const TextWidget.body1('申请加入：'),
+        _imageWidget(target: todo!.targets.last),
         TextWidget.body1(
           todo?.targets.last.name ?? '',
           softWrap: true,
           overflow: TextOverflow.ellipsis,
           maxLines: 2,
+          color: AppColors.blue,
         ).paddingLeft(AppSpace.listItem).constrained(width: Get.width * 0.65),
       ].toRow(),
     ]
@@ -94,25 +70,22 @@ class ApplyWidget extends StatelessWidget {
   }
 
   ///头像组件
-  _imageWidget(ShareIcon? target) {
-    return target?.avatar?.thumbnailUint8List == null
-        ? target!.defaultAvatar().contains('svg')
-            ? IconWidget.svg(
-                target.defaultAvatar(),
-                width: 40,
-                height: 40,
-                // color: AppColors.gray,
-              )
-            : XImageWidget.asset(
-                target.avatar?.defaultAvatar ?? target.defaultAvatar(),
-                // target!.defaultAvatar(),
-                width: 30,
-                height: 30,
-              )
+  _imageWidget({XTarget? target, ShareIcon? shareIcon}) {
+    ShareIcon? icon =
+        shareIcon ?? settingCtrl.provider.user?.findShareById(target?.id ?? '');
+
+    return icon?.avatar?.thumbnailUint8List == null
+        ? XImageWidget.asset(
+            IconsUtils.workDefaultAvatar(target?.typeName ?? ''),
+            // target!.defaultAvatar(),
+            width: 20,
+            height: 20,
+            fit: BoxFit.fill,
+          )
         : XImageWidget(
-            data: target?.avatar?.thumbnailUint8List,
-            width: 30,
-            height: 30,
+            data: icon?.avatar?.thumbnailUint8List,
+            width: 20,
+            height: 20,
             type: ImageWidgetType.memory,
             url: '');
   }
@@ -134,7 +107,7 @@ class ApplyWidget extends StatelessWidget {
     if (status < TaskStatus.approvalStart.status) return const SizedBox();
     var result = <Widget>[
       // Image.network('src'),
-      _imageWidget(record),
+      _imageWidget(shareIcon: record),
       TextWidget.body1(record?.name ?? '').paddingLeft(AppSpace.listItem),
       const SizedBox(
               height: 20, width: 4, child: VerticalDivider(color: Colors.grey))

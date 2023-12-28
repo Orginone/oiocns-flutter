@@ -12,7 +12,6 @@ import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/utils/index.dart';
 
 import '../person.dart';
 
@@ -138,12 +137,17 @@ abstract class Team extends Entity<XTarget> implements ITeam {
           id: id,
           subIds: filterMembers.map((i) => i.id).toList(),
         ));
-
+        // LogUtil.d('拉人结果');
+        // LogUtil.d(res.success);
         if (!res.success) return false;
+
         for (var a in filterMembers) {
           sendTargetNotity(OperateType.add, sub: a, subTargetId: a.id);
         }
         notifySession(true, filterMembers);
+        // LogUtil.d('notifySession--通知');
+        // LogUtil.d(filterMembers);
+        // LogUtil.d(filterMembers);
       }
       this.members.addAll(filterMembers);
       loadMemberChats(filterMembers, true);
@@ -283,8 +287,8 @@ abstract class Team extends Entity<XTarget> implements ITeam {
       targetId: id,
     );
     param.toJson();
-    LogUtil.d('sendTargetNotity');
-    LogUtil.d(param.toJson());
+    // LogUtil.d('sendTargetNotity');
+    // LogUtil.d(param.toJson());
     var res = await kernel.dataNotify(param);
     return res.success;
   }

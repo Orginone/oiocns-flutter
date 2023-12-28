@@ -1,4 +1,7 @@
-class AIcons {
+import 'package:orginone/common/values/images.dart';
+import 'package:orginone/dart/core/public/enums.dart';
+
+class IconsUtils {
   static Map<String, Map<String, String>> icons = {
     "x": {
       "chat": "assets/icons/chat-select.svg",
@@ -27,4 +30,29 @@ class AIcons {
     "2x": {},
     "3x": {},
   };
+
+  static String workDefaultAvatar(String typeName) {
+    String defaultAvatar = '';
+    if (typeName == WorkType.add.label) {
+      defaultAvatar = AssetsImages.workAdd;
+    } else if (typeName == WorkType.thing.label) {
+      defaultAvatar = AssetsImages.workThing;
+    } else if (typeName == TargetType.company.label) {
+      defaultAvatar = AssetsImages.workCompang;
+    } else if (typeName == TargetType.storage.label) {
+      defaultAvatar = AssetsImages.workStore;
+    } else {
+      defaultAvatar = icons['x']?['work'] ?? "";
+    }
+    if (typeName == TargetType.person.label) {
+      defaultAvatar = AssetsImages.chatDefaultPerson;
+    } else if (typeName == TargetType.cohort.label) {
+      defaultAvatar = AssetsImages.chatDefaultCohort;
+    } else if (typeName == TargetType.department.label) {
+      defaultAvatar = AssetsImages.chatDefaultCohort;
+    } else if (typeName == '动态') {
+      defaultAvatar = IconsUtils.icons['x']?['home'] ?? "";
+    }
+    return defaultAvatar;
+  }
 }

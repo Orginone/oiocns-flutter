@@ -8,7 +8,7 @@ class XImage {
 
   static Widget localImage(String name, {Size? size, BoxFit? fit}) {
     ///常规图
-    String iconPath = (AIcons.icons['x']?[name]) ?? "";
+    String iconPath = (IconsUtils.icons['x']?[name]) ?? "";
 
     return ImageWidget(
       iconPath,

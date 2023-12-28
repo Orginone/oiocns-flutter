@@ -106,6 +106,10 @@ class AssetsImages {
   static const String imageEverytime = "assets/images/image_everytime.png";
 
   static const String loginTransition = "assets/images/transition_page.png";
+  static const String workAdd = "assets/images/work/work_add.png";
+  static const String workCompang = "assets/images/work/work_compang.png";
+  static const String workStore = "assets/images/work/work_store.png";
+  static const String workThing = "assets/images/work/work_thing.png";
 
   static const String iconLike = "assets/icons/like.svg";
   static const String iconMsg = "assets/icons/msg.svg";

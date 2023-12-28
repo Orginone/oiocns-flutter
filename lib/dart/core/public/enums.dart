@@ -1,4 +1,24 @@
 /// 用户对象类型
+enum WorkType {
+  //外部用户
+  add("加用户"),
+
+  thing("事项");
+
+  const WorkType(this.label);
+
+  final String label;
+
+  static String getName(TargetType type) {
+    return type.label;
+  }
+
+  static WorkType getType(String name) {
+    return WorkType.values.firstWhere((element) => element.label == name);
+  }
+}
+
+/// 用户对象类型
 enum TargetType {
   //外部用户
   group("组织群"),
