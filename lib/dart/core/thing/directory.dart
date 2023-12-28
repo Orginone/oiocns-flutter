@@ -149,7 +149,7 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
 
   @override
   String get id {
-    if (parent != null) {
+    if (parent == null) {
       return target.id;
     }
     return super.id;
@@ -304,7 +304,7 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
     if (files.isEmpty || reload == true) {
       final res = await resource.bucketOpreate<List<FileItemModel>>(
           BucketOpreateModel(
-            key: encodeKey(id),
+            key: encodeKey(id.replaceAll('_', '')), //有的地方id拼接了_注意去除
             operate: BucketOpreates.list,
           ), (data) {
         return FileItemModel.fromList(data['data'] ?? []);

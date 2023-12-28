@@ -13,10 +13,10 @@ import 'apply.dart';
 
 abstract class IWork extends IFileInfo<XWorkDefine> {
   /// 主表
-  late List<IForm> primaryForms;
+  List<IForm> primaryForms = [];
 
   ///子表
-  late List<IForm> detailForms;
+  List<IForm> detailForms = [];
 
   ///应用
   late IApplication application;
@@ -261,5 +261,48 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
   }
 
   @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+  List<IForm> detailForms = [];
+
+  @override
+  List<IForm> primaryForms = [];
+
+  @override
+  set application(IApplication application) {
+    // TODO: implement application
+  }
+
+  @override
+  set belongId(String belongId) {
+    // TODO: implement belongId
+  }
+
+  @override
+  set cacheFlag(String cacheFlag) {
+    // TODO: implement cacheFlag
+  }
+
+  @override
+  set isContainer(bool isContainer) {
+    // TODO: implement isContainer
+  }
+
+  @override
+  set isInherited(bool isInherited) {
+    // TODO: implement isInherited
+  }
+
+  @override
+  set locationKey(String locationKey) {
+    // TODO: implement locationKey
+  }
+
+  @override
+  set spaceId(String spaceId) {
+    // TODO: implement spaceId
+  }
+
+  @override
+  set superior(IFile superior) {
+    // TODO: implement superior
+  }
 }

@@ -21,21 +21,21 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
 
     user.onNext = (nav) async {
       LogUtil.d('StoreTreeController-loadUserSetting');
-      // await user.space!.loadContent(reload: true);
-      await user.space!.directory.loadContent(reload: true);
+      await nav.space?.directory.loadContent();
+      List<StoreTreeNav> children = [
+        // ...await loadApplications(
+        //     nav.space!.directory.standard.applications, nav.space!),
+        // ...await loadForm(nav.space!.directory.standard.forms, nav.space!),
+        ...await loadFile(nav.space!.directory.files, nav.space!),
+      ];
+
       List<StoreTreeNav> function = [
         StoreTreeNav(
           name: "个人文件",
           space: user.space,
           showPopup: false,
           spaceEnum: SpaceEnum.directory,
-          children: [
-            ...await loadApplications(
-                user.space!.directory.standard.applications, user.space!),
-            ...await loadForm(
-                user.space!.directory.standard.forms, user.space!),
-            ...await loadFile(user.space!.directory.files, user.space!),
-          ],
+          children: children,
         ),
       ];
 
@@ -168,15 +168,22 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
     LogUtil.d('StoreTreeController-onNext');
     // await nav.space!.loadContent(reload: true);
 
-    await nav.space?.directory.loadContent();
-    List<StoreTreeNav> children = [
-      ...await loadApplications(
-          nav.space!.directory.standard.applications, nav.space!),
-      ...await loadForm(nav.space!.directory.standard.forms, nav.space!),
-      ...await loadFile(nav.space!.directory.files, nav.space!),
-    ];
+    // await nav.space?.directory.loadContent();
+    // List<StoreTreeNav> children = [
+    //   // ...await loadApplications(
+    //   //     nav.space!.directory.standard.applications, nav.space!),
+    //   // ...await loadForm(nav.space!.directory.standard.forms, nav.space!),
+    //   ...await loadFile(nav.space!.directory.files, nav.space!),
+    // ];
+    // // List<StoreTreeNav> children = [
+    // //   ...await loadApplications(
+    // //       nav.space!.directory.standard.applications, nav.space!),
+    // //   ...await loadForm(nav.space!.directory.standard.forms, nav.space!),
+    // //   ...await loadFile(
+    // //       nav.space!.directory.content().cast<ISysFileInfo>(), nav.space!),
+    // // ];
 
-    nav.children = children;
+    // nav.children = children;
     if (nav.source != null && nav.children.isEmpty) {
       jumpDetails(nav);
     } else {

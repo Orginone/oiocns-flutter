@@ -76,13 +76,13 @@ class XCache {
   // 完整的ID标识
   String fullId;
   // 标签
-  List<String>? tags;
+  List<dynamic>? tags;
 
   XCache({required this.fullId, this.tags});
 
   XCache.fromJson(Map<String, dynamic> json)
       : fullId = json['fullId'] ?? '',
-        tags = json['tags'];
+        tags = json['tags'] == null ? null : json['tags'] as List<dynamic>?;
 
   Map<String, dynamic> toJson() {
     return {

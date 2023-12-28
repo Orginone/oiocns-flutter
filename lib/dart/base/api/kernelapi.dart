@@ -1123,18 +1123,17 @@ class KernelApi {
   Future<ResultType<T>> bucketOpreate<T>(
       String belongId, List<String> relations, BucketOpreateModel data,
       [T Function(Map<String, dynamic>)? cvt]) async {
+    var model = DataProxyType(
+      module: 'Bucket',
+      action: 'Operate',
+      belongId: belongId,
+      relations: relations,
+      flag: 'bucketOpreate',
+      params: data.toJson(),
+    );
     LogUtil.d('bucketOpreate');
-    LogUtil.d(data.toJson());
-    return await dataProxy(
-        DataProxyType(
-          module: 'Bucket',
-          action: 'Operate',
-          belongId: belongId,
-          relations: relations,
-          flag: 'bucketOpreate',
-          params: data.toJson(),
-        ),
-        cvt);
+    LogUtil.d(model.toJson());
+    return await dataProxy(model, cvt);
   }
 
   /// 加载物

@@ -294,5 +294,47 @@ class Application extends StandardFileInfo<XApplication>
   }
 
   @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+  set belongId(String belongId) {
+    // TODO: implement belongId
+  }
+
+  @override
+  set cacheFlag(String cacheFlag) {
+    // TODO: implement cacheFlag
+  }
+
+  @override
+  set isContainer(bool isContainer) {
+    // TODO: implement isContainer
+  }
+
+  @override
+  set isInherited(bool isInherited) {
+    // TODO: implement isInherited
+  }
+
+  @override
+  set locationKey(String locationKey) {
+    // TODO: implement locationKey
+  }
+
+  @override
+  void setMetadataA(XStandard metadata) {
+    // TODO: implement setMetadataA
+  }
+
+  @override
+  set spaceId(String spaceId) {
+    // TODO: implement spaceId
+  }
+
+  @override
+  set spaceKey(String spaceKey) {
+    // TODO: implement spaceKey
+  }
+
+  @override
+  set superior(IFile superior) {
+    // TODO: implement superior
+  }
 }
