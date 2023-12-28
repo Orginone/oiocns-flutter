@@ -70,8 +70,8 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                   children: [
                     Positioned(
                       top: MediaQuery.of(context).size.height * 0.25,
-                      left: 35,
-                      right: 35,
+                      left: 30,
+                      right: 30,
                       child: Text(
                         '欢迎使用奥集能',
                         style: TextStyle(fontSize: 38.sp),
@@ -79,8 +79,8 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                     ),
                     Positioned(
                       top: MediaQuery.of(context).size.height * 0.31,
-                      left: 35,
-                      right: 35,
+                      left: 30,
+                      right: 30,
                       child: Text(
                         '请完善个人信息',
                         style: TextStyle(fontSize: 20.sp, color: Colors.grey),
@@ -294,8 +294,8 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
   Widget registerForm() {
     return Positioned(
         top: MediaQuery.of(context).size.height * 0.37,
-        left: 36,
-        right: 36,
+        left: 30,
+        right: 30,
         child: Obx(() {
           return Column(
             children: [

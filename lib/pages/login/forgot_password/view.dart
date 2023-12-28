@@ -57,8 +57,8 @@ class ForgotPasswordPage
                     CommonWidget.logo(),
                     Positioned(
                         top: MediaQuery.of(context).size.height * 0.3,
-                        left: 35,
-                        right: 35,
+                        left: 30,
+                        right: 30,
                         child: Column(
                           children: [
                             Container(

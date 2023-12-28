@@ -636,21 +636,24 @@ class CommonWidget {
                         ),
                       )),
                   Expanded(
-                      flex: 6,
-                      child: Container(
-                          padding: const EdgeInsets.fromLTRB(7, 11, 0, 0),
-                          child: TextField(
-                            onChanged: onChanged,
-                            controller: controller,
-                            obscureText: obscureText,
-                            inputFormatters: inputFormatters,
-                            decoration: InputDecoration(
-                                hintText: hint,
-                                hintStyle: TextStyle(
-                                    color: Colors.grey.shade400,
-                                    fontSize: 20.sp),
-                                border: InputBorder.none),
-                          ))),
+                    flex: 6,
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(7, 0, 0, 5),
+                      child: TextField(
+                        onChanged: onChanged,
+                        controller: controller,
+                        obscureText: obscureText,
+                        inputFormatters: inputFormatters,
+                        decoration: InputDecoration(
+                          hintStyle: TextStyle(
+                              color: Colors.grey.shade400, fontSize: 20.sp),
+                          isCollapsed: true,
+                          hintText: hint,
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
                   Expanded(flex: 3, child: action ?? Container()),
                 ],
               ),
@@ -702,12 +705,13 @@ class CommonWidget {
                   Expanded(
                       flex: 8,
                       child: Container(
-                          padding: const EdgeInsets.fromLTRB(7, 13, 0, 0),
+                          padding: const EdgeInsets.fromLTRB(7, 0, 0, 5),
                           child: TextField(
                             controller: controller,
                             obscureText: obscureText,
                             inputFormatters: inputFormatters,
                             decoration: InputDecoration(
+                                isCollapsed: true,
                                 hintText: hint,
                                 hintStyle: TextStyle(
                                     color: Colors.grey.shade400,
@@ -764,12 +768,13 @@ class CommonWidget {
                   Expanded(
                       flex: 4,
                       child: Container(
-                          padding: const EdgeInsets.fromLTRB(7, 13, 0, 0),
+                          padding: const EdgeInsets.fromLTRB(7, 0, 0, 5),
                           child: TextField(
                             controller: controller,
                             obscureText: obscureText,
                             inputFormatters: inputFormatters,
                             decoration: InputDecoration(
+                                isCollapsed: true,
                                 hintText: hint,
                                 hintStyle: TextStyle(
                                     color: Colors.grey.shade400,
