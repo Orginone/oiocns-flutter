@@ -252,7 +252,7 @@ abstract class Target extends Team implements ITarget {
   @override
   // ignore: avoid_renaming_method_parameters
   Future<void> notifySession(bool pull, List<XTarget> members) async {
-    if (id != userId) {
+    if (id != userId && typeName != '存储资源') {
       for (var member in members) {
         if (member.typeName == TargetType.person.label) {
           if (pull == true) {

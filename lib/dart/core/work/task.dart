@@ -180,7 +180,7 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
       if (status == -1) {
         return await recallApply();
       }
-      if (taskdata.taskType == '加用户') {
+      if (taskdata.taskType == WorkType.add.label) {
         return approvalJoinTask(status, comment: comment);
       } else if (await loadInstance(reload: true)) {
         final res = await kernel.approvalTask(ApprovalTaskReq(
@@ -211,12 +211,11 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
       if (res.success && status < TaskStatus.refuseStart.status) {
         for (final item in user.targets) {
           if (item.id == targets[1].id) {
-            item.pullMembers([targets[0]]);
+            await item.pullMembers([targets[0]]);
+            return true;
           }
         }
       }
-
-      return res.success;
     }
     return false;
   }

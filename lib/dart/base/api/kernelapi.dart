@@ -1329,7 +1329,7 @@ class KernelApi {
     }
     Map<String, dynamic> param = params[0];
     ReceiveType res = ReceiveType.fromJson(param);
-    LogUtil.d(param);
+    // LogUtil.d(param);
     bool onlineOnly = true;
 
     switch (res.target) {

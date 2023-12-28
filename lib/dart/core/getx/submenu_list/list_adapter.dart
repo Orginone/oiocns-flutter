@@ -5,14 +5,12 @@ import 'package:orginone/common/index.dart';
 import 'package:orginone/components/modules/general_bread_crumbs/index.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/core/chat/session.dart';
-import 'package:orginone/dart/core/public/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/utils/icons.dart';
-import 'package:orginone/utils/index.dart';
 
 class ListAdapter {
   VoidCallback? callback;
@@ -133,10 +131,10 @@ class ListAdapter {
     dateTime = work.metadata.createTime ?? "";
     content = work.taskdata.content ?? "";
 
-    LogUtil.d('ShareIdSet');
-    LogUtil.d(ShareIdSet[work.metadata.id]?.avatar);
-    image = ShareIdSet[work.metadata.id]?.avatar?.thumbnailUint8List ??
-        AssetsImages.iconWorkitem;
+    // LogUtil.d('ShareIdSet');
+    // LogUtil.d(ShareIdSet[work.metadata.id]?.avatar);
+    // image = ShareIdSet[work.metadata.id]?.avatar?.thumbnailUint8List ??
+    //     AssetsImages.iconWorkitem;
     image = IconsUtils.workDefaultAvatar(work.taskdata.taskType ?? '');
     if (work.targets.length == 2) {
       content =

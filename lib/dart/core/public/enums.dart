@@ -3,7 +3,7 @@ enum WorkType {
   //外部用户
   add("加用户"),
 
-  thing("事项"); //内核不存在了
+  thing("事项");
 
   const WorkType(this.label);
 
