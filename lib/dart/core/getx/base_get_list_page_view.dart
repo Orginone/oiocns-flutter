@@ -11,7 +11,9 @@ abstract class BaseGetListPageView<T extends BaseListController,
     S extends BaseGetListState> extends StatelessWidget {
   late T controller;
 
-  BaseGetListPageView({super.key});
+  BaseGetListPageView({super.key}) {
+    controller = Get.put(getController(), tag: tag());
+  }
 
   S get state => controller.state as S;
 

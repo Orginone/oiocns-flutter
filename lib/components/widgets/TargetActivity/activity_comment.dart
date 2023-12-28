@@ -1,7 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/components/widgets/team_avatar.dart';
-import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/main.dart';
@@ -51,7 +50,6 @@ class ActivityComment extends StatelessWidget {
       Padding(padding: EdgeInsets.only(left: 5.w)),
       Text(entity?.name ?? "",
           style: const TextStyle(
-            color: XColors.themeColor,
             fontWeight: FontWeight.bold,
           ))
     ];

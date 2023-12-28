@@ -105,6 +105,8 @@
 1. Flutter 3.10.0
 2. Dart 3.0.0
 3. DevTools 2.20.1
+4. gradle plugin 7.1.2
+5. gradle 7.3.3
 
 Flutter 安装过程可以参考 [Flutter 中文开发者网站 - Flutter](https://flutter.cn/docs)
 

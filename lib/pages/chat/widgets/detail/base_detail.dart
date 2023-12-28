@@ -63,7 +63,7 @@ abstract class BaseDetail extends StatelessWidget {
             child: TargetText(
               userId: message.metadata.fromId,
               text: ": ",
-              style: XFonts.size20Black0,
+              style: XFonts.chatSMInfo,
               shareIcon: message.from,
             ),
             alignment: PlaceholderAlignment.bottom),

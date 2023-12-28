@@ -70,10 +70,18 @@ class XWidgets {
 }
 
 class XFonts {
+  ///沟通
+  //沟通会话信息
+  static get chatSMInfo => size24Black0; //文本信息
+  static get chatSMSysTip => size14Black0; //系统提示文本信息
+
   ///动态模块
   ///动态子标题样式
-  static get activitySubTitle => size16Black9;
+  static get activityListSubTitle => size16Black9; //子标题
+  static get activityListTitle => size22Black0; //标题
+  static get activitListContent => size24Black0; //摘要
 
+  ///通用字体颜色
   static get size12Black0 {
     return TextStyle(fontSize: 12.sp, color: XColors.black);
   }

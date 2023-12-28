@@ -48,7 +48,7 @@ class ImageDetail extends BaseDetail {
     };
     // LogUtil.d('ImageDetail');
     // LogUtil.d(link);
-    Widget child = ImageWidget(link, httpHeaders: headers);
+    Widget child = ImageWidget(link, httpHeaders: headers, size: 200);
 
     if (showShadow) {
       child = ShadowWidget(

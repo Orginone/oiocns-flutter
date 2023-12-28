@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +15,9 @@ class ActivityResourceWidget extends StatelessWidget {
   int columns;
 
   ActivityResourceWidget(this.fileList, this.maxWidth,
-      {super.key, this.columns = 3});
+      {super.key, this.columns = 3}) {
+    columns = min(3, fileList.length);
+  }
 
   @override
   Widget build(BuildContext context) {

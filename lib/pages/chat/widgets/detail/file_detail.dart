@@ -65,7 +65,7 @@ class FileDetail extends BaseDetail {
                 Expanded(
                   child: Text(
                     msgBody.name ?? "",
-                    style: XFonts.size20Black0,
+                    style: XFonts.chatSMSysTip,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),

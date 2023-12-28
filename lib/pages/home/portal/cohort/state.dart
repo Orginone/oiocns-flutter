@@ -10,6 +10,7 @@ class CohortActivityState extends BaseGetListState {
   ScrollController scrollController = ScrollController();
   //群动态信息
   late Rx<GroupActivity> cohortActivity;
+  late Rx<IActivity> currentActivity;
   RxList<IActivityMessage> activityMessageList = <IActivityMessage>[].obs;
   //
 }

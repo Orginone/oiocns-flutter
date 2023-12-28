@@ -358,8 +358,9 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
 
   //登录提交按钮
   Widget loginSubmit() {
-    return Container(
-      // top: MediaQuery.of(context).size.height * 0.69,
+    return Positioned(
+      // top: 720.h,
+      // top: MediaQuery.of(context).size.height * 0.68,
       // left: 35,
       // right: 35,
       child: GestureDetector(
@@ -380,7 +381,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
     double widthBtn = MediaQuery.of(context).size.width - 70;
     return Container(
         width: widthBtn,
-        height: 45,
+        height: 62.h,
         alignment: Alignment.center,
         padding: const EdgeInsets.only(top: 12),
         decoration: ShapeDecoration(

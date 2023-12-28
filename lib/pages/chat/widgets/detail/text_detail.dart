@@ -32,7 +32,7 @@ class TextDetail extends BaseDetail {
     return child ??
         Text(
           message.msgBody ?? "",
-          style: XFonts.size20Black0,
+          style: XFonts.chatSMInfo,
         );
   }
 
@@ -91,7 +91,7 @@ class TextDetail extends BaseDetail {
         return Text.rich(
           TextSpan(
             children: span,
-            style: XFonts.size20Black0,
+            style: XFonts.chatSMInfo,
           ),
         );
       }
@@ -139,7 +139,7 @@ class TextDetail extends BaseDetail {
     return Text.rich(
       TextSpan(
         children: span,
-        style: XFonts.size20Black0,
+        style: XFonts.chatSMInfo,
       ),
     );
   }

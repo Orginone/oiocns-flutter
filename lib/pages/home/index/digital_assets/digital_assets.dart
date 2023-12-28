@@ -198,7 +198,7 @@ class _DigitalAssetsState extends State<DigitalAssets> {
           padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 5.h),
           child: Text(
             title,
-            style: XFonts.size20Black0,
+            style: XFonts.chatSMInfo,
           )),
     );
   }

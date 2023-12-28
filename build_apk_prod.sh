@@ -16,8 +16,10 @@ fi
 
 cd build/app/outputs/flutter-apk/
 
-mv "app-prod-release.apk" "oiocns-prod.apk"
+# mv "app-prod-release.apk" "oiocns-prod.apk"
 
 if command -v start >/dev/null 2>&1; then
   start .
+elif command -v open >/dev/null 2>&1; then
+  open .
 fi

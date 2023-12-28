@@ -78,10 +78,7 @@ class ActivityMessageWidget extends StatelessWidget {
     return Container(
       child: Row(
         children: [
-          Text(activity.metadata.name!,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-              )),
+          Text(activity.metadata.name!, style: XFonts.activityListTitle),
           Padding(padding: EdgeInsets.only(left: 10.h)),
           if (metadata?.tags.isNotEmpty ?? false)
             ...metadata!.tags
@@ -108,7 +105,7 @@ class ActivityMessageWidget extends StatelessWidget {
             children: [
               Text(
                   "${showChatTime(item.value.metadata.createTime!)}·${entity?.name}",
-                  style: XFonts.activitySubTitle),
+                  style: XFonts.activityListSubTitle),
             ],
           ),
         )
@@ -121,18 +118,21 @@ class ActivityMessageWidget extends StatelessWidget {
     switch (MessageType.getType(metadata!.typeName)) {
       case MessageType.text:
         return Text(metadata!.content,
-            maxLines: 3, overflow: TextOverflow.ellipsis);
+            style: XFonts.activitListContent,
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis);
       case MessageType.html:
         if (hideResource) {
           return (Offstage(
             offstage: !hideResource,
             child: Text(parseHtmlToText(metadata!.content),
-                maxLines: 3, overflow: TextOverflow.ellipsis),
+                style: XFonts.activitListContent,
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis),
           ));
         } else {
-          return HtmlWidget(
-            metadata!.content,
-          );
+          return HtmlWidget(metadata!.content,
+              textStyle: TextStyle(fontSize: 24.sp));
         }
     }
     return null;
@@ -148,7 +148,7 @@ class ActivityMessageWidget extends StatelessWidget {
         info: TeamTypeInfo(
             share: activity.metadata.shareIcon() ??
                 model.ShareIcon(name: '', typeName: activity.typeName ?? "")),
-        size: 65.w,
+        size: 35.w,
       ),
     ]);
   }
@@ -301,6 +301,9 @@ class RenderCtxMore extends StatelessWidget {
                 padding: EdgeInsets.all(5.w),
                 child: Wrap(
                   direction: Axis.horizontal,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  runSpacing: 4,
+                  spacing: 1,
                   children: [
                     const ImageWidget(AssetsImages.iconLike,
                         size: 18, color: Colors.red),
@@ -367,8 +370,7 @@ class RenderCtxMore extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        const ImageWidget(AssetsImages.iconMsg,
-                            size: 18, color: XColors.themeColor),
+                        const ImageWidget(AssetsImages.iconMsg, size: 18),
                         Container(
                             padding: EdgeInsets.only(left: 6.w),
                             child: Text(
@@ -394,7 +396,6 @@ class RenderCtxMore extends StatelessWidget {
       Padding(padding: EdgeInsets.only(left: 5.w)),
       Text(entity?.name ?? "",
           style: const TextStyle(
-            color: XColors.themeColor,
             fontWeight: FontWeight.bold,
           ))
     ];

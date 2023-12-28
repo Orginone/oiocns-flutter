@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/values/index.dart';
 import 'package:orginone/main.dart';
@@ -89,7 +90,7 @@ class _LoginTransPageState extends State<LoginTransPage> {
   //logo
   Widget logo() {
     return Positioned(
-      bottom: 150.00,
+      bottom: 100.h,
       left: 0,
       right: 0,
       child: Center(
