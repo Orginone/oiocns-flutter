@@ -23,7 +23,7 @@ class AboutPage extends BaseGetView<AboutController, AboutState> {
               CommonWidget.logo(),
               backToHome(),
               Positioned(
-                top: 250,
+                top: 200,
                 left: 24,
                 right: 24,
                 child: Center(
