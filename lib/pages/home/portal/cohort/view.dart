@@ -29,8 +29,10 @@ class CohortActivityPage
   Widget buildView() {
     return ExtendedNestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        state.activityMessageList.value =
-            state.currentActivity.value.activitys.first.activityList ?? [];
+        if (state.currentActivity.value is! GroupActivity) {
+          state.activityMessageList.value =
+              state.currentActivity.value.activitys.first.activityList ?? [];
+        }
         return [
           SliverToBoxAdapter(
             child: SingleChildScrollView(

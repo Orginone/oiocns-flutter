@@ -1245,7 +1245,7 @@ class CommentType {
       this.replyTo});
   CommentType.fromJson(Map<String, dynamic> json) {
     label = json['label'];
-    userId = json['userId'];
+    userId = json['userId'] ?? "";
     time = json['time'];
     replyTo = json['replyTo'];
   }

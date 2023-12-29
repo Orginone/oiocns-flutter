@@ -76,6 +76,8 @@ class XFonts {
   //沟通会话信息
   static get chatSMInfo => size24Black0; //文本信息
   static get chatSMSysTip => size14Black0; //系统提示文本信息
+  static get chatSMTimeTip =>
+      TextStyle(color: Colors.grey, fontSize: 18.sp); //聊天时间提示信息
 
   ///动态模块
   ///动态子标题样式

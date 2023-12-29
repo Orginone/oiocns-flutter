@@ -339,7 +339,9 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
   List<IActivityMessage> get activityList {
     List<IActivityMessage> more = [];
     for (var activity in subActivitys) {
-      more.addAll(activity.activityList.where((i) => i.createTime >= lastTime));
+      more.addAll(activity.activityList
+          .where((i) => i.createTime >= lastTime)
+          .toList());
     }
     more.sort((a, b) => b.createTime - a.createTime);
     return more;

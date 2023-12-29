@@ -262,7 +262,7 @@ class ListItem extends StatelessWidget {
             ),
             Text(
               CustomDateUtil.getSessionTime(adapter.dateTime),
-              style: TextStyle(color: Colors.grey, fontSize: 18.sp),
+              style: XFonts.chatSMTimeTip,
               textAlign: TextAlign.right,
             ),
           ],

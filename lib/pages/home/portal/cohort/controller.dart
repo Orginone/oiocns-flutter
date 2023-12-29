@@ -17,7 +17,7 @@ class CohortActivityController extends BaseListController<CohortActivityState> {
   @override
   void onInit() async {
     super.onInit();
-    await cohortActivity.load();
+    state.activityMessageList.value = await cohortActivity.load();
     loadSuccess();
   }
 

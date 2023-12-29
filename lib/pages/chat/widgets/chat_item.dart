@@ -162,7 +162,7 @@ class MessageItemWidget extends GetView<IndexController> {
             Text(
               CustomDateUtil.getSessionTime(
                   chat.chatdata.value.lastMessage?.createTime),
-              style: TextStyle(color: Colors.grey, fontSize: 18.sp),
+              style: XFonts.chatSMTimeTip,
               textAlign: TextAlign.right,
             ),
           ],
