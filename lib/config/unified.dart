@@ -45,6 +45,8 @@ class XColors {
   static const Color blueTextColor = Color(0xFF1890FF);
   static const Color cardShadowColor = Color(0xFF4C9DF9);
   static const Color bgErrorColor = Color(0xFFFAECE9);
+  //门户功能字体颜色
+  static const Color doorDesGrey = Color(0xFF6F7686);
 
   // 列表内容背景底色
   static const Color bgListBody = Color.fromARGB(255, 240, 240, 240);

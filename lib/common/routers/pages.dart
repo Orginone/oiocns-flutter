@@ -24,6 +24,8 @@ import 'package:orginone/pages/login/register/view.dart';
 import 'package:orginone/pages/login/verification_code/binding.dart';
 import 'package:orginone/pages/login/verification_code/view.dart';
 import 'package:orginone/pages/login/view.dart';
+import 'package:orginone/pages/setting/about/binding.dart';
+import 'package:orginone/pages/setting/about/view.dart';
 import 'package:orginone/pages/setting/add_members/binding.dart';
 import 'package:orginone/pages/setting/add_members/view.dart';
 import 'package:orginone/pages/setting/attribute_info/binding.dart';
@@ -304,6 +306,11 @@ class RoutePages {
       name: Routers.userInfo,
       page: () => UserInfoPage(),
       binding: UserInfoBinding(),
+    ),
+    GetPage(
+      name: Routers.about,
+      page: () => const AboutPage(),
+      binding: AboutBinding(),
     ),
     GetPage(
       name: Routers.storeTree,

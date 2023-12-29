@@ -66,11 +66,9 @@ class WorkBenchPage
                     title,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      // color: Colors.black.withOpacity(0.8999999761581421),
-                      color: const Color(0xFF6F7686),
+                      color: XColors.doorDesGrey,
                       fontSize: 18.sp,
                       fontFamily: 'PingFang SC',
-                      // fontWeight: FontWeight.w400,
                       height: 0.16,
                     ),
                   ),
@@ -191,15 +189,12 @@ class WorkBenchPage
             children: [
               Container(
                 padding: const EdgeInsets.only(bottom: 5),
-                // child: number.value.length > 4
-                //     ? Text('9999+', style: TextStyle(fontSize: 22.sp))
-                //     : Text(number.value, style: TextStyle(fontSize: 22.sp)),
                 child: Text(ExString.unitConverter(number.value),
                     style: TextStyle(fontSize: 22.sp)),
               ),
               Text(title,
-                  style: TextStyle(
-                      fontSize: 18.sp, color: const Color(0xFF6F7686))),
+                  style:
+                      TextStyle(fontSize: 18.sp, color: XColors.doorDesGrey)),
             ],
           ),
         ));
