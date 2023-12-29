@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/config/index.dart';
+import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
@@ -71,12 +72,39 @@ class ApplyWidget extends StatelessWidget {
 
   ///头像组件
   _imageWidget({XTarget? target, ShareIcon? shareIcon}) {
-    ShareIcon? icon =
-        shareIcon ?? settingCtrl.provider.user?.findShareById(target?.id ?? '');
-
+    ShareIcon? icon;
+    if (target?.icon == null) {
+      icon = shareIcon ??
+          settingCtrl.provider.user?.findShareById(target?.id ?? '');
+      if (icon != null && icon.name.isEmpty) {
+        icon.name = (shareIcon == null
+                ? target == null
+                    ? ''
+                    : target.name
+                : shareIcon.typeName) ??
+            '';
+        icon.typeName = (shareIcon == null
+                ? target == null
+                    ? ''
+                    : target.typeName
+                : shareIcon.typeName) ??
+            '';
+      }
+    } else {
+      icon = ShareIcon(
+          name: target?.name ?? '',
+          typeName: target?.typeName ?? '',
+          avatar: parseAvatar(target?.icon));
+    }
+    // LogUtil.d('_imageWidget');
+    // LogUtil.d(target?.name);
+    // LogUtil.d(icon?.name);
+    // LogUtil.d(icon?.typeName);
+    // LogUtil.d(icon?.avatar?.thumbnail);
     return icon?.avatar?.thumbnailUint8List == null
         ? XImageWidget.asset(
-            IconsUtils.workDefaultAvatar(target?.typeName ?? ''),
+            IconsUtils.workDefaultAvatar(
+                target?.typeName ?? shareIcon?.typeName ?? ''),
             // target!.defaultAvatar(),
             width: 20,
             height: 20,
@@ -102,7 +130,9 @@ class ApplyWidget extends StatelessWidget {
         todo?.taskdata.records == null
             ? ''
             : todo?.taskdata.records?.first.createUser ?? '');
-    LogUtil.d(record);
+    LogUtil.d('_buildApplyResultView');
+    LogUtil.d(record?.toJson());
+    LogUtil.d(todo?.taskdata.records?.first.createUser);
     int status = todo?.taskdata.status ?? 0;
     if (status < TaskStatus.approvalStart.status) return const SizedBox();
     var result = <Widget>[

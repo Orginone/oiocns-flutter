@@ -58,7 +58,9 @@ class _TargetTextState extends State<TargetText> {
     maxLines = widget.maxLines;
     overflow = widget.overflow;
     textAlign = widget.textAlign;
-    shareIcon = widget.shareIcon ?? ShareIdSet[userId];
+    dynamic share = ShareIdSet[userId];
+    shareIcon = widget.shareIcon ??
+        ((share != null && share is ShareIcon) ? share : null);
   }
 
   @override

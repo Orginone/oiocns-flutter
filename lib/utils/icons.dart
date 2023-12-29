@@ -51,6 +51,9 @@ class IconsUtils {
     } else if (typeName == TargetType.department.label) {
       defaultAvatar = AssetsImages.chatDefaultCohort;
     } else if (typeName == '动态') {
+    } else if (typeName == TargetType.group.label) {
+      defaultAvatar = AssetsImages.chatDefaultCohort;
+    } else if (typeName == '动态') {
       defaultAvatar = IconsUtils.icons['x']?['home'] ?? "";
     }
     return defaultAvatar;
