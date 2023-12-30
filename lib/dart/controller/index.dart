@@ -52,7 +52,7 @@ enum SettingEnum {
   cardbag("卡包设置", Ionicons.card_outline),
   gateway("门户设置", Ionicons.home_outline),
   theme("主题设置", Ionicons.color_palette_outline),
-  vsrsion("版本记录", Ionicons.rocket_outline),
+  // vsrsion("版本记录", Ionicons.rocket_outline),
   about("关于奥集能", Ionicons.information_circle_outline),
   exitLogin("退出登录", Ionicons.exit_outline);
 
@@ -223,6 +223,9 @@ class IndexController extends GetxController {
           }
           return num;
         });
+        for (var e in chats) {
+          print('<<<===${e.chatdata.value.lastMsgTime} ${e.name}');
+        }
         this.chats.value = chats;
       }
     } catch (e, s) {
@@ -454,11 +457,11 @@ class IndexController extends GetxController {
           Routers.errorPage,
         );
         break;
-      case SettingEnum.vsrsion:
-        Get.toNamed(
-          Routers.version,
-        );
-        break;
+      // case SettingEnum.vsrsion:
+      //   Get.toNamed(
+      //     Routers.version,
+      //   );
+      //   break;
       case SettingEnum.about:
         Get.toNamed(
           Routers.about,

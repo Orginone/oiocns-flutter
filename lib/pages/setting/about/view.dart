@@ -66,17 +66,17 @@ class AboutPage extends BaseGetView<AboutController, AboutState> {
                         fontFamily: 'PingFang SC',
                       ),
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Text(
-                      '主办单位：浙江省财政厅',
-                      style: TextStyle(
-                        fontSize: 15,
-                        color: Colors.grey.shade600,
-                        fontFamily: 'PingFang SC',
-                      ),
-                    ),
+                    // const SizedBox(
+                    //   height: 5,
+                    // ),
+                    // Text(
+                    //   '主办单位：浙江省财政厅',
+                    //   style: TextStyle(
+                    //     fontSize: 15,
+                    //     color: Colors.grey.shade600,
+                    //     fontFamily: 'PingFang SC',
+                    //   ),
+                    // ),
                     const SizedBox(
                       height: 5,
                     ),

@@ -34,7 +34,7 @@ class DateTimeUtils {
   /// get Now Date Milliseconds.
   /// 获取当前毫秒值
   static int getNowDateMs() {
-    return DateTime.now().millisecondsSinceEpoch;
+    return DateTime.now().microsecondsSinceEpoch;
   }
 
   /// get Now Date Str.(yyyy-MM-dd HH:mm:ss)
@@ -45,7 +45,7 @@ class DateTimeUtils {
 
   /// 获取昨天日期返回DateTime
   static DateTime getYesterday() {
-    var dateTime = new DateTime.fromMillisecondsSinceEpoch(
+    var dateTime = DateTime.fromMillisecondsSinceEpoch(
         DateTime.now().millisecondsSinceEpoch - 24 * 60 * 60 * 1000);
     return dateTime;
   }
@@ -227,18 +227,18 @@ class DateTimeUtils {
     if (ms <= 0) {
       return false;
     }
-    DateTime _old = DateTime.fromMillisecondsSinceEpoch(ms, isUtc: isUtc);
-    DateTime _now;
+    DateTime old0 = DateTime.fromMillisecondsSinceEpoch(ms, isUtc: isUtc);
+    DateTime now0;
     if (locMs != null) {
-      _now = DateTimeUtils.getDateTimeByMs(locMs, isUtc: isUtc);
+      now0 = DateTimeUtils.getDateTimeByMs(locMs, isUtc: isUtc);
     } else {
-      _now = isUtc ? DateTime.now().toUtc() : DateTime.now().toLocal();
+      now0 = isUtc ? DateTime.now().toUtc() : DateTime.now().toLocal();
     }
 
     DateTime old =
-        _now.millisecondsSinceEpoch > _old.millisecondsSinceEpoch ? _old : _now;
+        now0.millisecondsSinceEpoch > old0.millisecondsSinceEpoch ? old0 : now0;
     DateTime now =
-        _now.millisecondsSinceEpoch > _old.millisecondsSinceEpoch ? _now : _old;
+        now0.millisecondsSinceEpoch > old0.millisecondsSinceEpoch ? now0 : old0;
     return (now.weekday >= old.weekday) &&
         (now.millisecondsSinceEpoch - old.millisecondsSinceEpoch <=
             7 * 24 * 60 * 60 * 1000);
@@ -721,28 +721,28 @@ Map<int, int> MONTH_DAY = {
 class DateFormats {
   /// 一些常用格式参照。如果下面格式不够，你可以自定义
   /// 格式要求
-  static final String FULL = 'yyyy-MM-dd HH:mm:ss';
-  static final String Y_M_D_H_M = 'yyyy-MM-dd HH:mm';
-  static final String Y_M_D = 'yyyy-MM-dd';
-  static final String Y_M = 'yyyy-MM';
-  static final String M_D = 'MM-dd';
-  static final String M_D_H_M = 'MM-dd HH:mm';
-  static final String H_M_S = 'HH:mm:ss';
-  static final String H_M = 'HH:mm';
+  static const String FULL = 'yyyy-MM-dd HH:mm:ss';
+  static const String Y_M_D_H_M = 'yyyy-MM-dd HH:mm';
+  static const String Y_M_D = 'yyyy-MM-dd';
+  static const String Y_M = 'yyyy-MM';
+  static const String M_D = 'MM-dd';
+  static const String M_D_H_M = 'MM-dd HH:mm';
+  static const String H_M_S = 'HH:mm:ss';
+  static const String H_M = 'HH:mm';
 
-  static final String ZH_FULL = 'yyyy年MM月dd日 HH时mm分ss秒';
-  static final String ZH_Y_M_D_H_M = 'yyyy年MM月dd日 HH时mm分';
-  static final String ZH_Y_M_D = 'yyyy年MM月dd日';
-  static final String ZH_Y_M = 'yyyy年MM月';
-  static final String ZH_M_D = 'MM月dd日';
-  static final String ZH_M_D_H_M = 'MM月dd日 HH时mm分';
-  static final String ZH_H_M_S = 'HH时mm分ss秒';
-  static final String ZH_H_M = 'HH时mm分';
+  static const String ZH_FULL = 'yyyy年MM月dd日 HH时mm分ss秒';
+  static const String ZH_Y_M_D_H_M = 'yyyy年MM月dd日 HH时mm分';
+  static const String ZH_Y_M_D = 'yyyy年MM月dd日';
+  static const String ZH_Y_M = 'yyyy年MM月';
+  static const String ZH_M_D = 'MM月dd日';
+  static const String ZH_M_D_H_M = 'MM月dd日 HH时mm分';
+  static const String ZH_H_M_S = 'HH时mm分ss秒';
+  static const String ZH_H_M = 'HH时mm分';
 
   static const String PARAM_FULL = 'yyyy/MM/dd HH:mm:ss';
   static const String PARAM_Y_M_D_H_M = 'yyyy/MM/dd HH:mm';
   static const String PARAM_Y_M_D = "yyyy/MM/dd";
   static const String PARAM_Y_M = 'yyyy/MM';
-  static final String PARAM_M_D = 'MM/dd';
-  static final String PARAM_M_D_H_M = 'MM/dd HH:mm';
+  static const String PARAM_M_D = 'MM/dd';
+  static const String PARAM_M_D_H_M = 'MM/dd HH:mm';
 }

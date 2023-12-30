@@ -93,10 +93,11 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
   bool get isInherited => directory.isInherited;
 
   ITarget get target {
-    if (directory.typeName.contains('目录')) {
-      return directory.target;
-    } else {
+    //directory.typeName.contains('目录')
+    if (directory is ITarget) {
       return directory as ITarget;
+    } else {
+      return directory.target;
     }
   }
 

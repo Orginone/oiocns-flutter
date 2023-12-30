@@ -61,9 +61,9 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
       name: filedata.name,
       extension: filedata.extension,
       contentType: filedata.contentType,
-      // shareLink: filedata.shareLink,
+      shareLink: filedata.shareLink,
       // thumbnail: filedata.thumbnail,
-      shareLink: '${Constant.host}${filedata.shareLink}',
+      // shareLink: '${Constant.host}${filedata.shareLink}',
       thumbnail: getThumbnail(),
     );
   }
@@ -92,7 +92,7 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
     String img = AssetsImages.otherIcon;
     String ext = filedata.extension?.toLowerCase() ?? "";
     if (ext == '.jpg' || ext == '.jpeg' || ext == '.png' || ext == '.webp') {
-      return '${Constant.host}${filedata.shareLink}';
+      return filedata.thumbnail ?? '${Constant.host}${filedata.shareLink}';
     } else {
       switch (ext) {
         case ".xlsx":

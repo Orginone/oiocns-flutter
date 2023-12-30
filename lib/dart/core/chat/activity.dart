@@ -57,7 +57,7 @@ class ActivityMessage extends Emitter implements IActivityMessage {
 
   @override
   int get createTime {
-    return DateUtil.getDateTime(metadata.createTime!)!.millisecondsSinceEpoch;
+    return DateUtil.getDateTime(metadata.createTime!)!.microsecondsSinceEpoch;
   }
 
   @override

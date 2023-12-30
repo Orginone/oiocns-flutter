@@ -305,7 +305,7 @@ class Session extends Entity<XEntity> implements ISession {
       }
       if (chatdata.value.lastMsgTime == nullTime) {
         chatdata.value.lastMsgTime =
-            DateTime.parse(data[0].createTime!).millisecondsSinceEpoch;
+            DateTime.parse(data[0].createTime!).microsecondsSinceEpoch;
       }
       print('>>>=======moreMessage ${messages.length}');
       return data.length;
