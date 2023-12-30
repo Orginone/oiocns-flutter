@@ -10,7 +10,6 @@ import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/work/widgets/approve_widget.dart';
 import 'package:orginone/utils/icons.dart';
-import 'package:orginone/utils/index.dart';
 
 //申请加入办事组件
 class ApplyWidget extends StatelessWidget {
@@ -33,7 +32,7 @@ class ApplyWidget extends StatelessWidget {
       _buildAyylyView(),
     ]
         .toColumn(crossAxisAlignment: CrossAxisAlignment.start)
-        .paddingAll(AppSpace.page);
+        .paddingHorizontal(AppSpace.page);
   }
 
   _buildAyylyView() {
@@ -53,7 +52,7 @@ class ApplyWidget extends StatelessWidget {
           maxLines: 2,
           color: AppColors.blue,
         ).paddingLeft(AppSpace.listItem).constrained(width: Get.width * 0.65),
-      ].toRow(),
+      ].toRow().paddingBottom(AppSpace.listItem),
       <Widget>[
         const TextWidget.body1('申请加入：'),
         _imageWidget(target: todo!.targets.last),
@@ -64,10 +63,12 @@ class ApplyWidget extends StatelessWidget {
           maxLines: 2,
           color: AppColors.blue,
         ).paddingLeft(AppSpace.listItem).constrained(width: Get.width * 0.65),
-      ].toRow(),
+      ]
+          .toRow(crossAxisAlignment: CrossAxisAlignment.center)
+          .paddingBottom(AppSpace.listItem),
     ]
         .toColumn(mainAxisAlignment: MainAxisAlignment.start)
-        .paddingVertical(AppSpace.listItem);
+        .paddingTop(AppSpace.listItem);
   }
 
   ///头像组件
@@ -130,9 +131,9 @@ class ApplyWidget extends StatelessWidget {
         todo?.taskdata.records == null
             ? ''
             : todo?.taskdata.records?.first.createUser ?? '');
-    LogUtil.d('_buildApplyResultView');
-    LogUtil.d(record?.toJson());
-    LogUtil.d(todo?.taskdata.records?.first.createUser);
+    // LogUtil.d('_buildApplyResultView');
+    // LogUtil.d(record?.toJson());
+    // LogUtil.d(todo?.taskdata.records?.first.createUser);
     int status = todo?.taskdata.status ?? 0;
     if (status < TaskStatus.approvalStart.status) return const SizedBox();
     var result = <Widget>[
@@ -140,17 +141,19 @@ class ApplyWidget extends StatelessWidget {
       _imageWidget(shareIcon: record),
       TextWidget.body1(record?.name ?? '').paddingLeft(AppSpace.listItem),
       const SizedBox(
-              height: 20, width: 4, child: VerticalDivider(color: Colors.grey))
+              height: 15, width: 4, child: VerticalDivider(color: Colors.grey))
           .paddingLeft(AppSpace.listItem),
       const TextWidget.body1('审批意见：').paddingLeft(AppSpace.listItem),
       const SizedBox(
-              height: 20, width: 4, child: VerticalDivider(color: Colors.grey))
+              height: 15, width: 4, child: VerticalDivider(color: Colors.grey))
           .paddingHorizontal(AppSpace.listItem),
       TextWidget.body1(_statusToStr(status),
           color: status == TaskStatus.approvalStart.status
               ? AppColors.blue
               : AppColors.red),
-    ].toRow().paddingVertical(AppSpace.listItem);
+    ]
+        .toRow(crossAxisAlignment: CrossAxisAlignment.center)
+        .paddingBottom(AppSpace.listItem);
 
     return <Widget>[
       result,
@@ -159,7 +162,7 @@ class ApplyWidget extends StatelessWidget {
   }
 
   _buildDateView(String text) {
-    return TextWidget(text: text);
+    return TextWidget(text: text).paddingBottom(AppSpace.listItem);
   }
 
   _statusToStr(int status) {
