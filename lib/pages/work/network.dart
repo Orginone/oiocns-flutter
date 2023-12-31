@@ -8,12 +8,16 @@ class WorkNetWork {
       required int status,
       String? comment,
       VoidCallback? onSuccess}) async {
-    bool success = await todo.approvalTask(status, comment: comment);
-    if (success) {
-      ToastUtils.showMsg(msg: "成功");
-      if (onSuccess != null) {
-        onSuccess();
+    try {
+      bool success = await todo.approvalTask(status, comment: comment);
+      if (success) {
+        ToastUtils.showMsg(msg: "成功");
+        if (onSuccess != null) {
+          onSuccess();
+        }
       }
+    } catch (e) {
+      ToastUtils.showMsg(msg: "操作异常");
     }
   }
 }

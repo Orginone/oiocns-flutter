@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
@@ -50,6 +51,8 @@ class ImageWidget extends StatelessWidget {
         child = network();
       } else if (path.split('.').last.toLowerCase() == 'svg') {
         child = svg();
+      } else if (path.contains('base64')) {
+        child = base64emoryImage();
       } else {
         child = asset();
       }
@@ -83,6 +86,18 @@ class ImageWidget extends StatelessWidget {
       width: size,
       height: size,
       color: color,
+    );
+  }
+
+  Widget base64emoryImage() {
+    return Image.memory(
+      /// 对应上述的XXX的base64编码部分
+      base64Decode(path.split(',')[1]),
+      fit: fit,
+      width: size,
+      height: size,
+      color: color,
+      gaplessPlayback: gaplessPlayback,
     );
   }
 

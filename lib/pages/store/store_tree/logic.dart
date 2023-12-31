@@ -146,7 +146,8 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
             arguments: {"works": works, 'target': target});
         break;
       case SpaceEnum.file:
-        RoutePages.jumpFile(file: nav.source!.shareInfo(), type: 'store');
+        var shareInfo = nav.source.shareInfo();
+        RoutePages.jumpFile(file: shareInfo, type: 'store');
         break;
       case SpaceEnum.filter:
         Get.toNamed(Routers.thing, arguments: {

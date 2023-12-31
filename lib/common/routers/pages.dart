@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/widgets/TargetActivity/activity_comment_box.dart';
 import 'package:orginone/components/widgets/TargetActivity/target_activity_view.dart';
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/wallet_controller.dart';
 import 'package:orginone/main.dart';
@@ -461,7 +462,9 @@ class RoutePages {
       Get.toNamed(Routers.pdfReader, arguments: {"file": file});
     } else if (ImageUtils.isImage(extension)) {
       Get.toNamed(Routers.photoView, arguments: {
-        "images": [file.shareLink!]
+        "images": file.shareLink != null && file.shareLink!.contains('http')
+            ? [file.shareLink!]
+            : ['${Constant.host}${file.shareLink}']
       });
     } else if (ImageUtils.isWord(extension)) {
       Get.toNamed(Routers.fileReader, arguments: {'file': file});

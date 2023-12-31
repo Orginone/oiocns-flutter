@@ -96,7 +96,11 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
     };
     LogUtil.d('BaseBreadcrumbNavItem');
     LogUtil.d(link);
-    Widget child = ImageWidget(link, httpHeaders: headers);
+    Widget child = ImageWidget(
+      link,
+      httpHeaders: headers,
+      fit: BoxFit.fitWidth,
+    );
 
     return child;
     return ImageWidget(

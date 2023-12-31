@@ -11,6 +11,10 @@ class ImageUtils {
     return !isAssetsImg(imageName);
   }
 
+  static bool isBase64Image(String imageName) {
+    return imageName.contains('base64');
+  }
+
   static bool isNetworkImg(String imageName) {
     return imageName.startsWith("http://") || imageName.startsWith("https://");
   }
