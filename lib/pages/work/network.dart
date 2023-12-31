@@ -11,13 +11,14 @@ class WorkNetWork {
     try {
       bool success = await todo.approvalTask(status, comment: comment);
       if (success) {
-        ToastUtils.showMsg(msg: "成功");
+        ToastUtils.showMsg(msg: "操作成功");
+        await Future.delayed(const Duration(milliseconds: 100));
         if (onSuccess != null) {
           onSuccess();
         }
       }
     } catch (e) {
-      ToastUtils.showMsg(msg: "操作异常");
+      ToastUtils.showMsg(msg: "审核异常");
     }
   }
 }

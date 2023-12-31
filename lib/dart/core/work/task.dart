@@ -191,6 +191,9 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
               ? jsonEncode(instanceData?.toJson() ?? {})
               : null,
         ));
+        if (!res.success) {
+          ToastUtils.showMsg(msg: res.msg);
+        }
         return res.success == true;
       }
     }
@@ -209,6 +212,7 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
             : null,
       ));
       if (res.success && status < TaskStatus.refuseStart.status) {
+        //同意审批成功后拉人入群
         for (final item in user.targets) {
           if (item.id == targets[1].id) {
             await item.pullMembers([targets[0]]);
@@ -216,6 +220,11 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
           }
         }
       }
+      if (!res.success) {
+        ToastUtils.showMsg(msg: res.msg);
+      }
+      //拒绝 返回审批结果
+      return res.success;
     }
     return false;
   }
