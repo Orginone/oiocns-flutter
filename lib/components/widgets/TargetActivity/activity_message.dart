@@ -164,7 +164,9 @@ class ActivityMessageWidget extends StatelessWidget {
             padding: EdgeInsets.only(top: 10.h, bottom: 10.h),
             child: renderContent() ?? Container(),
           ),
-          if (!hideResource && metadata!.resource.isNotEmpty)
+          if (!hideResource &&
+              null != metadata &&
+              metadata!.resource.isNotEmpty)
             ActivityResourceWidget(metadata!.resource, 100),
           RenderCtxMore(
             activity: activity,

@@ -62,6 +62,7 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
       extension: filedata.extension,
       contentType: filedata.contentType,
       shareLink: filedata.shareLink,
+      poster: filedata.poster,
       // thumbnail: filedata.thumbnail,
       // shareLink: '${Constant.host}${filedata.shareLink}',
       thumbnail: getThumbnail(),

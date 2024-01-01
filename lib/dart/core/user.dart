@@ -1,6 +1,5 @@
 import 'package:common_utils/common_utils.dart';
 import 'package:get/get.dart';
-import 'package:orginone/common/values/constants.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -9,7 +8,6 @@ import 'package:orginone/dart/core/auth.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/logger.dart';
 import 'thing/standard/application.dart';
 import 'work/provider.dart';
@@ -46,8 +44,8 @@ class UserProvider {
   }
 
   /// 当前用户
-  IPerson? get user {
-    return _user.value;
+  IPerson get user {
+    return _user.value!;
   }
 
   IWorkProvider? get work {
@@ -61,9 +59,11 @@ class UserProvider {
 
   List<ITarget> get targets {
     final List<ITarget> targets = [];
-    targets.addAll(_user.value!.targets);
-    for (final company in _user.value!.companys) {
-      targets.addAll(company.targets);
+    if (null != _user.value) {
+      targets.addAll(_user.value!.targets);
+      for (final company in _user.value!.companys) {
+        targets.addAll(company.targets);
+      }
     }
     return targets;
   }
@@ -140,7 +140,6 @@ class UserProvider {
   /// 加载用户
   _loadUser(XTarget person) async {
     try {
-      Storage.setJson(Constants.sessionUser, person.toJson());
       errInfo +=
           "开始创建人员数据${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}。。。\r\n";
       _user.value = Person(person);
@@ -162,17 +161,9 @@ class UserProvider {
   /// 重载数据
   Future<void> refresh() async {
     _inited = false;
-    print(
-        '>>>===userS ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
     try {
-      errInfo +=
-          "开始加载个人内核数据${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}。。。\r\n";
-      await _user.value?.deepLoad(reload: true);
-      errInfo +=
-          "开始加载办事数据${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}。。。\r\n";
+      await _user.value!.deepLoad(reload: true);
       await work?.loadTodos(reload: true);
-      errInfo +=
-          "数据加载完成${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}。。。\r\n";
       _inited = true;
       _emiter.changCallback();
       command.emitterFlag();
@@ -182,10 +173,7 @@ class UserProvider {
       errInfo += '$t $e ==== $s';
       // ToastUtils.showMsg(msg: errInfo);
       // SystemUtils.copyToClipboard(errInfo);
-      print('>>>====$s');
     }
-    print(
-        '>>>===userE ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
   }
 
   late String errInfo = "";

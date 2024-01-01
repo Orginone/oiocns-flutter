@@ -508,6 +508,7 @@ class ActivityCommentBox extends StatelessWidget with WidgetsBindingObserver {
     var inputController = controller.inputController;
     return EmojiPicker(
       onEmojiSelected: (category, emoji) {
+        isDisabledSend.value = true;
         inputController
           ..text += emoji.emoji
           ..selection = TextSelection.fromPosition(

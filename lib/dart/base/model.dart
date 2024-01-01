@@ -2599,6 +2599,9 @@ class ShareIcon {
     } else if (typeName == '动态') {
       defaultAvatar = IconsUtils.icons['x']?['home'] ?? "";
       avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    } else {
+      defaultAvatar = AssetsImages.chatDefaultCohort;
+      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
     }
   }
 
@@ -2727,6 +2730,7 @@ class FileItemShare {
     json["name"] = name;
     json['poster'] = poster;
     json["shareLink"] = shareLink;
+    json["contentType"] = contentType;
     json["extension"] = extension;
     json["thumbnail"] = thumbnail;
     json["defaultAvatar"] = defaultAvatar;
@@ -2791,7 +2795,9 @@ class FileItemModel extends FileItemShare {
         super(
           size: json["size"],
           name: json["name"],
+          contentType: json['contentType'],
           shareLink: json["shareLink"],
+          poster: json["poster"],
           extension: json["extension"],
           thumbnail: json["thumbnail"],
         );
@@ -3042,6 +3048,10 @@ class MsgChatData {
     isToping = json['isToping'];
     noReadCount = json['noReadCount'];
     lastMsgTime = json['lastMsgTime'];
+    // TODO 临时处理解决消息排序不准确问题
+    if (lastMsgTime < 9999999999999) {
+      lastMsgTime = int.parse('${lastMsgTime}000');
+    }
     lastMessage = json['lastMessage'] != null
         ? ChatMessageType.fromJson(json['lastMessage'])
         : null;

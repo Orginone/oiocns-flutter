@@ -118,6 +118,8 @@ enum MessageType {
         return MessageType.notify;
       case "网页":
         return MessageType.html;
+      case "文件":
+        return MessageType.file;
     }
     return null;
   }

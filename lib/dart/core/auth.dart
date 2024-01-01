@@ -1,6 +1,10 @@
+import 'dart:convert';
+
+import 'package:orginone/common/values/constants.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/utils/storage.dart';
 
 /// 授权方法提供者
 class AuthProvider {
@@ -8,11 +12,23 @@ class AuthProvider {
   late Future<void> Function(XTarget user) _onAuthed;
   AuthProvider(Future<void> Function(XTarget user) authed) {
     _onAuthed = authed;
-    kernel.tokenAuth().then((success) async {
-      if (success) {
-        await _onAuthed.call(kernel.user!);
-      }
-    });
+
+    String userjson = Storage.getString(Constants.sessionUser);
+
+    if (userjson.isNotEmpty) {
+      kernel.user = XTarget.fromJson(jsonDecode(userjson));
+      _onAuthed.call(kernel.user!);
+    } else {
+      kernel.tokenAuth().then((success) async {
+        if (success && null != kernel.user) {
+          print('<<<====111');
+          Storage.setJson(Constants.sessionUser, kernel.user!.toJson());
+          await _onAuthed.call(kernel.user!);
+          print('<<<====_onAuthed.call');
+        }
+      });
+    }
+    print('<<<====AuthProvider');
   }
 
   /// 获取动态密码

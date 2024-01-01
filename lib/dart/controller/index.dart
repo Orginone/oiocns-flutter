@@ -103,7 +103,7 @@ class IndexController extends GetxController {
   }
 
   /// 当前用户
-  IPerson get user => provider.user!;
+  IPerson get user => provider.user;
 
   /// 办事提供者
   IWorkProvider get work => provider.work!;
@@ -194,40 +194,37 @@ class IndexController extends GetxController {
 
   Future<void> loadChats([bool reload = false]) async {
     try {
-      if (provider.user != null) {
-        // this.chats.value = [];
-        if (reload) {
-          // TODO 后期晚上刷新列表
-          await provider.user?.deepLoad(reload: reload);
-        }
-        List<ISession> chats = <ISession>[];
-        chats.addAll(provider.user?.chats ?? []);
-        for (var company in provider.user?.companys ?? []) {
-          chats.addAll(company.chats ?? []);
-        }
-        chats = chats
-            .where((element) =>
-                element.chatdata.value.lastMessage != null ||
-                element.chatdata.value.recently)
-            .toList();
-
-        /// 排序
-        chats.sort((a, b) {
-          var num = 0;
-          if (b.chatdata.value.lastMsgTime == a.chatdata.value.lastMsgTime) {
-            num = b.isBelongPerson ? 1 : -1;
-          } else {
-            num = b.chatdata.value.lastMsgTime > a.chatdata.value.lastMsgTime
-                ? 5
-                : -5;
-          }
-          return num;
-        });
-        for (var e in chats) {
-          print('<<<===${e.chatdata.value.lastMsgTime} ${e.name}');
-        }
-        this.chats.value = chats;
+      if (reload) {
+        // TODO 后期晚上刷新列表
+        await provider.user.deepLoad(reload: reload);
       }
+      List<ISession> chats = <ISession>[];
+      chats.addAll(provider.user.chats ?? []);
+      for (var company in provider.user.companys ?? []) {
+        chats.addAll(company.chats ?? []);
+      }
+      chats = chats
+          .where((element) =>
+              element.chatdata.value.lastMessage != null ||
+              element.chatdata.value.recently)
+          .toList();
+
+      /// 排序
+      chats.sort((a, b) {
+        var num = 0;
+        if (b.chatdata.value.lastMsgTime == a.chatdata.value.lastMsgTime) {
+          num = b.isBelongPerson ? 1 : -1;
+        } else {
+          num = b.chatdata.value.lastMsgTime > a.chatdata.value.lastMsgTime
+              ? 5
+              : -5;
+        }
+        return num;
+      });
+      for (var e in chats) {
+        print('<<<===${e.chatdata.value.lastMsgTime} ${e.name}');
+      }
+      this.chats.value = chats;
     } catch (e, s) {
       var msg = '\r\n$e === $s';
       provider.errInfo += msg;

@@ -55,7 +55,7 @@ class ListAdapter {
   ListAdapter.chat(ISession chat) {
     noReadCount = ''.obs;
     labels = chat.groupTags;
-    bool isTop = labels.contains("置顶");
+    bool isTop = labels.contains("常用");
     isUserLabel = false;
     typeName = chat.share.typeName;
     popupMenuItems = [

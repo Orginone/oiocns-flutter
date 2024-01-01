@@ -17,7 +17,7 @@ class WorkBenchController extends BaseListController<WorkBenchState> {
   @override
   void onInit() async {
     super.onInit();
-    settingCtrl.subscribe((key, args) async {
+    key = settingCtrl.subscribe((key, args) async {
       state.friendNum.value = settingCtrl.user.members.length.toString();
       state.colleagueNum.value = settingCtrl.user.companys
           .map((i) => i.members.map((e) => e.id))
@@ -43,6 +43,12 @@ class WorkBenchController extends BaseListController<WorkBenchState> {
       settingCtrl.work
           .loadTaskCount(TaskType.create)
           .then((value) => state.applyCount.value = value.toString());
+      state.relationNum.value = settingCtrl.chats
+          .where(
+            (i) => i.isMyChat && i.typeName != TargetType.group.label,
+          )
+          .length
+          .toString();
       settingCtrl.chats.listen((value) {
         state.relationNum.value = value
             .where(
@@ -68,9 +74,11 @@ class WorkBenchController extends BaseListController<WorkBenchState> {
 
   @override
   void onClose() {
-    state.scrollController.dispose();
     super.onClose();
-    settingCtrl.unsubscribe(key);
+    state.scrollController.dispose();
+    if (settingCtrl.initialized) {
+      settingCtrl.unsubscribe(key ?? '');
+    }
   }
 
   @override

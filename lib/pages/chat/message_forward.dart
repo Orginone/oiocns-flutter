@@ -1,9 +1,9 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/dart/base/model.dart' hide Column;
+import 'package:orginone/components/widgets/target_text.dart';
+import 'package:orginone/components/widgets/text_tag.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
@@ -36,45 +36,57 @@ class _MessageForwardState extends State<MessageForward> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    list = [];
     List<Hierarchy> companyItems = [];
-    for (var company in settingCtrl.user.companys) {
-      companyItems.add(
-        Hierarchy(
-          type: ChatType.list,
-          msg: settingCtrl.chats.last,
-          children: [
-            Hierarchy(
-              msg: settingCtrl.chats.last,
-              children: company.memberChats
-                  .map((item) => Hierarchy(msg: item, children: []))
-                  .toList(),
-            ),
-            ...company.cohortChats
-                .where((i) => i.isMyChat)
-                .map((item) => Hierarchy(msg: item, children: []))
-                .toList(),
-          ],
-        ),
-      );
+
+    // for (var company in settingCtrl.user.companys) {
+    //   for (var chats in company.chats) {
+    //     companyItems.add(
+    //       Hierarchy(
+    //         // type: ChatType.list,
+    //         msg: chats,
+    //         children: [
+    //           // Hierarchy(
+    //           //   msg: settingCtrl.chats.last,
+    //           //   children: company.memberChats
+    //           //       .map((item) => Hierarchy(msg: item, children: []))
+    //           //       .toList(),
+    //           // ),
+    //           // ...company.cohortChats
+    //           //     .where((i) => i.isMyChat)
+    //           //     .map((item) => Hierarchy(msg: item, children: []))
+    //           //     .toList(),
+    //         ],
+    //       ),
+    //     );
+    //   }
+    // }
+    // list = [
+    //   //   Hierarchy(
+    //   //       msg: settingCtrl.chats.last,
+    //   //       children: [
+    //   //         // Hierarchy(
+    //   //         //   msg: settingCtrl.chats.last,
+    //   //         //   children: settingCtrl.user.memberChats
+    //   //         //       .map((chat) => Hierarchy(msg: chat, children: []))
+    //   //         //       .toList(),
+    //   //         // ),
+    //   //         ...settingCtrl.user.cohortChats
+    //   //             .where((i) => i.isMyChat)
+    //   //             .map((item) => Hierarchy(msg: item, children: []))
+    //   //             .toList(),
+    //   //       ],
+    //   //       type: ChatType.list),
+    //   // Hierarchy(
+    //   //   msg: settingCtrl.user.chats.last,
+    //   //   children: [],
+    //   // ),
+    //   ...companyItems,
+    // ];
+
+    for (var element in settingCtrl.chats.value) {
+      list.add(Hierarchy(msg: element, children: []));
     }
-    list = [
-      Hierarchy(
-          msg: settingCtrl.chats.last,
-          children: [
-            Hierarchy(
-              msg: settingCtrl.chats.last,
-              children: settingCtrl.user.memberChats
-                  .map((chat) => Hierarchy(msg: chat, children: []))
-                  .toList(),
-            ),
-            ...settingCtrl.user.cohortChats
-                .where((i) => i.isMyChat)
-                .map((item) => Hierarchy(msg: item, children: []))
-                .toList(),
-          ],
-          type: ChatType.list),
-      ...companyItems,
-    ];
   }
 
   @override
@@ -97,92 +109,102 @@ class _MessageForwardState extends State<MessageForward> {
       itemCount: list.length,
       itemBuilder: (BuildContext context, int index) {
         var item = list[index];
-        return Container(
-          padding: EdgeInsets.only(top: 10.h, bottom: 10.h, left: leftPadding),
-          child: Column(
-            children: [
-              GestureDetector(
-                onTap: () {
-                  if (item.type == ChatType.chat) {
-                    showCupertinoDialog(
-                      context: context,
-                      builder: (context) {
-                        return CupertinoAlertDialog(
-                          title:
-                              Text("发送给${item.msg.chatdata.value.chatName}?"),
-                          actions: <Widget>[
-                            CupertinoDialogAction(
-                              child: const Text('取消'),
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                            ),
-                            CupertinoDialogAction(
-                              child: const Text('确定'),
-                              onPressed: () async {
-                                var msgType =
-                                    MessageType.getType(widget.msgType);
-                                var success = await item.msg.sendMessage(
-                                    msgType!,
-                                    msgType == MessageType.text
-                                        ? widget.msgBody.msgType
-                                        : widget.msgBody.msgSource,
-                                    []);
-                                if (success) {
-                                  ToastUtils.showMsg(msg: "转发成功");
-                                }
-                                Navigator.pop(context, success);
-                              },
-                            ),
-                          ],
-                        );
-                      },
-                    ).then((success) {
-                      if (success) {
-                        if (widget.onSuccess != null) {
-                          widget.onSuccess!();
-                        }
-                      }
-                    });
+        return GestureDetector(
+            onTap: () {
+              if (item.type == ChatType.chat) {
+                showCupertinoDialog(
+                  context: context,
+                  builder: (context) {
+                    return CupertinoAlertDialog(
+                      title: Text("发送给${item.msg.chatdata.value.chatName}?"),
+                      actions: <Widget>[
+                        CupertinoDialogAction(
+                          child: const Text('取消'),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                        ),
+                        CupertinoDialogAction(
+                          child: const Text('确定'),
+                          onPressed: () async {
+                            var msgType = MessageType.getType(widget.msgType);
+                            var success = await item.msg.sendMessage(
+                                msgType!,
+                                msgType == MessageType.text
+                                    ? widget.msgBody.msgSource
+                                    : widget.msgBody.msgSource,
+                                []);
+                            if (success) {
+                              ToastUtils.showMsg(msg: "转发成功");
+                            }
+                            Navigator.pop(context, success);
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                ).then((success) {
+                  if (success ?? false) {
+                    if (widget.onSuccess != null) {
+                      widget.onSuccess!();
+                    }
                   }
-                },
-                child: Row(
-                  children: [
-                    ImageWidget(
-                      item.msg.share.avatar?.thumbnailUint8List ??
-                          item.msg.share.avatar?.defaultAvatar,
-                      size: 50.w,
-                    ),
-                    SizedBox(
-                      width: 15.w,
-                    ),
-                    Expanded(
-                        child: Text(
-                      item.msg.share.name,
-                      textAlign: TextAlign.left,
-                    )),
-                    item.children.isNotEmpty
-                        ? IconButton(
-                            icon: Icon(item.isOpen
-                                ? Icons.arrow_drop_up
-                                : Icons.arrow_drop_down),
-                            onPressed: () {
-                              item.isOpen = !item.isOpen;
-                              setState(() {});
-                            },
-                          )
-                        : const SizedBox(),
-                  ],
-                ),
+                });
+              }
+            },
+            child: Container(
+              padding:
+                  EdgeInsets.only(top: 2.h, bottom: 2.h, left: leftPadding),
+              child: Column(
+                children: [
+                  Container(
+                      padding: EdgeInsets.only(
+                          top: 12.h, bottom: 12.h, left: leftPadding),
+                      color: XColors.bgColor,
+                      child: Row(
+                        children: [
+                          ImageWidget(
+                            item.msg.share.avatar?.thumbnailUint8List ??
+                                item.msg.share.avatar?.defaultAvatar,
+                            size: 50.w,
+                          ),
+                          SizedBox(
+                            width: 15.w,
+                          ),
+                          Expanded(
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                Text(
+                                  item.msg.share.name,
+                                  textAlign: TextAlign.left,
+                                ),
+                                Row(
+                                  children: [...item.labels],
+                                )
+                              ])),
+                          item.children.isNotEmpty
+                              ? IconButton(
+                                  icon: Icon(item.isOpen
+                                      ? Icons.arrow_drop_up
+                                      : Icons.arrow_drop_down),
+                                  onPressed: () {
+                                    item.isOpen = !item.isOpen;
+                                    setState(() {});
+                                  },
+                                )
+                              : const SizedBox(),
+                        ],
+                      )),
+                  item.children.isNotEmpty && item.isOpen
+                      ? buildList(item.children,
+                          physics: const NeverScrollableScrollPhysics(),
+                          leftPadding: 20.w)
+                      : const SizedBox(),
+                ],
               ),
-              item.children.isNotEmpty && item.isOpen
-                  ? buildList(item.children,
-                      physics: const NeverScrollableScrollPhysics(),
-                      leftPadding: 20.w)
-                  : const SizedBox(),
-            ],
-          ),
-        );
+            ));
       },
     );
   }
@@ -193,8 +215,48 @@ class Hierarchy {
   late ChatType type;
   bool isOpen = false;
   bool isSelected = false;
+  bool isUserLabel = false;
   late List<Hierarchy> children;
 
   Hierarchy(
       {required this.msg, this.type = ChatType.chat, required this.children});
+
+  List<Widget> get labels {
+    var labels = <Widget>[];
+    for (var item in msg.groupTags) {
+      if (item.isNotEmpty) {
+        bool isTop = item == "置顶";
+
+        Widget label;
+
+        var style = TextStyle(
+          color: isTop ? XColors.fontErrorColor : XColors.designBlue,
+          fontSize: 14.sp,
+        );
+        if (isUserLabel) {
+          label = Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              border: Border.all(color: XColors.tinyBlue),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+            child: TargetText(userId: item, style: style),
+          );
+        } else {
+          label = TextTag(
+            item,
+            bgColor: Colors.white,
+            padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 3),
+            textStyle: style,
+            borderColor: isTop ? XColors.fontErrorColor : XColors.tinyBlue,
+          );
+        }
+
+        labels.add(label);
+        labels.add(Padding(padding: EdgeInsets.only(left: 4.w)));
+      }
+    }
+    return labels;
+  }
 }

@@ -3,6 +3,7 @@ import 'dart:io';
 // import 'package:flutter_cache_manager/file.dart'; //导入file.dart文件得时候要注意千万不能错 实际使用得是import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/utils/logger.dart';
 import 'package:path_provider/path_provider.dart';
@@ -104,7 +105,7 @@ class PDFReaderController extends GetxController {
     Completer<File> completer = Completer();
     logger.info("Start download file from internet!");
     try {
-      final url = fileModel.shareLink!;
+      final url = '${Constant.host}${fileModel.shareLink}';
       final filename = url.substring(url.lastIndexOf("/") + 1);
       var request = await HttpClient().getUrl(Uri.parse(url));
       var response = await request.close();

@@ -321,9 +321,9 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
 
   @override
   Future<ISysFileInfo?> createFile(File file, {OnProgress? p}) async {
-    while (taskList.where((i) => i.finished < i.size).length > 2) {
-      sleep(const Duration(milliseconds: 1000));
-    }
+    // while (taskList.where((i) => i.finished < i.size).length > 2) {
+    //   sleep(const Duration(milliseconds: 1000));
+    // }
 
     p?.call(0);
     String fileName = file.path.split("/").last;
