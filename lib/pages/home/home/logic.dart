@@ -5,6 +5,7 @@ import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/utils/index.dart';
+import 'package:orginone/utils/system/update_utils.dart';
 
 import 'state.dart';
 
@@ -32,6 +33,13 @@ class HomeController extends BaseController<HomeState>
       EventBusUtil.instance.fire(UserLoaded());
     }
     print('>>>=======Home2');
+  }
+
+  @override
+  void onReady() {
+    // TODO: implement onReady
+    super.onReady();
+    AppUpdate.instance.update();
   }
 
   @override
