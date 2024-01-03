@@ -50,8 +50,8 @@ class WorkBenchPage
     renderCmdBtn(String cmd, String title, String iconType, ShortcutData item) {
       return GestureDetector(
         onTap: () {
-          settingCtrl.settingMenuController.hideMenu();
-          settingCtrl.showAddFeatures(item);
+          relationCtrl.settingMenuController.hideMenu();
+          relationCtrl.showAddFeatures(item);
         },
         child: Container(
           child: Column(
@@ -88,15 +88,15 @@ class WorkBenchPage
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 renderCmdBtn('joinFriend', '添加好友', 'joinFriend',
-                    settingCtrl.menuItems[0]),
+                    relationCtrl.menuItems[0]),
                 renderCmdBtn(
-                    'newCohort', '创建群组', '群组', settingCtrl.menuItems[4]),
+                    'newCohort', '创建群组', '群组', relationCtrl.menuItems[4]),
                 renderCmdBtn('joinCohort', '加入群聊', 'joinCohort',
-                    settingCtrl.menuItems[1]),
+                    relationCtrl.menuItems[1]),
                 renderCmdBtn(
-                    'newCompany', '新建单位', '单位', settingCtrl.menuItems[2]),
+                    'newCompany', '新建单位', '单位', relationCtrl.menuItems[2]),
                 renderCmdBtn('joinCompany', '加入单位', 'joinCompany',
-                    settingCtrl.menuItems[3]),
+                    relationCtrl.menuItems[3]),
               ],
             )));
   }
@@ -169,7 +169,7 @@ class WorkBenchPage
               homeController.jumpTab(HomeEnum.chat);
             },
             child: TextArrow(
-                title: '未读消息 · ${settingCtrl.noReadMgsCount.value}')));
+                title: '未读消息 · ${relationCtrl.noReadMgsCount.value}')));
   }
 
   Widget renderDataItem(String title, String? code, RxString number,
@@ -267,7 +267,7 @@ class WorkBenchPage
                             HomeEnum.store,
                             () {},
                             -1,
-                            '共计:${settingCtrl.chats.length}个'),
+                            '共计:${relationCtrl.chats.length}个'),
                         renderDataItem(
                             '数据集(个)',
                             null,

@@ -16,3 +16,4 @@ export 'routers/index.dart';
 export 'services/index.dart';
 export 'values/index.dart';
 export 'widgets/index.dart';
+export './data_config/index.dart';

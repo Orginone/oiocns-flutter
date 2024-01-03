@@ -34,7 +34,7 @@ class ShareQrCodeController extends BaseController<ShareQrCodeState> {
       // 将 ByteData 转换为 Uint8List
       final uint8List = byteData.buffer.asUint8List();
       var file = await saveImage(uint8List);
-      var docDir = settingCtrl.user.directory;
+      var docDir = relationCtrl.user.directory;
       var item = await docDir.createFile(
         File(file.path),
         p: (progress) {},

@@ -90,8 +90,8 @@ class ActivityMessageWidget extends StatelessWidget {
   }
 
   Widget subTitle() {
-    XEntity? entity =
-        settingCtrl.user.findMetadata<XEntity>(item.value.metadata.createUser!);
+    XEntity? entity = relationCtrl.user
+        .findMetadata<XEntity>(item.value.metadata.createUser!);
     return Row(
       children: [
         // TeamAvatar(
@@ -208,7 +208,7 @@ class RenderCtxMore extends StatelessWidget {
   Future<void> handleReply(BuildContext context, [String userId = '']) async {
     replyTo = null;
     if (userId.isNotEmpty) {
-      var user = await settingCtrl.user.findEntityAsync(userId);
+      var user = await relationCtrl.user.findEntityAsync(userId);
       replyTo = user;
     }
     ShowCommentBoxNotification((text) async {
@@ -232,7 +232,7 @@ class RenderCtxMore extends StatelessWidget {
             children: [
               Offstage(
                 offstage:
-                    !item.value.metadata.likes.contains(settingCtrl.user.id),
+                    !item.value.metadata.likes.contains(relationCtrl.user.id),
                 child: ButtonWidget.iconTextOutlined(
                   onTap: () async {
                     await item.value.like();
@@ -248,7 +248,7 @@ class RenderCtxMore extends StatelessWidget {
               ),
               Offstage(
                 offstage:
-                    item.value.metadata.likes.contains(settingCtrl.user.id),
+                    item.value.metadata.likes.contains(relationCtrl.user.id),
                 child: ButtonWidget.iconTextOutlined(
                   onTap: () async {
                     await item.value.like();
@@ -337,8 +337,8 @@ class RenderCtxMore extends StatelessWidget {
 
   //渲染发布者信息
   Widget renderTags() {
-    XEntity? entity =
-        settingCtrl.user.findMetadata<XEntity>(item.value.metadata.createUser!);
+    XEntity? entity = relationCtrl.user
+        .findMetadata<XEntity>(item.value.metadata.createUser!);
     var showLikes = item.value.metadata.likes.isEmpty &&
         item.value.metadata.comments.isEmpty;
     return Container(
@@ -388,7 +388,7 @@ class RenderCtxMore extends StatelessWidget {
   }
 
   List<Widget> getUserAvatar(String userId) {
-    XEntity? entity = settingCtrl.user.findMetadata<XEntity>(userId);
+    XEntity? entity = relationCtrl.user.findMetadata<XEntity>(userId);
     return [
       Padding(padding: EdgeInsets.only(left: 5.w)),
       TeamAvatar(

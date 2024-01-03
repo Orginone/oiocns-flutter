@@ -15,14 +15,14 @@ const notificationId = 888;
 const android = AndroidInitializationSettings('@mipmap/ic_launcher');
 const ios = DarwinInitializationSettings();
 
-const initSettings = InitializationSettings(android: android, iOS: ios);
+const initRelations = InitializationSettings(android: android, iOS: ios);
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 class NotificationUtil {
   static Future<void> initializeService() async {
-    flutterLocalNotificationsPlugin.initialize(initSettings);
+    flutterLocalNotificationsPlugin.initialize(initRelations);
     if (Platform.isAndroid) {
       const AndroidNotificationChannel channel = AndroidNotificationChannel(
         notificationChannelId, // id
@@ -48,9 +48,9 @@ class NotificationUtil {
   }
 
   static void showChatMessageNotification(IMessage msg) async {
-    // ShareIcon share = settingCtrl.user.findShareById(msg.metadata.fromId);
+    // ShareIcon share = relationCtrl.user.findShareById(msg.metadata.fromId);
     showMsgNotification("${msg.from.name}发来一条消息",
-        StringUtil.msgConversion(msg, settingCtrl.user.id));
+        StringUtil.msgConversion(msg, relationCtrl.user.id));
   }
 
   static void showMsgNotification(String title, String body) {

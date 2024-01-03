@@ -17,10 +17,10 @@ class _LoginTransPageState extends State<LoginTransPage> {
   @override
   Widget build(BuildContext context) {
     try {
-      settingCtrl.subscribe((key, args) {
+      relationCtrl.subscribe((key, args) {
         Get.offAndToNamed(Routers.home, arguments: true);
         Future.delayed(const Duration(milliseconds: 10), () {
-          settingCtrl.unsubscribe(key);
+          relationCtrl.unsubscribe(key);
         });
       });
     } catch (e) {}

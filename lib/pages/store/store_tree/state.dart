@@ -16,7 +16,7 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
 
     ///返回的时候才会执行
     if (model.value == null) {
-      var joinedCompanies = settingCtrl.user.companys;
+      var joinedCompanies = relationCtrl.user.companys;
 
       List<StoreTreeNav> organization = [];
       for (var value in joinedCompanies) {
@@ -35,11 +35,11 @@ class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
         name: HomeEnum.store.label,
         children: [
           StoreTreeNav(
-            name: settingCtrl.provider.user?.metadata.name ?? "",
-            id: settingCtrl.provider.user?.metadata.id ?? "",
-            image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
+            name: relationCtrl.provider.user.metadata.name ?? "",
+            id: relationCtrl.provider.user.metadata.id ?? "",
+            image: relationCtrl.provider.user.metadata.avatarThumbnail(),
             children: [],
-            space: settingCtrl.provider.user,
+            space: relationCtrl.provider.user,
             spaceEnum: SpaceEnum.user,
           ),
           ...organization

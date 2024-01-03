@@ -14,9 +14,9 @@ class UseTracesNetWork {
     //     },
     //   },
     //   "userData": [],
-    // }, settingCtrl.user.metadata.id);
+    // }, relationCtrl.user.metadata.id);
     ResultType result = await kernel.loadThing(
-      settingCtrl.user.metadata.id,
+      relationCtrl.user.metadata.id,
       [],
       {
         "options": {

@@ -36,18 +36,18 @@ class StoreSubController extends BaseListController<StoreSubState> {
   ///点击tab标签调用
   ///加载全部数据
   loadAllData() async {
-    List<ICompany> joinedCompanies = settingCtrl.user.companys;
+    List<ICompany> joinedCompanies = relationCtrl.user.companys;
 
     List<StoreTreeNav> user = [];
     List<StoreTreeNav> organization = [];
     List<StoreTreeNav> children = [];
 
     user.add(StoreTreeNav(
-      name: settingCtrl.provider.user?.metadata.name ?? "",
-      id: settingCtrl.provider.user?.metadata.id ?? "",
-      image: settingCtrl.provider.user?.metadata.avatarThumbnail(),
+      name: relationCtrl.provider.user.metadata.name ?? "",
+      id: relationCtrl.provider.user.metadata.id ?? "",
+      image: relationCtrl.provider.user.metadata.avatarThumbnail(),
       children: [],
-      space: settingCtrl.provider.user,
+      space: relationCtrl.provider.user,
       spaceEnum: SpaceEnum.user,
     ));
 
@@ -76,13 +76,13 @@ class StoreSubController extends BaseListController<StoreSubState> {
       name: HomeEnum.store.label,
       children: children,
     );
-    await loadUserSetting();
-    await loadCompanySetting();
+    await loadUserRelation();
+    await loadCompanyRelation();
   }
 
   ///点击tab个人标签调用
   ///加载个人数据
-  Future<void> loadUserSetting() async {
+  Future<void> loadUserRelation() async {
     var user = state.nav!.children[0];
 
     ///点击进入下一级
@@ -91,7 +91,7 @@ class StoreSubController extends BaseListController<StoreSubState> {
       await user.space!.directory.loadContent(reload: true);
       // await user.space!.directory.standard.loadApplications(reload: true);
 
-      LogUtil.d('StoreSubController-loadUserSetting-onNext');
+      LogUtil.d('StoreSubController-loadUserRelation-onNext');
       LogUtil.d('user');
       List<StoreTreeNav> children = [
         ...await loadApplications(
@@ -120,7 +120,7 @@ class StoreSubController extends BaseListController<StoreSubState> {
 
   ///点击tab单位标签调用
   ///加载单位数据
-  Future<void> loadCompanySetting() async {
+  Future<void> loadCompanyRelation() async {
     for (int i = 1; i < state.nav!.children.length; i++) {
       var company = state.nav!.children[i];
       // await company.space!.loadContent(reload: true);
@@ -248,9 +248,9 @@ class StoreSubController extends BaseListController<StoreSubState> {
     if (type != "all") {
       if (type == 'common') {
         //TODO 没有这个方法 用到梳理逻辑
-        // await settingCtrl.store.loadMostUsed();
+        // await relationCtrl.store.loadMostUsed();
       } else {
-        // await settingCtrl.store.loadRecentList();
+        // await relationCtrl.store.loadRecentList();
       }
     }
   }
@@ -263,6 +263,6 @@ class StoreSubController extends BaseListController<StoreSubState> {
       id = store.thing?.id ?? "";
     }
     //TODO：同上
-    // settingCtrl.store.removeMostUsed(id);
+    // relationCtrl.store.removeMostUsed(id);
   }
 }

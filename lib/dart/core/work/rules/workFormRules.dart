@@ -264,7 +264,7 @@ class WorkFormRules extends Emitter implements WorkFormRulesType {
           "#attrs": formData.attrs, //主表所有特性
           "#things": formData.things ?? [], //子表数据
           "#company": companyMeta, //单位信息
-          "#user": settingCtrl.user.metadata, //用户信息
+          "#user": relationCtrl.user.metadata, //用户信息
           "tools": {} //Tools, //方法库
         });
 

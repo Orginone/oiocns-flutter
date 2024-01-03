@@ -98,7 +98,7 @@ class RegisterController extends BaseController<RegisterState> {
     state.countDown.value = 60;
     _dynamicId = '';
 
-    var res = await settingCtrl.auth.dynamicCode(DynamicCodeModel.fromJson({
+    var res = await relationCtrl.auth.dynamicCode(DynamicCodeModel.fromJson({
       'account': state.phoneNumberController.text,
       'platName': resources.platName,
       'dynamicId': '',
@@ -137,7 +137,7 @@ class RegisterController extends BaseController<RegisterState> {
     if (!validate()) return;
 
     LoadingDialog.showLoading(context);
-    var res = await settingCtrl.auth.register(RegisterModel(
+    var res = await relationCtrl.auth.register(RegisterModel(
       account: state.phoneNumberController.text,
       dynamicId: _dynamicId,
       dynamicCode: state.dynamicCodeController.text,

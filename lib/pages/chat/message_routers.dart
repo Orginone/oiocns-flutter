@@ -68,15 +68,15 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
 
   initChatBreadNav() async {
     List<ChatBreadcrumbNav> companyItems = [];
-    for (var company in settingCtrl.user.companys) {
+    for (var company in relationCtrl.user.companys) {
       companyItems.add(
         createNav(
             company.id,
-            settingCtrl.chats.last,
+            relationCtrl.chats.last,
             [
               createNav(
                 "${company.id}0",
-                settingCtrl.chats.last,
+                relationCtrl.chats.last,
                 company.memberChats
                     .map((item) => createNav(item.sessionId, item, []))
                     .toList(),
@@ -93,18 +93,18 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
     }
     state.model.value = ChatBreadcrumbNav(children: [
       createNav(
-          settingCtrl.user.id,
-          settingCtrl.chats.last,
+          relationCtrl.user.id,
+          relationCtrl.chats.last,
           [
             createNav(
-              "${settingCtrl.user.id}0",
-              settingCtrl.chats.last,
-              settingCtrl.user.memberChats
+              "${relationCtrl.user.id}0",
+              relationCtrl.chats.last,
+              relationCtrl.user.memberChats
                   .map((chat) => createNav(chat.sessionId, chat, [],
                       spaceEnum: SpaceEnum.person))
                   .toList(),
             ),
-            ...settingCtrl.user.cohortChats
+            ...relationCtrl.user.cohortChats
                 .where((i) => i.isMyChat)
                 .map((item) => createNav(item.sessionId, item, [],
                     spaceEnum: SpaceEnum.departments))
@@ -112,7 +112,8 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
           ],
           type: ChatType.list),
       ...companyItems,
-    ], name: "沟通", target: settingCtrl.chats.last);
+    ], name: "沟通", target: relationCtrl.chats.last);
+    print('');
   }
 
   ChatBreadcrumbNav createNav(
@@ -155,10 +156,10 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
   void operation(PopupMenuKey key, ISession msg) {
     if (key == PopupMenuKey.setCommon) {
       //TODO:无此方法
-      // settingCtrl.chat.setMostUsed(msg);
+      // relationCtrl.chat.setMostUsed(msg);
     } else if (key == PopupMenuKey.removeCommon) {
       //TODO:无此方法
-      // settingCtrl.chat.removeMostUsed(msg);
+      // relationCtrl.chat.removeMostUsed(msg);
     }
   }
 }

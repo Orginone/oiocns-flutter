@@ -25,7 +25,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
           child: Stack(
             children: [
               CommonWidget.imageBackground(),
-              CommonWidget.logo(),
+              CommonWidget.logoLR(),
               switchLoginType(),
               loginForm(),
               // loginSubmit(),

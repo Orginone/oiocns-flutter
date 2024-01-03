@@ -5,7 +5,6 @@ import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/utils/index.dart';
-import 'package:orginone/utils/system/update_utils.dart';
 
 import 'state.dart';
 
@@ -24,8 +23,9 @@ class HomeController extends BaseController<HomeState>
         initialIndex: 2,
         animationDuration: Duration.zero);
     state.tabController.addListener(() {
-      if (settingCtrl.homeEnum.value.index != state.tabController.index) {
-        settingCtrl.homeEnum.value = HomeEnum.values[state.tabController.index];
+      if (relationCtrl.homeEnum.value.index != state.tabController.index) {
+        relationCtrl.homeEnum.value =
+            HomeEnum.values[state.tabController.index];
       }
     });
     if (Get.arguments ?? false) {
@@ -37,7 +37,7 @@ class HomeController extends BaseController<HomeState>
   void onReady() {
     // TODO: implement onReady
     super.onReady();
-    AppUpdate.instance.update();
+    // AppUpdate.instance.update();
   }
 
   @override
@@ -54,10 +54,10 @@ class HomeController extends BaseController<HomeState>
     }
   }
 
-  void jumpTab(HomeEnum setting) {
-    // state.tabController.animateTo(setting.index);
-    settingCtrl.homeEnum.value = setting;
-    state.tabController.index = setting.index;
+  void jumpTab(HomeEnum relation) {
+    // state.tabController.animateTo(relation.index);
+    relationCtrl.homeEnum.value = relation;
+    state.tabController.index = relation.index;
   }
 
   @override

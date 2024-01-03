@@ -13,7 +13,7 @@ class MessageChatInfoState extends BaseGetState {
     chat = Get.arguments['chat'];
     if (chat.share.typeName == TargetType.person.label) {
       var id = chat.chatdata.value.fullId.split('-').last;
-      isFriend = settingCtrl.user.members
+      isFriend = relationCtrl.user.members
               .firstWhereOrNull((element) => element.id == id) !=
           null;
     } else {

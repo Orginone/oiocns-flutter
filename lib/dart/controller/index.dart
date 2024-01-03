@@ -19,7 +19,7 @@ import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/dart/core/work/provider.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/pages/setting/dialog.dart';
+import 'package:orginone/pages/relation/widgets/dialog.dart';
 import 'package:orginone/utils/bus/event_bus_helper.dart';
 import 'package:orginone/utils/hive_utils.dart';
 import 'package:orginone/utils/index.dart';

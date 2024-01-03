@@ -74,19 +74,19 @@ class ListAdapter {
           chat.groupTags.remove('常用');
           chat.chatdata.value.isToping = false;
           await chat.cacheChatData();
-          settingCtrl.loadChats();
+          relationCtrl.loadChats();
           break;
         case PopupMenuKey.topping:
           chat.groupTags.add('常用');
           chat.chatdata.value.isToping = true;
           await chat.cacheChatData();
-          settingCtrl.loadChats();
+          relationCtrl.loadChats();
           break;
         case PopupMenuKey.delete:
           chat.chatdata.value.recently = false;
           await chat.cacheChatData();
-          settingCtrl.chats.remove(chat);
-          settingCtrl.loadChats();
+          relationCtrl.chats.remove(chat);
+          relationCtrl.loadChats();
           break;
       }
     };
@@ -97,14 +97,14 @@ class ListAdapter {
     content = chat.remark;
     // var lastMessage = chat.chatdata.value.lastMessage;
     // if (lastMessage != null) {
-    //   if (lastMessage.fromId != settingCtrl.user.metadata.id) {
+    //   if (lastMessage.fromId != relationCtrl.user.metadata.id) {
     //     if (chat.share.typeName != TargetType.person.label) {
     //     } else {
     //       content = "对方:";
     //     }
     //   }
     //   content = content + chat.remark;
-    //   // StringUtil.msgConversion(lastMessage, settingCtrl.user.userId);
+    //   // StringUtil.msgConversion(lastMessage, relationCtrl.user.userId);
     // }
 
     image = chat.share.avatar?.thumbnailUint8List ??

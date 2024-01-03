@@ -14,7 +14,7 @@ import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/systemfile.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/widgets/avatars.dart';
-import 'package:orginone/pages/setting/dialog.dart';
+import 'package:orginone/pages/relation/widgets/dialog.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/gy_scaffold.dart';
 import 'package:orginone/components/widgets/choose_item.dart';
@@ -201,8 +201,8 @@ class MessageSetting extends GetView<IndexController> {
         List<GeneralBreadcrumbNav> navs = [];
         IDirectory dir;
         if (chat.share.typeName == TargetType.person.label) {
-          dir = settingCtrl.user.directory;
-          navs = await _buildNav([dir], settingCtrl.user);
+          dir = relationCtrl.user.directory;
+          navs = await _buildNav([dir], relationCtrl.user);
         } else {
           dir = (chat as ITarget).directory;
           navs = await _buildNav([dir], chat.target);

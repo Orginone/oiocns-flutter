@@ -21,7 +21,7 @@ abstract class BaseSubmenuPage<T extends BaseSubmenuController,
         headWidget(),
         Obx(
           () => Offstage(
-            offstage: settingCtrl.isConnected.value,
+            offstage: relationCtrl.isConnected.value,
             child: Container(
               alignment: Alignment.center,
               color: XColors.bgErrorColor,

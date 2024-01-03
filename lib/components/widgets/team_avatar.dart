@@ -88,7 +88,7 @@ class _TeamAvatarState extends State<TeamAvatar> {
         }
         return cache != null ? avatar(cache!) : const SizedBox();
       },
-      future: Future(() => settingCtrl.user.findShareById(info.userId!)),
+      future: Future(() => relationCtrl.user.findShareById(info.userId!)),
     );
   }
 

@@ -62,7 +62,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
           child: Stack(
             children: [
               CommonWidget.imageBackground(),
-              CommonWidget.logo(),
+              CommonWidget.logoLR(),
               backToLogin(),
               SizedBox(
                 height: 680,

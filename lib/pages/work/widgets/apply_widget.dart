@@ -76,7 +76,7 @@ class ApplyWidget extends StatelessWidget {
     ShareIcon? icon;
     if (target?.icon == null) {
       icon = shareIcon ??
-          settingCtrl.provider.user?.findShareById(target?.id ?? '');
+          relationCtrl.provider.user.findShareById(target?.id ?? '');
       if (icon != null && icon.name.isEmpty) {
         icon.name = (shareIcon == null
                 ? target == null
@@ -127,7 +127,7 @@ class ApplyWidget extends StatelessWidget {
   }
 
   _buildApplyResultView() {
-    ShareIcon? record = settingCtrl.provider.user?.findShareById(
+    ShareIcon? record = relationCtrl.provider.user.findShareById(
         todo?.taskdata.records == null
             ? ''
             : todo?.taskdata.records?.first.createUser ?? '');

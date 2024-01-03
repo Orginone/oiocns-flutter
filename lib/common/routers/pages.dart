@@ -25,33 +25,35 @@ import 'package:orginone/pages/login/register/view.dart';
 import 'package:orginone/pages/login/verification_code/binding.dart';
 import 'package:orginone/pages/login/verification_code/view.dart';
 import 'package:orginone/pages/login/view.dart';
-import 'package:orginone/pages/setting/about/binding.dart';
-import 'package:orginone/pages/setting/about/view.dart';
-import 'package:orginone/pages/setting/add_members/binding.dart';
-import 'package:orginone/pages/setting/add_members/view.dart';
-import 'package:orginone/pages/setting/attribute_info/binding.dart';
-import 'package:orginone/pages/setting/attribute_info/view.dart';
-import 'package:orginone/pages/setting/classification_info/binding.dart';
-import 'package:orginone/pages/setting/classification_info/view.dart';
-import 'package:orginone/pages/setting/cohort_info/binding.dart';
-import 'package:orginone/pages/setting/cohort_info/view.dart';
-import 'package:orginone/pages/setting/company_info/binding.dart';
-import 'package:orginone/pages/setting/company_info/view.dart';
-import 'package:orginone/pages/setting/department_info/binding.dart';
-import 'package:orginone/pages/setting/department_info/view.dart';
-import 'package:orginone/pages/setting/dict_info/binding.dart';
-import 'package:orginone/pages/setting/home/binding.dart';
-import 'package:orginone/pages/setting/home/view.dart';
-import 'package:orginone/pages/setting/out_agency_info/binding.dart';
-import 'package:orginone/pages/setting/out_agency_info/view.dart';
-import 'package:orginone/pages/setting/permission_info/binding.dart';
-import 'package:orginone/pages/setting/permission_info/view.dart';
-import 'package:orginone/pages/setting/role_settings/binding.dart';
-import 'package:orginone/pages/setting/role_settings/view.dart';
-import 'package:orginone/pages/setting/station_info/binding.dart';
-import 'package:orginone/pages/setting/station_info/view.dart';
-import 'package:orginone/pages/setting/user_info/binding.dart';
-import 'package:orginone/pages/setting/user_info/view.dart';
+import 'package:orginone/pages/relation/about/about_info/binding.dart';
+import 'package:orginone/pages/relation/about/about_info/view.dart';
+import 'package:orginone/pages/relation/about/binding.dart';
+import 'package:orginone/pages/relation/about/view.dart';
+import 'package:orginone/pages/relation/add_members/binding.dart';
+import 'package:orginone/pages/relation/add_members/view.dart';
+import 'package:orginone/pages/relation/attribute_info/binding.dart';
+import 'package:orginone/pages/relation/attribute_info/view.dart';
+import 'package:orginone/pages/relation/classification_info/binding.dart';
+import 'package:orginone/pages/relation/classification_info/view.dart';
+import 'package:orginone/pages/relation/cohort_info/binding.dart';
+import 'package:orginone/pages/relation/cohort_info/view.dart';
+import 'package:orginone/pages/relation/company_info/binding.dart';
+import 'package:orginone/pages/relation/company_info/view.dart';
+import 'package:orginone/pages/relation/department_info/binding.dart';
+import 'package:orginone/pages/relation/department_info/view.dart';
+import 'package:orginone/pages/relation/dict_info/binding.dart';
+import 'package:orginone/pages/relation/home/binding.dart';
+import 'package:orginone/pages/relation/home/view.dart';
+import 'package:orginone/pages/relation/out_agency_info/binding.dart';
+import 'package:orginone/pages/relation/out_agency_info/view.dart';
+import 'package:orginone/pages/relation/permission_info/binding.dart';
+import 'package:orginone/pages/relation/permission_info/view.dart';
+import 'package:orginone/pages/relation/role_settings/binding.dart';
+import 'package:orginone/pages/relation/role_settings/view.dart';
+import 'package:orginone/pages/relation/station_info/binding.dart';
+import 'package:orginone/pages/relation/station_info/view.dart';
+import 'package:orginone/pages/relation/user_info/binding.dart';
+import 'package:orginone/pages/relation/user_info/view.dart';
 import 'package:orginone/pages/store/application_details/binding.dart';
 import 'package:orginone/pages/store/application_details/view.dart';
 import 'package:orginone/pages/store/bindings.dart';
@@ -79,15 +81,15 @@ import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/pages/home/home/binding.dart';
 import 'package:orginone/pages/home/home/view.dart';
 import 'package:orginone/pages/login/login_transition/view.dart';
-import 'package:orginone/pages/setting/bindings.dart';
-import 'package:orginone/pages/setting/dict_info/view.dart';
-import 'package:orginone/pages/setting/person/dynamic/bindings.dart';
-import 'package:orginone/pages/setting/person/dynamic/index.dart';
-import 'package:orginone/pages/setting/person/mark/bindings.dart';
-import 'package:orginone/pages/setting/person/mark/view.dart';
-import 'package:orginone/pages/setting/person/security/bindings.dart';
-import 'package:orginone/pages/setting/person/security/index.dart';
-import 'package:orginone/pages/setting/version_page.dart';
+import 'package:orginone/pages/relation/bindings.dart';
+import 'package:orginone/pages/relation/dict_info/view.dart';
+import 'package:orginone/pages/relation/person/dynamic/bindings.dart';
+import 'package:orginone/pages/relation/person/dynamic/index.dart';
+import 'package:orginone/pages/relation/person/mark/bindings.dart';
+import 'package:orginone/pages/relation/person/mark/view.dart';
+import 'package:orginone/pages/relation/person/security/bindings.dart';
+import 'package:orginone/pages/relation/person/security/index.dart';
+import 'package:orginone/pages/relation/version/version_page.dart';
 import 'package:orginone/pages/work/work_list/view.dart';
 import 'package:orginone/utils/file_utils.dart';
 
@@ -137,7 +139,7 @@ class RoutePages {
         PortalControllerBinding(),
         WorkBinding(),
         StoreBinding(),
-        SettingBinding(),
+        RelationBinding(),
         UpdateBinding(),
         WalletBinding(),
       ],
@@ -229,9 +231,9 @@ class RoutePages {
       binding: ThingDetailsBinding(),
     ),
     GetPage(
-      name: Routers.settingCenter,
-      page: () => SettingCenterPage(),
-      binding: SettingCenterBinding(),
+      name: Routers.relationCenter,
+      page: () => RelationCenterPage(),
+      binding: RelationCenterBinding(),
     ),
     GetPage(
       name: Routers.companyInfo,
@@ -305,13 +307,18 @@ class RoutePages {
     ),
     GetPage(
       name: Routers.userInfo,
-      page: () => UserInfoPage(),
+      page: () => const UserInfoPage(),
       binding: UserInfoBinding(),
     ),
     GetPage(
       name: Routers.about,
       page: () => const AboutPage(),
       binding: AboutBinding(),
+    ),
+    GetPage(
+      name: Routers.originone,
+      page: () => const VersionInfoPage(),
+      binding: VersionInfoBinding(),
     ),
     GetPage(
       name: Routers.storeTree,

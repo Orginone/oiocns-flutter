@@ -345,6 +345,6 @@ class StoreHub {
   } // 退出并重新登录
 
   Future<void> _errorNoAuthLogout() async {
-    settingCtrl.autoLogin();
+    relationCtrl.autoLogin();
   }
 }
