@@ -49,6 +49,7 @@ class Routers {
   static const String version = "/version";
   static const String userInfo = "/userInfo";
   static const String about = "/about";
+  static const String originone = "/originone";
 
   // 仓库相关
   // 资产管理

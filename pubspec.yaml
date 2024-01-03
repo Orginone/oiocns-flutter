@@ -47,6 +47,8 @@ dependencies:
   #过渡动画
   page_animation_transition: ^1.0.0
 
+  flutter_markdown: ^0.6.0
+
   #多线程
   worker_manager: ^5.0.0
 
@@ -188,6 +190,7 @@ flutter:
     - assets/images/
     - assets/images/work/
     - assets/icons/
+    - assets/markdown/originone.md
   fonts:
     - family: Orginone
       fonts:

@@ -1187,7 +1187,8 @@ class CommonWidget {
     );
   }
 
-  static Widget logo() {
+  // 左右结构图标
+  static Widget logoLR() {
     return Positioned(
       top: 100.00,
       left: 0,
@@ -1213,6 +1214,43 @@ class CommonWidget {
               style: TextStyle(
                   color: Color(0xFF15181D),
                   fontSize: 22.91,
+                  fontFamily: 'PingFang SC',
+                  fontWeight: FontWeight.w500,
+                  decoration: TextDecoration.none),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 上下结构图标
+  static Widget logoUD() {
+    return Positioned(
+      top: 100.00,
+      left: 0,
+      right: 0,
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              margin: const EdgeInsets.fromLTRB(0, 5, 5, 20),
+              width: 40,
+              height: 40,
+              clipBehavior: Clip.antiAlias,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage(AssetsImages.logoNoBg),
+                  fit: BoxFit.fill,
+                ),
+              ),
+            ),
+            const Text.rich(TextSpan(
+              text: '奥集能',
+              style: TextStyle(
+                  color: Color(0xFF15181D),
+                  fontSize: 23,
                   fontFamily: 'PingFang SC',
                   fontWeight: FontWeight.w500,
                   decoration: TextDecoration.none),

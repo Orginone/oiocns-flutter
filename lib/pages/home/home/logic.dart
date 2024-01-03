@@ -5,7 +5,6 @@ import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/utils/index.dart';
-import 'package:orginone/utils/system/update_utils.dart';
 
 import 'state.dart';
 
@@ -40,7 +39,7 @@ class HomeController extends BaseController<HomeState>
   void onReady() {
     // TODO: implement onReady
     super.onReady();
-    AppUpdate.instance.update();
+    // AppUpdate.instance.update();
   }
 
   @override

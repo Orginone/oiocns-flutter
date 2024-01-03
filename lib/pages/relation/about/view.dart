@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:orginone/common/routers/names.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/relation/about/logic.dart';
 import 'package:orginone/pages/relation/about/state.dart';
+import 'package:orginone/utils/system/update_utils.dart';
+import 'package:orginone/utils/toast_utils.dart';
 
 class AboutPage extends BaseGetView<AboutController, AboutState> {
   const AboutPage({super.key});
@@ -20,36 +24,116 @@ class AboutPage extends BaseGetView<AboutController, AboutState> {
           child: Stack(
             children: [
               CommonWidget.imageBackground(),
-              CommonWidget.logo(),
+              CommonWidget.logoUD(),
               backToHome(),
               Positioned(
                 top: 200,
                 left: 24,
                 right: 24,
                 child: Center(
-                    child: Column(
+                  child: Column(
+                    children: [
+                      const SizedBox(
+                        height: 30,
+                      ),
+                      Text(
+                        'Version ${AppUpdate.instance.getLocalVersion()}',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.grey.shade600,
+                          fontFamily: 'PingFang SC',
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
+              Positioned(
+                top: 300,
+                left: 24,
+                right: 24,
+                child: Column(
                   children: [
-                    Text(
-                      '关于奥集能',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.grey.shade800,
-                        fontFamily: 'PingFang SC',
+                    GestureDetector(
+                      onTap: () {
+                        Get.toNamed(Routers.originone);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            top: BorderSide(width: 0.5, color: Colors.grey),
+                            bottom: BorderSide(width: 0.5, color: Colors.grey),
+                          ),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '关于奥集能',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            Icon(Icons.chevron_right, color: Colors.black54)
+                          ],
+                        ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 30,
+                    GestureDetector(
+                      onTap: () {
+                        Get.toNamed(Routers.version);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(width: 0.5, color: Colors.grey),
+                          ),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '版本信息',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            Icon(Icons.chevron_right, color: Colors.black54)
+                          ],
+                        ),
+                      ),
                     ),
-                    Text(
-                      'v1.0.0',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.grey.shade600,
-                        fontFamily: 'PingFang SC',
+                    GestureDetector(
+                      onTap: () async {
+                        bool update = await AppUpdate.checkUpdate();
+                        if (!update) {
+                          ToastUtils.showMsg(msg: "已是最新版本");
+                        } else {
+                          AppUpdate.instance.update();
+                        }
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        alignment: Alignment.center,
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(width: 0.5, color: Colors.grey),
+                          ),
+                        ),
+                        child: const Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              '版本更新',
+                              style: TextStyle(fontSize: 16),
+                            ),
+                            Icon(Icons.chevron_right, color: Colors.black54)
+                          ],
+                        ),
                       ),
                     )
                   ],
-                )),
+                ),
               ),
               Positioned(
                 bottom: 100,

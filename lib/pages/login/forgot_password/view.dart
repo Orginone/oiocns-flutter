@@ -54,7 +54,7 @@ class ForgotPasswordPage
                   children: [
                     CommonWidget.imageBackground(),
                     backToLogin(),
-                    CommonWidget.logo(),
+                    CommonWidget.logoLR(),
                     Positioned(
                         top: MediaQuery.of(context).size.height * 0.3,
                         left: 30,
