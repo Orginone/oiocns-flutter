@@ -23,18 +23,18 @@ class MessageSubController extends BaseListController<MessageSubState> {
     super.onInit();
     // await initChatBreadNav();
     // loadSuccess();
-    key = settingCtrl.subscribe((key, args) async {
+    key = relationCtrl.subscribe((key, args) async {
       // await initChatBreadNav();
       loadSuccess();
     });
-    if (settingCtrl.provider.inited) {
+    if (relationCtrl.provider.inited) {
       loadSuccess();
     }
   }
 
   Future<void> initChatBreadNav() async {
     List<ChatBreadcrumbNav> companyItems = [];
-    for (var company in settingCtrl.user.companys) {
+    for (var company in relationCtrl.user.companys) {
       companyItems.add(
         createNav(
             company.id,
@@ -59,18 +59,18 @@ class MessageSubController extends BaseListController<MessageSubState> {
     }
     state.nav = ChatBreadcrumbNav(children: [
       createNav(
-          settingCtrl.user.id,
-          settingCtrl.user.session,
+          relationCtrl.user.id,
+          relationCtrl.user.session,
           [
             createNav(
-              "${settingCtrl.user.id}0",
-              settingCtrl.user.session,
-              settingCtrl.user.memberChats
+              "${relationCtrl.user.id}0",
+              relationCtrl.user.session,
+              relationCtrl.user.memberChats
                   .map((chat) => createNav(chat.sessionId, chat, [],
                       spaceEnum: SpaceEnum.person))
                   .toList(),
             ),
-            ...settingCtrl.user.cohortChats
+            ...relationCtrl.user.cohortChats
                 .where((i) => i.isMyChat)
                 .map((item) => createNav(item.sessionId, item, [],
                     spaceEnum: SpaceEnum.departments))
@@ -78,7 +78,7 @@ class MessageSubController extends BaseListController<MessageSubState> {
           ],
           type: ChatType.list),
       ...companyItems,
-    ], name: "沟通", target: settingCtrl.user.session);
+    ], name: "沟通", target: relationCtrl.user.session);
   }
 
   ChatBreadcrumbNav createNav(
@@ -127,7 +127,7 @@ class MessageSubController extends BaseListController<MessageSubState> {
   void onClose() {
     state.scrollController.dispose();
     super.onClose();
-    settingCtrl.unsubscribe(key);
+    relationCtrl.unsubscribe(key);
   }
 
   @override
@@ -135,13 +135,13 @@ class MessageSubController extends BaseListController<MessageSubState> {
     // if (type != 'all') {
     // if (type == "common") {
     //TODO:无此方法
-    // await settingCtrl.chat.loadMostUsed();
+    // await relationCtrl.chat.loadMostUsed();
     // }
     if (isRefresh) {
-      if (settingCtrl.chats.isEmpty ||
+      if (relationCtrl.chats.isEmpty ||
           !kernel.isOnline ||
-          !settingCtrl.provider.inited) {
-        await settingCtrl.loadChats(true);
+          !relationCtrl.provider.inited) {
+        await relationCtrl.loadChats(true);
       }
     }
     // }
@@ -149,6 +149,6 @@ class MessageSubController extends BaseListController<MessageSubState> {
 
   void onSelected(key, ISession chat) {
     //TODO:无此方法
-    // settingCtrl.chat.removeMostUsed(chat);
+    // relationCtrl.chat.removeMostUsed(chat);
   }
 }

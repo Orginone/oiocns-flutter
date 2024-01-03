@@ -15,16 +15,16 @@ initApp() async {
 
   SystemChannels.lifecycle.setMessageHandler((msg) async {
     if (msg == 'AppLifecycleState.resumed') {
-      if (settingCtrl.provider.user == null) {
-        await settingCtrl.autoLogin();
+      if (relationCtrl.provider.user == null) {
+        await relationCtrl.autoLogin();
       } else if (!kernel.isOnline) {
-        if (!settingCtrl.provider.inited) {
-          settingCtrl.autoLogin();
+        if (!relationCtrl.provider.inited) {
+          relationCtrl.autoLogin();
         } else {
           kernel.restart();
         }
       } else {
-        settingCtrl.isConnected.value = true;
+        relationCtrl.isConnected.value = true;
       }
     }
     return msg;
@@ -42,7 +42,7 @@ KernelApi get kernel => _kernel;
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 // final RouteObserver<PageRoute> routeObserver = RouteObserver();
 
-IndexController get settingCtrl => Get.find<IndexController>();
+IndexController get relationCtrl => Get.find<IndexController>();
 
 WalletController get walletCtrl => Get.find<WalletController>();
 
@@ -91,13 +91,13 @@ class MyApp extends StatelessWidget {
 
   // Future<void> automaticLogon() async {
   //   if (kernel.isOnline) {
-  //     await settingCtrl.autoLogin(account);
-  //   } else if (settingCtrl.canAutoLogin(account)) {
+  //     await relationCtrl.autoLogin(account);
+  //   } else if (relationCtrl.canAutoLogin(account)) {
   //     Future.delayed(const Duration(milliseconds: 100), () async {
   //       await automaticLogon();
   //     });
   //   } else {
-  //     settingCtrl.exitLogin(false);
+  //     relationCtrl.exitLogin(false);
   //   }
   // }
 }

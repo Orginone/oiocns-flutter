@@ -22,3 +22,4 @@ export './group/subgroup.dart';
 export './group/subgroup_config.dart';
 export './assets_config.dart';
 export './store/store_model.dart';
+export './enum/index.dart';

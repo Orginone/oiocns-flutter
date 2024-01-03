@@ -24,7 +24,7 @@ class WorkListController extends BaseListController<WorkListState> {
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
     switch (state.work.workEnum) {
       case WorkEnum.todo:
-        var todos = await settingCtrl.work.loadTodos();
+        var todos = await relationCtrl.work.loadTodos();
         state.dataList.value = todos
             .where((element) =>
                 element.metadata.belongId ==
@@ -32,12 +32,13 @@ class WorkListController extends BaseListController<WorkListState> {
             .toList();
         break;
       case WorkEnum.completed:
-        List<IWorkTask> res = await settingCtrl.work.loadContent(TaskType.done);
+        List<IWorkTask> res =
+            await relationCtrl.work.loadContent(TaskType.done);
         state.dataList.value = res;
         break;
       case WorkEnum.initiated:
         List<IWorkTask> res =
-            await settingCtrl.work.loadContent(TaskType.create);
+            await relationCtrl.work.loadContent(TaskType.create);
         state.dataList.value = res;
         break;
       default:

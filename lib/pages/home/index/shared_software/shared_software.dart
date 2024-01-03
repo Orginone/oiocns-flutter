@@ -61,7 +61,7 @@ class _SharedSoftwareState extends State<SharedSoftware> {
             action: const ImageWidget(AssetsImages.iconBlueArrow)),
         Obx(() {
           return Column(
-            children: settingCtrl.provider.myApps.map((element) {
+            children: relationCtrl.provider.myApps.map((element) {
               return ListItem(
                 adapter: ListAdapter.application(
                     element.keys.first, element.values.first),

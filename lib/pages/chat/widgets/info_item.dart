@@ -77,8 +77,8 @@ class DetailItemWidget extends GetView<IndexController> {
     ShareIcon? shareIcon;
     XTarget? target;
     if (isSelf) {
-      id = settingCtrl.user.id;
-      shareIcon = settingCtrl.user.share;
+      id = relationCtrl.user.id;
+      shareIcon = relationCtrl.user.share;
     } else {
       id = msg.metadata.fromId;
       if (chat.share.typeName == TargetType.person.label) {

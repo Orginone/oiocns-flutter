@@ -142,7 +142,7 @@ Map<String, dynamic> storeDefaultConfig = {
   ]
 };
 
-Map<String, dynamic> settingDefaultConfig = {
+Map<String, dynamic> relationDefaultConfig = {
   "type": "setting",
   "groups": [
     {

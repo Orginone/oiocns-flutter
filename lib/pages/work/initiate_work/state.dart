@@ -9,7 +9,7 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
   InitiateWorkState() {
     showSearchButton = false;
 
-    var joinedCompanies = settingCtrl.user.companys;
+    var joinedCompanies = relationCtrl.user.companys;
     //异常参数处理 解决类型不匹配问题
     var args = Get.arguments is Map ? Get.arguments['data'] : Get.arguments;
     model.value = args is WorkBreadcrumbNav ? args : null;
@@ -56,22 +56,22 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
                     name: WorkEnum.todo.label,
                     workEnum: WorkEnum.todo,
                     children: [],
-                    space: settingCtrl.user,
+                    space: relationCtrl.user,
                     image: WorkEnum.todo.imagePath),
                 WorkBreadcrumbNav(
                     name: WorkEnum.completed.label,
                     workEnum: WorkEnum.completed,
                     children: [],
-                    space: settingCtrl.user,
+                    space: relationCtrl.user,
                     image: WorkEnum.completed.imagePath),
                 WorkBreadcrumbNav(
                     name: WorkEnum.initiated.label,
                     workEnum: WorkEnum.initiated,
                     children: [],
-                    space: settingCtrl.user,
+                    space: relationCtrl.user,
                     image: WorkEnum.initiated.imagePath),
               ],
-              space: settingCtrl.user),
+              space: relationCtrl.user),
           WorkBreadcrumbNav(
             name: '组织',
             children: organization,

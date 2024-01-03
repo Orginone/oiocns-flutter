@@ -57,13 +57,13 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
     }
     ResultType result;
     if (state.privateKey.isTrue) {
-      result = await settingCtrl.auth.resetPassword(ResetPwdModel(
+      result = await relationCtrl.auth.resetPassword(ResetPwdModel(
         account: state.accountController.text,
         password: state.passWordController.text,
         privateKey: state.keyController.text,
       ));
     } else {
-      result = await settingCtrl.auth.resetPassword(ResetPwdModel(
+      result = await relationCtrl.auth.resetPassword(ResetPwdModel(
         account: state.accountController.text,
         password: state.passWordController.text,
         dynamicId: _dynamicId,
@@ -109,7 +109,7 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
     state.countDown.value = 60;
     _dynamicId = '';
 
-    var res = await settingCtrl.auth.dynamicCode(DynamicCodeModel.fromJson({
+    var res = await relationCtrl.auth.dynamicCode(DynamicCodeModel.fromJson({
       'account': state.accountController.text,
       'platName': '资产共享云',
       'dynamicId': '',

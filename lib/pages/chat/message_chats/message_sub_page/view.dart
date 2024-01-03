@@ -55,8 +55,8 @@ class MessageSubPage
       return GridView.builder(
         controller: state.scrollController,
         itemBuilder: (BuildContext context, int index) {
-          // var item = settingCtrl.chat.messageFrequentlyUsed[index];
-          var item = settingCtrl.chats[index];
+          // var item = relationCtrl.chat.messageFrequentlyUsed[index];
+          var item = relationCtrl.chats[index];
           var adapter = ListAdapter.chat(item);
           adapter.popupMenuItems = [
             PopupMenuItem(
@@ -69,8 +69,8 @@ class MessageSubPage
           };
           return GridItem(adapter: adapter);
         },
-        // itemCount: settingCtrl.chat.messageFrequentlyUsed.length,
-        itemCount: settingCtrl.chats.length,
+        // itemCount: relationCtrl.chat.messageFrequentlyUsed.length,
+        itemCount: relationCtrl.chats.length,
         gridDelegate:
             const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
       );
@@ -125,12 +125,12 @@ class MessageSubPage
 
   void showErr() {
     var time = Future.delayed(const Duration(milliseconds: 100), () {
-      if (settingCtrl.provider.errInfo != "") {
+      if (relationCtrl.provider.errInfo != "") {
         Navigator.of(context).push(PageRouteBuilder(
             opaque: false,
             pageBuilder: (BuildContext context, _, __) {
               return Dialog(
-                child: Text(settingCtrl.provider.errInfo),
+                child: Text(relationCtrl.provider.errInfo),
               );
             }));
       } else {

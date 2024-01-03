@@ -73,7 +73,7 @@ class ProcessInfoPage
             return Container();
           }
           Widget child = testMappingComponents[element.field.type ?? ""]!(
-              element.field, settingCtrl.user);
+              element.field, relationCtrl.user);
           return child;
         },
         future: controller.loadMainFieldData(element, info),

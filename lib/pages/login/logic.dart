@@ -78,7 +78,7 @@ class LoginController extends BaseController<LoginState> {
       ToastUtils.showMsg(msg: "账号或密码不能为空");
       return;
     }
-    var res = await settingCtrl.provider.login(
+    var res = await relationCtrl.provider.login(
       state.accountController.text,
       state.passWordController.text,
     );
@@ -106,7 +106,7 @@ class LoginController extends BaseController<LoginState> {
       return;
     }
 
-    var res = await settingCtrl.provider.verifyCodeLogin(
+    var res = await relationCtrl.provider.verifyCodeLogin(
         state.phoneNumberController.text,
         state.verifyController.text,
         state.dynamicId.value);
@@ -153,7 +153,7 @@ class LoginController extends BaseController<LoginState> {
     state.startCountDown.value = true;
     state.countDown.value = 60;
     state.dynamicId.value = '';
-    var res = await settingCtrl.auth.dynamicCode(DynamicCodeModel.fromJson({
+    var res = await relationCtrl.auth.dynamicCode(DynamicCodeModel.fromJson({
       'account': state.phoneNumberController.text,
       'platName': '资产共享云',
       'dynamicId': '',

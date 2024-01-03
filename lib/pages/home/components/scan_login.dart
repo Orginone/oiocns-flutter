@@ -74,7 +74,7 @@ class ScanLoginPage extends StatelessWidget {
   }
 
   Future<void> login() async {
-    model.ResultType res = await settingCtrl.provider.qrAuth(connectionId);
+    model.ResultType res = await relationCtrl.provider.qrAuth(connectionId);
     if (res.success) {
       ToastUtils.showMsg(msg: "登录成功");
       Get.back();

@@ -8,7 +8,7 @@ import 'package:orginone/main.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_page.dart';
 import 'package:orginone/pages/home/components/user_bar.dart';
 import 'package:orginone/pages/home/portal/view.dart';
-import 'package:orginone/pages/setting/view.dart';
+import 'package:orginone/pages/relation/view.dart';
 import 'package:orginone/pages/store/view.dart';
 import 'package:orginone/pages/work/view.dart';
 import 'package:orginone/utils/toast_utils.dart';
@@ -51,7 +51,7 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
                     KeepAliveWidget(child: WorkPage()),
                     KeepAliveWidget(child: PortalPage()),
                     KeepAliveWidget(child: StorePage()),
-                    KeepAliveWidget(child: SettingPage()),
+                    KeepAliveWidget(child: RelationPage()),
                   ],
                 ),
               ),
@@ -104,12 +104,12 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
     required String unPath,
   }) {
     return Obx(() {
-      var isSelected = settingCtrl.homeEnum.value == homeEnum;
+      var isSelected = relationCtrl.homeEnum.value == homeEnum;
       var mgsCount = 0;
       if (homeEnum == HomeEnum.work) {
-        mgsCount = settingCtrl.provider.work?.todos.length ?? 0;
+        mgsCount = relationCtrl.provider.work?.todos.length ?? 0;
       } else if (homeEnum == HomeEnum.chat) {
-        mgsCount = settingCtrl.noReadMgsCount.value;
+        mgsCount = relationCtrl.noReadMgsCount.value;
       }
       return BadgeTabWidget(
         imgPath: !isSelected ? unPath : path,

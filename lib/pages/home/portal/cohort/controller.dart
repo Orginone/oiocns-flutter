@@ -28,7 +28,7 @@ class CohortActivityController extends BaseListController<CohortActivityState> {
   void onClose() {
     state.scrollController.dispose();
     super.onClose();
-    settingCtrl.unsubscribe(key);
+    relationCtrl.unsubscribe(key);
   }
 
   @override

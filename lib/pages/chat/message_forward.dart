@@ -39,7 +39,7 @@ class _MessageForwardState extends State<MessageForward> {
     list = [];
     List<Hierarchy> companyItems = [];
 
-    // for (var company in settingCtrl.user.companys) {
+    // for (var company in relationCtrl.user.companys) {
     //   for (var chats in company.chats) {
     //     companyItems.add(
     //       Hierarchy(
@@ -47,7 +47,7 @@ class _MessageForwardState extends State<MessageForward> {
     //         msg: chats,
     //         children: [
     //           // Hierarchy(
-    //           //   msg: settingCtrl.chats.last,
+    //           //   msg: relationCtrl.chats.last,
     //           //   children: company.memberChats
     //           //       .map((item) => Hierarchy(msg: item, children: []))
     //           //       .toList(),
@@ -63,28 +63,28 @@ class _MessageForwardState extends State<MessageForward> {
     // }
     // list = [
     //   //   Hierarchy(
-    //   //       msg: settingCtrl.chats.last,
+    //   //       msg: relationCtrl.chats.last,
     //   //       children: [
     //   //         // Hierarchy(
-    //   //         //   msg: settingCtrl.chats.last,
-    //   //         //   children: settingCtrl.user.memberChats
+    //   //         //   msg: relationCtrl.chats.last,
+    //   //         //   children: relationCtrl.user.memberChats
     //   //         //       .map((chat) => Hierarchy(msg: chat, children: []))
     //   //         //       .toList(),
     //   //         // ),
-    //   //         ...settingCtrl.user.cohortChats
+    //   //         ...relationCtrl.user.cohortChats
     //   //             .where((i) => i.isMyChat)
     //   //             .map((item) => Hierarchy(msg: item, children: []))
     //   //             .toList(),
     //   //       ],
     //   //       type: ChatType.list),
     //   // Hierarchy(
-    //   //   msg: settingCtrl.user.chats.last,
+    //   //   msg: relationCtrl.user.chats.last,
     //   //   children: [],
     //   // ),
     //   ...companyItems,
     // ];
 
-    for (var element in settingCtrl.chats.value) {
+    for (var element in relationCtrl.chats.value) {
       list.add(Hierarchy(msg: element, children: []));
     }
   }

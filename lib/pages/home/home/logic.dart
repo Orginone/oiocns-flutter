@@ -25,8 +25,9 @@ class HomeController extends BaseController<HomeState>
         initialIndex: 2,
         animationDuration: Duration.zero);
     state.tabController.addListener(() {
-      if (settingCtrl.homeEnum.value.index != state.tabController.index) {
-        settingCtrl.homeEnum.value = HomeEnum.values[state.tabController.index];
+      if (relationCtrl.homeEnum.value.index != state.tabController.index) {
+        relationCtrl.homeEnum.value =
+            HomeEnum.values[state.tabController.index];
       }
     });
     if (Get.arguments ?? false) {
@@ -56,10 +57,10 @@ class HomeController extends BaseController<HomeState>
     }
   }
 
-  void jumpTab(HomeEnum setting) {
-    // state.tabController.animateTo(setting.index);
-    settingCtrl.homeEnum.value = setting;
-    state.tabController.index = setting.index;
+  void jumpTab(HomeEnum relation) {
+    // state.tabController.animateTo(relation.index);
+    relationCtrl.homeEnum.value = relation;
+    state.tabController.index = relation.index;
   }
 
   @override

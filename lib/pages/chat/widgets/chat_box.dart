@@ -746,11 +746,11 @@ class ChatBoxController with WidgetsBindingObserver {
   }
 
   void imagePicked(XFile pickedImage, ISession chat) async {
-    var docDir = settingCtrl.user.directory;
+    var docDir = relationCtrl.user.directory;
     String ext = pickedImage.name.split('.').last;
 
     var save = ChatMessageType.fromFileUpload(
-        settingCtrl.user.id,
+        relationCtrl.user.id,
         chat.sessionId,
         chat.sessionId,
         pickedImage.name,
@@ -780,18 +780,18 @@ class ChatBoxController with WidgetsBindingObserver {
   }
 
   Future<void> filePicked(PlatformFile file, ISession chat) async {
-    var docDir = settingCtrl.user.directory;
+    var docDir = relationCtrl.user.directory;
 
     String ext = file.name.split('.').last;
 
     // var file1 = File(file.path!);
     // var save = MsgSaveModel.fromFileUpload(
-    //     settingCtrl.user.id, file.name, file.path!, ext, file1.lengthSync());
+    //     relationCtrl.user.id, file.name, file.path!, ext, file1.lengthSync());
     // chat.messages.insert(0, Message(chat.chatdata.value.lastMessage!, chat));
 
     var file1 = File(file.path!);
     var save = ChatMessageType.fromFileUpload(
-        settingCtrl.user.id,
+        relationCtrl.user.id,
         chat.sessionId,
         chat.sessionId,
         file.name,

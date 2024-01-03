@@ -44,7 +44,7 @@ class Routers {
   static const String index = "/index";
 
   // 设置
-  static const String settingCenter = "/settingCenter";
+  static const String relationCenter = "/relationCenter";
   static const String companyInfo = "/companyInfo";
   static const String version = "/version";
   static const String userInfo = "/userInfo";

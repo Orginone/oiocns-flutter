@@ -44,9 +44,9 @@ class WorkSubController extends BaseListController<WorkSubState> {
       // }
       // if (event is ReceiveEvent) {
       //   if (event.eventName == 'RecvTask') {
-      //     state.dataList.value = settingCtrl.work.todos;
+      //     state.dataList.value = relationCtrl.work.todos;
 
-      //     // state.dataList.value = settingCtrl.work.todos;
+      //     // state.dataList.value = relationCtrl.work.todos;
       //   }
       // }
     });
@@ -116,25 +116,26 @@ class WorkSubController extends BaseListController<WorkSubState> {
 
   ///加载已办数据
   loadDones() async {
-    List<IWorkTask> tasks = await settingCtrl.work.loadContent(TaskType.done);
+    List<IWorkTask> tasks = await relationCtrl.work.loadContent(TaskType.done);
     state.list.value = tasks;
   }
 
   ///加载艾特
   loadAlt() async {
-    List<IWorkTask> tasks = await settingCtrl.work.loadContent(TaskType.altMe);
+    List<IWorkTask> tasks = await relationCtrl.work.loadContent(TaskType.altMe);
     state.list.value = tasks;
   }
 
   //加载发起
   loadCreate() async {
-    List<IWorkTask> tasks = await settingCtrl.work.loadContent(TaskType.create);
+    List<IWorkTask> tasks =
+        await relationCtrl.work.loadContent(TaskType.create);
 
     state.list.value = tasks;
   }
 
   loadTodos() async {
-    await settingCtrl.work.loadTodos(reload: true);
+    await relationCtrl.work.loadTodos(reload: true);
   }
 
   ///办事tab 下拉刷新
@@ -156,7 +157,7 @@ class WorkSubController extends BaseListController<WorkSubState> {
   }
 
   void initNav() async {
-    var joinedCompanies = settingCtrl.user.companys;
+    var joinedCompanies = relationCtrl.user.companys;
     List<WorkBreadcrumbNav> organization = [];
     for (var value in joinedCompanies) {
       organization.add(
@@ -199,39 +200,39 @@ class WorkSubController extends BaseListController<WorkSubState> {
     }
     state.nav = WorkBreadcrumbNav(children: [
       WorkBreadcrumbNav(
-          name: settingCtrl.user.metadata.name ?? "",
+          name: relationCtrl.user.metadata.name ?? "",
           children: [
             WorkBreadcrumbNav(
                 name: WorkEnum.todo.label,
                 workEnum: WorkEnum.todo,
                 children: [],
-                space: settingCtrl.user,
+                space: relationCtrl.user,
                 image: WorkEnum.todo.imagePath),
             WorkBreadcrumbNav(
                 name: WorkEnum.completed.label,
                 workEnum: WorkEnum.completed,
                 children: [],
-                space: settingCtrl.user,
+                space: relationCtrl.user,
                 image: WorkEnum.completed.imagePath),
             WorkBreadcrumbNav(
                 name: WorkEnum.initiated.label,
                 workEnum: WorkEnum.initiated,
                 children: [],
-                space: settingCtrl.user,
+                space: relationCtrl.user,
                 image: WorkEnum.initiated.imagePath),
             WorkBreadcrumbNav(
                 name: WorkEnum.initiationWork.label,
                 workEnum: WorkEnum.initiationWork,
                 children: [],
-                space: settingCtrl.user,
+                space: relationCtrl.user,
                 image: WorkEnum.initiationWork.imagePath,
                 onNext: (nav) async {
                   nav.children =
-                      await buildApplication(settingCtrl.user.directory);
+                      await buildApplication(relationCtrl.user.directory);
                 }),
           ],
-          space: settingCtrl.user,
-          image: settingCtrl.user.metadata.avatarThumbnail()),
+          space: relationCtrl.user,
+          image: relationCtrl.user.metadata.avatarThumbnail()),
       ...organization,
     ]);
   }
@@ -306,6 +307,6 @@ class WorkSubController extends BaseListController<WorkSubState> {
 
   void onSelected(key, WorkFrequentlyUsed app) {
     //TODO:没有这个removeMostUsed 用到时候要研究一下逻辑
-    // settingCtrl.work.removeMostUsed(app.define);
+    // relationCtrl.work.removeMostUsed(app.define);
   }
 }

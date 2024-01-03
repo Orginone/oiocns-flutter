@@ -23,17 +23,14 @@ import 'store_tree/state.dart';
 
 ///加载数据的标签数据
 SubGroup loadDataTabs() {
-  IPerson? user = settingCtrl.provider.user;
-  List<ICompany> companys = settingCtrl.user.companys;
+  IPerson? user = relationCtrl.provider.user;
+  List<ICompany> companys = relationCtrl.user.companys;
 
   List<Group> group = [];
   Set<String> distinctValues = <String>{};
   //添加全部标签
   group.add(Group(label: '全部', value: '全部', allowEdit: true));
-  if (user != null) {
-    group.add(
-        Group(label: user.typeName, value: user.typeName, allowEdit: true));
-  }
+  group.add(Group(label: user.typeName, value: user.typeName, allowEdit: true));
 
   for (var e in companys) {
     if (!distinctValues.contains(e.typeName)) {

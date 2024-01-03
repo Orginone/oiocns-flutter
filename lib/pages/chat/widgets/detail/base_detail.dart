@@ -43,7 +43,7 @@ abstract class BaseDetail extends StatelessWidget {
     if (isReply) {
       ShareIcon? shareIcon;
       if (isSelf) {
-        shareIcon = settingCtrl.user.share;
+        shareIcon = relationCtrl.user.share;
       } else {
         if (chat!.share.typeName == TargetType.person.label) {
           shareIcon = chat!.share;

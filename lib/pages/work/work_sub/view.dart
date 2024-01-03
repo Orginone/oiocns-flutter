@@ -48,7 +48,7 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
 
   Widget todoWidget() {
     return Obx(() {
-      if (settingCtrl.work.todos.isEmpty) {
+      if (relationCtrl.work.todos.isEmpty) {
         return emptyView();
       }
 
@@ -56,10 +56,10 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
         shrinkWrap: true,
         controller: state.scrollController,
         itemBuilder: (context, index) {
-          var work = settingCtrl.work.todos[index];
+          var work = relationCtrl.work.todos[index];
           return ListItem(adapter: ListAdapter.work(work));
         },
-        itemCount: settingCtrl.work.todos.length,
+        itemCount: relationCtrl.work.todos.length,
       );
     });
   }
@@ -84,7 +84,7 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
   //       controller: state.scrollController,
   //       itemBuilder: (context, index) {
   //         //TODO:workFrequentlyUsed 方法删除  暂时用一个  后面再看逻辑
-  //         var app = settingCtrl.work.tasks[index];
+  //         var app = relationCtrl.work.tasks[index];
 
   //         var adapter = ListAdapter(
   //           title: '222', // app.define.metadata.name ?? "",
@@ -104,7 +104,7 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
 
   //         return GridItem(adapter: adapter);
   //       },
-  //       itemCount: settingCtrl.work.todos.length,
+  //       itemCount: relationCtrl.work.todos.length,
   //     );
   //   });
   // }
@@ -115,13 +115,13 @@ class WorkSubPage extends BaseGetListPageView<WorkSubController, WorkSubState> {
   //       shrinkWrap: true,
   //       controller: state.scrollController,
   //       itemBuilder: (context, index) {
-  //         var app = settingCtrl.provider.myApps[index];
+  //         var app = relationCtrl.provider.myApps[index];
 
   //         return GridItem(
   //           adapter: ListAdapter.application(app.keys.first, app.values.first),
   //         );
   //       },
-  //       itemCount: settingCtrl.provider.myApps.length,
+  //       itemCount: relationCtrl.provider.myApps.length,
   //       gridDelegate:
   //           const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
   //     );

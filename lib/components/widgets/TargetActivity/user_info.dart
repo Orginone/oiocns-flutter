@@ -8,7 +8,7 @@ class UserInfo extends StatelessWidget {
   late Rx<XEntity> userEntity;
 
   UserInfo({required String userId, super.key}) {
-    settingCtrl.user
+    relationCtrl.user
         .findEntityAsync(userId)
         .then((value) => userEntity.value = value!);
   }
