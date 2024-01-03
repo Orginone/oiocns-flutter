@@ -15,30 +15,29 @@ class StoreTreePage extends BaseBreadcrumbNavMultiplexPage<StoreTreeController,
 
   @override
   Widget body() {
-    return SingleChildScrollView(
-      child: Obx(() {
-        LogUtil.d('StoreTreePage');
-        var children = state.model.value!.children
-            .where((element) => element.name.contains(state.keyword.value))
-            .toList();
-        return Column(
-          children: children.map((e) {
+    return Obx(() {
+      LogUtil.d('StoreTreePage');
+      var children = state.model.value!.children
+          .where((element) => element.name.contains(state.keyword.value))
+          .toList();
+      return ListView.builder(
+          itemCount: children.length,
+          itemBuilder: (BuildContext context, int index) {
+            var item = children[index];
             return StoreNavItem(
-              item: e,
+              item: item,
               onTap: () {
-                controller.jumpDetails(e);
+                controller.jumpDetails(item);
               },
               onNext: () {
-                controller.onNext(e);
+                controller.onNext(item);
               },
               onSelected: (key, item) {
                 controller.operation(key, item);
               },
             );
-          }).toList(),
-        );
-      }),
-    );
+          });
+    });
   }
 
   @override

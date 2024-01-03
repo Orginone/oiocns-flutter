@@ -94,18 +94,15 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
     Map<String, String> headers = {
       "Authorization": kernel.accessToken,
     };
-    LogUtil.d('BaseBreadcrumbNavItem');
+    LogUtil.d('_imageWidget');
     LogUtil.d(link);
     Widget child = ImageWidget(
       link,
       httpHeaders: headers,
-      fit: BoxFit.fitWidth,
+      fit: BoxFit.fill,
     );
 
     return child;
-    return ImageWidget(
-      item.image,
-    );
   }
 
   Widget title() {

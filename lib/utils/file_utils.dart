@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:photo_manager/photo_manager.dart';
 
-class ImageUtils {
+class FileUtils {
   static bool isAssetsImg(String imageName) {
     return imageName.startsWith("assets");
   }
@@ -53,6 +53,7 @@ class ImageUtils {
       extension.contains("png") ||
       extension.contains("jpg") ||
       extension.contains("jpeg") ||
+      extension.contains("jfif") ||
       extension.contains("webp");
 
   static bool isWord(String extension) =>

@@ -5,9 +5,9 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/utils/image_utils.dart';
 import 'package:orginone/components/widgets/gy_scaffold.dart';
 import 'package:orginone/components/widgets/keep_alive_widget.dart';
+import 'package:orginone/utils/index.dart';
 import 'package:photo_manager/photo_manager.dart';
 import 'controller.dart';
 import 'state.dart';
@@ -41,9 +41,9 @@ class PhotoViewPage extends BaseGetView<PhotoViewController, PhotoViewState> {
                 if (image is AssetEntity) {
                   provider = AssetEntityImageProvider(image);
                 } else {
-                  if (ImageUtils.isAssetsImg(image)) {
+                  if (FileUtils.isAssetsImg(image)) {
                     provider = AssetImage(image);
-                  } else if (ImageUtils.isNetworkImg(image)) {
+                  } else if (FileUtils.isNetworkImg(image)) {
                     provider = CachedNetworkImageProvider(image);
                   } else {
                     provider = ExtendedResizeImage(

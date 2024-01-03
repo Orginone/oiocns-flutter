@@ -9,6 +9,7 @@ import 'package:orginone/dart/core/thing/directory.dart';
 
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/utils/index.dart';
 
 /// 系统文件接口
 abstract class ISysFileInfo extends IFileInfo<XEntity> {
@@ -92,7 +93,7 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
   String getThumbnail() {
     String img = AssetsImages.otherIcon;
     String ext = filedata.extension?.toLowerCase() ?? "";
-    if (ext == '.jpg' || ext == '.jpeg' || ext == '.png' || ext == '.webp') {
+    if (FileUtils.isImage(ext)) {
       return filedata.thumbnail ?? '${Constant.host}${filedata.shareLink}';
     } else {
       switch (ext) {

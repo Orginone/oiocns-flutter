@@ -103,7 +103,7 @@ class AppUpdate {
 
     return UpdateEntity(
       hasUpdate: _updateModel?.update,
-      isForce: _updateModel?.update,
+      isForce: _updateModel?.force,
       versionCode: int.parse(_packageInfo!.buildNumber),
       versionName: _updateModel?.version,
       updateContent: _updateModel?.content,

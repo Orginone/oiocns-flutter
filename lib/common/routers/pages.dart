@@ -89,7 +89,7 @@ import 'package:orginone/pages/setting/person/security/bindings.dart';
 import 'package:orginone/pages/setting/person/security/index.dart';
 import 'package:orginone/pages/setting/version_page.dart';
 import 'package:orginone/pages/work/work_list/view.dart';
-import 'package:orginone/utils/image_utils.dart';
+import 'package:orginone/utils/file_utils.dart';
 
 class RoutePages {
   static final RouteObserver<Route> observer = RouteObservers();
@@ -458,17 +458,17 @@ class RoutePages {
     //       type: StoreEnum.file.label,
     //       file: FileItemModel.fromJson(file.toJson())));
     // }
-    if (ImageUtils.isPdf(extension)) {
+    if (FileUtils.isPdf(extension)) {
       Get.toNamed(Routers.pdfReader, arguments: {"file": file});
-    } else if (ImageUtils.isImage(extension)) {
+    } else if (FileUtils.isImage(extension)) {
       Get.toNamed(Routers.photoView, arguments: {
         "images": file.shareLink != null && file.shareLink!.contains('http')
             ? [file.shareLink!]
             : ['${Constant.host}${file.shareLink}']
       });
-    } else if (ImageUtils.isWord(extension)) {
+    } else if (FileUtils.isWord(extension)) {
       Get.toNamed(Routers.fileReader, arguments: {'file': file});
-    } else if (ImageUtils.isVideo(extension)) {
+    } else if (FileUtils.isVideo(extension)) {
       Get.toNamed(Routers.videoPlay, arguments: {'file': file});
     } else {
       Get.toNamed(Routers.messageFile, arguments: {"file": file});

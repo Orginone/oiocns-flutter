@@ -17,7 +17,7 @@ export 'bottom_sheet.dart';
 export 'convert.dart';
 export 'privilege.dart';
 export 'picker_image.dart';
-export 'image_utils.dart';
+export 'file_utils.dart';
 export 'object_utils.dart';
 export 'system/index.dart';
 export 'text_utils.dart';
