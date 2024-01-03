@@ -1,8 +1,0 @@
-framework module "Walletapi" {
-	header "ref.h"
-    header "Walletapi.objc.h"
-    header "Universe.objc.h"
-    header "Walletapi.h"
-
-    export *
-}
