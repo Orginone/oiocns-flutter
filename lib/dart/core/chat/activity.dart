@@ -57,7 +57,7 @@ class ActivityMessage extends Emitter implements IActivityMessage {
 
   @override
   int get createTime {
-    return DateUtil.getDateTime(metadata.createTime!)!.microsecondsSinceEpoch;
+    return DateUtil.getDateTime(metadata.createTime!)!.millisecondsSinceEpoch;
   }
 
   @override
@@ -308,7 +308,7 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
   late bool allPublish;
   List<String> subscribeIds = [];
   late List<IActivity> subActivitys;
-  int lastTime = DateTime.now().microsecondsSinceEpoch;
+  int lastTime = DateTime.now().millisecondsSinceEpoch;
   GroupActivity(IPerson _user, List<IActivity> _activitys, bool userPublish)
       : super(
           XTarget.fromJson({

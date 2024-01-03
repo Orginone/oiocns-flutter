@@ -246,8 +246,8 @@ class Message implements IMessage {
   bool get allowRecall {
     return (msgType != MessageType.recall.label &&
         metadata.fromId == user.id &&
-        DateTime.now().microsecondsSinceEpoch -
-                DateTime.parse(createTime).microsecondsSinceEpoch <
+        DateTime.now().millisecondsSinceEpoch -
+                DateTime.parse(createTime).millisecondsSinceEpoch <
             2 * 60 * 1000);
   }
 

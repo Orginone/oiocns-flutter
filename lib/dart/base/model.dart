@@ -3049,8 +3049,8 @@ class MsgChatData {
     noReadCount = json['noReadCount'];
     lastMsgTime = json['lastMsgTime'];
     // TODO 临时处理解决消息排序不准确问题
-    if (lastMsgTime < 9999999999999) {
-      lastMsgTime = int.parse('${lastMsgTime}000');
+    if (lastMsgTime > 9999999999999) {
+      lastMsgTime = int.parse('$lastMsgTime'.substring(0, 13));
     }
     lastMessage = json['lastMessage'] != null
         ? ChatMessageType.fromJson(json['lastMessage'])

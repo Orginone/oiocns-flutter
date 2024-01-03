@@ -132,7 +132,10 @@ class ActivityMessageWidget extends StatelessWidget {
           ));
         } else {
           return HtmlWidget(metadata!.content,
-              textStyle: TextStyle(fontSize: 24.sp));
+              textStyle: TextStyle(fontSize: 24.sp), onTapUrl: (url) {
+            Get.toNamed(Routers.webView, arguments: {'url': url});
+            return true;
+          });
         }
     }
     return null;

@@ -34,7 +34,7 @@ class DateTimeUtils {
   /// get Now Date Milliseconds.
   /// 获取当前毫秒值
   static int getNowDateMs() {
-    return DateTime.now().microsecondsSinceEpoch;
+    return DateTime.now().millisecondsSinceEpoch;
   }
 
   /// get Now Date Str.(yyyy-MM-dd HH:mm:ss)

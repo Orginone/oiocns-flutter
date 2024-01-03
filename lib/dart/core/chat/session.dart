@@ -304,7 +304,7 @@ class Session extends Entity<XEntity> implements ISession {
       }
       if (chatdata.value.lastMsgTime == nullTime) {
         chatdata.value.lastMsgTime =
-            DateTime.parse(data[0].createTime!).microsecondsSinceEpoch;
+            DateTime.parse(data[0].createTime!).millisecondsSinceEpoch;
       }
       return data.length;
     }
@@ -428,7 +428,7 @@ class Session extends Entity<XEntity> implements ISession {
             if (index > -1) {
               messages.removeAt(index);
             }
-            chatdata.value.lastMsgTime = DateTime.now().microsecondsSinceEpoch;
+            chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
             messageNotify?.call(messages);
             return true;
           }
@@ -444,7 +444,7 @@ class Session extends Entity<XEntity> implements ISession {
       var success = await coll.deleteMatch(sessionMatch);
       if (success) {
         messages.clear();
-        chatdata.value.lastMsgTime = DateTime.now().microsecondsSinceEpoch;
+        chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
         messageNotify?.call(messages);
         sendMessage(MessageType.notify, '${target.user?.name} 清空了消息', []);
         return true;
@@ -463,7 +463,7 @@ class Session extends Entity<XEntity> implements ISession {
         '>>>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
     if (operate == 'insert') {
       messages.insert(0, imsg);
-      chatdata.value.lastMsgTime = DateTime.now().microsecondsSinceEpoch;
+      chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
       chatdata.value.lastMessage = data;
       if (messageNotify == null) {
         chatdata.value.noReadCount += imsg.isMySend ? 0 : 1;

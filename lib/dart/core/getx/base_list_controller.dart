@@ -58,8 +58,10 @@ abstract class BaseListController<S extends BaseGetListState>
 
   @override
   void onClose() {
-    state.refreshController.dispose();
-    super.onClose();
+    try {
+      state.refreshController.dispose();
+      super.onClose();
+    } catch (e) {}
   }
 
   @override
@@ -73,7 +75,6 @@ abstract class BaseListController<S extends BaseGetListState>
   void onReceivedEvent(event) {}
 
   updateLoadStatus(LoadStatusX status) {
-    debugPrint("---->1$status");
     if (status != state.loadStatus.value) {
       state.loadStatus.value = status;
     }
