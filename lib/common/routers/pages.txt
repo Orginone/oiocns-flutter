@@ -1,0 +1,5 @@
+
+      GetPage(
+        name: RouteNames.errorPage,
+        page: () => const ErrorPagePage(),
+      ),
