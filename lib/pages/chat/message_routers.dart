@@ -113,7 +113,6 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
           type: ChatType.list),
       ...companyItems,
     ], name: "沟通", target: settingCtrl.chats.last);
-    print('');
   }
 
   ChatBreadcrumbNav createNav(

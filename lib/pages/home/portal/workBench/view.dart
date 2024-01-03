@@ -147,7 +147,6 @@ class WorkBenchPage
               renderDataItem(
                   "同事(个)", 'company_friend', state.colleagueNum, HomeEnum.chat,
                   () {
-                print('同事(个)');
                 messageChatsController.setTabIndex('company_friend');
               }),
               renderDataItem(

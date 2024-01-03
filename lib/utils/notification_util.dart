@@ -74,8 +74,8 @@ Future<void> onStart(service) async {
   DartPluginRegistrant.ensureInitialized();
 
   if (Platform.isAndroid) {
-    Timer.periodic(const Duration(seconds: 3), (timer) async {
-      print('奥集能前台进程运行中');
-    });
+    // Timer.periodic(const Duration(seconds: 3), (timer) async {
+    //   print('奥集能前台进程运行中');
+    // });
   }
 }

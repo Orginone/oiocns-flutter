@@ -9,6 +9,7 @@ import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
+import 'package:orginone/utils/log/log_util.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
 import 'package:orginone/components/widgets/gy_scaffold.dart';
@@ -129,13 +130,12 @@ class MessageFileController extends BaseController<MessageFileState> {
           state.downloadStatus.refresh();
         }
       } catch (e) {
-        print(e);
+        LogUtil.e(e);
       }
     });
   }
 
   void downloadFile() async {
-    print('>>>===${Constant.host}${state.fileShare.shareLink}');
     state.task = DownloadTask(
         url: '${Constant.host}${state.fileShare.shareLink}',
         baseDirectory: BaseDirectory.applicationSupport,

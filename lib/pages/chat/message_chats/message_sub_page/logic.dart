@@ -107,7 +107,6 @@ class MessageSubController extends BaseListController<MessageSubState> {
 
   void jumpDetails(ChatBreadcrumbNav chat) {
     if (chat.type == ChatType.chat) {
-      print('>>>=====onMessage3');
       chat.target.onMessage((messages) {});
       Get.toNamed(Routers.messageChat, arguments: chat.target);
     } else {

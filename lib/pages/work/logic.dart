@@ -17,7 +17,6 @@ class WorkController extends BaseSubmenuController<WorkState> {
   @override
   void initSubGroup() {
     super.initSubGroup();
-    print('>>>=======Work start, tabIndex ==>>${state.tabIndex}');
     var work = HiveUtils.getSubGroup('work');
     if (work == null) {
       work = SubGroup.fromJson(workDefaultConfig);
@@ -30,7 +29,6 @@ class WorkController extends BaseSubmenuController<WorkState> {
         length: work.groups?.length ?? 0,
         vsync: this,
         animationDuration: Duration.zero);
-    print('>>>=======Work2');
   }
 
   @override

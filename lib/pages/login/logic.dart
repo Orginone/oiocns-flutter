@@ -50,8 +50,6 @@ class LoginController extends BaseController<LoginState> {
               state.verifyController.text.length == 6)
           .obs;
     }
-    print(
-        'account:${state.accountController.text},pwd:${state.passWordController.text.isNotEmpty},allowCommit:${state.allowCommit.value}');
   }
 
   void showPassWord() {
@@ -160,8 +158,6 @@ class LoginController extends BaseController<LoginState> {
     }));
 
     if (res.success && res.data != null) {
-      print(
-          "获取验证码信息：${res.data!.dynamicId},${res.data!.account},${res.data!.platName}");
       state.dynamicId.value = res.data!.dynamicId;
       state.sendVerify = true.obs;
     }

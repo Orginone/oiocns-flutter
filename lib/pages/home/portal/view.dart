@@ -18,20 +18,16 @@ class PortalPage extends BaseSubmenuPage<PortalController, PortalState> {
       case "workbench":
         return KeepAliveWidget(child: WorkBenchPage(type, label));
       case "activity":
-        if (null != settingCtrl.user) {
-          var cohortActivity = GroupActivity(
-            settingCtrl.user,
-            settingCtrl.chats
-                .where((i) => i.isMyChat && i.isGroup)
-                .map((i) => i.activity)
-                .toList(),
-            false,
-          );
-          return KeepAliveWidget(
-              child: CohortActivityPage(type, label, cohortActivity));
-        } else {
-          return KeepAliveWidget(child: Container());
-        }
+        var cohortActivity = GroupActivity(
+          settingCtrl.user,
+          settingCtrl.chats
+              .where((i) => i.isMyChat && i.isGroup)
+              .map((i) => i.activity)
+              .toList(),
+          false,
+        );
+        return KeepAliveWidget(
+            child: CohortActivityPage(type, label, cohortActivity));
       case "circle":
         if (null != settingCtrl.user) {
           var friendsActivity = GroupActivity(

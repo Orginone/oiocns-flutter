@@ -288,7 +288,6 @@ class Session extends Entity<XEntity> implements ISession {
 
   @override
   Future<int> moreMessage() async {
-    print('>>>=======moreMessage ${messages.length}');
     var data = await coll.loadSpace({
       "take": 30,
       "skip": messages.length,
@@ -307,7 +306,6 @@ class Session extends Entity<XEntity> implements ISession {
         chatdata.value.lastMsgTime =
             DateTime.parse(data[0].createTime!).microsecondsSinceEpoch;
       }
-      print('>>>=======moreMessage ${messages.length}');
       return data.length;
     }
     return 0;
@@ -363,18 +361,12 @@ class Session extends Entity<XEntity> implements ISession {
         '>>>KEY:$key ID:$id hashCode:$hashCode belong:$belongId target:${target.id} name:$name');
     print(
         '>>>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
-    // var createTime = DateTime.now().format(format: 'yyyy-MM-dd HH:mm:ss.SSS');
     var data = await coll.insert(
         ChatMessageType.fromJson({
           "typeName": type.label,
           "fromId": userId,
           "toId": sessionId,
           "comments": [],
-          // "createTime": createTime,
-          // "updateTime": createTime,
-          // "createUser": userId,
-          // "updateUser": userId,
-          // "status": 1,
           "content": StringGzip.deflate(
             '[obj]${json.encode({
                   "body": text,

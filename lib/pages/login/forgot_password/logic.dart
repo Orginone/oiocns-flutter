@@ -22,8 +22,6 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
   }
 
   void submit() async {
-    print(
-        'privateKey=======${state.privateKey.value}&&&&&&&&&phoneNumber=======${state.phoneNumber.value}');
     if (state.accountController.text.isEmpty) {
       ToastUtils.showMsg(msg: "请输入用户名");
       return;
@@ -72,7 +70,6 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
     }
 
     if (result.success) {
-      print(result.data);
       ToastUtils.showMsg(msg: '重置密码成功，请重新登录');
       Get.back();
     } else {
@@ -116,8 +113,6 @@ class ForgotPasswordController extends BaseController<ForgotPasswordState> {
     }));
     if (res.success && res.data != null) {
       _dynamicId = res.data!.dynamicId;
-      print(
-          "获取验证码信息：${res.data!.dynamicId},${res.data!.account},${res.data!.platName}");
       state.sendVerify = true.obs;
       startCountDown();
     }

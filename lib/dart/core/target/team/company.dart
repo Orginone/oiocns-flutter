@@ -1,4 +1,3 @@
-import 'package:common_utils/common_utils.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
@@ -299,8 +298,6 @@ class Company extends Belong implements ICompany {
       loadSuperAuth(reload: reload),
       directory.loadDirectoryResource(reload: reload),
     ]);
-    print(
-        '>>>===${groups.length}S ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
     // for (var group in groups) {
     //   await group.deepLoad(
     //     reload: reload,
@@ -321,14 +318,11 @@ class Company extends Belong implements ICompany {
     //     reload: reload,
     //   );
     // }
-    // print(
-    //     '>>>===${groups.length}E ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
     await Future.wait(groups.map((e) => e.deepLoad(reload: reload)));
     await Future.wait(departments.map((e) => e.deepLoad(reload: reload)));
     await Future.wait(stations.map((e) => e.deepLoad(reload: reload)));
     await Future.wait(cohorts.map((e) => e.deepLoad(reload: reload)));
-    print(
-        '>>>===${groups.length}E ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
+
     superAuth?.deepLoad(reload: reload);
   }
 

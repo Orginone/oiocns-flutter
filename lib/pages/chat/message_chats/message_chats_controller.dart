@@ -13,15 +13,12 @@ class MessageChatsController extends BaseSubmenuController<MessageChatsState> {
   void onInit() {
     // TODO: implement onInit
     super.onInit();
-    print('>>>=======ChatInit1');
-    print('>>>=======ChatInit2');
   }
 
   @override
   void initSubGroup() {
     // TODO: implement initSubGroup
     super.initSubGroup();
-    print('>>>=======ChatInitSub1');
     var chat = HiveUtils.getSubGroup('chat');
     if (chat == null) {
       chat = SubGroup.fromJson(chatDefaultConfig);
@@ -33,7 +30,6 @@ class MessageChatsController extends BaseSubmenuController<MessageChatsState> {
         length: chat.groups!.length,
         vsync: this,
         animationDuration: Duration.zero);
-    print('>>>=======ChatInitSub2');
   }
 
   @override

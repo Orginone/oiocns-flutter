@@ -121,9 +121,6 @@ class MessageRecordsController extends BaseController<MessageRecordsState> {
 
         bool isSearchText = p0.msgType == MessageType.text.label &&
             text.toLowerCase().contains(str.toLowerCase());
-        if (isSearchText) {
-          print(text);
-        }
 
         return isSearchText;
       }).toList();

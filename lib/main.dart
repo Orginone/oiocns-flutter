@@ -15,7 +15,7 @@ initApp() async {
 
   SystemChannels.lifecycle.setMessageHandler((msg) async {
     if (msg == 'AppLifecycleState.resumed') {
-      if (settingCtrl.provider.user == null) {
+      if (kernel.user == null) {
         await settingCtrl.autoLogin();
       } else if (!kernel.isOnline) {
         if (!settingCtrl.provider.inited) {

@@ -1279,7 +1279,6 @@ class CommonWidget {
           btnName.value = '$name($count)';
           if (!(close?.call() ?? false)) {
             startCountDown(count - 1);
-            print('>>>=====$count');
           }
         } else {
           btnName.value = name;

@@ -69,8 +69,6 @@ class StoreHub {
       LogUtil.d('>>>===内核链接中');
       _refreshIsStartedState();
     });
-
-    print('>>>===StoreHub $hashCode ${_disconnectedCallbacks.length}');
   }
 
   /// 连接ID
@@ -82,8 +80,6 @@ class StoreHub {
     if (_isStarted && _connection.state != HubConnectionState.Connected) {
       _refreshIsStartedState();
     }
-    print(
-        '>>>===$_isStarted ${_connection.state.toString()} ${_isStarted && _connection.state == HubConnectionState.Connected}');
     return _isStarted && _connection.state == HubConnectionState.Connected;
   }
 
@@ -105,8 +101,6 @@ class StoreHub {
   }
 
   void _callDisconnectedCallbacks([Exception? error]) {
-    print(
-        '>>>===StoreHub2 $hashCode ${_disconnectedCallbacks.length} ${_disconnectedCallbacks.hashCode}');
     for (final callback in _disconnectedCallbacks) {
       callback(error);
     }
@@ -203,8 +197,6 @@ class StoreHub {
     if (callback != null) {
       _disconnectedCallbacks.add(callback);
     }
-    print(
-        '>>>===StoreHub3 $hashCode ${_disconnectedCallbacks.length} ${_disconnectedCallbacks.hashCode}');
   }
 
   /// 监听服务端方法
@@ -223,32 +215,10 @@ class StoreHub {
       {List<Object>? args, bool? retry = false}) {
     var id = const Uuid().v1();
     return _invoke<T>(id, methodName, args: args, retry: retry);
-
-    // print(
-    //     '<<<==1=$id ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
-    // return Future(() => _invoke(id, methodName, args: args, retry: retry));
-
-    // var completer = Completer<ResultType<dynamic>>();
-
-    // print(
-    //     '<<<==1=$id ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
-    // await Future.wait([_invoke(id, methodName, args: args, retry: retry)])
-    //     .then((value) {
-    //   value.map((e) => completer.complete(e));
-    // });
-    // print(
-    //     '<<<==4=$id ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
-    // return completer.future;
-
-    // ReceivePort receivePort = ReceivePort();
-    // SendPort sendPort = receivePort.sendPort;
-    // return receivePort.first as Future<ResultType>;
   }
 
   Future<ResultType> _invoke<T>(String id, String methodName,
       {List<Object>? args, bool? retry = false}) async {
-    // print(
-    //     '<<<==3=$id ${DateUtil.formatDate(DateTime.now(), format: "yyyy-MM-dd HH:mm:ss.SSS")}');
     Object? resObj;
     try {
       if (isConnected) {
@@ -301,10 +271,7 @@ class StoreHub {
       data: args is String || args is Map ? args : args.toJson(),
     );
 
-    // if (res != null && res['code'] == 200) {
     return res;
-    // }
-    // return badRequest; //badRequest;
   }
 
   ResultType<dynamic> _success(ResultType<dynamic> res) {

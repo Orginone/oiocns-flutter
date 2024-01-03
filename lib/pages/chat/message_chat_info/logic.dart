@@ -20,7 +20,6 @@ class MessageChatInfoController extends BaseController<MessageChatInfoState> {
   }
 
   void jumpMessage() {
-    print('>>>=====onMessage4');
     state.chat.onMessage((messages) {});
     Get.offAndToNamed(Routers.messageChat, arguments: state.chat);
   }

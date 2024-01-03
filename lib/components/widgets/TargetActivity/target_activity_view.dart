@@ -49,7 +49,6 @@ class TargetActivityView
           size: 32.w,
         ),
         onPressed: () async {
-          print(">>>===");
           // Get.toNamed(Routers.messageSetting, arguments: state.chat);
         },
       ),
@@ -75,16 +74,6 @@ class TargetActivityViewController
   void onClose() {
     // settingCtrl.chat.currentChat = null;
     super.onClose();
-  }
-
-  @override
-  void onReceivedEvent(event) {
-    super.onReceivedEvent(event);
-    print(">>>");
-    // if (event is JumpSpecifyMessage) {
-    //   int index = state.chat.messages.indexOf(event.message);
-    //   state.itemScrollController.jumpTo(index: index);
-    // }
   }
 }
 

@@ -188,7 +188,6 @@ class IndexController extends GetxController {
     //监听内核是否在线
     kernel.onConnectedChanged((isConnected) {
       this.isConnected.value = isConnected;
-      print('>>>===链接状态变更$isConnected');
     });
   }
 
@@ -221,9 +220,6 @@ class IndexController extends GetxController {
         }
         return num;
       });
-      for (var e in chats) {
-        print('<<<===${e.chatdata.value.lastMsgTime} ${e.name}');
-      }
       this.chats.value = chats;
     } catch (e, s) {
       var msg = '\r\n$e === $s';
@@ -364,7 +360,6 @@ class IndexController extends GetxController {
   }
 
   Future<void> autoLogin([List<String>? account]) async {
-    print('>>>=====开始自动登录');
     account ??= Storage.getList(Constants.account);
     if (!canAutoLogin(account)) {
       return exitLogin(false);
@@ -374,7 +369,6 @@ class IndexController extends GetxController {
     String passWord = account.last;
     var login = await provider.login(accountName, passWord);
     if (!login.success) {
-      print('>>>=======自动登录异常');
       // exitLogin(false);
 
       if (kernel.isOnline) {
@@ -410,7 +404,6 @@ class IndexController extends GetxController {
     Get.toNamed(Routers.qrScan)?.then((value) async {
       if (value != null) {
         if (null != value && value.length == 24 && value.indexOf('==') > 0) {
-          print('$value>>>${value.length}');
           Get.toNamed(Routers.scanLogin, arguments: value);
         } else {
           String id = value.split('/').toList().last;

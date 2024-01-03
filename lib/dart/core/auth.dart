@@ -21,14 +21,11 @@ class AuthProvider {
     } else {
       kernel.tokenAuth().then((success) async {
         if (success && null != kernel.user) {
-          print('<<<====111');
           Storage.setJson(Constants.sessionUser, kernel.user!.toJson());
           await _onAuthed.call(kernel.user!);
-          print('<<<====_onAuthed.call');
         }
       });
     }
-    print('<<<====AuthProvider');
   }
 
   /// 获取动态密码

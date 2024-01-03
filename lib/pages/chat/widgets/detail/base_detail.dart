@@ -55,9 +55,6 @@ abstract class BaseDetail extends StatelessWidget {
           shareIcon = message.from;
         }
       }
-      if (shareIcon == null) {
-        print('');
-      }
       child = Text.rich(TextSpan(children: [
         WidgetSpan(
             child: TargetText(

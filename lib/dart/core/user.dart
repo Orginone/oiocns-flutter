@@ -152,9 +152,7 @@ class UserProvider {
       var t = DateUtil.formatDate(DateTime.now(),
           format: "yyyy-MM-dd HH:mm:ss.SSS");
       errInfo += '$t $e ==== $s';
-      // ToastUtils.showMsg(msg: errInfo);
-      // SystemUtils.copyToClipboard(errInfo);
-      print('>>>====$s');
+      LogUtil.e('>>>====$s');
     }
   }
 

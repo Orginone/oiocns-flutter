@@ -30,16 +30,15 @@ class _MessageListState extends State<MessageList> {
 
   @override
   Widget build(BuildContext context) {
-    print('>>>=====onMessage1');
     chat.onMessage((messages) => null);
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         if (notification is ScrollStartNotification) {
-          print("开始滚动");
+          // "开始滚动"
         } else if (notification is ScrollUpdateNotification) {
-          print("正在滚动。。。总滚动距离：${notification.metrics.maxScrollExtent}");
+          // "正在滚动。。。总滚动距离：${notification.metrics.maxScrollExtent}"
         } else if (notification is ScrollEndNotification) {
-          print("停止滚动");
+          // "停止滚动"
           controller.markVisibleMessagesAsRead();
         }
         return true;

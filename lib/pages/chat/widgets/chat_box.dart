@@ -903,7 +903,6 @@ class ChatBoxController with WidgetsBindingObserver {
         sampleRate: 48000,
       );
       _mt = _recorder.onProgress?.listen((e) {
-        print('e------------------${e.duration}');
         _level!.value = e.decibels ?? 0;
         _maxLevel = max(_maxLevel!, _level!.value);
         _currentDuration = e.duration;

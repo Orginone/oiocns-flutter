@@ -15,7 +15,6 @@ class VideoPlayState extends BaseGetState {
   VideoPlayState() {
     file = Get.arguments['file'];
     var link = Uri.parse('${Constant.host}${file.shareLink!}');
-    print(link);
     videoPlayerController = VideoPlayerController.networkUrl(link,
         httpHeaders: {"content-type": "video/mp4"});
   }
