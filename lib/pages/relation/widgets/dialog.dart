@@ -5,6 +5,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/thing/standard/species.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/pages/relation/about/version_list/item.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/bottom_sheet_dialog.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
@@ -1292,4 +1293,113 @@ Future<void> showCreateGeneralDialog(BuildContext context, String title,
           ));
     },
   );
+}
+
+Future<void> showVersionItemDetail(
+    BuildContext context, VersionItem versionItem) {
+  return showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          alignment: Alignment.centerLeft,
+          child: SingleChildScrollView(
+            child: StatefulBuilder(builder: (context, state) {
+              return Container(
+                  width: 400,
+                  padding: const EdgeInsets.fromLTRB(15, 10, 15, 20),
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  width: 80,
+                                  child: Text(
+                                    '标题:',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 220,
+                                  child: Text(
+                                    versionItem.title,
+                                    softWrap: false,
+                                    overflow: TextOverflow.fade,
+                                    maxLines: 1,
+                                    style: const TextStyle(),
+                                  ),
+                                ),
+                              ]),
+                        ),
+                        SizedBox(
+                          height: 40,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  width: 80,
+                                  child: Text(
+                                    '版本号:',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Text(versionItem.version),
+                              ]),
+                        ),
+                        SizedBox(
+                          height: 40,
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  width: 80,
+                                  child: Text(
+                                    '更新时间:',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                Text(versionItem.date),
+                              ]),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 8),
+                          child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(
+                                  width: 80,
+                                  child: Text(
+                                    '更新内容:',
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 220, // 固定宽度
+                                  child: Text(
+                                    maxLines: 20,
+                                    versionItem.content, // 文本内容
+                                    overflow: TextOverflow.visible,
+                                    style:
+                                        const TextStyle(fontSize: 14), // 文本样式
+                                  ),
+                                )
+                              ]),
+                        )
+                      ]));
+            }),
+          ),
+        );
+      });
 }

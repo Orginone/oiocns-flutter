@@ -187,10 +187,6 @@ class AppUpdate {
     return update;
   }
 
-  String getLocalVersion() {
-    return _packageInfo?.version ?? '1.0.0';
-  }
-
 /*
  * 检查更新
  * */

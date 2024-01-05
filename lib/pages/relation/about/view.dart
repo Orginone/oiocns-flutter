@@ -10,7 +10,9 @@ import 'package:orginone/utils/system/update_utils.dart';
 import 'package:orginone/utils/toast_utils.dart';
 
 class AboutPage extends BaseGetView<AboutController, AboutState> {
-  const AboutPage({super.key});
+  final AboutController versionController = Get.find<AboutController>();
+
+  AboutPage({super.key});
 
   @override
   Widget buildView() {
@@ -36,14 +38,14 @@ class AboutPage extends BaseGetView<AboutController, AboutState> {
                       const SizedBox(
                         height: 30,
                       ),
-                      Text(
-                        'Version ${AppUpdate.instance.getLocalVersion()}',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.grey.shade600,
-                          fontFamily: 'PingFang SC',
-                        ),
-                      )
+                      Obx(() => Text(
+                            versionController.version.value,
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.grey.shade600,
+                              fontFamily: 'PingFang SC',
+                            ),
+                          ))
                     ],
                   ),
                 ),
@@ -81,7 +83,7 @@ class AboutPage extends BaseGetView<AboutController, AboutState> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Get.toNamed(Routers.version);
+                        Get.toNamed(Routers.versionList);
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(vertical: 15),
