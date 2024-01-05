@@ -75,7 +75,7 @@ class WorkProvider implements IWorkProvider {
   Emitter notity = Emitter();
 
   @override
-  String get userId => user.user!.id;
+  String get userId => user.user.id;
   bool _todoLoaded = false;
 
   @override
@@ -117,7 +117,7 @@ class WorkProvider implements IWorkProvider {
     if (type.label == '待办事项') {
       return await loadTodos(reload: reload);
     }
-    return await loadTasks(type, reload: reload);
+    return await loadTasks(type, 0);
   }
 
   @override
@@ -137,15 +137,10 @@ class WorkProvider implements IWorkProvider {
     return todos;
   }
 
-  Future<List<IWorkTask>> loadTasks(TaskType type,
-      {bool reload = false}) async {
-    if (reload) {
-      tasks = [];
-    }
-    //
-    var skip = tasks.where((i) => i.isTaskType(type)).toList().length;
+  Future<List<IWorkTask>> loadTasks(TaskType type, [int skip = 0]) async {
+    List<IWorkTask> tasks = [];
     var result = await kernel.collectionLoad<List<XWorkTask>>(
-      userId, // '445635922516643840', 潘处的id
+      userId, // '445635922516643840', PC的id
       [],
       TaskCollName,
       {
@@ -159,19 +154,17 @@ class WorkProvider implements IWorkProvider {
         'take': 30,
       },
       fromJson: (data) {
-        LogUtil.d(data);
-        // return [];
         return XWorkTask.fromList(data['data'] is List ? data['data'] : []);
       },
     );
     if (result.success && result.data != null && result.data!.isNotEmpty) {
-      result.data?.forEach((item) => {
-            if (tasks.every((i) => i.id != item.id))
-              {tasks.add(WorkTask(item, user))}
-          });
+      result.data?.forEach((item) {
+        if (tasks.every((i) => i.id != item.id)) {
+          tasks.add(WorkTask(item, user));
+        }
+      });
     }
-    var ts = tasks.where((i) => i.isTaskType(type)).toList();
-    return ts;
+    return tasks.where((i) => i.isTaskType(type)).toList();
   }
 
   @override
