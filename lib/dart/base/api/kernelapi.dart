@@ -1046,6 +1046,7 @@ class KernelApi {
     // if (res.data is Map && res.data['data'] is List) {
     //   res.data = res.data['data'];
     // }
+
     if (null != fromJson) {
       return LoadResult<T>.fromJsonSerialize(res.toJson(), fromJson);
     } else {
@@ -1185,7 +1186,8 @@ class KernelApi {
   Future<ResultType<HttpResponseType>> httpForward(
     HttpRequestType req,
   ) async {
-    ResultType res = await _storeHub.invoke('HttpForward', args: [req]);
+    ResultType res =
+        await _storeHub.invoke('HttpForward', args: [req.toJson()]);
 
     return ResultType.fromJsonSerialize(
         res, (data) => HttpResponseType.fromJson(data));
@@ -1196,8 +1198,9 @@ class KernelApi {
   /// @returns 异步结果
   Future<ResultType<T>> dataProxy<T>(DataProxyType req,
       [T Function(Map<String, dynamic>)? cvt]) async {
-    ResultType raw = await _storeHub.invoke('DataProxy', args: [req]);
-
+    ResultType raw = await _storeHub.invoke('DataProxy', args: [req.toJson()]);
+    // LogUtil.d('dataProxy');
+    // LogUtil.d(req.toJson());
     if (null != raw.data && null != cvt) {
       return ResultType<T>.fromJsonSerialize(raw, cvt);
     } else {

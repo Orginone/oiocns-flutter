@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:orginone/config/constant.dart';
-import 'package:orginone/utils/http_util.dart';
-import 'package:orginone/utils/index.dart';
+import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/main.dart';
+import 'package:orginone/utils/string_util.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
@@ -19,6 +21,7 @@ class AppUpdate {
       '${Constant.host}/orginone/kernel/load/horvypjb8gtorvyezuenfyge63ime2xi3lonizxo6rwowwx52urm6xug1ddn11hcl1wgi5uenbqha3uknbxgv5dinryha2s8u3sm6vx533omwpyk3ujo1sye53bnqygc5dl';
   static String jsonUrl =
       '${Constant.host}/orginone/kernel/load/fjiclzala8torvyezuenfyge63ime2xi3lonizxo6rwowwx52urm6xug1ddn11hcl1wgi5uenbqha3uknbxgv5dinryha2s86ufoj1xs33of1whg33o';
+  // static String jsonUrl = '${Constant.host}/530452429356011521';
   AppUpdate._internal() {
     //内部初始化
     _init();
@@ -108,7 +111,7 @@ class AppUpdate {
       versionName: _updateModel?.version,
       updateContent: _updateModel?.content,
       downloadUrl: _updateModel!.url.isEmpty ? donloadUrl : _updateModel?.url,
-      // apkSize: 19332,
+      apkSize: _updateModel!.fileItemShare!.size! ~/ 1024,
       // apkMd5: "E4B79A36EFB9F17DF7E3BB161F9BCFD8"
     );
   }
@@ -170,7 +173,7 @@ class AppUpdate {
   ///使用自定义json解析
   void _customJsonParse() {
     FlutterXUpdate.checkUpdate(
-      url: jsonUrl,
+      url: jsonUrl ?? '',
       isCustomParse: true,
       themeColor: "#ffff6634",
       // topImageRes: 'bg_update_top',
@@ -178,25 +181,58 @@ class AppUpdate {
     );
   }
 
+  void _updateByInfo() {
+    FlutterXUpdate.updateByInfo(
+      updateEntity: UpdateEntity(
+        hasUpdate: _updateModel?.update,
+        isForce: _updateModel?.force,
+        versionCode: int.parse(_packageInfo!.buildNumber),
+        versionName: _updateModel?.version,
+        updateContent: _updateModel?.content,
+        downloadUrl: _updateModel!.url.isEmpty ? donloadUrl : _updateModel?.url,
+        apkSize: _updateModel!.fileItemShare!.size! ~/ 1024,
+        // apkMd5: "E4B79A36EFB9F17DF7E3BB161F9BCFD8"
+      ),
+    );
+  }
+
   Future<bool> update() async {
     bool update = await checkUpdate();
     _updateModel?.update = update;
     if (update) {
-      _customJsonParse();
+      _updateByInfo();
+      // _customJsonParse();
     }
     return update;
+  }
+
+  String getLocalVersion() {
+    return _packageInfo?.version ?? '1.0.0';
   }
 
 /*
  * 检查更新
  * */
   static Future<bool> checkUpdate() async {
-    final remoteData = await HttpUtil().post(jsonUrl);
+    List<dynamic> versionInfo = await UpdateRequest.loadVersionForm();
+    // LogUtil.d('versionInfo');
+    // LogUtil.d(versionInfo);
+    List<PropertyModel> properties = await UpdateRequest.loadFormProperty();
+    //把表单的行列表的最新一条数据 和属性列表的属性进行组装 生成更新版本模型
+    if (versionInfo.isEmpty) return false;
+    // return false;
+    Map<String, dynamic>? map = assembleData(versionInfo.last, properties);
+    if (map == null) {
+      return false;
+    }
+    // final remoteData = await HttpUtil().post(jsonUrl);
 
-    LogUtil.d('update');
-    LogUtil.d(remoteData);
-    if (remoteData['status'] != 2000) return false;
-    _updateModel = UpdateModel.fromJson((remoteData['data']));
+    // LogUtil.d('update');
+    // LogUtil.d(remoteData);
+    // if (remoteData != null && remoteData['status'] != 2000) return false;
+    // _updateModel = UpdateModel.fromJson((remoteData['data']));
+
+    _updateModel = UpdateModel.fromJson(map);
 
     ///remoteVersion 服务器版本号
     String remoteVersion = _updateModel?.version ?? '1.0.0';
@@ -222,40 +258,161 @@ class AppUpdate {
     }
     return false;
   }
+
+  //组装数据
+
+  static Map<String, dynamic>? assembleData(
+      Map<String, dynamic> formCellInfo, List<PropertyModel> propertys) {
+    if (formCellInfo == null) {
+      return null;
+    }
+    Map<String, dynamic> map = {};
+    for (var property in propertys) {
+      if (formCellInfo.containsKey('T${property.id}')) {
+        map[property.code ?? ''] = formCellInfo['T${property.id}'];
+      }
+    }
+
+    if (map['url'] != null) {
+      if (StringUtil.isJson(map['url'])) {
+        if (jsonDecode(map['url']) is List &&
+            jsonDecode(map['url']).length > 0) {
+          map['fileItemShare'] = jsonDecode(map['url'])[0];
+        } else {
+          map['fileItemShare'] = jsonDecode(map['url']);
+        }
+        map['url'] = Constant.host + map['fileItemShare']['shareLink'];
+      }
+    }
+    map['updateTime'] = formCellInfo['updateTime'];
+
+    return map;
+  }
+}
+
+class UpdateRequest {
+  //List<UpdateModel> loadHistoryVersionInfo =await UpdateRequest.loadHistoryVersionInfo();
+  static Future<List<UpdateModel>> loadHistoryVersionInfo() async {
+    List<dynamic> versionInfo = await UpdateRequest.loadVersionForm();
+    List<PropertyModel> propertys = await UpdateRequest.loadFormProperty();
+    //把表单的行列表的最新一条数据 和属性列表的属性进行组装 生成更新版本模型
+    // return false;
+    if (versionInfo.isNotEmpty) {
+      return versionInfo
+          .map((e) => AppUpdate.assembleData(e, propertys))
+          .toList()
+          .map((json) => UpdateModel.fromJson(json ?? {}))
+          .toList();
+    }
+
+    return [];
+  }
+
+  static Future<List<dynamic>> loadVersionForm() async {
+    String belongId = '445967867377225728';
+    String relation = '445967867377225728';
+    List<dynamic> things = [];
+    ResultType result = await kernel.loadThing(
+      belongId,
+      [relation],
+      {
+        "requireTotalCount": false,
+        "searchOperation": "contains",
+        "searchValue": null,
+        "skip": 0,
+        "take": 20,
+        "userData": ["F531430631884861441"],
+        "sort": null,
+        "group": null,
+        "belongId": belongId
+      },
+    );
+
+    if (result.success) {
+      things = result.data['data'];
+    }
+
+    return things;
+  }
+
+  ///加载 表单下面的属性
+  static Future<List<PropertyModel>> loadFormProperty() async {
+    //奥集能移动端版本发布群 - 版本更新 - 版本信息属性
+    String belongId = '445967867377225728';
+    String relation = '445967867377225728';
+    String collName = 'standard-property';
+    var options = {};
+    options['userData'] = [];
+    options['collName'] = collName;
+    options['options'] = {
+      "match": {
+        "directoryId": "530454983716507649",
+        "shareId": "531435684393787392"
+      }
+    };
+
+    var res = await kernel.collectionLoad(
+      belongId,
+      [relation],
+      collName,
+      options,
+    );
+
+    if (res.success && res.data != null && res.data['data'] != null) {
+      List properties = res.data['data'];
+      return properties.map((e) => PropertyModel.fromJson(e)).toList();
+    }
+    return [];
+  }
 }
 
 class UpdateModel {
   String? title;
   String? content;
+  String? updateTime;
   String url;
   String version;
   bool? force;
   bool? update;
+  FileItemShare? fileItemShare;
 
   UpdateModel({
     this.title,
     this.content,
+    this.updateTime,
     required this.url,
     required this.version,
     this.force,
     this.update,
+    this.fileItemShare,
   });
 
   factory UpdateModel.fromJson(Map<String, dynamic> json) => UpdateModel(
         title: json['title'] == null ? null : json['title'] as String,
         content: json['content'] == null ? null : json['content'] as String,
-        url: json['url'] as String,
-        version: json['version'] as String,
-        force: json['force'] == null ? false : json['force'] as bool,
+        updateTime:
+            json['updateTime'] == null ? null : json['updateTime'] as String,
+        url: json['url'] ?? '',
+        version: json['version'] ?? '1.0.0',
+        force: json['force'] == null
+            ? false
+            : json['force'] == 1
+                ? true
+                : false,
         update: json['update'] == null ? false : json['update'] as bool,
+        fileItemShare: json['fileItemShare'] == null
+            ? null
+            : FileItemShare.fromJson(json['fileItemShare']),
       );
 
   Map<String, dynamic> toJson() => {
         'title': title,
         'content': content,
+        'updateTime': updateTime,
         'url': url,
         'version': version,
         'force': force,
         'update': update,
+        'fileItemShare': fileItemShare?.toJson(),
       };
 }

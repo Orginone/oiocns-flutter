@@ -233,7 +233,8 @@ class XApplication extends XStandard {
   });
 
   XApplication.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    directoryId = json['directoryId'];
+    directoryId = json['directoryId'] ??
+        ''; //type 'Null' is not a subtype of type 'String'
     parentId = json['parentId'];
     resource = json['resource'];
     defines = json['defines'] != null
