@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:orginone/utils/date_utils%20copy.dart';
 
 class VersionItem extends StatelessWidget {
   final String title;
@@ -33,7 +34,7 @@ class VersionItem extends StatelessWidget {
                 SizedBox(
                   width: 300,
                   child: Text(
-                    title,
+                    version,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(fontSize: 16),
                   ),
@@ -42,7 +43,7 @@ class VersionItem extends StatelessWidget {
                   height: 5,
                 ),
                 Text(
-                  date,
+                  DateTimeUtils.formatDateString(date, format: 'yyyy-MM-dd'),
                   style: const TextStyle(fontSize: 12),
                 ),
               ],

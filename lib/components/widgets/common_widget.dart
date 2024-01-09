@@ -636,7 +636,149 @@ class CommonWidget {
                         ),
                       )),
                   Expanded(
-                    flex: 6,
+                    flex: 9,
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(7, 0, 0, 0),
+                      child: TextField(
+                        onChanged: onChanged,
+                        controller: controller,
+                        obscureText: obscureText,
+                        inputFormatters: inputFormatters,
+                        decoration: InputDecoration(
+                          hintStyle: TextStyle(
+                              color: Colors.grey.shade400, fontSize: 20.sp),
+                          isCollapsed: true,
+                          hintText: hint,
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(flex: 1, child: action ?? Container()),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Widget commonIconInputVerifyCode(
+      {required TextEditingController controller,
+      required String icon,
+      required String hint,
+      ValueChanged<String>? onChanged,
+      List<TextInputFormatter>? inputFormatters,
+      bool obscureText = false,
+      Widget? action}) {
+    return Container(
+      // width: 343,
+      height: 45,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      clipBehavior: Clip.antiAlias,
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1, color: Color(0xFFE7E8EB)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: 30,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                        height: 22,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(icon),
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      )),
+                  Expanded(
+                    flex: 5,
+                    child: Container(
+                      padding: const EdgeInsets.fromLTRB(7, 0, 0, 0),
+                      child: TextField(
+                        onChanged: onChanged,
+                        controller: controller,
+                        obscureText: obscureText,
+                        inputFormatters: inputFormatters,
+                        decoration: InputDecoration(
+                          hintStyle: TextStyle(
+                              color: Colors.grey.shade400, fontSize: 20.sp),
+                          isCollapsed: true,
+                          hintText: hint,
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(flex: 4, child: action ?? Container()),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Widget commonIconInput({
+    required TextEditingController controller,
+    required String icon,
+    required String hint,
+    ValueChanged<String>? onChanged,
+    List<TextInputFormatter>? inputFormatters,
+    bool obscureText = false,
+  }) {
+    return Container(
+      // width: 343,
+      height: 45,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      clipBehavior: Clip.antiAlias,
+      decoration: ShapeDecoration(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(
+          side: const BorderSide(width: 1, color: Color(0xFFE7E8EB)),
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: 30,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                      flex: 1,
+                      child: Container(
+                        height: 22,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage(icon),
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      )),
+                  Expanded(
+                    flex: 9,
                     child: Container(
                       padding: const EdgeInsets.fromLTRB(7, 0, 0, 5),
                       child: TextField(
@@ -654,7 +796,6 @@ class CommonWidget {
                       ),
                     ),
                   ),
-                  Expanded(flex: 3, child: action ?? Container()),
                 ],
               ),
             ),

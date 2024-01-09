@@ -1,6 +1,10 @@
+import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
+import 'package:orginone/utils/system/update_utils.dart';
 
 class VersionListState extends BaseGetState {
+  late RxList<UpdateModel> loadHistoryVersionInfo = <UpdateModel>[].obs;
+
   final List<Map<String, dynamic>> versionlist = [
     {
       'title': '首次发版(mock测试)',

@@ -171,7 +171,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
   //登录提交按钮
   Widget loginSubmit() {
     return SizedBox(
-      height: 40,
+      height: 45,
       child: GestureDetector(
         onTap: () {
           if (controller.state.accountLogin.value) {
@@ -291,7 +291,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    CommonWidget.commonIconInputAction(
+                    CommonWidget.commonIconInput(
                         onChanged: (value) {
                           controller.allowLogin();
                         },
@@ -314,7 +314,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
                         ],
                         obscureText: state.passwordUnVisible.value,
                         action: IconButton(
-                            padding: const EdgeInsets.only(left: 40),
+                            padding: const EdgeInsets.only(left: 10),
                             onPressed: () {
                               controller.showPassWord();
                             },
@@ -373,7 +373,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                CommonWidget.commonIconInputAction(
+                CommonWidget.commonIconInput(
                   onChanged: (value) {
                     controller.allowLogin();
                   },
@@ -385,7 +385,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
                   ],
                 ),
                 const SizedBox(height: 10),
-                CommonWidget.commonIconInputAction(
+                CommonWidget.commonIconInputVerifyCode(
                   onChanged: (value) {
                     controller.allowLogin();
                   },
@@ -418,7 +418,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
           TextStyle(color: XColors.themeColor, fontSize: 20.sp);
       String text = '发送验证码';
       if (state.startCountDown.value) {
-        textStyle = TextStyle(color: Colors.grey, fontSize: 16.sp);
+        textStyle = TextStyle(color: Colors.grey, fontSize: 18.sp);
         text = "${state.countDown.value}秒后重新发送";
       }
       return GestureDetector(

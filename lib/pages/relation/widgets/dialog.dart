@@ -6,6 +6,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/thing/standard/species.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/pages/relation/about/version_list/item.dart';
+import 'package:orginone/utils/date_utils%20copy.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/bottom_sheet_dialog.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
@@ -1305,37 +1306,11 @@ Future<void> showVersionItemDetail(
           child: SingleChildScrollView(
             child: StatefulBuilder(builder: (context, state) {
               return Container(
-                  width: 400,
+                  // width: 350,
                   padding: const EdgeInsets.fromLTRB(15, 10, 15, 20),
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        SizedBox(
-                          height: 40,
-                          child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                const SizedBox(
-                                  width: 80,
-                                  child: Text(
-                                    '标题:',
-                                    style: TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 220,
-                                  child: Text(
-                                    versionItem.title,
-                                    softWrap: false,
-                                    overflow: TextOverflow.fade,
-                                    maxLines: 1,
-                                    style: const TextStyle(),
-                                  ),
-                                ),
-                              ]),
-                        ),
                         SizedBox(
                           height: 40,
                           child: Row(
@@ -1367,7 +1342,9 @@ Future<void> showVersionItemDetail(
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ),
-                                Text(versionItem.date),
+                                Text(DateTimeUtils.formatDateString(
+                                    versionItem.date,
+                                    format: 'yyyy-MM-dd'))
                               ]),
                         ),
                         Container(
