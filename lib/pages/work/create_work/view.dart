@@ -11,6 +11,8 @@ import 'state.dart';
 
 class CreateWorkPage
     extends BaseGetView<CreateWorkController, CreateWorkState> {
+  const CreateWorkPage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(
@@ -124,7 +126,7 @@ class CreateWorkPage
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return CommonWidget.commonDocumentWidget(
-                        title: ["标识", "创建者", "状态", ...title],
+                        title: ["唯一标识", "创建者", "状态", ...title],
                         content: snapshot.data ?? [],
                         showOperation: true,
                         popupMenus: const [

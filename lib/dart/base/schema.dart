@@ -4362,7 +4362,7 @@ class XRuleStdArray {
 }
 
 class XForm extends XStandard {
-  late String rule; // 单布局
+  List? rule; // 单布局
   List<XAttribute>? attributes; // 单的特性
   List<XWorkNode>? bindNodes; // 使用单的流程节点
   XDirectory? directory; // 单的目录
@@ -4378,7 +4378,7 @@ class XForm extends XStandard {
   });
 
   XForm.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
-    rule = json['rule'] ?? "";
+    rule = json['rule'] ?? [];
     directoryId = json['directoryId'] ?? "";
     attributes = json['attributes'] != null
         ? List<XAttribute>.from(

@@ -71,7 +71,7 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
     List<List<String>> content = [];
     for (var thing in form.data!.after) {
       List<String> data = [
-        thing.id ?? "",
+        thing.id ?? thing.otherInfo['id'] ?? '',
         thing.status ?? "",
         ShareIdSet[thing.creater]?.name ?? "",
       ];

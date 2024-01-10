@@ -1210,55 +1210,59 @@ class CommonWidget {
     return Container(
       color: Colors.white,
       width: double.infinity,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: data.map((title) {
-              return Column(
-                children: title.map((str) {
-                  int index = title.indexOf(str);
-                  if (index == 0) {
-                    return titleWidget(str);
-                  }
-                  if (showOperation &&
-                      (data.indexOf(title) == data.length - 1)) {
-                    double x = 0;
-                    double y = 0;
-                    return GestureDetector(
-                      onPanDown: (position) {
-                        x = position.globalPosition.dx;
-                        y = position.globalPosition.dy;
-                      },
-                      onTap: () async {
-                        await showMenu(
-                          context: Get.context!,
-                          items: popupMenus ?? [],
-                          position: RelativeRect.fromLTRB(
-                            x,
-                            y - 50,
-                            MediaQuery.of(Get.context!).size.width - x,
-                            0,
-                          ),
-                        ).then((value) {
-                          if (value != null) {
-                            if (onOperation != null) {
-                              onOperation(value, data[0][index]);
+      child: Scrollbar(
+        thumbVisibility: true,
+        // trackVisibility: true,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: data.map((title) {
+                return Column(
+                  children: title.map((str) {
+                    int index = title.indexOf(str);
+                    if (index == 0) {
+                      return titleWidget(str);
+                    }
+                    if (showOperation &&
+                        (data.indexOf(title) == data.length - 1)) {
+                      double x = 0;
+                      double y = 0;
+                      return GestureDetector(
+                        onPanDown: (position) {
+                          x = position.globalPosition.dx;
+                          y = position.globalPosition.dy;
+                        },
+                        onTap: () async {
+                          await showMenu(
+                            context: Get.context!,
+                            items: popupMenus ?? [],
+                            position: RelativeRect.fromLTRB(
+                              x,
+                              y - 50,
+                              MediaQuery.of(Get.context!).size.width - x,
+                              0,
+                            ),
+                          ).then((value) {
+                            if (value != null) {
+                              if (onOperation != null) {
+                                onOperation(value, data[0][index]);
+                              }
                             }
-                          }
-                        });
-                      },
-                      child: SizedBox(
-                        width: 40.w,
-                        height: 50.h,
-                        child: const Icon(Icons.more_horiz),
-                      ),
-                    );
-                  }
-                  return contentWidget(str);
-                }).toList(),
-              );
-            }).toList()),
+                          });
+                        },
+                        child: SizedBox(
+                          width: 40.w,
+                          height: 50.h,
+                          child: const Icon(Icons.more_horiz),
+                        ),
+                      );
+                    }
+                    return contentWidget(str);
+                  }).toList(),
+                );
+              }).toList()),
+        ),
       ),
     );
   }

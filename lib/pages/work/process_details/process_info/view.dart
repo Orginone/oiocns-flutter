@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -43,7 +46,7 @@ class ProcessInfoPage
       if (state.mainForm.isEmpty) {
         return const SizedBox();
       }
-      // LogUtil.d('AAAAAAAAAAA${jsonEncode(state.mainForm)}');
+      LogUtil.d('AAAAAAAAAAA${jsonEncode(state.mainForm)}');
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -114,7 +117,7 @@ class ProcessInfoPage
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return CommonWidget.commonDocumentWidget(
-              title: ["标识", "创建者", "状态", ...title],
+              title: ["唯一标识", "创建者", "状态", ...title],
               content: snapshot.data ?? [],
             );
           }
