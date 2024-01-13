@@ -46,7 +46,7 @@ class ErrorPage extends GetView<ErrorPageController> {
       id: "error_page",
       builder: (_) {
         return Scaffold(
-          appBar: AppBar(title: const Text("办事页面错误日志"), actions: [
+          appBar: AppBar(title: const Text("错误日志"), actions: [
             ButtonWidget.text(
               '清除日志',
               onTap: () {

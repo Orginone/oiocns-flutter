@@ -6,11 +6,12 @@ import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/pages/store/store_tree/store_nav_item.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
-///数据的容器页面
+///数据的容器页面   展示列表数据
 class StoreSubPage
     extends BaseGetListPageView<StoreSubController, StoreSubState> {
   late String type;
@@ -20,6 +21,7 @@ class StoreSubPage
   ///创建标签view
   @override
   Widget buildView() {
+    LogUtil.d('StoreSubPage');
     return allWidget();
 
     // if (type == "all") {

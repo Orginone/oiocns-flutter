@@ -15,7 +15,6 @@ import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/dart/core/thing/systemfile.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/main.dart';
-import 'package:orginone/utils/log/log_util.dart';
 
 import 'store_tree/state.dart';
 
@@ -73,7 +72,7 @@ Future<List<StoreTreeNav>> loadFile(
     List<ISysFileInfo> files, ITarget target) async {
   List<StoreTreeNav> nav = [];
 
-  LogUtil.d('config-loadFile');
+  // LogUtil.d('config-loadFile');
 
   for (var file in files) {
     // LogUtil.d(file);

@@ -120,11 +120,12 @@ class ListAdapter {
   }
   ListAdapter.work(IWorkTask work) {
     noReadCount = ''.obs;
-    labels = [
-      work.creater.name,
-      work.taskdata.taskType!,
-      work.taskdata.approveType!
-    ];
+    labels = work.groupTags;
+    // labels = [
+    //   work.creater.name,
+    //   work.taskdata.taskType!,
+    //   work.taskdata.approveType!
+    // ];
     isUserLabel = false;
     circularAvatar = false;
     title = work.taskdata.title ?? '';

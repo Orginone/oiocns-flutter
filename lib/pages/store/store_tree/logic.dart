@@ -96,6 +96,11 @@ class StoreTreeController extends BaseBreadcrumbNavController<StoreTreeState> {
       state.model.refresh();
       LoadingDialog.dismiss(context);
     }
+    LogUtil.d('StoreTreeController');
+    for (var i = 0; i < state.model.value!.children.length; i++) {
+      LogUtil.d(state.model.value!.children[i].space?.typeName);
+      LogUtil.d(state.model.value!.children[i].space?.typeName);
+    }
   }
 
   void jumpDetails(StoreTreeNav nav) async {

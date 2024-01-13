@@ -78,7 +78,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            shrinkResources true
+            shrinkResources false
             signingConfig signingConfigs.release
             ndk {
                 // 设置支持的 so 库架构 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'

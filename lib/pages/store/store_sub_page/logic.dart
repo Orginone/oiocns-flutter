@@ -76,13 +76,13 @@ class StoreSubController extends BaseListController<StoreSubState> {
       name: HomeEnum.store.label,
       children: children,
     );
-    await loadUserRelation();
-    await loadCompanyRelation();
+    await loadUserContents();
+    await loadCompanyContents();
   }
 
   ///点击tab个人标签调用
   ///加载个人数据
-  Future<void> loadUserRelation() async {
+  Future<void> loadUserContents() async {
     var user = state.nav!.children[0];
 
     ///点击进入下一级
@@ -120,7 +120,7 @@ class StoreSubController extends BaseListController<StoreSubState> {
 
   ///点击tab单位标签调用
   ///加载单位数据
-  Future<void> loadCompanyRelation() async {
+  Future<void> loadCompanyContents() async {
     for (int i = 1; i < state.nav!.children.length; i++) {
       var company = state.nav!.children[i];
       // await company.space!.loadContent(reload: true);

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:orginone/config/constant.dart';
+import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main.dart';
 import 'package:orginone/utils/http_util.dart';
@@ -24,6 +25,7 @@ class AppUpdate {
   static String jsonUrl =
       '${Constant.host}/orginone/kernel/load/6jl526wkhitorvyezuenfyge63imv1xi33pmj5gonjrowyx5mlum6vue6lpnw1hvl1wgmzuimr1gi1donjrga1din1vgi2s86ufoj1xs33of1whg33o';
   // static String jsonUrl = '${Constant.host}/530452429356011521';
+  //https://asset.orginone.cn/orginone/kernel/load/w658umk2sgtorvyezuenfyge63imv1xi33pmj5gonjrowyx5mlum6vue6lpnw1hvl1wgmzuimr1gi1donjrga1din1vgi2s86ufoj1xs33of1whg33o
   AppUpdate._internal() {
     //内部初始化
     _init();
@@ -186,11 +188,13 @@ class AppUpdate {
   ///使用自定义json解析
   void _customJsonParse() {
     FlutterXUpdate.checkUpdate(
-      url: jsonUrl ?? '',
+      url: jsonUrl,
       isCustomParse: true,
-      themeColor: "#ffff6634",
-      // topImageRes: 'bg_update_top',
+      themeColor: '#FF056DE3',
+      topImageRes: 'bg_update_top',
       buttonTextColor: '#FFFFFFFF',
+      // widthRatio: 0.9,
+      // heightRatio: 0.6,
     );
   }
 
@@ -245,7 +249,7 @@ class AppUpdate {
 
     LogUtil.d('update');
     LogUtil.d(remoteData);
-    if (remoteData != null && remoteData['status'] != 2000) return false;
+    if (remoteData == null || remoteData['status'] != 2000) return false;
     _updateModel = UpdateModel.fromJson((remoteData['data']));
 
     ///remoteVersion 服务器版本号

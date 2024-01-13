@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/common/extension/ex_list.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-
 import 'state.dart';
 
 class StoreNavItem extends BaseBreadcrumbNavItem<StoreTreeNav> {
@@ -31,6 +31,16 @@ class StoreNavItem extends BaseBreadcrumbNavItem<StoreTreeNav> {
   }
 
   @override
+  Widget title() {
+    return <Widget>[
+      super.title(),
+      // const Text('data'),
+    ].toColumn(
+      crossAxisAlignment: CrossAxisAlignment.start,
+    );
+  }
+
+  @override
   Widget more() {
     if (item.spaceEnum == SpaceEnum.file ||
         item.spaceEnum == SpaceEnum.species ||
@@ -41,8 +51,9 @@ class StoreNavItem extends BaseBreadcrumbNavItem<StoreTreeNav> {
     return GestureDetector(
       onTap: onTap,
       child: Icon(
-        Icons.navigate_next,
-        size: 32.w,
+        Icons.info_outline_rounded,
+        size: 28.w,
+        // color: Colors.blueGrey,
       ),
     );
   }

@@ -46,7 +46,7 @@ abstract class IWorkTask extends IFile {
 
 class WorkTask extends FileInfo<XEntity> implements IWorkTask {
   WorkTask(this.taskdata, this.user)
-      : super(XEntity.fromJson(taskdata.toJson()), user.user!.directory);
+      : super(XEntity.fromJson(taskdata.toJson()), user.user.directory);
 
   @override
   late XWorkTask taskdata;
@@ -64,6 +64,10 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
 
   @override
   String get id => taskdata.id;
+  @override
+  List<String> get groupTags {
+    return [belong.name, taskdata.taskType ?? '', taskdata.approveType ?? ''];
+  }
 
   @override
   String get comment {
@@ -75,12 +79,12 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
 
   @override
   IBelong get ibelong {
-    for (final company in user.user!.companys) {
+    for (final company in user.user.companys) {
       if (company.id == taskdata.belongId) {
         return company;
       }
     }
-    return user.user!;
+    return user.user;
   }
 
   @override
