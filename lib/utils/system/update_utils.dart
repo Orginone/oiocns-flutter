@@ -84,14 +84,19 @@ class AppUpdate {
 
       FlutterXUpdate.setUpdateHandler(
           onUpdateError: (Map<String, dynamic>? message) async {
-        if (message?["code"] != 2004) {
-          //已经是最新版本
-          ToastUtils.showMsg(msg: message.toString());
-        }
         //下载失败
         if (message?["code"] == 4000) {
           FlutterXUpdate.showRetryUpdateTipDialog(
               retryContent: '下载失败是否重新下载？', retryUrl: donloadUrl);
+        }
+
+        ///取消下载
+        if (message?["code"] == 4002) {
+          ToastUtils.showMsg(msg: '取消下载');
+        }
+        if (message?["code"] != 2004) {
+          //已经是最新版本
+          ToastUtils.showMsg(msg: message.toString());
         }
       }, onUpdateParse: (String? json) async {
         //这里是自定义json解析
