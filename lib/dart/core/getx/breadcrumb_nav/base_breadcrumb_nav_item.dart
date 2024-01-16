@@ -11,6 +11,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/components/widgets/popup_widget.dart';
 import 'package:orginone/main.dart';
+import 'package:orginone/utils/string_util.dart';
 
 class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
     extends StatelessWidget {
@@ -19,11 +20,13 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
   final VoidCallback? onNext;
 
   final VoidCallback? onTap;
+  final bool useTip;
 
   const BaseBreadcrumbNavItem({
     Key? key,
     required this.item,
     this.onNext,
+    this.useTip = false,
     this.onTap,
   }) : super(key: key);
 
@@ -52,7 +55,7 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
               color: Colors.white,
               border: Border(
                   bottom: BorderSide(color: Colors.grey.shade300, width: 0.5))),
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 7.h),
           child: Row(
             children: [
               AdvancedAvatar(
@@ -107,6 +110,7 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
 
   Widget title() {
     Widget tips = const SizedBox();
+    String? size;
     if (item.spaceEnum == SpaceEnum.species ||
         item.spaceEnum == SpaceEnum.property ||
         item.spaceEnum == SpaceEnum.applications ||
@@ -118,22 +122,27 @@ class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
         item.source.metadata.typeName,
         style: TextStyle(fontSize: 16.sp, color: Colors.grey.shade500),
       );
-    }
 
+      // size = item.source.metadata.icon.size; //~/ 1024
+    }
+    if (item.spaceEnum == SpaceEnum.file) {
+      size = StringUtil.formatFileSize(item.source.filedata.size ?? 0);
+      size = ' ($size)';
+    }
     return Container(
-      padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+      padding: EdgeInsets.symmetric(vertical: 7.h, horizontal: 16.w),
       width: double.infinity,
       color: Colors.white,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            item.name,
+            item.name + (size ?? ''),
             style: TextStyle(fontSize: 24.sp, color: Colors.black),
-            maxLines: 1,
+            maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
-          tips,
+          useTip ? tips : const SizedBox(),
         ],
       ),
     );

@@ -21,6 +21,13 @@ class Property extends StandardFileInfo<XProperty> implements IProperty {
   final List<XAttribute> attributes = [];
   @override
   String get cacheFlag => 'propertys';
+  @override
+  List<String> get groupTags {
+    if (metadata.valueType == null) {
+      return [...super.groupTags];
+    }
+    return [metadata.valueType!, ...super.groupTags];
+  }
 
   ///构造函数
   Property(this.metadata, this.directory)

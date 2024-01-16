@@ -77,6 +77,16 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
   @override
   String get cacheFlag => 'works';
   List<IForm> get forms => [...primaryForms, ...detailForms];
+
+  @override
+  List<String> get groupTags {
+    var tags = target.space?.name == null ? [] : [target.space?.name];
+    if (target.id != target.spaceId) {
+      tags.add(target.name);
+    }
+    return [...tags, ...super.groupTags];
+  }
+
   @override
   Future<bool> delete({bool? notity}) async {
     final res = await kernel.deleteWorkDefine(IdModel(id));

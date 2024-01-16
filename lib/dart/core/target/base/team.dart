@@ -99,6 +99,19 @@ abstract class Team extends Entity<XTarget> implements ITeam {
   // abstract IPerson? user;
 
   bool get isInherited => metadata.belongId != space?.id;
+  @override
+  List<String> get groupTags {
+    if (id == userId) {
+      return ['本人'];
+    }
+    List<String> gtags = [...super.groupTags];
+    if (metadata.belongId != space?.id) {
+      if (user?.findShareById(belongId).name != null) {
+        gtags.add(user!.findShareById(belongId).name);
+      }
+    }
+    return gtags;
+  }
 
   @override
   Future<List<XTarget>> loadMembers({bool? reload = false}) async {

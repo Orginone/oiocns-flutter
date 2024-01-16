@@ -126,6 +126,10 @@ class StringUtil {
 
   /// size 单位为字节
   static String formatFileSize(int size) {
+    if (size < 1024 * 1024) {
+      return "${(size * 1.0 / 1024).ceil()}kb";
+    }
+
     return "${(size * 1.0 / 1024 / 1024).toStringAsFixed(1)}M";
   }
 

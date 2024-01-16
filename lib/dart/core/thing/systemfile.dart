@@ -54,6 +54,22 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
 
   @override
   FileItemModel filedata;
+  @override
+  List<String> get groupTags {
+    List<String> gtags = [];
+    if (typeName.startsWith('image')) {
+      gtags.add('图片');
+    } else if (typeName.startsWith('video')) {
+      gtags.add('视频');
+    } else if (typeName.startsWith('text')) {
+      gtags.add('文本');
+    } else if (typeName.contains('pdf')) {
+      gtags.add('PDF');
+    } else if (typeName.contains('office')) {
+      gtags.add('Office');
+    }
+    return [...gtags, '文件'];
+  }
 
   @override
   FileItemShare shareInfo() {

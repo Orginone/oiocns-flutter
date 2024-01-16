@@ -66,7 +66,15 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
   String get id => taskdata.id;
   @override
   List<String> get groupTags {
-    return [belong.name, taskdata.taskType ?? '', taskdata.approveType ?? ''];
+    List<String> tags = [];
+    tags.add(belong.name);
+    if (taskdata.taskType != null) {
+      tags.add(taskdata.taskType!);
+    }
+    if (taskdata.approveType != null) {
+      tags.add(taskdata.approveType!);
+    }
+    return tags;
   }
 
   @override
