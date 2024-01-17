@@ -98,7 +98,7 @@ class MessageItemWidget extends GetView<IndexController> {
 
   Widget get _avatarContainer {
     return Obx(() {
-      var noRead = chat.noReadCount.value;
+      var noRead = '';
       Widget child = TeamAvatar(
         info: TeamTypeInfo(share: chat.share),
         size: 65.w,

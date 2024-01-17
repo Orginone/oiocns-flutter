@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:orginone/common/values/constants.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/toast_utils.dart';
 
 import '../../../dart/core/getx/base_controller.dart';

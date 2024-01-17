@@ -7,7 +7,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/user.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/index.dart';
 
 import 'task.dart';

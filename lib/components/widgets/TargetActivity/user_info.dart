@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 //用户信息
 class UserInfo extends StatelessWidget {

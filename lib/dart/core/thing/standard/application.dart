@@ -9,7 +9,7 @@ import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/work/index.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 abstract class IApplication implements IStandardFileInfo<XApplication> {
   ///上级模块

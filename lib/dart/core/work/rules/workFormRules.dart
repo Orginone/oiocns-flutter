@@ -8,7 +8,7 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/work/rules/base/enum.dart';
 import 'package:orginone/dart/core/work/rules/lib/tools.dart';
 import 'package:orginone/dart/core/work/rules/type.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 // import OrgCtrl from '../../../controller';
 

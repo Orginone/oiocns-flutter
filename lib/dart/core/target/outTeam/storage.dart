@@ -7,7 +7,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 /// 存储资源接口
 abstract class IStorage implements ITarget {

@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/components/widgets/loading_dialog.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/system/update_utils.dart';
 

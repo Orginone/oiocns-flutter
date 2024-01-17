@@ -18,13 +18,15 @@ import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/dart/core/work/provider.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/relation/widgets/dialog.dart';
 import 'package:orginone/utils/bus/event_bus_helper.dart';
 import 'package:orginone/utils/hive_utils.dart';
 import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/loading_dialog.dart';
+
+import 'app_data_controller.dart';
 
 enum Shortcut {
   addPerson("添加朋友", Icons.group_add_outlined),
@@ -78,29 +80,20 @@ class ShortcutData {
 
 /// 设置控制器
 class IndexController extends GetxController {
+  ///未使用
   String currentKey = "";
+
+  /// 用户加载事件订阅
   StreamSubscription<UserLoaded>? _userSub;
+
+  /// 事件发射器
+  late Emitter emitter;
+
+  /// 数据提供者
   late UserProvider _provider;
-
-  var homeEnum = HomeEnum.door.obs;
-  RxInt noReadMgsCount = 0.obs;
-  //内核是否在线
-  RxBool isConnected = false.obs;
-
-  /// 所有相关会话
-  late RxList<ISession> chats = <ISession>[].obs;
-
-  late CustomPopupMenuController functionMenuController;
-
-  late CustomPopupMenuController settingMenuController;
 
   /// 数据提供者
   UserProvider get provider => _provider;
-
-  /// 授权方法
-  AuthProvider get auth {
-    return provider.auth;
-  }
 
   /// 当前用户
   IPerson get user => provider.user;
@@ -110,40 +103,30 @@ class IndexController extends GetxController {
 
   /// 所有相关的用户
   List<ITarget> get targets => provider.targets;
-  late Emitter emitter;
-  // /// 所有相关会话
-  // RxList<ISession> get chats {
-  //   List<ISession> _chats = [];
-  //   if (provider.user != null) {
-  //     chats.addAll(provider.user?.chats ?? []);
-  //     for (var company in provider.user?.companys ?? []) {
-  //       chats.addAll(company.chats ?? []);
-  //     }
 
-  //     /// 排序
-  //     chats.sort((a, b) {
-  //       var num = (b.chatdata.value.isToping ? 10 : 0) -
-  //           (a.chatdata.value.isToping ? 10 : 0);
-  //       if (num == 0) {
-  //         if (b.chatdata.value.lastMsgTime == a.chatdata.value.lastMsgTime) {
-  //           num = b.isBelongPerson ? 1 : -1;
-  //         } else {
-  //           num = b.chatdata.value.lastMsgTime > a.chatdata.value.lastMsgTime
-  //               ? 5
-  //               : -5;
-  //         }
-  //       }
-  //       return num;
-  //     });
-  //   }
-  //   return chats;
-  // }
+  /// 首页当前模块枚举
+  var homeEnum = HomeEnum.door.obs;
 
-  // int get noReadMgsCount {
-  //   //处理所有未读消息
-  //   refreshNoReadMgsCount();
-  //   return _noReadMgsCount.value;
-  // }
+  /// 沟通未读消息数
+  RxInt noReadMgsCount = 0.obs;
+
+  /// 所有沟通会话
+  late RxList<ISession> chats = <ISession>[].obs;
+
+  ///内核是否在线
+  RxBool isConnected = false.obs;
+  late AppDataController appDataController;
+
+  ///用户头像菜单控制器
+  late CustomPopupMenuController functionMenuController;
+
+  ///模块顶部三点菜单控制器
+  late CustomPopupMenuController settingMenuController;
+
+  /// 授权方法
+  AuthProvider get auth {
+    return provider.auth;
+  }
 
   var menuItems = [
     ShortcutData(
@@ -162,6 +145,7 @@ class IndexController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    appDataController = AppDataController();
     functionMenuController = CustomPopupMenuController();
     settingMenuController = CustomPopupMenuController();
     emitter = Emitter();
@@ -186,45 +170,65 @@ class IndexController extends GetxController {
     //初始化未读信息命令
     initNoReadCommand();
     //监听内核是否在线
-    kernel.onConnectedChanged((isConnected) {
-      this.isConnected.value = isConnected;
+    kernel.onConnectedChanged((isConnected) async {
+      if (!isConnected) {
+        // 用于排除正常重链情况
+        Future.delayed(const Duration(milliseconds: 6000), () {
+          if (!kernel.isOnline) {
+            this.isConnected.value = isConnected;
+          }
+        });
+      } else {
+        this.isConnected.value = isConnected;
+      }
     });
   }
 
+  /// 加载消息
   Future<void> loadChats([bool reload = false]) async {
     try {
       if (reload) {
-        // TODO 后期晚上刷新列表
-        await provider.user.deepLoad(reload: reload);
-      }
-      List<ISession> chats = <ISession>[];
-      chats.addAll(provider.user.chats ?? []);
-      for (var company in provider.user.companys ?? []) {
-        chats.addAll(company.chats ?? []);
-      }
-      chats = chats
-          .where((element) =>
-              element.chatdata.value.lastMessage != null ||
-              element.chatdata.value.recently)
-          .toList();
-
-      /// 排序
-      chats.sort((a, b) {
-        var num = 0;
-        if (b.chatdata.value.lastMsgTime == a.chatdata.value.lastMsgTime) {
-          num = b.isBelongPerson ? 1 : -1;
-        } else {
-          num = b.chatdata.value.lastMsgTime > a.chatdata.value.lastMsgTime
-              ? 5
-              : -5;
+        await provider.user.cacheObj.all(true);
+        // TODO 后期刷新列表
+        await Future.wait(chats.map((element) => element.refreshMessage()));
+        chats.value = filterAndSortChats(chats);
+      } else {
+        List<ISession> tmpChats = <ISession>[];
+        tmpChats.addAll(provider.user.chats ?? []);
+        for (var company in provider.user.companys ?? []) {
+          tmpChats.addAll(company.chats ?? []);
         }
-        return num;
-      });
-      this.chats.value = chats;
+        chats.value = filterAndSortChats(tmpChats);
+      }
+      refreshNoReadMgsCount();
     } catch (e, s) {
       var msg = '\r\n$e === $s';
       provider.errInfo += msg;
     }
+  }
+
+  /// 过滤和排序消息
+  List<ISession> filterAndSortChats(List<ISession> chats) {
+    chats = chats
+        .where((element) =>
+            element.chatdata.value.lastMessage != null ||
+            element.chatdata.value.recently)
+        .toList();
+
+    /// 排序
+    chats.sort((a, b) {
+      var num = 0;
+      if (b.chatdata.value.lastMsgTime == a.chatdata.value.lastMsgTime) {
+        num = b.isBelongPerson ? 1 : -1;
+      } else {
+        num = b.chatdata.value.lastMsgTime > a.chatdata.value.lastMsgTime
+            ? 5
+            : -5;
+      }
+      return num;
+    });
+
+    return chats;
   }
 
   /// 订阅变更
@@ -244,8 +248,9 @@ class IndexController extends GetxController {
   void initNoReadCommand() {
     //沟通未读消息提示处理
     command.subscribeByFlag('session', ([List<dynamic>? args]) {
-      loadChats();
-      refreshNoReadMgsCount();
+      if (provider.inited) {
+        loadChats();
+      }
     });
   }
 
@@ -347,6 +352,14 @@ class IndexController extends GetxController {
     }
   }
 
+  /// 唤醒
+  void wakeUp() {
+    kernel.restart().then((value) async {
+      await relationCtrl.loadChats(true);
+      relationCtrl.chats.refresh();
+    });
+  }
+
   bool canAutoLogin([List<String>? account]) {
     account ??= Storage.getList(Constants.account);
     if (account.isNotEmpty && account.last != "") {
@@ -359,6 +372,7 @@ class IndexController extends GetxController {
     Storage.setListValue(Constants.account, 1, "");
   }
 
+  /// 自动登录
   Future<void> autoLogin([List<String>? account]) async {
     account ??= Storage.getList(Constants.account);
     if (!canAutoLogin(account)) {
@@ -368,7 +382,9 @@ class IndexController extends GetxController {
     String accountName = account.first;
     String passWord = account.last;
     var login = await provider.login(accountName, passWord);
-    if (!login.success) {
+    if (login.success) {
+      Get.offAndToNamed(Routers.logintrans, arguments: true);
+    } else {
       // exitLogin(false);
 
       if (kernel.isOnline) {

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/models/index.dart';
 import 'package:orginone/common/routers/index.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/components/widgets/gy_scaffold.dart';
 
 import 'item.dart';

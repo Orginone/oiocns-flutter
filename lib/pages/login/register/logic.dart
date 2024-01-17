@@ -5,7 +5,7 @@ import 'package:orginone/common/values/constants.dart';
 import 'package:orginone/components/widgets/loading_dialog.dart';
 import 'package:orginone/config/location.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/alert_dialog_utils.dart';
 import 'package:orginone/utils/toast_utils.dart';
 

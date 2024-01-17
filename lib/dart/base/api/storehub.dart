@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/http_util.dart';
 import 'package:orginone/utils/index.dart' as utils;
 import 'package:orginone/utils/toast_utils.dart';
@@ -39,9 +39,10 @@ class StoreHub {
   })  : _timeout = timeout,
         _connection = HubConnectionBuilder()
             .withUrl(url, options: HttpConnectionOptions())
-            .withAutomaticReconnect(
-                retryDelays: List.generate(1000, (index) => 2000))
-            .build() {
+            .withAutomaticReconnect(retryDelays: [
+          0,
+          ...List.generate(3, (index) => timeout + 2000)
+        ]).build() {
     _connection.keepAliveIntervalInMilliseconds = interval;
     _connection.serverTimeoutInMilliseconds = timeout;
     _connection.onclose(({error}) {
@@ -101,12 +102,16 @@ class StoreHub {
   }
 
   void _callDisconnectedCallbacks([Exception? error]) {
+    print(
+        '>>>===onDisconnected:${_disconnectedCallbacks.length} ${_connection.state}');
     for (final callback in _disconnectedCallbacks) {
       callback(error);
     }
   }
 
   void _callConnectedCallbacks() {
+    print(
+        '>>>===onConnected:${_connectedCallbacks.length} ${_connection.state}');
     for (final callback in _connectedCallbacks) {
       callback();
     }
@@ -141,23 +146,28 @@ class StoreHub {
 
   /// 启动链接
   /// @returns {void} 无返回值
-  void start() {
-    if (!_isStarted) {
-      if (!isConnected) {
-        _starting();
-      }
+  Future<void> start() async {
+    if (!isConnected) {
+      await _starting();
     }
   }
 
   /// 重新建立连接
   /// @returns {void} 无返回值
   Future<void> restart() async {
-    if (!isConnected && _connection.state == HubConnectionState.Disconnected) {
-      // await _connection.stop().then((_) {
-      // start();
-      // });
-    } else if (_connection.state != HubConnectionState.Reconnecting) {
-      start();
+    // if (!isConnected && _connection.state != HubConnectionState.Disconnected) {
+    //   // await _connection.stop().then((_) {
+    //   // start();
+    //   // });
+    // } else
+    print('>>>===$isConnected ${_connection.state}');
+    if (_connection.state != HubConnectionState.Connected &&
+        _connection.state != HubConnectionState.Connecting &&
+        _connection.state != HubConnectionState.Reconnecting) {
+      if (isConnected) {
+        await _connection.stop();
+      }
+      await start();
     }
   }
 
@@ -221,15 +231,15 @@ class StoreHub {
       {List<Object>? args, bool? retry = false}) async {
     Object? resObj;
     try {
-      if (isConnected) {
-        resObj = await _connection.invoke(methodName, args: args);
-      } else {
-        resObj = await _restRequest(
-          'post',
-          '${Constant.rest}/${methodName.toLowerCase()}',
-          args!.isNotEmpty ? args[0] : {},
-        );
-      }
+      // if (isConnected) {
+      resObj = await _connection.invoke(methodName, args: args);
+      // } else {
+      //   resObj = await _restRequest(
+      //     'post',
+      //     '${Constant.rest}/${methodName.toLowerCase()}',
+      //     args!.isNotEmpty ? args[0] : {},
+      //   );
+      // }
       if (null != resObj) {
         ResultType res = ResultType.fromJson(resObj as Map<String, dynamic>);
         LogUtil.d('接口：${Constant.rest}/${methodName.toLowerCase()}');
@@ -292,7 +302,7 @@ class StoreHub {
           LogUtil.e('Http:操作失败,${res.msg}');
           // TODO 再实际业务端做提醒，不然刚进入app 有可能会出现很多异常弹框，体验很不好
           // ToastUtils.showMsg(msg: res.msg);
-          throw (res.msg);
+          // throw (res.msg);
         }
       } else {
         LogUtil.e('Http:===========================err');

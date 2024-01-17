@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_page_view.dart';
 import 'package:orginone/components/widgets/keep_alive_widget.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/home/portal/workBench/view.dart';
 
 import 'cohort/view.dart';
@@ -18,7 +18,7 @@ class PortalPage extends BaseSubmenuPage<PortalController, PortalState> {
       case "workbench":
         return KeepAliveWidget(child: WorkBenchPage(type, label));
       case "activity":
-        if (null != relationCtrl.user) {
+        if (null != kernel.user) {
           var cohortActivity = GroupActivity(
             relationCtrl.user,
             relationCtrl.chats
@@ -33,7 +33,7 @@ class PortalPage extends BaseSubmenuPage<PortalController, PortalState> {
           return KeepAliveWidget(child: Container());
         }
       case "circle":
-        if (null != relationCtrl.user) {
+        if (null != kernel.user) {
           var friendsActivity = GroupActivity(
             relationCtrl.user,
             [

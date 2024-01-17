@@ -1,7 +1,7 @@
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/core/public/operates.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../base/model.dart';
@@ -176,7 +176,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
   ShareIcon findShare(String id) {
     var metadata = this.findMetadata<XEntity>(id);
     ShareIcon shareIcon = ShareIcon(
-        name: metadata?.name ?? '加载中...',
+        name: metadata?.name ?? '',
         typeName: metadata?.typeName ?? '未知',
         avatar: parseAvatar(metadata?.icon));
     return shareIcon;

@@ -10,7 +10,7 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/work/initiate_work/state.dart';
 import 'package:orginone/pages/work/state.dart';
 import 'package:orginone/utils/index.dart';

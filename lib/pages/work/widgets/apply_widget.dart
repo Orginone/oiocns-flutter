@@ -7,7 +7,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/work/widgets/approve_widget.dart';
 import 'package:orginone/utils/icons.dart';
 
@@ -77,7 +77,7 @@ class ApplyWidget extends StatelessWidget {
     if (target?.icon == null) {
       icon = shareIcon ??
           relationCtrl.provider.user.findShareById(target?.id ?? '');
-      if (icon != null && icon.name.isEmpty) {
+      if (icon.name.isEmpty) {
         icon.name = (shareIcon == null
                 ? target == null
                     ? ''
@@ -102,7 +102,7 @@ class ApplyWidget extends StatelessWidget {
     // LogUtil.d(icon?.name);
     // LogUtil.d(icon?.typeName);
     // LogUtil.d(icon?.avatar?.thumbnail);
-    return icon?.avatar?.thumbnailUint8List == null
+    return icon.avatar?.thumbnailUint8List == null
         ? XImageWidget.asset(
             IconsUtils.workDefaultAvatar(
                 target?.typeName ?? shareIcon?.typeName ?? ''),
@@ -112,7 +112,7 @@ class ApplyWidget extends StatelessWidget {
             fit: BoxFit.fill,
           )
         : XImageWidget(
-            data: icon?.avatar?.thumbnailUint8List,
+            data: icon.avatar?.thumbnailUint8List,
             width: 20,
             height: 20,
             type: ImageWidgetType.memory,
@@ -139,7 +139,7 @@ class ApplyWidget extends StatelessWidget {
     var result = <Widget>[
       // Image.network('src'),
       _imageWidget(shareIcon: record),
-      TextWidget.body1(record?.name ?? '').paddingLeft(AppSpace.listItem),
+      TextWidget.body1(record.name ?? '').paddingLeft(AppSpace.listItem),
       const SizedBox(
               height: 15, width: 4, child: VerticalDivider(color: Colors.grey))
           .paddingLeft(AppSpace.listItem),

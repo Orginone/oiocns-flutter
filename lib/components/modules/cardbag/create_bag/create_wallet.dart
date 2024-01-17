@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/components/modules/cardbag/index.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/buttons.dart';
 import 'package:orginone/components/widgets/common_widget.dart';

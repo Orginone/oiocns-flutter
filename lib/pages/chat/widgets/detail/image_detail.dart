@@ -5,7 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/components/widgets/photo_widget.dart';

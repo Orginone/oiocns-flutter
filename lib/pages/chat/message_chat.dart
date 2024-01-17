@@ -10,6 +10,7 @@ import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/utils/index.dart';
 import 'package:orginone/components/widgets/gy_scaffold.dart';
@@ -25,6 +26,7 @@ class MessageChatPage
 
   @override
   Widget buildView() {
+    state.noReadCount = state.chat.noReadCount;
     return GyScaffold(
       titleWidget: _title(),
       actions: _actions(),
@@ -161,6 +163,11 @@ class MessageChatController extends BaseController<MessageChatState> {
     //TODO:无此方法
     // settingCtrl.chat.currentChat = null;
     super.onClose();
+    // print(
+    //     '>>>>>>======messageChat ${state.chat.noReadCount} ${state.noReadCount}');
+    if (state.chat.noReadCount != state.noReadCount) {
+      relationCtrl.loadChats();
+    }
   }
 
   @override
@@ -176,6 +183,7 @@ class MessageChatController extends BaseController<MessageChatState> {
 
 class MessageChatState extends BaseGetState {
   late ISession chat;
+  late String noReadCount = '';
 
   ChatBoxController get chatBoxCtrl => Get.find();
 

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/thing/standard/species.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/relation/about/version_list/item.dart';
 import 'package:orginone/utils/date_utils%20copy.dart';
 import 'package:orginone/utils/toast_utils.dart';

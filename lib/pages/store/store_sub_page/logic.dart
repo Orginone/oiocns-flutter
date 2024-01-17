@@ -8,7 +8,7 @@ import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/store/store_tree/state.dart';
 import 'package:orginone/utils/index.dart';
 

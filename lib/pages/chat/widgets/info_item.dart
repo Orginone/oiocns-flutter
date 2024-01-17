@@ -16,7 +16,7 @@ import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/widgets/detail/uploading_detail.dart';
 import 'package:orginone/utils/bus/event_bus_helper.dart';
@@ -35,7 +35,7 @@ enum Direction { leftStart, rightStart }
 
 enum DetailFunc {
   recall("撤回"),
-  remove("删除"),
+  // remove("删除"),
   forward("转发"),
   copy("复制"),
   reply("回复");
@@ -194,7 +194,7 @@ class DetailItemWidget extends GetView<IndexController> {
       ],
     );
 
-    String userId = chat.userId;
+    // String userId = chat.userId;
     List<DetailFunc> func = [
       DetailFunc.forward,
       DetailFunc.reply,
@@ -202,9 +202,9 @@ class DetailItemWidget extends GetView<IndexController> {
     if (msg.msgType == MessageType.text.label) {
       func.add(DetailFunc.copy);
     }
-    if (userId == controller.user.id) {
-      func.add(DetailFunc.remove);
-    }
+    // if (userId == controller.user.id) {
+    //   func.add(DetailFunc.remove);
+    // }
     if (isSelf) {
       var parsedCreateTime = DateTime.parse(msg.createTime);
       var diff = parsedCreateTime.difference(DateTime.now());
@@ -240,9 +240,9 @@ class DetailItemWidget extends GetView<IndexController> {
                         case DetailFunc.recall:
                           chat.recallMessage(msg.id);
                           break;
-                        case DetailFunc.remove:
-                          chat.deleteMessage(msg.id);
-                          break;
+                        // case DetailFunc.remove:
+                        //   chat.deleteMessage(msg.id);
+                        //   break;
                         case DetailFunc.forward:
                           chatController.forward(msg.msgType, msg);
                           break;

@@ -7,7 +7,7 @@ import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/thing/standard/form.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 import 'apply.dart';
 

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
 import 'package:orginone/components/widgets/mapping_components.dart';
 import 'package:orginone/pages/work/widgets/approve_widget.dart';

@@ -7,7 +7,7 @@ import 'package:orginone/components/widgets/TargetActivity/target_activity_view.
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/wallet_controller.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/chat/message_chat_info/binding.dart';
 import 'package:orginone/pages/chat/message_chats/bindings.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_list.dart';
@@ -209,7 +209,7 @@ class RoutePages {
     ),
     GetPage(
       name: Routers.createWork,
-      page: () => CreateWorkPage(),
+      page: () => const CreateWorkPage(),
       binding: CreateWorkBinding(),
     ),
     GetPage(
@@ -481,7 +481,9 @@ class RoutePages {
             : ['${Constant.host}${file.shareLink}']
       });
     } else if (FileUtils.isWord(extension)) {
+      // TODO 临时处理方案，让其可以下载通过第三方软件查看
       Get.toNamed(Routers.fileReader, arguments: {'file': file});
+      // Get.toNamed(Routers.messageFile, arguments: {'file': file});
     } else if (FileUtils.isVideo(extension)) {
       Get.toNamed(Routers.videoPlay, arguments: {'file': file});
     } else {

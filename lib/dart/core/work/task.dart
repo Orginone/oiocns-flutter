@@ -8,7 +8,7 @@ import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/dart/core/work/apply.dart';
 import 'package:orginone/dart/core/work/index.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/toast_utils.dart';
 

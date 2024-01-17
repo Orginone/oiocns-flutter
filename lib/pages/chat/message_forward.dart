@@ -7,7 +7,7 @@ import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/gy_scaffold.dart';
 import 'package:orginone/components/widgets/image_widget.dart';

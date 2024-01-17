@@ -15,16 +15,17 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.4+28
+version: 1.0.3+103
 
 environment:
   sdk: ">=2.17.0 <4.0.0"
   flutter: ">=3.10.0"
 
 flutter_icons:
-  android: "ic_launcher"
-  ios: false
-  image_path: "images/logo.png"
+  android: true
+  ios: true
+  remove_alpha_ios: true
+  image_path: "assets/icons/logo.png"
 
 flutter_app_name:
   name: "奥集能"
@@ -162,6 +163,9 @@ dependencies:
   wechat_assets_picker: ^8.6.3
   wechat_camera_picker: ^4.0.2
   flutter_xupdate: ^2.0.0
+
+  #网络库
+  connectivity: ^3.0.3
 
 dev_dependencies:
   flutter_test:

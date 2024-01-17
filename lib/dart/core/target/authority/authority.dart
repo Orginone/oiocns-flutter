@@ -3,7 +3,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import '../../thing/directory.dart';
 
 ///权限结构

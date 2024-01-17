@@ -1,4 +1,4 @@
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import '../../../dart/base/model.dart' hide ThingModel;
 
 class ChoiceThingNetWork {

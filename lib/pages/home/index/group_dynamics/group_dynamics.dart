@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:getwidget/getwidget.dart';
 
-import 'package:orginone/main.dart';
 import 'package:orginone/pages/home/index/widget/widget.dart';
 import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/config/unified.dart';
 
 class GroupDynamics extends StatefulWidget {

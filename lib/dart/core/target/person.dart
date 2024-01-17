@@ -11,7 +11,7 @@ import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/target/team/hospital.dart';
 import 'package:orginone/dart/core/target/team/university.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 import '../../base/model.dart';
 import '../../base/schema.dart';
@@ -326,6 +326,7 @@ class Person extends Belong implements IPerson {
     return targets;
   }
 
+  /// 深度加载数据
   @override
   Future<void> deepLoad({bool? reload = false}) async {
     await cacheObj.all();

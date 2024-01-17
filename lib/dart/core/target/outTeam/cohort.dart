@@ -5,6 +5,7 @@ import 'package:orginone/dart/core/target/base/target.dart';
 
 abstract class ICohort extends ITarget {}
 
+/// 群组
 class Cohort extends Target implements ICohort {
   Cohort(this.metadata, this.space, this.relationId)
       : super(

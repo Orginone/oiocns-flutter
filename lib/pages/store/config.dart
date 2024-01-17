@@ -14,7 +14,7 @@ import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/dart/core/thing/systemfile.dart';
 import 'package:orginone/dart/core/work/index.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 import 'store_tree/state.dart';
 

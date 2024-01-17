@@ -3,7 +3,7 @@ import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/toast_utils.dart';
 
 import 'state.dart';

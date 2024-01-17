@@ -100,7 +100,8 @@ class AboutPage extends BaseGetView<AboutController, AboutState> {
                               '版本信息',
                               style: TextStyle(fontSize: 16),
                             ),
-                            Icon(Icons.chevron_right, color: Colors.black54)
+                            Icon(Icons.chevron_right,
+                                color: Color.fromRGBO(0, 0, 0, 0.541))
                           ],
                         ),
                       ),

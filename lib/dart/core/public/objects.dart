@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 ///对象工具类
 class XObject<T extends Xbase> {
@@ -44,14 +44,17 @@ class XObject<T extends Xbase> {
     return this._objName + path;
   }
 
-  Future<dynamic> all() async {
+  Future<dynamic> all([bool reload = false]) async {
     var kernel = KernelApi();
-    if (!this._loaded) {
+    if (!this._loaded || reload) {
       var res = await kernel.objectGet(this._target.belongId!, this._relations,
           this._objName, (data) => data);
       if (res.success) {
         this._cache = res.data;
         this._loaded = true;
+        // print('>>>>>>======all $res');
+      } else {
+        print('>>>>>>======allErr $res');
       }
     }
     return this._cache;

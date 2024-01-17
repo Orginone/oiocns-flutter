@@ -12,7 +12,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/channel/wallet_channel.dart';
-import 'package:orginone/utils/foreground_utils.dart';
 import 'package:orginone/utils/hive_utils.dart';
 import 'package:orginone/utils/notification_util.dart';
 import 'package:orginone/utils/storage.dart';
@@ -31,7 +30,7 @@ class Global {
 
     await NotificationUtil.initializeService();
 
-    await ForegroundUtils().initForegroundTask();
+    // await ForegroundUtils().initForegroundTask();
 
     WalletChannel().init();
     // 日志初始化

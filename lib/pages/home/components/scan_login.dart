@@ -4,7 +4,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/model.dart' as model;
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/toast_utils.dart';
 
 class ScanLoginPage extends StatelessWidget {

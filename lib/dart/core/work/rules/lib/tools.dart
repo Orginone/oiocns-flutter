@@ -6,7 +6,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/work/rules/base/ruleBase.dart';
 import 'package:orginone/dart/core/work/rules/base/ruleClass.dart';
 import 'package:orginone/dart/core/work/rules/lib/const.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 // import { DataType } from 'typings/globelType';
 // import { RuleTypes } from '../type';
@@ -228,7 +228,7 @@ var fixedCharacterResolver = (String ruleStr) async {
       case '「单位编码」':
         return company.id;
       case '「使用人名称」':
-        return relationCtrl.user.metadata.name!;
+        return relationCtrl.user.metadata.name ?? "";
       case '「使用人编码」':
         return relationCtrl.user.metadata.id;
       case '「系统时间」':

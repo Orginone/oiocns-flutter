@@ -78,8 +78,8 @@ class KernelApi {
     return _storeHub.isConnected;
   }
 
-  void restart() {
-    _storeHub.restart();
+  Future<void> restart() async {
+    await _storeHub.restart();
   }
 
   Future<void> stop() async {
@@ -173,6 +173,7 @@ class KernelApi {
     ResultType res = await _storeHub.invoke('Auth', args: [req]);
 
     if (res.success) {
+      unSubscribe();
       UserModel um = UserModel.fromJson(res.data);
       HiveUtils.putUser(um);
       _storeHub.accessToken = um.accessToken!;
@@ -1285,13 +1286,17 @@ class KernelApi {
   /// @param flag 标识
   /// @param keys 唯一标志
   /// @param operation 操作
-  unSubscribe(String key) {
-    for (var flag in _subMethods.keys) {
-      _subMethods[flag] = _subMethods[flag]!
-          .where(
-            (i) => !i['keys'].contains(key),
-          )
-          .toList();
+  unSubscribe([String? key]) {
+    if (null != key) {
+      for (var flag in _subMethods.keys) {
+        _subMethods[flag] = _subMethods[flag]!
+            .where(
+              (i) => !i['keys'].contains(key),
+            )
+            .toList();
+      }
+    } else {
+      _subMethods.clear();
     }
   }
 
@@ -1311,7 +1316,7 @@ class KernelApi {
 
     for (var element in newOperation) {
       if (_methods[methodName]!.contains(element)) {
-        return;
+        break;
       } else {
         _methods[methodName]!.add(element);
       }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/values/index.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 import '../../../common/routers/index.dart';
 

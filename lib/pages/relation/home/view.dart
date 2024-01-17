@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/relation/home/item.dart';
 import 'package:orginone/pages/relation/home/logic.dart';
 import 'state.dart';

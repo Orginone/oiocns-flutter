@@ -1,5 +1,5 @@
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 class ThingModel {
   String? id;

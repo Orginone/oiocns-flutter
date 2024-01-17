@@ -12,6 +12,7 @@ class BaseSubmenuState<T extends FrequentlyUsed> extends BaseGetState {
   String tag = '';
 
   var tabIndex = 0;
+  RxBool isConnected = true.obs;
 }
 
 class FrequentlyUsed {

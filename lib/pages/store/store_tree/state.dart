@@ -4,7 +4,7 @@ import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_s
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/standard/form.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 class StoreTreeState extends BaseBreadcrumbNavState<StoreTreeNav> {
   StoreTreeState() {

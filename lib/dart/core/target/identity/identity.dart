@@ -7,7 +7,7 @@ import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 abstract class IIdentity extends IFileInfo<XIdentity> {
   /// 设置身份（角色）的用户

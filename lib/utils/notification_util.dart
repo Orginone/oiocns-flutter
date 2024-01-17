@@ -4,7 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:orginone/dart/core/chat/message.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/string_util.dart';
 
 const notificationChannelId = 'orginone';
@@ -21,14 +21,15 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 class NotificationUtil {
+  static int nId = 0;
   static Future<void> initializeService() async {
     flutterLocalNotificationsPlugin.initialize(initRelations);
     if (Platform.isAndroid) {
       const AndroidNotificationChannel channel = AndroidNotificationChannel(
         notificationChannelId, // id
-        'test', // title
-        description: 'test',
-        importance: Importance.low,
+        '新消息通知', // title
+        description: '奥集能收到新消息时使用的通知类别',
+        // importance: Importance.low,
       );
       await flutterLocalNotificationsPlugin
           .resolvePlatformSpecificImplementation<
@@ -49,13 +50,17 @@ class NotificationUtil {
 
   static void showChatMessageNotification(IMessage msg) async {
     // ShareIcon share = relationCtrl.user.findShareById(msg.metadata.fromId);
-    showMsgNotification("${msg.from.name}发来一条消息",
+    showMsgNotification(msg.id, "${msg.from.name}发来一条消息",
         StringUtil.msgConversion(msg, relationCtrl.user.id));
   }
 
-  static void showMsgNotification(String title, String body) {
+  static void showMsgNotification(String id, String title, String body) {
+    print('>>>===悬浮通知$id $nId');
+    // [Permission.notification, Permission.storage].request().then((val) {
+    //   print('>>>===$val');
+    //   if (PermissionStatus.granted == val) {
     flutterLocalNotificationsPlugin.show(
-      notificationId,
+      nId++,
       title,
       body,
       const NotificationDetails(
@@ -67,6 +72,8 @@ class NotificationUtil {
           iOS: DarwinNotificationDetails(
               threadIdentifier: notificationChannelId)),
     );
+    //   }
+    // });
   }
 }
 
@@ -75,7 +82,7 @@ Future<void> onStart(service) async {
 
   if (Platform.isAndroid) {
     // Timer.periodic(const Duration(seconds: 3), (timer) async {
-    //   print('奥集能前台进程运行中');
+    print('>>>===奥集能前台进程运行中');
     // });
   }
 }

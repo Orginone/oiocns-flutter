@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 class RelationCenterState extends BaseBreadcrumbNavState<RelationNavModel> {
   late bool isRelationSubPage;
@@ -22,7 +22,7 @@ class RelationCenterState extends BaseBreadcrumbNavState<RelationNavModel> {
           spaceEnum: SpaceEnum.user,
         ),
         ...joinedCompanies
-                ?.map((element) => RelationNavModel(
+                .map((element) => RelationNavModel(
                     name: element.metadata.name!,
                     id: element.metadata.id,
                     image: element.metadata.avatarThumbnail(),

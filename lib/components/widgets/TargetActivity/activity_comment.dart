@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/components/widgets/team_avatar.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 //动态评论
 class ActivityComment extends StatelessWidget {

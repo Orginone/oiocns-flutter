@@ -8,7 +8,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 
 import 'package:orginone/dart/core/thing/fileinfo.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/index.dart';
 
 /// 系统文件接口

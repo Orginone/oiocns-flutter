@@ -18,11 +18,19 @@
       "name": "prod",
       "request": "launch",
       "type": "dart",
-      "program": "lib/main_prod.dart",
+      "program": "lib/main.dart",
       "args": [
         "--flavor",
         "prod" //development or staging or production
       ]
+      // "flutterMode": "release"
+    },
+    {
+      "name": "prod-ios",
+      "request": "launch",
+      "type": "dart",
+      "program": "lib/main.dart",
+      "args": []
       // "flutterMode": "release"
     }
   ]

@@ -4,7 +4,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 class UserInfoState extends BaseGetState {
   IPerson? get user => relationCtrl.user;

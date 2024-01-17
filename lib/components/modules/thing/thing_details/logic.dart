@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/main.dart';
-import 'package:orginone/pages/store/state.dart';
 
 import '../../../../dart/core/getx/base_controller.dart';
 import 'state.dart';

@@ -10,8 +10,8 @@ import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_s
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/components/widgets/popup_widget.dart';
-import 'package:orginone/main.dart';
 import 'package:orginone/utils/string_util.dart';
+import 'package:orginone/main_bean.dart';
 
 class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
     extends StatelessWidget {

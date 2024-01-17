@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/utils/index.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 import 'base_submenu_controller.dart';
 import 'base_submenu_state.dart';
@@ -119,7 +119,7 @@ abstract class BaseSubmenuPage<T extends BaseSubmenuController,
 
   Widget body() {
     return Obx(() {
-      var groups = state.subGroup.value.groups!;
+      var groups = state.subGroup.value.groups ?? [];
 
       return ExtendedTabBarView(
         controller: state.tabController,

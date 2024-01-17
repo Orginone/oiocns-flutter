@@ -9,7 +9,7 @@ import 'package:orginone/dart/base/common/format.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_controller.dart';
 import 'package:orginone/pages/home/home/logic.dart';
 import 'package:orginone/pages/home/index/widget/widget.dart';

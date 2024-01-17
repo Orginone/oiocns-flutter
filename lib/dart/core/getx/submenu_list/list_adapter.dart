@@ -9,7 +9,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/icons.dart';
 
 class ListAdapter {
@@ -53,7 +53,7 @@ class ListAdapter {
   }
 
   ListAdapter.chat(ISession chat) {
-    noReadCount = ''.obs;
+    noReadCount = chat.noReadCount.obs;
     labels = chat.groupTags;
     bool isTop = labels.contains("常用");
     isUserLabel = false;
@@ -110,9 +110,9 @@ class ListAdapter {
     image = chat.share.avatar?.thumbnailUint8List ??
         chat.share.avatar?.defaultAvatar;
 
-    callback = () {
+    callback = () async {
       // chat.onMessage((messages) => null);
-      Get.toNamed(
+      await Get.toNamed(
         Routers.messageChat,
         arguments: chat,
       );
@@ -253,7 +253,9 @@ class ListAdapter {
 
   void refreshNoReadMgsCount([List<dynamic>? args]) {
     if (null != args && args.isNotEmpty) {
+      // print('>>>>>>======start ${noReadCount.value}');
       noReadCount.value = args[0] > 0 ? args[0].toString() : '';
+      // print('>>>>>>======end ${noReadCount.value}');
     }
   }
 }

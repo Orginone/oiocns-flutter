@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/components/modules/cardbag/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/icons.dart';
 import 'package:orginone/components/widgets/buttons.dart';
 import 'package:orginone/components/widgets/gy_scaffold.dart';

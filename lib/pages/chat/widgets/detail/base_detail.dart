@@ -4,7 +4,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/components/widgets/target_text.dart';
 import 'package:orginone/config/unified.dart';
 

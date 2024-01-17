@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:common_utils/common_utils.dart';
 import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -190,9 +188,7 @@ class Message implements IMessage {
 
   @override
   bool get isReaded {
-    return (chat.isBelongPerson ||
-        isMySend ||
-        labels.any((i) => i.userId == user.id));
+    return (isMySend || labels.any((i) => i.userId == user.id));
   }
 
   @override
@@ -266,7 +262,7 @@ class Message implements IMessage {
       case MessageType.text:
       case MessageType.notify:
       case MessageType.recall:
-        return '$header${msgBody.substring(0, min(15, msgBody.length))}';
+        return '$header$msgBody';
       case MessageType.voice:
         return '$header[${MessageType.voice}]';
 

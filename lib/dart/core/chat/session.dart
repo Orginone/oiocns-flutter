@@ -19,6 +19,7 @@ import 'package:orginone/utils/notification_util.dart';
 import '../target/team/company.dart';
 
 // 空时间
+
 var nullTime = DateTime.parse('2022-07-01');
 // 消息变更推送
 var msgChatNotify = Emitter();
@@ -40,11 +41,11 @@ abstract class ISession extends IEntity<XEntity> {
   /// 会话的用户
   late ITarget target;
 
-  /// 消息类会话元数据
+  /// 会话主体元数据
   late Rx<MsgChatData> chatdata;
 
   /// 未读消息数量
-  late RxString noReadCount;
+  late String noReadCount;
 
   /// 会话描述
   late String information;
@@ -71,7 +72,7 @@ abstract class ISession extends IEntity<XEntity> {
   void unMessage();
 
   /// 消息变更通知
-  void onMessage(Function(List<IMessage> messages)? callback);
+  Future<void> onMessage(Function(List<IMessage> messages)? callback);
 
   /// 向会话发送消息
   Future<bool> sendMessage(
@@ -96,6 +97,9 @@ abstract class ISession extends IEntity<XEntity> {
 
   /// 缓存会话数据
   Future<bool> cacheChatData([bool? notify]);
+
+  /// 刷新消息
+  Future<void> refreshMessage();
 }
 
 /// 会话实现
@@ -115,7 +119,7 @@ class Session extends Entity<XEntity> implements ISession {
       chatRemark: metadata.remark ?? '',
       isToping: false,
       noReadCount: 0,
-      lastMsgTime: 0, //nullTime,
+      lastMsgTime: nullTime.millisecondsSinceEpoch,
       mentionMe: false,
       labels: [],
       lastMessage: null,
@@ -124,10 +128,11 @@ class Session extends Entity<XEntity> implements ISession {
     // members = <XTarget>[].obs;
     messages = <IMessage>[].obs;
     activity = Activity(metadata, this);
-    noReadCount = "".obs;
+    noReadCount = "";
+    newMessageHandler = NewMessageHandler(this);
     // loadCacheChatData();
     Future.delayed(Duration(milliseconds: id == userId ? 100 : 0),
-        () async => {await loadCacheChatData()});
+        () async => {await _loadCacheChatData()});
     // if (id != userId) {
     //   loadCacheChatData();
     // }
@@ -148,7 +153,7 @@ class Session extends Entity<XEntity> implements ISession {
 
   /// 未读消息数量
   @override
-  late RxString noReadCount;
+  late String noReadCount;
 
   // @override
   // MsgChatData get chatdata {
@@ -159,6 +164,9 @@ class Session extends Entity<XEntity> implements ISession {
   // set chatdata(MsgChatData chatdata) {
   //   _chatdata.value = chatdata;
   // }
+
+  /// 新消息处理器（未读新消息）
+  late NewMessageHandler newMessageHandler;
 
   /// 会话的历史消息
   @override
@@ -172,6 +180,12 @@ class Session extends Entity<XEntity> implements ISession {
   // @override
   // RxList<IMessage> messages = [];
   Function(List<IMessage> messages)? messageNotify;
+
+  /// 判断是否初始化
+  bool isLoaded = false;
+
+  /// 每页条数
+  int pageSize = 20;
 
   XCollection<ChatMessageType> get coll {
     return target.resource.messageColl;
@@ -288,9 +302,10 @@ class Session extends Entity<XEntity> implements ISession {
 
   @override
   Future<int> moreMessage() async {
+    int skip = messages.length;
     var data = await coll.loadSpace({
-      "take": 30,
-      "skip": messages.length,
+      "take": pageSize,
+      "skip": skip,
       "options": {
         "match": sessionMatch,
         "sort": {
@@ -300,11 +315,17 @@ class Session extends Entity<XEntity> implements ISession {
     }, ChatMessageType.fromJson);
     if (data.isNotEmpty) {
       for (var msg in data) {
-        messages.add(Message(msg, this));
+        newMessageHandler.put(Message(msg, this));
       }
+      readMessages(messages);
       if (chatdata.value.lastMsgTime == nullTime) {
+        chatdata.value.lastMessage = data[0];
         chatdata.value.lastMsgTime =
             DateTime.parse(data[0].createTime!).millisecondsSinceEpoch;
+        // if (reload) {
+        //   await target.user?.cacheObj.all(reload: reload);
+        //   await loadCacheChatData();
+        // }
       }
       return data.length;
     }
@@ -317,25 +338,54 @@ class Session extends Entity<XEntity> implements ISession {
   }
 
   @override
-  void onMessage(Function(List<IMessage> messages)? callback) {
+  Future<void> onMessage(Function(List<IMessage> messages)? callback) async {
+    // 判断是否有缓存，有缓存就不执行
     messageNotify = callback;
-    moreMessage().then((e) async {
-      var ids = messages.where((i) => !i.isReaded).map((i) => i.id).toList();
+    if (isLoaded) {
+      readMessages(messages);
+      return;
+    }
+
+    clearCache();
+    isLoaded = true;
+    // await loadCacheChatData();
+    await moreMessage();
+    // readMessages(messages);
+  }
+
+  void readMessages(List<IMessage> messages, [Message? msg]) {
+    var readCount = 0;
+    if (null != msg) {
+      // if (null != messageNotify) return;
+
+      var index = messages.indexWhere((i) => i.id == msg.id);
+      if (index > -1) {
+        messages[index] = msg;
+        readCount = msg.isMySend ? 0 : 1;
+      }
+    } else {
+      var ids = messages
+          .where((i) {
+            return !i.isReaded;
+          })
+          .map((i) => i.id)
+          .toList();
       if (ids.isNotEmpty) {
         tagMessage(ids, '已读');
+        readCount = ids.length;
       }
-      chatdata.value.mentionMe = false;
-      if (chatdata.value.noReadCount > 0) {
-        chatdata.value.noReadCount = 0;
-        refreshNoReadCount();
-        cacheChatData(true);
-      }
-      command.emitterFlag('session');
-      command.emitterFlag(
-          'session-${chatdata.value.fullId}', [chatdata.value.noReadCount]);
-      msgChatNotify.changCallback();
-      messageNotify?.call(messages);
-    });
+    }
+
+    chatdata.value.mentionMe = false;
+    if (chatdata.value.noReadCount > 0 && readCount > 0) {
+      chatdata.value.noReadCount -= min(chatdata.value.noReadCount, readCount);
+      if (null == msg) cacheChatData(true);
+      refreshNoReadCount();
+    }
+    // print('>>>>>>======readMessages $readCount $msg ${messages.length}');
+    if (readCount > 0 && null != msg) {
+      notification();
+    }
   }
 
   @override
@@ -413,7 +463,7 @@ class Session extends Entity<XEntity> implements ISession {
         },
         copyId,
         ChatMessageType.fromJson);
-    if (data != null) {
+    if (data != null && data.isNotEmpty) {
       await notify('replace', data);
     }
   }
@@ -453,59 +503,22 @@ class Session extends Entity<XEntity> implements ISession {
     return false;
   }
 
-  void receiveMessage(String operate, ChatMessageType data) {
-    var imsg = Message(data, this);
-    print(
-        '>>>==========================================================================');
-    print(
-        '>>>KEY:$key ID:$id hashCode:$hashCode belong:$belongId target:${target.id} name:$name');
-    print(
-        '>>>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
-    if (operate == 'insert') {
-      messages.insert(0, imsg);
-      chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
-      chatdata.value.lastMessage = data;
-      if (messageNotify == null) {
-        chatdata.value.noReadCount += imsg.isMySend ? 0 : 1;
-        refreshNoReadCount();
-        if (!chatdata.value.mentionMe) {
-          chatdata.value.mentionMe = imsg.mentions.contains(userId);
-        }
-        // msgChatNotify.changCallback();
-        command.emitterFlag('session');
-        command.emitterFlag(
-            'session-${chatdata.value.fullId}', [chatdata.value.noReadCount]);
-        if (userId != data.fromId) {
-          NotificationUtil.showChatMessageNotification(imsg);
-        }
-      } else if (!imsg.isReaded) {
-        tagMessage([imsg.id], '已读');
-      }
-      cacheChatData(messageNotify != null && !imsg.isMySend);
-    } else {
-      var index = messages.indexWhere((i) => i.id == data.id);
-      if (index > -1) {
-        messages[index] = imsg;
-      }
-      if (chatdata.value.noReadCount > 0) {
-        chatdata.value.noReadCount -= imsg.isMySend ? 0 : 1;
-        refreshNoReadCount();
-        command.emitterFlag('session');
-        command.emitterFlag(
-            'session-${chatdata.value.fullId}', [chatdata.value.noReadCount]);
-      }
+  /// 刷新消息
+  @override
+  Future<void> refreshMessage() async {
+    clearCache();
+    await loadCacheChatData();
+    if (null != messageNotify) {
+      onMessage((messages) => null);
     }
-    messageNotify?.call(messages);
   }
 
-  void refreshNoReadCount() {
-    if (chatdata.value.noReadCount > 0) {
-      noReadCount.value = chatdata.value.noReadCount > 99
-          ? "99+"
-          : chatdata.value.noReadCount.toString();
-    } else {
-      noReadCount.value = '';
-    }
+  /// 清空缓存数据
+  void clearCache() {
+    isLoaded = false;
+    messages.clear();
+    newMessageHandler.clear();
+    // print('>>>>>>======clear');
   }
 
   Future<bool> notify(
@@ -525,14 +538,8 @@ class Session extends Entity<XEntity> implements ISession {
     );
   }
 
-  Future<void> loadCacheChatData() async {
-    var data = await target.user?.cacheObj
-        .get<MsgChatData>(cachePath, MsgChatData.fromJson);
-    if (data?.fullId == chatdata.value.fullId) {
-      chatdata.value = data!;
-      refreshNoReadCount();
-      msgChatNotify.changCallback();
-    }
+  Future<void> _loadCacheChatData() async {
+    await loadCacheChatData();
     target.user?.cacheObj.subscribe(chatdata.value.fullId, (data) {
       if (data.fullId == chatdata.value.fullId) {
         chatdata.value = data as MsgChatData;
@@ -541,7 +548,20 @@ class Session extends Entity<XEntity> implements ISession {
         command.emitterFlag('session');
       }
     });
+    // print('>>>>=======$key');
     _subscribeMessage();
+  }
+
+  Future<void> loadCacheChatData() async {
+    // target.user?.cacheObj.clear();
+    var data = await target.user?.cacheObj
+        .get<MsgChatData>(cachePath, MsgChatData.fromJson);
+    if (data?.fullId == chatdata.value.fullId) {
+      chatdata.value = data!;
+      // print('>>>>>>======loadCacheChatData ${data.toJson()}');
+      refreshNoReadCount();
+      msgChatNotify.changCallback();
+    }
   }
 
   @override
@@ -556,6 +576,68 @@ class Session extends Entity<XEntity> implements ISession {
       );
     }
     return success;
+  }
+
+  void notification([bool mobilePush = false, IMessage? msg]) {
+    command.emitterFlag(
+        'session-${chatdata.value.fullId}', [chatdata.value.noReadCount]);
+    command.emitterFlag('session');
+
+    msgChatNotify.changCallback();
+    messageNotify?.call(messages);
+
+    if (mobilePush && null != msg) {
+      NotificationUtil.showChatMessageNotification(msg);
+    }
+  }
+
+  void addMessage(ChatMessageType data, Message imsg) {
+    newMessageHandler.put(imsg, 0);
+    chatdata.value.lastMsgTime = DateTime.now().millisecondsSinceEpoch;
+    chatdata.value.lastMessage = data;
+  }
+
+  void newMessage(ChatMessageType data, Message msg) {
+    if (newMessageHandler.hasNoReadMessage(msg)) return;
+
+    addMessage(data, msg);
+    if (messageNotify == null) {
+      chatdata.value.noReadCount += msg.isMySend ? 0 : 1;
+      refreshNoReadCount();
+      if (!chatdata.value.mentionMe) {
+        chatdata.value.mentionMe = msg.mentions.contains(userId);
+      }
+      notification(userId != data.fromId, msg);
+    } else if (!msg.isReaded) {
+      tagMessage([msg.id], '已读');
+    }
+    cacheChatData(messageNotify != null && !msg.isMySend);
+  }
+
+  /// 接收推送消息
+  void receiveMessage(String operate, ChatMessageType data) {
+    var imsg = Message(data, this);
+    print(
+        '>>>==========================================================================');
+    print(
+        '>>>KEY:$key ID:$id hashCode:$hashCode belong:$belongId target:${target.id} name:$name');
+    print(
+        '>>>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+    if (operate == 'insert') {
+      newMessage(data, imsg);
+    } else {
+      readMessages(messages, imsg);
+    }
+  }
+
+  void refreshNoReadCount() {
+    if (chatdata.value.noReadCount > 0) {
+      noReadCount = chatdata.value.noReadCount > 99
+          ? "99+"
+          : chatdata.value.noReadCount.toString();
+    } else {
+      noReadCount = '';
+    }
   }
 
   void _subscribeMessage() {
@@ -611,4 +693,51 @@ class Session extends Entity<XEntity> implements ISession {
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+/// 新消息处理器
+class NewMessageHandler {
+  Session session;
+
+  // 未读消息集合
+  List<String> noReadMessageIds = [];
+
+  NewMessageHandler(this.session);
+
+  get messages => session.messages;
+
+  /// 添加消息
+  void put(Message message, [int? index]) {
+    if (null != index) {
+      messages.insert(index, message);
+    } else {
+      hasNoReadMessage(message);
+      messages.add(message);
+    }
+  }
+
+  bool hasNoReadMessage(IMessage msg) {
+    if (!msg.isReaded) {
+      if (noReadMessageIds.contains(msg.id)) {
+        noReadMessageIds.remove(msg.id);
+        // print('>>>>>=====remove ${msg.id}');
+        return true;
+      } else {
+        noReadMessageIds.add(msg.id);
+        // print('>>>>>=====add ${msg.id}');
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  /// 判断是否有消息内容
+  bool hasMessage() {
+    return session.messages.isNotEmpty;
+  }
+
+  void clear() {
+    noReadMessageIds.clear();
+  }
 }

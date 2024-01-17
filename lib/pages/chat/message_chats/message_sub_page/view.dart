@@ -5,7 +5,7 @@ import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/chat/widgets/message_breadcrumb_nav_item.dart';
 
 import 'logic.dart';

@@ -113,7 +113,9 @@ class PDFReaderController extends GetxController {
       var dir = await getApplicationDocumentsDirectory();
       logger.info("Download files");
       logger.info("${dir.path}/$filename");
-      File file = File("${dir.path}/$filename");
+      var tmpFileName = filename.hashCode;
+      logger.info("${dir.path}/$tmpFileName");
+      File file = File("${dir.path}/$tmpFileName");
 
       await file.writeAsBytes(bytes, flush: true);
       completer.complete(file);

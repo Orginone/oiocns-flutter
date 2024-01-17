@@ -1211,7 +1211,7 @@ class CommonWidget {
       color: Colors.white,
       width: double.infinity,
       child: Scrollbar(
-        thumbVisibility: true,
+        // thumbVisibility: true,
         // trackVisibility: true,
         child: SingleChildScrollView(
           scrollDirection: Axis.horizontal,

@@ -10,7 +10,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/work/rules/lib/tools.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 import 'activity_comment.dart';
 import 'activity_comment_box.dart';

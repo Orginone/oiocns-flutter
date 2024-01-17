@@ -102,7 +102,7 @@ class UpdaterDialog extends Dialog {
         alignment: Alignment.topCenter,
         child: Image(
           width: 70.w,
-          image: const AssetImage("images/logo.png"),
+          image: const AssetImage("assets/icons/logo.png"),
         ),
       );
 

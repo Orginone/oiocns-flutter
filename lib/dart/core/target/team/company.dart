@@ -14,7 +14,7 @@ import 'package:orginone/dart/core/target/outTeam/group.dart';
 import 'package:orginone/dart/core/target/outTeam/storage.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
-import 'package:orginone/main.dart';
+import 'package:orginone/main_bean.dart';
 
 ///单位类型接口
 abstract class ICompany extends IBelong {
@@ -50,6 +50,7 @@ abstract class ICompany extends IBelong {
   Future<IDepartment?> createDepartment(TargetModel data);
 }
 
+/// 单位
 class Company extends Belong implements ICompany {
   Company(this.metadata, this.user)
       : super(metadata, [metadata.id], user: user) {
