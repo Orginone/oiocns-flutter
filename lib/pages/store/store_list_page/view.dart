@@ -5,23 +5,21 @@ import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/pages/store/store_tree/store_nav_item.dart';
-import 'package:orginone/utils/log/log_util.dart';
+import 'package:orginone/pages/store/widgets/store_nav_item.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
 ///数据的容器页面   展示列表数据
-class StoreSubPage
-    extends BaseGetListPageView<StoreSubController, StoreSubState> {
+class StoreListPage
+    extends BaseGetListPageView<StoreListController, StoreListState> {
   late String type;
 
-  StoreSubPage(this.type, {super.key});
+  StoreListPage(this.type, {super.key});
 
   ///创建标签view
   @override
   Widget buildView() {
-    LogUtil.d('StoreSubPage');
     return allWidget();
 
     // if (type == "all") {
@@ -135,8 +133,8 @@ class StoreSubPage
   }
 
   @override
-  StoreSubController getController() {
-    return StoreSubController(type);
+  StoreListController getController() {
+    return StoreListController(type);
   }
 
   @override

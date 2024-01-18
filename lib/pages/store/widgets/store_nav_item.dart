@@ -6,11 +6,10 @@ import 'package:orginone/config/colors.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/utils/index.dart';
-import 'state.dart';
+import 'package:orginone/pages/store/models/index.dart';
 
-class StoreNavItem extends BaseBreadcrumbNavItem<StoreTreeNav> {
-  final void Function(PopupMenuKey value, StoreTreeNav model)? onSelected;
+class StoreNavItem extends BaseBreadcrumbNavItem<StoreTreeNavModel> {
+  final void Function(PopupMenuKey value, StoreTreeNavModel model)? onSelected;
   const StoreNavItem(
       {super.key,
       required super.item,
@@ -20,7 +19,6 @@ class StoreNavItem extends BaseBreadcrumbNavItem<StoreTreeNav> {
 
   @override
   List<PopupMenuItem> popupItems() {
-    // TODO: implement popupItems
     return [
       PopupMenuItem(
         value: PopupMenuKey.shareQr,
@@ -64,13 +62,13 @@ class StoreNavItem extends BaseBreadcrumbNavItem<StoreTreeNav> {
 
   ///获取tags视图
   List<Widget> tagsLabel() {
-    LogUtil.d("tagsLabel ---");
+    // LogUtil.d("tagsLabel ---");
     // LogUtil.d(item.space);
     // LogUtil.d(item.space?.groupTags);
     // LogUtil.d(item.space?.directory);
     // LogUtil.d(item.source.metadata.typeName);
-    LogUtil.d(item.source?.groupTags);
-    LogUtil.d(item.space?.groupTags);
+    // LogUtil.d(item.source?.groupTags);
+    // LogUtil.d(item.space?.groupTags);
     List<String> tags = [];
     if (item.source != null) {
       tags = item.source?.groupTags ?? [];

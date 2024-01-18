@@ -1200,7 +1200,7 @@ class KernelApi {
   Future<ResultType<T>> dataProxy<T>(DataProxyType req,
       [T Function(Map<String, dynamic>)? cvt]) async {
     ResultType raw = await _storeHub.invoke('DataProxy', args: [req.toJson()]);
-    LogUtil.d('dataProxy');
+    // LogUtil.d('dataProxy');
     // LogUtil.d(req.toJson());
     // LogUtil.d(raw.toJson());
     if (null != raw.data && null != cvt) {

@@ -1,43 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/base/group_nav_list/index.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multiplex_page.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/pages/store/models/store_tree_nav_model.dart';
-import 'package:orginone/pages/store/widgets/index.dart';
-
-import 'index.dart';
+import 'package:orginone/pages/store/store_tree%20copy/logic.dart';
+import 'package:orginone/pages/store/store_tree%20copy/state.dart';
+import 'package:orginone/pages/store/widgets/store_nav_item.dart';
 
 ///目录层级界面  树形
-class StoreTreePage
-    extends BaseGroupNavListPage<StoreTreeController, StoreTreeState> {
-  StoreTreePage({super.key});
+class StoreTreePageCopy extends BaseBreadcrumbNavMultiplexPage<
+    StoreTreeControllerCopy, StoreTreeStateCopy> {
+  StoreTreePageCopy({super.key});
 
   @override
-  Widget buildPageView(String type, String label) {
-    return _pageView(type, label);
-  }
-
-  _pageView(String type, String label) {
+  Widget body() {
     return Obx(() {
-      List<StoreTreeNavModel> datas = [];
-      var children = state.model.value!.children;
-      datas = children.where((nav) {
-        List<String> groupTags = nav.source != null
-            ? nav.source.groupTags ?? []
-            : nav.space?.groupTags ?? [];
-        if (type == '全部') {
-          return true;
-        }
-        return groupTags.contains(type);
-      }).toList();
-      datas = datas
+      var children = state.model.value!.children
           .where((element) => element.name.contains(state.keyword.value))
           .toList();
-
       return ListView.builder(
-          itemCount: datas.length,
+          itemCount: children.length,
           itemBuilder: (BuildContext context, int index) {
-            var item = datas[index];
+            var item = children[index];
             return StoreNavItem(
               item: item,
               onTap: () {
@@ -55,12 +38,13 @@ class StoreTreePage
   }
 
   @override
-  StoreTreeController getController() {
-    return StoreTreeController();
+  StoreTreeControllerCopy getController() {
+    return StoreTreeControllerCopy();
   }
 
   @override
   String tag() {
+    // TODO: implement tag
     return hashCode.toString();
   }
 

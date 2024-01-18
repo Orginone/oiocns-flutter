@@ -15,12 +15,11 @@ import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/dart/core/thing/systemfile.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/main_bean.dart';
-
-import 'store_tree/state.dart';
+import 'package:orginone/pages/store/models/index.dart';
 
 ///数据模块配置文件  处理数据模块数据
 
-///加载数据的标签数据
+///加载数据 最外层的标签数据
 SubGroup loadDataTabs() {
   IPerson? user = relationCtrl.provider.user;
   List<ICompany> companys = relationCtrl.user.companys;
@@ -42,11 +41,37 @@ SubGroup loadDataTabs() {
   return subGroup;
 }
 
-Future<List<StoreTreeNav>> loadDir(
+SubGroup loadDynamicTabs(List<StoreTreeNavModel> children) {
+  List<String> tags = [];
+  for (var element in children) {
+    var item = element.source ?? element.space;
+
+    if (item != null) {
+      item.groupTags.forEach((tag) {
+        if (!tags.contains(tag)) {
+          tags.add(tag);
+        }
+      });
+    }
+  }
+  // LogUtil.d(tags);
+  List<Group> group = [];
+  //添加全部标签
+  group.add(Group(label: '全部', value: '全部', allowEdit: true));
+
+  for (var e in tags) {
+    group.add(Group(label: e, value: e, allowEdit: false));
+  }
+  SubGroup subGroup = SubGroup(type: 'store', groups: group, hidden: []);
+
+  return subGroup;
+}
+
+Future<List<StoreTreeNavModel>> loadDir(
     List<IDirectory> dirs, ITarget target) async {
-  List<StoreTreeNav> nav = [];
+  List<StoreTreeNavModel> nav = [];
   for (var dir in dirs) {
-    StoreTreeNav dirNav = StoreTreeNav(
+    StoreTreeNavModel dirNav = StoreTreeNavModel(
       source: dir,
       name: dir.metadata.name!,
       space: target,
@@ -68,9 +93,9 @@ Future<List<StoreTreeNav>> loadDir(
   return nav;
 }
 
-Future<List<StoreTreeNav>> loadFile(
+Future<List<StoreTreeNavModel>> loadFile(
     List<ISysFileInfo> files, ITarget target) async {
-  List<StoreTreeNav> nav = [];
+  List<StoreTreeNavModel> nav = [];
 
   // LogUtil.d('config-loadFile');
 
@@ -80,7 +105,7 @@ Future<List<StoreTreeNav>> loadFile(
     // LogUtil.d(
     //   file.filedata.thumbnailUint8List,
     // );
-    StoreTreeNav dirNav = StoreTreeNav(
+    StoreTreeNavModel dirNav = StoreTreeNavModel(
       id: base64.encode(utf8.encode(file.metadata.name!)),
       source: file,
       name: file.metadata.name!,
@@ -96,12 +121,12 @@ Future<List<StoreTreeNav>> loadFile(
   return nav;
 }
 
-Future<List<StoreTreeNav>> loadApplications(
+Future<List<StoreTreeNavModel>> loadApplications(
     List<IApplication> applications, ITarget target) async {
-  List<StoreTreeNav> nav = [];
+  List<StoreTreeNavModel> nav = [];
   for (var application in applications) {
     var works = await application.loadWorks();
-    StoreTreeNav appNav = StoreTreeNav(
+    StoreTreeNavModel appNav = StoreTreeNavModel(
       id: application.metadata.id,
       source: application,
       spaceEnum: SpaceEnum.applications,
@@ -118,10 +143,10 @@ Future<List<StoreTreeNav>> loadApplications(
   return nav;
 }
 
-List<StoreTreeNav> loadWork(List<IWork> works, ITarget target) {
-  List<StoreTreeNav> nav = [];
+List<StoreTreeNavModel> loadWork(List<IWork> works, ITarget target) {
+  List<StoreTreeNavModel> nav = [];
   for (var work in works) {
-    StoreTreeNav workNav = StoreTreeNav(
+    StoreTreeNavModel workNav = StoreTreeNavModel(
       id: work.metadata.id,
       source: work,
       spaceEnum: SpaceEnum.work,
@@ -135,11 +160,11 @@ List<StoreTreeNav> loadWork(List<IWork> works, ITarget target) {
   return nav;
 }
 
-Future<List<StoreTreeNav>> loadModule(
+Future<List<StoreTreeNavModel>> loadModule(
     List<IApplication> applications, ITarget target) async {
-  List<StoreTreeNav> nav = [];
+  List<StoreTreeNavModel> nav = [];
   for (var application in applications) {
-    StoreTreeNav appNav = StoreTreeNav(
+    StoreTreeNavModel appNav = StoreTreeNavModel(
         id: application.metadata.id,
         source: application,
         spaceEnum: SpaceEnum.module,
@@ -149,7 +174,7 @@ Future<List<StoreTreeNav>> loadModule(
         children: [],
         onNext: (item) async {
           var works = await application.loadWorks();
-          List<StoreTreeNav> nav = [
+          List<StoreTreeNavModel> nav = [
             ...await loadModule(application.children, target),
             ...loadWork(works, target),
           ];
@@ -160,10 +185,11 @@ Future<List<StoreTreeNav>> loadModule(
   return nav;
 }
 
-Future<List<StoreTreeNav>> loadForm(List<IForm> forms, ITarget target) async {
-  List<StoreTreeNav> nav = [];
+Future<List<StoreTreeNavModel>> loadForm(
+    List<IForm> forms, ITarget target) async {
+  List<StoreTreeNavModel> nav = [];
   for (var form in forms) {
-    StoreTreeNav dirNav = StoreTreeNav(
+    StoreTreeNavModel dirNav = StoreTreeNavModel(
       id: form.metadata.id,
       source: form,
       spaceEnum: SpaceEnum.form,
@@ -185,15 +211,15 @@ Future<List<StoreTreeNav>> loadForm(List<IForm> forms, ITarget target) async {
   return nav;
 }
 
-List<StoreTreeNav> loadFilterItem(
+List<StoreTreeNavModel> loadFilterItem(
     List<FieldModel> fields, ITarget target, IForm form,
     [String? id]) {
-  List<StoreTreeNav> nav = [];
+  List<StoreTreeNavModel> nav = [];
 
-  List<StoreTreeNav> loadItem(List<FiledLookup> lookups) {
-    List<StoreTreeNav> nav = [];
+  List<StoreTreeNavModel> loadItem(List<FiledLookup> lookups) {
+    List<StoreTreeNavModel> nav = [];
     for (var lookup in lookups) {
-      StoreTreeNav specieNav = StoreTreeNav(
+      StoreTreeNavModel specieNav = StoreTreeNavModel(
         id: lookup.id!,
         source: lookup,
         spaceEnum: SpaceEnum.filter,
@@ -209,7 +235,7 @@ List<StoreTreeNav> loadFilterItem(
   }
 
   for (var field in fields) {
-    StoreTreeNav specieNav = StoreTreeNav(
+    StoreTreeNavModel specieNav = StoreTreeNavModel(
       id: field.id!,
       source: field,
       spaceEnum: SpaceEnum.filter,
@@ -225,11 +251,11 @@ List<StoreTreeNav> loadFilterItem(
   return nav;
 }
 
-Future<List<StoreTreeNav>> loadCohorts(
+Future<List<StoreTreeNavModel>> loadCohorts(
     List<ICohort> cohorts, ITarget target) async {
-  List<StoreTreeNav> nav = [];
+  List<StoreTreeNavModel> nav = [];
   for (var cohort in cohorts) {
-    StoreTreeNav cohortNav = StoreTreeNav(
+    StoreTreeNavModel cohortNav = StoreTreeNavModel(
       id: cohort.metadata.id,
       source: cohort,
       spaceEnum: SpaceEnum.cohorts,
@@ -239,7 +265,7 @@ Future<List<StoreTreeNav>> loadCohorts(
       onNext: (nav) async {
         await cohort.loadContent(reload: true);
         nav.children = [
-          StoreTreeNav(
+          StoreTreeNavModel(
             id: SpaceEnum.cohorts.label,
             spaceEnum: SpaceEnum.directory,
             showPopup: false,
@@ -265,11 +291,11 @@ Future<List<StoreTreeNav>> loadCohorts(
   return nav;
 }
 
-Future<List<StoreTreeNav>> loadGroup(
+Future<List<StoreTreeNavModel>> loadGroup(
     List<IGroup> groups, ITarget target) async {
-  List<StoreTreeNav> nav = [];
+  List<StoreTreeNavModel> nav = [];
   for (var group in groups) {
-    StoreTreeNav groupNav = StoreTreeNav(
+    StoreTreeNavModel groupNav = StoreTreeNavModel(
       id: group.metadata.id,
       source: group,
       spaceEnum: SpaceEnum.groups,
@@ -279,7 +305,7 @@ Future<List<StoreTreeNav>> loadGroup(
       onNext: (nav) async {
         await group.loadContent(reload: true);
         nav.children = [
-          StoreTreeNav(
+          StoreTreeNavModel(
             id: SpaceEnum.groups.label,
             showPopup: false,
             name: "${SpaceEnum.groups.label}文件",
@@ -307,11 +333,11 @@ Future<List<StoreTreeNav>> loadGroup(
   return nav;
 }
 
-Future<List<StoreTreeNav>> loadTargets(
+Future<List<StoreTreeNavModel>> loadTargets(
     List<ITarget> targets, ITarget target) async {
-  List<StoreTreeNav> nav = [];
+  List<StoreTreeNavModel> nav = [];
   for (var target in targets) {
-    StoreTreeNav targetNav = StoreTreeNav(
+    StoreTreeNavModel targetNav = StoreTreeNavModel(
       id: target.metadata.id,
       source: target,
       spaceEnum: SpaceEnum.departments,
@@ -321,7 +347,7 @@ Future<List<StoreTreeNav>> loadTargets(
       onNext: (nav) async {
         await target.loadContent(reload: true);
         nav.children = [
-          StoreTreeNav(
+          StoreTreeNavModel(
             id: target.metadata.typeName!,
             showPopup: false,
             name: "${target.metadata.typeName}文件",

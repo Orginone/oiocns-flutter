@@ -59,8 +59,6 @@ import 'package:orginone/pages/relation/user_info/view.dart';
 import 'package:orginone/pages/store/application_details/binding.dart';
 import 'package:orginone/pages/store/application_details/view.dart';
 import 'package:orginone/pages/store/bindings.dart';
-import 'package:orginone/pages/store/store_tree/binding.dart';
-import 'package:orginone/pages/store/store_tree/view.dart';
 import 'package:orginone/pages/work/bindings.dart';
 import 'package:orginone/pages/work/create_work/binding.dart';
 import 'package:orginone/pages/work/create_work/view.dart';
@@ -94,6 +92,8 @@ import 'package:orginone/pages/relation/person/security/index.dart';
 import 'package:orginone/pages/relation/version/version_page.dart';
 import 'package:orginone/pages/work/work_list/view.dart';
 import 'package:orginone/utils/file_utils.dart';
+
+import '../../pages/store/store_tree/index.dart';
 
 class RoutePages {
   static final RouteObserver<Route> observer = RouteObservers();

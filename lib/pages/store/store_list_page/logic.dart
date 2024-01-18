@@ -9,19 +9,19 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/main_bean.dart';
-import 'package:orginone/pages/store/store_tree/state.dart';
 import 'package:orginone/utils/index.dart';
 
-import '../config.dart';
+import '../services/config.dart';
+import '../models/index.dart';
 import 'state.dart';
 
-class StoreSubController extends BaseListController<StoreSubState> {
+class StoreListController extends BaseListController<StoreListState> {
   @override
-  final StoreSubState state = StoreSubState();
+  final StoreListState state = StoreListState();
 
   late String type;
 
-  StoreSubController(this.type);
+  StoreListController(this.type);
 
   @override
   void onInit() async {
@@ -38,11 +38,11 @@ class StoreSubController extends BaseListController<StoreSubState> {
   loadAllData() async {
     List<ICompany> joinedCompanies = relationCtrl.user.companys;
 
-    List<StoreTreeNav> user = [];
-    List<StoreTreeNav> organization = [];
-    List<StoreTreeNav> children = [];
+    List<StoreTreeNavModel> user = [];
+    List<StoreTreeNavModel> organization = [];
+    List<StoreTreeNavModel> children = [];
 
-    user.add(StoreTreeNav(
+    user.add(StoreTreeNavModel(
       name: relationCtrl.provider.user.metadata.name ?? "",
       id: relationCtrl.provider.user.metadata.id ?? "",
       image: relationCtrl.provider.user.metadata.avatarThumbnail(),
@@ -54,7 +54,7 @@ class StoreSubController extends BaseListController<StoreSubState> {
     ///组织目录
     for (var value in joinedCompanies) {
       organization.add(
-        StoreTreeNav(
+        StoreTreeNavModel(
           name: value.metadata.name ?? "",
           id: value.metadata.id,
           space: value,
@@ -72,7 +72,7 @@ class StoreSubController extends BaseListController<StoreSubState> {
         .where(
             (element) => type == '全部' ? true : element.space?.typeName == type)
         .toList());
-    state.nav = StoreTreeNav(
+    state.nav = StoreTreeNavModel(
       name: HomeEnum.store.label,
       children: children,
     );
@@ -93,15 +93,15 @@ class StoreSubController extends BaseListController<StoreSubState> {
 
       LogUtil.d('StoreSubController-loadUserRelation-onNext');
       LogUtil.d('user');
-      List<StoreTreeNav> children = [
+      List<StoreTreeNavModel> children = [
         ...await loadApplications(
             user.space!.directory.standard.applications, user.space!),
         ...await loadForm(user.space!.directory.standard.forms, user.space!),
         ...await loadFile(user.space!.directory.files, user.space!),
       ];
       LogUtil.d(children);
-      List<StoreTreeNav> function = [
-        StoreTreeNav(
+      List<StoreTreeNavModel> function = [
+        StoreTreeNavModel(
           name: "个人文件", //个人文件XXXX
           space: user.space,
           showPopup: false,
@@ -126,8 +126,8 @@ class StoreSubController extends BaseListController<StoreSubState> {
       // await company.space!.loadContent(reload: true);
       await company.space!.directory.loadContent(reload: true);
       company.onNext = (nav) async {
-        List<StoreTreeNav> function = [
-          StoreTreeNav(
+        List<StoreTreeNavModel> function = [
+          StoreTreeNavModel(
             name: "单位文件",
             space: company.space,
             showPopup: false,
@@ -157,7 +157,7 @@ class StoreSubController extends BaseListController<StoreSubState> {
     }
   }
 
-  void jumpDetails(StoreTreeNav nav) async {
+  void jumpDetails(StoreTreeNavModel nav) async {
     switch (nav.spaceEnum) {
       case SpaceEnum.departments:
         Get.toNamed(Routers.departmentInfo, arguments: {'depart': nav.source});
@@ -203,8 +203,7 @@ class StoreSubController extends BaseListController<StoreSubState> {
   }
 
   ///跳转下一页
-  void onNext(StoreTreeNav nav) async {
-    LogUtil.d('StoreSubController-onNext');
+  void onNext(StoreTreeNavModel nav) async {
     if (nav.source != null && nav.children.isEmpty) {
       jumpDetails(nav);
     } else {
@@ -213,7 +212,7 @@ class StoreSubController extends BaseListController<StoreSubState> {
     }
   }
 
-  void operation(PopupMenuKey key, StoreTreeNav item) {
+  void operation(PopupMenuKey key, StoreTreeNavModel item) {
     switch (key) {
       case PopupMenuKey.shareQr:
         var entity;

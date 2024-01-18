@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
-import 'package:orginone/components/base/group_nav_list/index.dart';
 import 'package:orginone/dart/controller/index.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/store/models/index.dart';
 
-class StoreTreeState extends BaseGroupNavListState<StoreTreeNavModel> {
-  StoreTreeState() {
+class StoreTreeStateCopy extends BaseBreadcrumbNavState<StoreTreeNavModel> {
+  StoreTreeStateCopy() {
     model.value = Get.arguments is Map
         ? Get.arguments['data'] is StoreTreeNavModel
             ? Get.arguments['data']

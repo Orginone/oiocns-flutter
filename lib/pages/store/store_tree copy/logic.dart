@@ -1,8 +1,7 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/routers/index.dart';
-import 'package:orginone/components/base/group_nav_list/index.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/outTeam/group.dart';
@@ -14,36 +13,12 @@ import 'package:orginone/components/widgets/loading_dialog.dart';
 
 import 'state.dart';
 
-class StoreTreeController extends BaseGroupNavListController<StoreTreeState> {
+class StoreTreeControllerCopy
+    extends BaseBreadcrumbNavController<StoreTreeStateCopy> {
   @override
-  final StoreTreeState state = StoreTreeState();
+  final StoreTreeStateCopy state = StoreTreeStateCopy();
 
   List<String> tags = [];
-
-  ///初始化 子分组
-  @override
-  void initSubGroup() {
-    super.initSubGroup();
-    // var store = HiveUtils.getSubGroup('store');
-    // if (store == null) {
-    //   store = SubGroup.fromJson(storeDefaultConfig);
-    //   HiveUtils.putSubGroup('store', store);
-    // }
-
-    // LogUtil.d('initSubGroup');
-    // LogUtil.d(state.model.value?.children);
-
-    ///加载数据动态标签
-    var store = loadDynamicTabs(state.model.value?.children ?? []);
-    state.subGroup = Rx(store);
-    // var index = store.groups!.indexWhere((element) => element.value == "all");
-    var index = 0;
-    state.tabController = TabController(
-        initialIndex: index,
-        length: store.groups!.length,
-        vsync: this,
-        animationDuration: Duration.zero);
-  }
 
   @override
   void onReady() async {
@@ -55,6 +30,26 @@ class StoreTreeController extends BaseGroupNavListController<StoreTreeState> {
       state.model.refresh();
       LoadingDialog.dismiss(context);
     }
+    LogUtil.w('StoreTreeController');
+
+    ///获取数据的顶部tags标签
+    filterTags();
+  }
+
+  filterTags() {
+    tags.clear();
+    for (var element in state.model.value?.children ?? []) {
+      var item = element.source ?? element.space;
+
+      if (item != null) {
+        item.groupTags.forEach((tag) {
+          if (!tags.contains(tag)) {
+            tags.add(tag);
+          }
+        });
+      }
+    }
+    LogUtil.d(tags);
   }
 
   Future<void> loadUserSetting() async {
