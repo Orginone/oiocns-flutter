@@ -49,7 +49,7 @@ class StoreListPage
           },
         );
       },
-      itemCount: state.nav!.children.length,
+      itemCount: state.nav?.children.length ?? 0,
     );
   }
 

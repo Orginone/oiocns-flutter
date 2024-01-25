@@ -135,7 +135,7 @@ class DataResource {
       );
       final res = await bucketOpreate<FileItemModel>(
           data, (a) => FileItemModel.fromJson(a));
-      LogUtil.d('bucketOpreate');
+      // LogUtil.d('bucketOpreate');
       // LogUtil.d(res.toJson());
       LogUtil.d(res.data?.toJson());
       if (!res.success) {

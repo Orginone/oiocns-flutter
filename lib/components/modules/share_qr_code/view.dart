@@ -7,6 +7,7 @@ import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/components/widgets/gy_scaffold.dart';
 import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/components/widgets/text_widget.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -74,24 +75,24 @@ class ShareQrCodePage
   ///二维码
   Align buildQRImageView() {
     var image = state.entity.avatarThumbnail();
-    return const Align(
+    return Align(
       alignment: Alignment.center,
-      // child: QrImage(
-      //   data: '${Constant.host}/${state.entity.id}',
-      //   version: QrVersions.auto,
-      //   size: 330.w,
-      //   embeddedImage: image != null ? MemoryImage(image) : null,
-      //   errorCorrectionLevel: QrErrorCorrectLevel.H,
-      //   embeddedImageStyle: QrEmbeddedImageStyle(size: Size(60.w, 60.w)),
-      //   dataModuleStyle: const QrDataModuleStyle(
-      //     dataModuleShape: QrDataModuleShape.square,
-      //     color: Colors.black,
-      //   ),
-      //   eyeStyle: const QrEyeStyle(
-      //     eyeShape: QrEyeShape.square,
-      //     color: Colors.black,
-      //   ),
-      // ),
+      child: QrImageView(
+        data: '${Constant.host}/${state.entity.id}',
+        version: QrVersions.auto,
+        size: 330.w,
+        embeddedImage: image != null ? MemoryImage(image) : null,
+        errorCorrectionLevel: QrErrorCorrectLevel.H,
+        embeddedImageStyle: QrEmbeddedImageStyle(size: Size(60.w, 60.w)),
+        dataModuleStyle: const QrDataModuleStyle(
+          dataModuleShape: QrDataModuleShape.square,
+          color: Colors.black,
+        ),
+        eyeStyle: const QrEyeStyle(
+          eyeShape: QrEyeShape.square,
+          color: Colors.black,
+        ),
+      ),
     );
   }
 

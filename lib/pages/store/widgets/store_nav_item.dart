@@ -20,10 +20,10 @@ class StoreNavItem extends BaseBreadcrumbNavItem<StoreTreeNavModel> {
   @override
   List<PopupMenuItem> popupItems() {
     return [
-      PopupMenuItem(
-        value: PopupMenuKey.shareQr,
-        child: Text(PopupMenuKey.shareQr.label),
-      )
+      // PopupMenuItem(
+      //   value: PopupMenuKey.shareQr,
+      //   child: Text(PopupMenuKey.shareQr.label),
+      // )
     ];
   }
 

@@ -230,7 +230,11 @@ class StoreTreeController extends BaseGroupNavListController<StoreTreeState> {
             item.spaceEnum == SpaceEnum.company) {
           entity = item.space!.metadata;
         } else {
-          entity = item.source.metadata;
+          ///TODO：item.source可能为空，这里的取值方式不清楚逻辑 如果source为null，取回space保证能取到数据
+
+          entity = item.source != null
+              ? item.source.metadata
+              : entity = item.space!.metadata;
         }
         Get.toNamed(
           Routers.shareQrCode,

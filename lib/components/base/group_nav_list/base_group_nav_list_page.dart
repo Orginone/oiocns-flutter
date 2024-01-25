@@ -161,6 +161,7 @@ abstract class BaseGroupNavListPage<T extends BaseGroupNavListController,
 
 //创建ExtendedTabBar
   buildExtendedTabBar() {
+    LogUtil.e('buildExtendedTabBar');
     LogUtil.d(
         '>>>==========${state.subGroup.value} ${state.subGroup.value.groups?.length} ${state.subGroup.value.groups?.first.label}');
 

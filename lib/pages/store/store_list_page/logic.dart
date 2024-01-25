@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:orginone/common/models/index.dart';
 import 'package:orginone/common/routers/index.dart';
+import 'package:orginone/components/widgets/loading_dialog.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
+import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/index.dart';
 
@@ -26,11 +28,10 @@ class StoreListController extends BaseListController<StoreListState> {
   @override
   void onInit() async {
     super.onInit();
-    // if (type == "all") {
+
+    ///加载全部数据
     await loadAllData();
-    // }
     loadSuccess();
-    LogUtil.d(type);
   }
 
   ///点击tab标签调用
@@ -76,11 +77,12 @@ class StoreListController extends BaseListController<StoreListState> {
       name: HomeEnum.store.label,
       children: children,
     );
+    // loadUserContents();
+    // loadCompanyContents();
     await loadUserContents();
     await loadCompanyContents();
   }
 
-  ///点击tab个人标签调用
   ///加载个人数据
   Future<void> loadUserContents() async {
     var user = state.nav!.children[0];
@@ -88,7 +90,8 @@ class StoreListController extends BaseListController<StoreListState> {
     ///点击进入下一级
     user.onNext = (nav) async {
       // await user.space!.loadContent(reload: true);
-      await user.space!.directory.loadContent(reload: true);
+      // await user.space!.directory.loadContent(reload: true);
+      await loadContents(user.space!.directory);
       // await user.space!.directory.standard.loadApplications(reload: true);
 
       LogUtil.d('StoreSubController-loadUserRelation-onNext');
@@ -118,14 +121,14 @@ class StoreListController extends BaseListController<StoreListState> {
     };
   }
 
-  ///点击tab单位标签调用
   ///加载单位数据
   Future<void> loadCompanyContents() async {
     for (int i = 1; i < state.nav!.children.length; i++) {
       var company = state.nav!.children[i];
-      // await company.space!.loadContent(reload: true);
-      await company.space!.directory.loadContent(reload: true);
+
+      // await company.space!.directory.loadContent(reload: true);
       company.onNext = (nav) async {
+        await loadContents(company.space!.directory);
         List<StoreTreeNavModel> function = [
           StoreTreeNavModel(
             name: "单位文件",
@@ -154,6 +157,16 @@ class StoreListController extends BaseListController<StoreListState> {
             (company.space! as IBelong).cohorts, company.space!));
         nav.children = function;
       };
+    }
+  }
+
+  loadContents(IDirectory directory) async {
+    try {
+      LoadingDialog.showLoading(context);
+      await directory.loadContent(reload: true);
+      LoadingDialog.dismiss(context);
+    } catch (e) {
+      Loading.toast('请求出错');
     }
   }
 

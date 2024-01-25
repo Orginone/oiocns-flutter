@@ -1133,7 +1133,7 @@ class KernelApi {
       flag: 'bucketOpreate',
       params: data.toJson(),
     );
-    LogUtil.d('bucketOpreate');
+    LogUtil.d('KernelApi -- bucketOpreate');
     LogUtil.d(model.toJson());
     return await dataProxy(model, cvt);
   }

@@ -231,15 +231,15 @@ class StoreHub {
       {List<Object>? args, bool? retry = false}) async {
     Object? resObj;
     try {
-      // if (isConnected) {
-      resObj = await _connection.invoke(methodName, args: args);
-      // } else {
-      //   resObj = await _restRequest(
-      //     'post',
-      //     '${Constant.rest}/${methodName.toLowerCase()}',
-      //     args!.isNotEmpty ? args[0] : {},
-      //   );
-      // }
+      if (isConnected) {
+        resObj = await _connection.invoke(methodName, args: args);
+      } else {
+        resObj = await _restRequest(
+          'post',
+          '${Constant.rest}/${methodName.toLowerCase()}',
+          args!.isNotEmpty ? args[0] : {},
+        );
+      }
       if (null != resObj) {
         ResultType res = ResultType.fromJson(resObj as Map<String, dynamic>);
         LogUtil.d('接口：${Constant.rest}/${methodName.toLowerCase()}');
