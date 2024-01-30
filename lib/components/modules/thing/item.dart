@@ -20,65 +20,71 @@ class Item extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {},
-      child: Container(
-          margin: EdgeInsets.only(top: 10.h, right: 16.w, left: 16.w),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              Widget child = Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(4.w),
-                ),
-                padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.id ?? "",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w500,
-                                fontSize: 21.sp),
-                          ),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          Text.rich(
-                            TextSpan(children: [
-                              TextSpan(
-                                text: "创建人:",
-                                style: TextStyle(fontSize: 18.sp),
-                              ),
-                              WidgetSpan(
-                                  child: TargetText(
-                                    userId: item.creater ?? "",
-                                    style: TextStyle(fontSize: 18.sp),
-                                  ),
-                                  alignment: PlaceholderAlignment.middle)
-                            ]),
-                          ),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          Text(
-                            "创建时间:${DateTime.tryParse(item.createTime ?? "")?.format(format: "yyyy-MM-dd HH:mm")}",
-                            style: TextStyle(
-                                color: Colors.black54, fontSize: 16.sp),
-                          ),
-                        ],
-                      ),
-                    ),
-                    popupMenuButton(),
-                  ],
-                ),
-              );
-              return child;
-            },
-          )),
+      child: _body(),
     );
+  }
+
+  Container _body() {
+    var thing =
+        item.id == null ? model.AnyThingModel.fromJson(item.otherInfo) : item;
+    return Container(
+        margin: EdgeInsets.only(top: 10.h, right: 16.w, left: 16.w),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            Widget child = Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(4.w),
+              ),
+              padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          thing.id ?? "",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.w500,
+                              fontSize: 21.sp),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Text.rich(
+                          TextSpan(children: [
+                            TextSpan(
+                              text: "创建人:",
+                              style: TextStyle(fontSize: 18.sp),
+                            ),
+                            WidgetSpan(
+                                child: TargetText(
+                                  userId: thing.creater ?? "",
+                                  style: TextStyle(fontSize: 18.sp),
+                                ),
+                                alignment: PlaceholderAlignment.middle)
+                          ]),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Text(
+                          "创建时间:${DateTime.tryParse(thing.createTime ?? '')?.format(format: "yyyy-MM-dd HH:mm")}",
+                          style:
+                              TextStyle(color: Colors.black54, fontSize: 16.sp),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // popupMenuButton(),
+                ],
+              ),
+            );
+            return child;
+          },
+        ));
   }
 
   Widget popupMenuButton() {

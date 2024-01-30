@@ -122,6 +122,11 @@ class StoreTreeController extends BaseGroupNavListController<StoreTreeState> {
             (company.space! as Group).children, company.space!));
         function.addAll(await loadCohorts(
             (company.space! as IBelong).cohorts, company.space!));
+        // List<StoreTreeNavModel> files =
+        //     await loadFile(company.space!.directory.files, company.space!);
+        // LogUtil.d('loadCompanySetting---files');
+        // LogUtil.d(files);
+
         nav.children = function;
       };
     }

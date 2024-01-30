@@ -85,10 +85,12 @@ class StandardFiles {
   Future<List<IForm>> loadForms({bool reload = false}) async {
     if (formLoaded == false || reload) {
       formLoaded = true;
-      var data = await resource.formColl.load({
-        "options": {
-          "match": {"directoryId": id}
-        },
+      dynamic options = <dynamic, dynamic>{};
+      options['options'] = {
+        "match": {"directoryId": id}
+      };
+      var data = await resource.formColl.loadSpace(options, (data) {
+        return XForm.fromJson(data);
       });
       forms = data.map((i) => Form(i, directory)).toList();
     }
@@ -98,11 +100,12 @@ class StandardFiles {
   Future<List<IProperty>> loadPropertys({bool reload = false}) async {
     if (propertysLoaded == false || reload) {
       propertysLoaded = true;
-      var data = await resource.propertyColl.load({
-        'options': {
-          'match': {'directoryId': id}
-        },
-      });
+      dynamic options = <dynamic, dynamic>{};
+      options['options'] = {
+        "match": {"directoryId": id}
+      };
+      var data = await resource.propertyColl
+          .loadSpace(options, (json) => XProperty.fromJson(json));
       propertys = data.map((i) => Property(i, directory)).toList();
     }
     return propertys;
@@ -111,11 +114,12 @@ class StandardFiles {
   Future<List<ISpecies>> loadSpecieses({bool reload = false}) async {
     if (speciesesLoaded == false || reload) {
       speciesesLoaded = true;
-      var data = await resource.speciesColl.load({
-        'options': {
-          'match': {'directoryId': id}
-        },
-      });
+      dynamic options = <dynamic, dynamic>{};
+      options['options'] = {
+        "match": {"directoryId": id}
+      };
+      var data = await resource.speciesColl
+          .loadSpace(options, (json) => XSpecies.fromJson(json));
       specieses = data.map((i) => Species(i, directory)).toList();
     }
     return specieses;
@@ -124,11 +128,12 @@ class StandardFiles {
   Future<List<ITransfer>> loadTransfers({bool reload = false}) async {
     if (transfersLoaded == false || reload) {
       transfersLoaded = true;
-      var data = await resource.transferColl.load({
-        'options': {
-          'match': {'directoryId': id}
-        },
-      });
+      dynamic options = <dynamic, dynamic>{};
+      options['options'] = {
+        "match": {"directoryId": id}
+      };
+      var data = await resource.transferColl
+          .loadSpace(options, (json) => XTransfer.fromJson(json));
       transfers = data.map((i) => Transfer(i, directory)).toList();
     }
     return transfers;

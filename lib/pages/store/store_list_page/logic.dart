@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:orginone/common/models/index.dart';
 import 'package:orginone/common/routers/index.dart';
-import 'package:orginone/components/widgets/loading_dialog.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
@@ -161,13 +160,14 @@ class StoreListController extends BaseListController<StoreListState> {
   }
 
   loadContents(IDirectory directory) async {
-    try {
-      LoadingDialog.showLoading(context);
-      await directory.loadContent(reload: true);
-      LoadingDialog.dismiss(context);
-    } catch (e) {
-      Loading.toast('请求出错');
-    }
+    // try {
+    // LoadingDialog.showLoading(context);
+    await directory.loadContent(reload: true);
+    // LoadingDialog.dismiss(context);
+    // }
+    //  catch (e) {
+    //   Loading.toast('请求出错');
+    // }
   }
 
   void jumpDetails(StoreTreeNavModel nav) async {

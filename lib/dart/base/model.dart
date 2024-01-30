@@ -229,19 +229,27 @@ class LoadResult<T> {
         msg = json["msg"],
         success = json["success"];
 
-  LoadResult.fromJsonSerialize(Map<String, dynamic> json,
-      [T Function(Map<String, dynamic>)? serialize])
-      : data = (null != serialize && json['data'] != null)
-            ? serialize(json['data'])
-            : json['data'],
-        groupCount = json["groupCount"] ?? 0,
-        totalCount = json["totalCount"] ?? 0,
-        summary = json['summary'] == null
+  factory LoadResult.fromJsonSerialize(Map<String, dynamic> json,
+      [T Function(Map<String, dynamic>)? serialize]) {
+    var data = (null != serialize && json['data'] != null)
+        ? serialize(json['data'])
+        : json['data'];
+    // LogUtil.d('LoadResult.fromJsonSerialize--');
+    // if (serialize != null) {
+    //   LogUtil.d(serialize(json['data']));
+    // }
+    // LogUtil.d(data);
+    return LoadResult(
+        data: data,
+        groupCount: json["groupCount"] ?? 0,
+        totalCount: json["totalCount"] ?? 0,
+        summary: json['summary'] == null
             ? []
             : List<String>.from(json['summary'] as List),
-        code = json["code"] ?? 400,
-        msg = json["msg"] ?? "",
-        success = json["success"] ?? false;
+        code: json["code"] ?? 400,
+        msg: json["msg"] ?? "",
+        success: json["success"] ?? false);
+  }
 }
 
 /// 统一返回结构模型
@@ -1760,12 +1768,12 @@ class AnyThingModel {
       });
     }
 
-    id = json['Id'];
-    name = json['Name'];
-    status = json['Status'];
-    creater = json['Creater'];
-    createTime = json['CreateTime'];
-    modifiedTime = json['ModifiedTime'];
+    id = json['id'] ?? json['Id'];
+    name = json['name'] ?? json['Name'];
+    status = json['status'].toString() ?? json['Status'].toString();
+    creater = json['creater'] ?? json["createUser"] ?? json['Creater'];
+    createTime = json['createTime'] ?? json['CreateTime'];
+    modifiedTime = json['modifiedTime'] ?? json['ModifiedTime'];
   }
 
   Map<String, dynamic> toJson() {

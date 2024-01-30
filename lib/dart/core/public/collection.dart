@@ -1,5 +1,6 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main_bean.dart';
+import 'package:orginone/utils/index.dart';
 
 import '../../base/common/lists.dart';
 import '../../base/schema.dart';
@@ -60,15 +61,26 @@ class XCollection<T extends Xbase> {
 
   Future<List<T>> loadSpace(dynamic options,
       [T Function(Map<String, dynamic>)? cvt]) async {
-    options = options ?? {};
+    options = options;
+
     options['userData'] = options['userData'] ?? [];
     options['collName'] = _collName;
     options['options'] = options['options'] ?? {};
     options['options']['match'] = options['options']['match'] ?? {};
     // options['options']['match']['isDeleted'] = false;
+    LogUtil.d('loadSpace---');
+    // LogUtil.d(cvt);
     var res = await kernel.collectionLoad<List<T>>(
-        _target.belongId!, _relations, _collName, options,
-        fromJson: (data) => Lists.fromList(data['data'], (d) => cvt!(d)));
+      _target.belongId!,
+      _relations,
+      _collName,
+      options,
+      fromJson: (data) {
+        return Lists.fromList(data['data'] is List ? data['data'] : [],
+            cvt == null ? null : (d) => cvt(d));
+      },
+      // fromJson: (data) => Lists.fromList(data['data'], (d) => cvt!(d)),
+    );
     if (res.success && res.data != null) {
       if (res.data!.isNotEmpty) {
         return res.data!.cast<T>();

@@ -219,7 +219,7 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   Future<bool> loadContent({bool reload = false}) async {
     LogUtil.d('directory-loadContent');
     await loadFiles(reload: reload);
-    // await standard.loadStandardFiles(reload: reload);
+    await standard.loadStandardFiles(reload: reload);
     if (reload) {
       // if (typeName == '成员目录') {
       //   await target.loadContent(reload: reload);

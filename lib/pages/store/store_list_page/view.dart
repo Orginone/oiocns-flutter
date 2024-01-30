@@ -6,7 +6,7 @@ import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/pages/store/widgets/store_nav_item.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import 'logic.dart';
 import 'state.dart';
 
@@ -41,7 +41,9 @@ class StoreListPage
           onTap: () {
             controller.jumpDetails(item);
           },
-          onNext: () {
+          onNext: () async {
+            // await _launchUrl();
+
             controller.onNext(item);
           },
           onSelected: (key, item) {
@@ -51,6 +53,16 @@ class StoreListPage
       },
       itemCount: state.nav?.children.length ?? 0,
     );
+  }
+
+  Future<void> _launchUrl() async {
+    var ppt = 'https://filesamples.com/samples/document/ppt/sample2.ppt';
+    var doc = 'https://filesamples.com/samples/document/doc/sample2.doc';
+    //
+    final Uri url = Uri.parse(ppt);
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch');
+    }
   }
 
   Widget commonWidget() {
