@@ -12,6 +12,8 @@ import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/standard/form.dart';
+import 'package:orginone/dart/core/thing/standard/property.dart';
+import 'package:orginone/dart/core/thing/standard/species.dart';
 import 'package:orginone/dart/core/thing/systemfile.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/main_bean.dart';
@@ -78,12 +80,15 @@ Future<List<StoreTreeNavModel>> loadDir(
       spaceEnum: SpaceEnum.directory,
       image: dir.metadata.avatarThumbnail(),
       onNext: (nav) async {
+        //加载文件的内容
         await dir.loadContent(reload: true);
         nav.children = [
           ...await loadDir(dir.children, target),
           ...await loadFile(dir.files, target),
           ...await loadApplications(dir.standard.applications, target),
-          ...await loadForm(dir.standard.forms, target)
+          ...await loadForm(dir.standard.forms, target),
+          ...await loadPropertys(dir.standard.propertys, target),
+          ...await loadSpecieses(dir.standard.specieses, target)
         ];
       },
       children: [],
@@ -185,6 +190,7 @@ Future<List<StoreTreeNavModel>> loadModule(
   return nav;
 }
 
+///把表单数据处理成统一的NavModel
 Future<List<StoreTreeNavModel>> loadForm(
     List<IForm> forms, ITarget target) async {
   List<StoreTreeNavModel> nav = [];
@@ -208,6 +214,48 @@ Future<List<StoreTreeNavModel>> loadForm(
     );
     nav.add(dirNav);
   }
+  return nav;
+}
+
+///把熟悉数据处理成统一的NavModel
+Future<List<StoreTreeNavModel>> loadPropertys(
+    List<IProperty> propertys, ITarget target) async {
+  List<StoreTreeNavModel> nav = [];
+
+  for (var property in propertys) {
+    StoreTreeNavModel propertyNav = StoreTreeNavModel(
+      id: property.metadata.id,
+      source: property,
+      name: property.metadata.name!,
+      space: target,
+      spaceEnum: SpaceEnum.property,
+      image: property.metadata.avatarThumbnail(),
+      children: [],
+    );
+    nav.add(propertyNav);
+  }
+
+  return nav;
+}
+
+///把字典数据处理成统一的NavModel
+Future<List<StoreTreeNavModel>> loadSpecieses(
+    List<ISpecies> species, ITarget target) async {
+  List<StoreTreeNavModel> nav = [];
+
+  for (var specie in species) {
+    StoreTreeNavModel specieNav = StoreTreeNavModel(
+      id: specie.metadata.id,
+      source: specie,
+      name: specie.metadata.name!,
+      space: target,
+      spaceEnum: SpaceEnum.species,
+      image: specie.metadata.avatarThumbnail(),
+      children: [],
+    );
+    nav.add(specieNav);
+  }
+
   return nav;
 }
 

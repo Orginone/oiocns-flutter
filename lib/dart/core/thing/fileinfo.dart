@@ -335,8 +335,8 @@ abstract class StandardFileInfo<T extends XStandard> extends FileInfo<T>
           setMetadata(data);
         } else {
           setMetadata(data);
-          loadContent(reload: true);
         }
+        loadContent(reload: true);
     }
     return true;
   }

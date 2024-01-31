@@ -1047,7 +1047,8 @@ class KernelApi {
     // if (res.data is Map && res.data['data'] is List) {
     //   res.data = res.data['data'];
     // }
-
+    LogUtil.d('collectionLoad');
+    LogUtil.d(res.toJson());
     if (null != fromJson) {
       return LoadResult<T>.fromJsonSerialize(res.toJson(), fromJson);
     } else {

@@ -156,10 +156,10 @@ class StoreTreeController extends BaseGroupNavListController<StoreTreeState> {
         });
         break;
       case SpaceEnum.species:
-        Get.toNamed(Routers.thing, arguments: {
-          'form': nav.form ?? nav.source,
-          "belongId": nav.space!.belongId
-        });
+        // Get.toNamed(Routers.thing, arguments: {
+        //   'form': nav.form ?? nav.source,
+        //   "belongId": nav.space!.belongId
+        // });
         break;
       case SpaceEnum.work:
         WorkNodeModel? node = await nav.source.loadWorkNode();
