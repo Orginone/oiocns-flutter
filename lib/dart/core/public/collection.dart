@@ -1,6 +1,5 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main_bean.dart';
-import 'package:orginone/utils/index.dart';
 
 import '../../base/common/lists.dart';
 import '../../base/schema.dart';
@@ -68,7 +67,7 @@ class XCollection<T extends Xbase> {
     options['options'] = options['options'] ?? {};
     options['options']['match'] = options['options']['match'] ?? {};
     // options['options']['match']['isDeleted'] = false;
-    LogUtil.d('loadSpace---');
+    // LogUtil.d('loadSpace---');
     // LogUtil.d(cvt);
     var res = await kernel.collectionLoad<List<T>>(
       _target.belongId!,
