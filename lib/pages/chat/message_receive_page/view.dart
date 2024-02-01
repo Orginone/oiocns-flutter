@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/utils/date_util.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/system/gy_scaffold.dart';
 import 'package:orginone/config/unified.dart';
 import 'index.dart';
 import 'widgets/messgae_receive_item.dart';

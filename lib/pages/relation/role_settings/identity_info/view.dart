@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/target/identity/identity.dart';
 import 'package:orginone/common/data_config/relation_config.dart';
 import 'package:orginone/pages/relation/widgets/document.dart';
 import 'package:orginone/utils/date_utils.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
 
 import 'logic.dart';
 import 'state.dart';
@@ -14,7 +14,7 @@ class IdentityInfoPage
     extends BaseGetPageView<IdentityInfoController, IdentityInfoState> {
   late Rx<IIdentity> identity;
 
-  IdentityInfoPage(IIdentity identity) {
+  IdentityInfoPage(IIdentity identity, {super.key}) {
     this.identity = Rx(identity);
   }
 

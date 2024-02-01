@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_page_view.dart';
-import 'package:orginone/components/widgets/keep_alive_widget.dart';
 import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/home/portal/workBench/view.dart';
 

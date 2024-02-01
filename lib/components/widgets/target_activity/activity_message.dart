@@ -3,7 +3,7 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/index.dart';
-import 'package:orginone/components/widgets/TargetActivity/list_item_meta.dart';
+import 'package:orginone/components/widgets/target_activity/list_item_meta.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/dart/base/schema.dart';

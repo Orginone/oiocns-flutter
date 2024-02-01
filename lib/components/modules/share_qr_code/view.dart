@@ -2,11 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/extension/index.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
-import 'package:orginone/components/widgets/image_widget.dart';
-import 'package:orginone/components/widgets/text_widget.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 import 'logic.dart';

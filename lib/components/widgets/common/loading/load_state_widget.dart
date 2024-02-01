@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import 'text_widget.dart';
+import 'package:orginone/components/widgets/common/text/index.dart';
 
 typedef ChildBuilder = Widget Function();
 typedef ParentBuilder = Widget Function(Widget child);

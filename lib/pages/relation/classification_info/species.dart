@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
@@ -10,12 +11,12 @@ import 'package:orginone/dart/core/thing/standard/species.dart';
 import 'package:orginone/pages/relation/widgets/dialog.dart';
 import 'package:orginone/utils/date_utils.dart';
 import 'package:orginone/utils/toast_utils.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/loading_dialog.dart';
 
 import 'logic.dart';
 
 class SpeciesPage extends BaseGetPageView<SpeciesController, SpeciesState> {
+  SpeciesPage({super.key});
+
   @override
   Widget buildView() {
     return Container(
@@ -56,7 +57,6 @@ class SpeciesPage extends BaseGetPageView<SpeciesController, SpeciesState> {
         }),
       ),
     );
-    ;
   }
 
   @override
@@ -72,6 +72,7 @@ class SpeciesPage extends BaseGetPageView<SpeciesController, SpeciesState> {
 }
 
 class SpeciesController extends BaseController<SpeciesState> {
+  @override
   final SpeciesState state = SpeciesState();
 
   ClassificationInfoController get info => Get.find();

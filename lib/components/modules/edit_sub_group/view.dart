@@ -2,15 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
 class EditSubGroupPage
     extends BaseGetView<EditSubGroupController, EditSubGroupState> {
+  const EditSubGroupPage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(

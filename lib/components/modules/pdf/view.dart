@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_pdfview/flutter_pdfview.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/system/gy_scaffold.dart';
 
 import 'index.dart';
 

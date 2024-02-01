@@ -4,14 +4,15 @@ import 'package:get/get.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/relation/role_settings/state.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/system/gy_scaffold.dart';
 
 import 'identity_info/view.dart';
 import 'logic.dart';
 
 class RoleSettingsPage
     extends BaseGetView<RoleSettingsController, RoleSettingsState> {
+  const RoleSettingsPage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(

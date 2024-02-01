@@ -2,6 +2,7 @@ import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/main_bean.dart';
@@ -12,9 +13,6 @@ import 'package:orginone/pages/relation/view.dart';
 import 'package:orginone/pages/store/view.dart';
 import 'package:orginone/pages/work/view.dart';
 import 'package:orginone/utils/toast_utils.dart';
-import 'package:orginone/components/widgets/badge_widget.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
-import 'package:orginone/components/widgets/keep_alive_widget.dart';
 import 'package:orginone/config/unified.dart';
 
 import 'logic.dart';

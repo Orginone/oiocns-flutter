@@ -4,7 +4,7 @@ import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/system/gy_scaffold.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/getx/base_bindings.dart';

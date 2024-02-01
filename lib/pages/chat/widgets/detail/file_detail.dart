@@ -8,7 +8,7 @@ import 'package:orginone/dart/base/model.dart' as model;
 
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
-import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/components/widgets/common/image/image_widget.dart';
 import 'package:orginone/config/unified.dart';
 
 import 'image_detail.dart';

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:orginone/components/widgets/text_avatar.dart';
-import 'package:orginone/config/unified.dart';
+import 'package:orginone/config/colors.dart';
+import 'package:orginone/config/text.dart';
 
-const Color defaultBgColor = XColors.lightBlue;
 const EdgeInsets defaultPadding = EdgeInsets.all(2);
 const double defaultRadius = 3;
 
@@ -18,8 +17,8 @@ class TextTag extends StatelessWidget {
   final int? maxLines;
   const TextTag(
     this.label, {
-    this.textStyle = defaultTextStyle,
-    this.bgColor = defaultBgColor,
+    this.textStyle = AppTextStyles.defaultTextStyle,
+    this.bgColor = AppColors.defaultBgColor,
     this.borderColor,
     this.padding = defaultPadding,
     this.radius = defaultRadius,

@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/main_bean.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/mapping_components.dart';
 
 Future<void> showCreateAuthDialog(
     BuildContext context, IForm form, ITarget target,

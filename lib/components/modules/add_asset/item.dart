@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:orginone/common/models/file/index.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/utils/date_utils.dart';
 import 'package:orginone/utils/hive_utils.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/custom_paint.dart';
 
 class Item extends StatelessWidget {
   final VoidCallback? openInfo;

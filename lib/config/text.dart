@@ -11,6 +11,11 @@ import 'package:get/get.dart';
 
 /// 字体样式
 class AppTextStyles {
+  static const TextStyle defaultTextStyle = TextStyle(
+    fontSize: 16,
+    color: Colors.white,
+    fontWeight: FontWeight.bold,
+  );
   static TextStyle? get bodyLarge => Get.textTheme.bodyLarge;
   static TextStyle? get bodyMedium => Get.textTheme.bodyMedium;
   static TextStyle? get bodySmall => Get.textTheme.bodySmall;

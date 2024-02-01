@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
 
 import '../../../common/data_config/relation_config.dart';
 

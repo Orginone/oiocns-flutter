@@ -2,12 +2,9 @@ import 'package:badges/badges.dart' as badges;
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/utils/date_util.dart';
-import 'package:orginone/components/widgets/image_widget.dart';
-import 'package:orginone/components/widgets/popup_widget.dart';
-import 'package:orginone/components/widgets/target_text.dart';
 import 'package:orginone/config/unified.dart';
-import 'package:orginone/components/widgets/text_tag.dart';
 
 import 'list_adapter.dart';
 

@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
 import 'package:getwidget/types/gf_button_type.dart';
-import 'package:orginone/components/widgets/text_avatar.dart';
+import 'package:orginone/components/index.dart';
 
 class WidgetUtil {
   static get defaultBackBtn => GFIconButton(

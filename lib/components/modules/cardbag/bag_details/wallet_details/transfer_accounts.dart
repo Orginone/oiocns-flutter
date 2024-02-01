@@ -5,11 +5,9 @@ import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/common/models/index.dart';
 import 'package:orginone/common/routers/index.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/main_bean.dart';
 import 'package:orginone/utils/toast_utils.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
-import 'package:orginone/components/widgets/loading_dialog.dart';
 import 'package:orginone/config/unified.dart';
 
 class TransferAccounts extends StatefulWidget {

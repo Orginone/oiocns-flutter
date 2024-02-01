@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
@@ -13,10 +14,7 @@ import 'package:orginone/utils/bus/event_bus_helper.dart';
 
 import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/string_util.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
 import 'package:orginone/config/unified.dart';
-import 'package:orginone/components/widgets/team_avatar.dart';
 
 class MessageRecordsPage
     extends BaseGetView<MessageRecordsController, MessageRecordsState> {

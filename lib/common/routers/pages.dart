@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
-import 'package:orginone/components/widgets/TargetActivity/activity_comment_box.dart';
-import 'package:orginone/components/widgets/TargetActivity/target_activity_view.dart';
+import 'package:orginone/components/widgets/target_activity/activity_comment_box.dart';
+import 'package:orginone/components/widgets/target_activity/target_activity_view.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/wallet_controller.dart';

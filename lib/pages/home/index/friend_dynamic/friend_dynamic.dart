@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/components/index.dart';
 
 import 'package:orginone/pages/home/index/widget/widget.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/image_widget.dart';
 import 'package:orginone/config/unified.dart';
 
 class FriendDynamic extends StatefulWidget {

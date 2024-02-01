@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 // import 'package:flutter_filereader/flutter_filereader.dart';
 import 'package:orginone/components/modules/file_reader/index.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
-import 'package:orginone/components/widgets/load_state_widget.dart';
 
 class FileReaderPage
     extends BaseGetView<FileReaderController, FileReaderState> {

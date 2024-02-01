@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/config/colors.dart';
 import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/utils/date_utils.dart';
-import 'package:orginone/components/widgets/target_text.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 

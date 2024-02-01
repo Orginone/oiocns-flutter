@@ -7,8 +7,8 @@ import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
-import 'package:orginone/components/widgets/image_widget.dart';
-import 'package:orginone/components/widgets/photo_widget.dart';
+import 'package:orginone/components/widgets/common/image/image_widget.dart';
+import 'package:orginone/components/widgets/common/image/photo_widget.dart';
 
 import 'shadow_widget.dart';
 

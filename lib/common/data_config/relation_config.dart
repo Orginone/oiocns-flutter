@@ -25,7 +25,7 @@ import 'package:orginone/dart/core/thing/systemfile.dart';
 import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/pages/relation/home/state.dart';
 import 'package:orginone/utils/toast_utils.dart';
-import 'package:orginone/components/widgets/loading_dialog.dart';
+import 'package:orginone/components/widgets/dialog/loading_dialog.dart';
 
 import '../../pages/relation/widgets/dialog.dart';
 

@@ -3,13 +3,13 @@ import 'package:flutter/material.dart' hide SearchBar;
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/common/index.dart' hide ImageWidget, TextWidget;
+import 'package:orginone/common/index.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/utils/icons.dart';
-import 'package:orginone/components/widgets/image_widget.dart';
-import 'package:orginone/components/widgets/text_widget.dart';
+import 'package:orginone/components/widgets/common/image/image_widget.dart';
 
 import 'search_bar.dart';
 
@@ -87,7 +87,7 @@ class UserBar extends GetView<IndexController> {
                 child: Row(
                   children: [
                     TextWidget(
-                      text: controller.provider.user?.metadata.name ?? "",
+                      text: controller.provider.user.metadata.name ?? "",
                       style: AppTextStyles.titleSmall
                           ?.copyWith(fontWeight: FontWeight.w900),
                     ),
@@ -118,7 +118,7 @@ class UserBar extends GetView<IndexController> {
               SizedBox(
                 width: 240.w,
                 child: Text(
-                  controller.provider.user?.metadata.remark ?? "",
+                  controller.provider.user.metadata.remark ?? "",
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: TextStyle(fontSize: 16.sp),
@@ -317,8 +317,8 @@ class UserBar extends GetView<IndexController> {
       double? radius}) {
     return Obx(() {
       dynamic avatar;
-      var share = controller.provider.user?.share;
-      avatar = share?.avatar?.thumbnailUint8List ??
+      var share = controller.provider.user.share;
+      avatar = share.avatar?.thumbnailUint8List ??
           IconsUtils.icons['x']?['defalutAvatar'];
 
       return Container(

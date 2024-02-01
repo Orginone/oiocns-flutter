@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
-import 'package:orginone/components/widgets/text_tag.dart';
+import 'package:orginone/components/widgets/common/text/index.dart'
+    hide TextWidget;
 import 'package:orginone/config/colors.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';

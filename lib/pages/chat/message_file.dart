@@ -2,6 +2,7 @@ import 'package:background_downloader/background_downloader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/core/getx/base_bindings.dart';
@@ -11,8 +12,6 @@ import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/utils/log/log_util.dart';
 import 'package:orginone/utils/toast_utils.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
 import 'package:orginone/config/unified.dart';
 
 class MessageFilePage

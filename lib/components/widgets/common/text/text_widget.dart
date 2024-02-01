@@ -1,7 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-
-import 'base_common_widget.dart';
+import 'package:orginone/components/base/base_common_widget.dart';
 
 class TextWidget extends BaseCommonWidget {
   final String? text;

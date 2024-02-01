@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/components/widgets/common/text/index.dart';
 import 'package:orginone/pages/work/state.dart';
-import 'package:orginone/components/widgets/target_text.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/config/colors.dart';
 import 'package:orginone/dart/base/schema.dart';

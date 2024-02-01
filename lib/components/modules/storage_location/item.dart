@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
+import 'package:orginone/components/widgets/index.dart';
 
 import 'logic.dart';
 import 'state.dart';

@@ -4,15 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:orginone/common/index.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/config/colors.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/utils/index.dart';
-import 'package:orginone/components/widgets/buttons.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
 import 'package:orginone/config/unified.dart';
-import 'package:orginone/components/widgets/team_avatar.dart';
 
 class AtPersonDialog {
   static Future<List<XTarget>?> showDialog(

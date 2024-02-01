@@ -3,12 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/values/index.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/config/colors.dart';
-import 'package:orginone/components/widgets/text_high_light.dart';
 import 'package:orginone/config/unified.dart';
-
-import 'image_widget.dart';
-import 'target_text.dart';
 
 typedef DocumentOperation = Function(dynamic type, String data);
 

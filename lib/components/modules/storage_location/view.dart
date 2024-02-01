@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
 
 import 'item.dart';
 import 'logic.dart';
@@ -11,6 +11,8 @@ import 'state.dart';
 
 class StorageLocationPage
     extends BaseGetView<StorageLocationController, StorageLocationState> {
+  const StorageLocationPage({super.key});
+
   @override
   Widget buildView() {
     return Scaffold(

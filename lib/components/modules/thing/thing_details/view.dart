@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/components/modules/thing/thing_details/state.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
-import 'package:orginone/components/widgets/keep_alive_widget.dart';
 
 import 'logic.dart';
 import 'thing_info/view.dart';

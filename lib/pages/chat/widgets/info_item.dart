@@ -10,6 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/routers/index.dart';
+import 'package:orginone/components/widgets/common/text/index.dart';
 import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/index.dart';
@@ -21,9 +22,8 @@ import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/widgets/detail/uploading_detail.dart';
 import 'package:orginone/utils/bus/event_bus_helper.dart';
 import 'package:orginone/utils/string_util.dart';
-import 'package:orginone/components/widgets/target_text.dart';
 import 'package:orginone/config/unified.dart';
-import 'package:orginone/components/widgets/team_avatar.dart';
+import 'package:orginone/components/widgets/common/image/team_avatar.dart';
 
 import 'chat_box.dart';
 import 'detail/file_detail.dart';

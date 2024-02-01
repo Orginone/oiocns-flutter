@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/values/index.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/home/index/widget/widget.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/image_widget.dart';
 
 class SharedSoftware extends StatefulWidget {
   const SharedSoftware({Key? key}) : super(key: key);

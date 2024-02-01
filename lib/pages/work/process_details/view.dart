@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/system/gy_scaffold.dart';
 import 'package:orginone/pages/work/widgets/index.dart';
 import 'logic.dart';
 import 'process_info/view.dart';

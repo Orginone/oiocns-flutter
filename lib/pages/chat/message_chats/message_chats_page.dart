@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_page_view.dart';
-import 'package:orginone/components/widgets/keep_alive_widget.dart';
 
 import 'message_chats_controller.dart';
 import 'message_chats_state.dart';

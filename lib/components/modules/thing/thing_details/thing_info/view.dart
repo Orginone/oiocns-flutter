@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
 class ThingInfoPage
     extends BaseGetPageView<ThingInfoController, ThingInfoState> {
+  ThingInfoPage({super.key});
+
   @override
   Widget buildView() {
     return SingleChildScrollView(

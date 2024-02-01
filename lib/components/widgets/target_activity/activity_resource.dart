@@ -4,8 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:orginone/common/values/images.dart';
-import 'package:orginone/components/widgets/image_widget.dart';
-import 'package:orginone/components/widgets/photo_widget.dart';
+import 'package:orginone/components/widgets/common/image/image_widget.dart';
+import 'package:orginone/components/widgets/common/image/photo_widget.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/work/rules/lib/tools.dart';
 

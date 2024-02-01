@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/system/gy_scaffold.dart';
 import 'package:orginone/config/unified.dart';
 
 import 'base_breadcrumb_nav_controller.dart';
@@ -10,6 +10,8 @@ import '../base_get_view.dart';
 
 abstract class BaseBreadcrumbNavPage<T extends BaseBreadcrumbNavController,
     S extends BaseBreadcrumbNavState> extends BaseGetView<T, S> {
+  const BaseBreadcrumbNavPage({super.key});
+
   TextStyle get _selectedTextStyle =>
       TextStyle(fontSize: 20.sp, color: XColors.themeColor);
 

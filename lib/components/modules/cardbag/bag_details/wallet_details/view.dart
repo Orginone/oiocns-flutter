@@ -5,15 +5,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/common/routers/index.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/utils/toast_utils.dart';
-import 'package:orginone/components/widgets/buttons.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
-import 'package:orginone/components/widgets/keep_alive_widget.dart';
-import 'package:orginone/components/widgets/sliver_tabbar_delegate.dart';
 import 'package:orginone/config/unified.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 import 'logic.dart';
 import 'state.dart';

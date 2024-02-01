@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:orginone/common/values/index.dart';
 
-import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/components/widgets/common/image/image_widget.dart';
 import 'package:orginone/config/unified.dart';
 
 class TextArrow extends StatelessWidget {

@@ -10,7 +10,7 @@ import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/utils/string_util.dart';
-import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/components/widgets/common/image/image_widget.dart';
 import 'package:orginone/config/unified.dart';
 
 class TextDetail extends BaseDetail {

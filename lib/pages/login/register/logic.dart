@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 import 'package:orginone/common/values/constants.dart';
-import 'package:orginone/components/widgets/loading_dialog.dart';
+import 'package:orginone/components/widgets/dialog/loading_dialog.dart';
 import 'package:orginone/config/location.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main_bean.dart';

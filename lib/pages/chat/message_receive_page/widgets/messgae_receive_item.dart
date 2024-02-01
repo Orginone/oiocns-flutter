@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/components/widgets/team_avatar.dart';
+import 'package:orginone/components/widgets/common/image/team_avatar.dart';
 
 class MessageReceiveItem extends StatelessWidget {
   const MessageReceiveItem({

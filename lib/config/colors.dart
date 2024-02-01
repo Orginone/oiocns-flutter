@@ -1,12 +1,15 @@
 import 'dart:ui';
 
 import 'package:get/get.dart';
+import 'package:orginone/config/index.dart';
 
 class AppColors {
   static Color backgroundColor = const Color(0xFFF0F2F7);
   static Color formBackgroundColor = const Color(0xFFD9E3F5);
   static Color formTitleBackgroundColor = const Color(0xFFF5F6FC);
 
+  static const Color defaultAppBarColor = XColors.navigatorBgColor;
+  static const Color defaultBgColor = XColors.lightBlue;
   /// 自定义 颜色
   /// *******************************************
   static const orange = Color(0xffff6634);

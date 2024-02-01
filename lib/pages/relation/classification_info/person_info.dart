@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/utils/date_utils.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
 
 class PersonInfo extends StatelessWidget {
   final XTarget data;

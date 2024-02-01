@@ -13,7 +13,7 @@ import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/utils/index.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/system/gy_scaffold.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 

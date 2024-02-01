@@ -16,10 +16,10 @@ import 'package:orginone/main_bean.dart';
 import 'package:orginone/pages/chat/widgets/avatars.dart';
 import 'package:orginone/pages/relation/widgets/dialog.dart';
 import 'package:orginone/utils/toast_utils.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
-import 'package:orginone/components/widgets/choose_item.dart';
+import 'package:orginone/components/widgets/system/gy_scaffold.dart';
+import 'package:orginone/components/widgets/items/choose_item.dart';
 import 'package:orginone/config/unified.dart';
-import 'package:orginone/components/widgets/team_avatar.dart';
+import 'package:orginone/components/widgets/common/image/team_avatar.dart';
 
 Size defaultBtnSize = Size(400.w, 70.h);
 

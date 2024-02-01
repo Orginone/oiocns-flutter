@@ -24,7 +24,7 @@ import 'package:orginone/utils/bus/event_bus_helper.dart';
 import 'package:orginone/utils/hive_utils.dart';
 import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/toast_utils.dart';
-import 'package:orginone/components/widgets/loading_dialog.dart';
+import 'package:orginone/components/widgets/dialog/loading_dialog.dart';
 
 import 'app_data_controller.dart';
 

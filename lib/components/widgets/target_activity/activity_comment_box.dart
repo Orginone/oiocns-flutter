@@ -27,7 +27,7 @@ import 'package:orginone/pages/chat/widgets/text/at_textfield.dart';
 import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
 import 'package:orginone/utils/bus/event_bus_helper.dart';
 import 'package:orginone/utils/permission_util.dart';
-import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/components/widgets/common/image/image_widget.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';

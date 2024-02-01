@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/widgets/loading_dialog.dart';
+import 'package:orginone/components/widgets/dialog/loading_dialog.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/main_bean.dart';

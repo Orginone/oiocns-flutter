@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/modules/cardbag/index.dart';
 import 'package:orginone/utils/toast_utils.dart';
-import 'package:orginone/components/widgets/buttons.dart';
+import 'package:orginone/components/widgets/system/buttons.dart';
 import 'package:orginone/config/unified.dart';
 
 class VerifyMnemonic extends StatefulWidget {

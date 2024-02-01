@@ -2,7 +2,7 @@ import 'package:easy_refresh/easy_refresh.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
-import 'package:orginone/components/widgets/load_state_widget.dart';
+import 'package:orginone/components/index.dart';
 
 import 'base_get_list_state.dart';
 import 'base_list_controller.dart';

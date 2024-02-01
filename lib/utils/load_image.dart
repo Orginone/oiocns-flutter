@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/components/widgets/common/image/image_widget.dart';
 
 import 'icons.dart';
 

@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:orginone/config/unified.dart';
+import 'package:orginone/config/colors.dart';
+import 'package:orginone/config/space.dart';
+import 'package:orginone/config/text.dart';
 
 enum TextAvatarType { space, chat, avatar }
 
 const double defaultWidth = 40;
 const double defaultRadius = 5;
-const Color defaultBgColor = XColors.themeColor;
-const EdgeInsets defaultMargin = EdgeInsets.zero;
-const TextStyle defaultTextStyle = TextStyle(
-  fontSize: 16,
-  color: Colors.white,
-  fontWeight: FontWeight.bold,
-);
 
 class TextAvatar extends StatelessWidget {
   final String avatarName;
@@ -27,9 +22,9 @@ class TextAvatar extends StatelessWidget {
     required this.avatarName,
     this.radius = defaultRadius,
     this.width = defaultWidth,
-    this.margin = defaultMargin,
-    this.bgColor = defaultBgColor,
-    this.textStyle = defaultTextStyle,
+    this.margin = AppSpace.defaultMargin,
+    this.bgColor = AppColors.defaultBgColor,
+    this.textStyle = AppTextStyles.defaultTextStyle,
     this.status,
   }) : super(key: key);
 

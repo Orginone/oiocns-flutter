@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/common/data_config/relation_config.dart';
 import 'package:orginone/pages/relation/widgets/document.dart';
 import 'package:orginone/utils/date_utils.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
 class DepartmentInfoPage
     extends BaseGetView<DepartmentInfoController, DepartmentInfoState> {
+  const DepartmentInfoPage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(

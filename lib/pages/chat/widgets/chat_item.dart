@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/routers/index.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/chat/message.dart';
@@ -12,8 +13,6 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/utils/date_util.dart';
 import 'package:orginone/utils/string_util.dart';
 import 'package:orginone/config/unified.dart';
-import 'package:orginone/components/widgets/team_avatar.dart';
-import 'package:orginone/components/widgets/text_tag.dart';
 
 class MessageItemWidget extends GetView<IndexController> {
   // 用户信息

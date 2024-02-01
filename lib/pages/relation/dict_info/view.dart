@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/utils/date_utils.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
 class DictInfoPage extends BaseGetView<DictInfoController, DictInfoState> {
+  const DictInfoPage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(

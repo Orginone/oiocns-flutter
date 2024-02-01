@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/modules/choice_thing/index.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/dart/core/getx/base_get_list_view.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
 import 'item.dart';
 
 class ChoiceThingPage

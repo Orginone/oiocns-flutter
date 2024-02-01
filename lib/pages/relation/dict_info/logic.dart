@@ -2,7 +2,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/pages/relation/widgets/dialog.dart';
 import 'package:orginone/utils/toast_utils.dart';
-import 'package:orginone/components/widgets/loading_dialog.dart';
+import 'package:orginone/components/widgets/dialog/loading_dialog.dart';
 
 import 'state.dart';
 

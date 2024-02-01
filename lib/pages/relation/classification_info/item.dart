@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_advanced_avatar/flutter_advanced_avatar.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/pages/relation/widgets/document.dart';
-
-import '../../../components/widgets/common_widget.dart';
 
 class Item extends StatelessWidget {
   final VoidCallback? onTap;

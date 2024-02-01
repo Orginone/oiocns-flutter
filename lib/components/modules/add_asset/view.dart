@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/index.dart';
+import 'package:orginone/components/widgets/system/gy_scaffold.dart';
 
-import '../../../config/unified.dart';
 import '../../../dart/core/getx/base_get_view.dart';
 import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
 
 class AddAssetPage extends BaseGetView<AddAssetController, AddAssetState> {
+  const AddAssetPage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(

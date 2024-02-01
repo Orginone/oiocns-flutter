@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/config/colors.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
 
 import 'logic.dart';
 import 'state.dart';

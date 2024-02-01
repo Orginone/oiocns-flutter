@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/public/consts.dart';
 import 'package:orginone/main_bean.dart';
-import 'package:orginone/components/widgets/image_widget.dart';
+import 'package:orginone/components/widgets/common/image/image_widget.dart';
 
 class TeamTypeInfo {
   final bool? preview;

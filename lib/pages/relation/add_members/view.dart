@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/components/widgets/common_widget.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/system/gy_scaffold.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
 class AddMembersPage
     extends BaseGetView<AddMembersController, AddMembersState> {
+  const AddMembersPage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(

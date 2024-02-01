@@ -3,9 +3,8 @@ import 'package:flutter_animated_dialog/flutter_animated_dialog.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/channel/wallet_channel.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/main_bean.dart';
-import 'package:orginone/components/widgets/buttons.dart';
-import 'package:orginone/components/widgets/keep_alive_widget.dart';
 import 'package:orginone/config/unified.dart';
 
 import 'logic.dart';

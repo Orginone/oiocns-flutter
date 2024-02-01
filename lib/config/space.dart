@@ -10,6 +10,8 @@ import 'package:flutter/material.dart';
 
 /// 间距
 class AppSpace {
+  static const EdgeInsets defaultMargin = EdgeInsets.zero;
+
   /// 按钮
   static double get button => 5;
 

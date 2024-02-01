@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/components/widgets/text_avatar.dart';
+import 'package:orginone/config/space.dart';
 import 'package:orginone/config/unified.dart';
 
 enum SearchType { text, dropdown }
@@ -21,7 +21,7 @@ class TextSearch extends StatelessWidget {
 
   const TextSearch({
     Key? key,
-    this.margin = defaultMargin,
+    this.margin = AppSpace.defaultMargin,
     this.onTap,
     this.searchingCallback,
     this.loadingCallback,

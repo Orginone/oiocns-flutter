@@ -2,12 +2,14 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/components/widgets/gy_scaffold.dart';
+import 'package:orginone/components/widgets/system/gy_scaffold.dart';
 
 import 'logic.dart';
 import 'state.dart';
 
 class VideoPlayPage extends BaseGetView<VideoPlayController, VideoPlayState> {
+  const VideoPlayPage({super.key});
+
   @override
   Widget buildView() {
     return GyScaffold(
@@ -18,7 +20,7 @@ class VideoPlayPage extends BaseGetView<VideoPlayController, VideoPlayState> {
       backgroundColor: Colors.black,
       body: Obx(() {
         if (!state.isInitialized.value) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(),
           );
         }
