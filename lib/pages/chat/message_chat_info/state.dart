@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 class MessageChatInfoState extends BaseGetState {
   late ISession chat;

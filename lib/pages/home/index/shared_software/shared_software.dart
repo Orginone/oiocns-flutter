@@ -5,7 +5,7 @@ import 'package:orginone/common/values/index.dart';
 import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/home/index/widget/widget.dart';
 
 class SharedSoftware extends StatefulWidget {

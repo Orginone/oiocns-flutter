@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_rx/get_rx.dart';
@@ -37,7 +36,7 @@ class TargetActivityList extends StatelessWidget {
         onRefresh: () => controller.state.refresh(),
         child: Obx(() {
           return ScrollablePositionedList.builder(
-            padding: EdgeInsets.only(left: 10.w, right: 10.w),
+            // padding: EdgeInsets.only(left: 10.w, right: 10.w),
             // shrinkWrap: true,
             key: controller.state.scrollKey,
             // reverse: true,

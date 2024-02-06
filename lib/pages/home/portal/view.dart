@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:orginone/components/index.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_page_view.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/home/portal/workBench/view.dart';
 
 import 'cohort/view.dart';

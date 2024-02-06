@@ -7,7 +7,7 @@ import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/config/unified.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/log/log_util.dart';
 
 import 'base_group_nav_list_controller.dart';

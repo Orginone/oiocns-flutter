@@ -7,7 +7,7 @@ import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/thing/standard/form.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/toast_utils.dart';
 
 import 'logic.dart';

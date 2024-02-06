@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/public/consts.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 class TargetText extends StatefulWidget {
   final String userId;

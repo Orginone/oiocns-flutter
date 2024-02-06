@@ -8,11 +8,8 @@ import 'package:orginone/dart/base/common/format.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
-import 'package:orginone/main_bean.dart';
-import 'package:orginone/pages/chat/message_chats/message_chats_controller.dart';
-import 'package:orginone/pages/home/home/logic.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/home/index/widget/widget.dart';
-import 'package:orginone/pages/work/logic.dart';
 import 'package:orginone/utils/load_image.dart';
 import 'controller.dart';
 import 'state.dart';
@@ -22,10 +19,10 @@ class WorkBenchPage
   late String type;
   late String label;
 
-  HomeController homeController = Get.find<HomeController>();
-  WorkController workController = Get.find<WorkController>();
-  MessageChatsController messageChatsController =
-      Get.find<MessageChatsController>();
+  // HomeController homeController = Get.find<HomeController>();
+  // WorkController workController = Get.find<WorkController>();
+  // MessageChatsController messageChatsController =
+  //     Get.find<MessageChatsController>();
 
   WorkBenchPage(this.type, this.label, {super.key});
 
@@ -55,7 +52,7 @@ class WorkBenchPage
         child: Container(
           child: Column(
             children: [
-              XImage.localImage(cmd, size: Size(56.w, 56.w)),
+              XImage.localImage(cmd, width: 40.w, color: XColors.selectedColor),
               Container(
                 padding: const EdgeInsets.only(top: 16),
                 margin: EdgeInsets.only(top: 10.h),
@@ -86,15 +83,15 @@ class WorkBenchPage
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                renderCmdBtn('joinFriend', '添加好友', 'joinFriend',
+                renderCmdBtn('addFriend', '添加好友', 'joinFriend',
                     relationCtrl.menuItems[0]),
                 renderCmdBtn(
-                    'newCohort', '创建群组', '群组', relationCtrl.menuItems[4]),
-                renderCmdBtn('joinCohort', '加入群聊', 'joinCohort',
+                    'createGroup', '创建群组', '群组', relationCtrl.menuItems[4]),
+                renderCmdBtn('joinGroup', '加入群聊', 'joinCohort',
                     relationCtrl.menuItems[1]),
-                renderCmdBtn(
-                    'newCompany', '新建单位', '单位', relationCtrl.menuItems[2]),
-                renderCmdBtn('joinCompany', '加入单位', 'joinCompany',
+                renderCmdBtn('establishmentUnit', '新建单位', '单位',
+                    relationCtrl.menuItems[2]),
+                renderCmdBtn('joinUnit', '加入单位', 'joinCompany',
                     relationCtrl.menuItems[3]),
               ],
             )));
@@ -115,7 +112,8 @@ class WorkBenchPage
               action: moreWidget ??
                   GestureDetector(
                       onTap: () {
-                        homeController.jumpTab(HomeEnum.relation);
+                        // homeController.jumpTab(HomeEnum.relation);
+                        RoutePages.jumpRelation();
                       },
                       child: const TextArrow(
                         title: '更多操作',
@@ -139,33 +137,38 @@ class WorkBenchPage
             children: [
               renderDataItem("好友(人)", 'friend', state.friendNum, HomeEnum.chat,
                   () {
-                int i = messageChatsController.getTabIndex('friend');
-                messageChatsController.changeSubmenuIndex(i);
-                messageChatsController.state.tabController.index = i;
+                // int i = messageChatsController.getTabIndex('friend');
+                // messageChatsController.changeSubmenuIndex(i);
+                // messageChatsController.state.tabController.index = i;
+                RoutePages.jumpChat(defaultActiveTabs: ["好友"]);
               }),
               renderDataItem(
                   "同事(个)", 'company_friend', state.colleagueNum, HomeEnum.chat,
                   () {
-                messageChatsController.setTabIndex('company_friend');
+                RoutePages.jumpChat(defaultActiveTabs: ["同事"]);
+                // messageChatsController.setTabIndex('company_friend');
               }),
               renderDataItem(
                   '群聊(个)', 'group', state.groupChatNum, HomeEnum.chat, () {
-                int i = messageChatsController.getTabIndex('group');
-                messageChatsController.changeSubmenuIndex(i);
-                messageChatsController.state.tabController.index = i;
+                RoutePages.jumpChat(defaultActiveTabs: ["群组"]);
+                // int i = messageChatsController.getTabIndex('group');
+                // messageChatsController.changeSubmenuIndex(i);
+                // messageChatsController.state.tabController.index = i;
               }),
               renderDataItem(
                   '单位(家)', 'company', state.companyNum, HomeEnum.chat, () {
-                int i = messageChatsController.getTabIndex('company');
-                messageChatsController.changeSubmenuIndex(i);
-                messageChatsController.state.tabController.index = i;
+                RoutePages.jumpChat(defaultActiveTabs: ["单位"]);
+                // int i = messageChatsController.getTabIndex('company');
+                // messageChatsController.changeSubmenuIndex(i);
+                // messageChatsController.state.tabController.index = i;
               }),
             ],
           ),
         ),
         moreWidget: GestureDetector(
             onTap: () {
-              homeController.jumpTab(HomeEnum.chat);
+              // homeController.jumpTab(HomeEnum.chat);
+              RoutePages.jumpChat();
             },
             child: TextArrow(
                 title: '未读消息 · ${relationCtrl.noReadMgsCount.value}')));
@@ -179,7 +182,7 @@ class WorkBenchPage
         child: GestureDetector(
           onTap: () {
             if (home != null) {
-              homeController.jumpTab(home);
+              // homeController.jumpTab(home);
             }
             fun!();
           },
@@ -209,32 +212,37 @@ class WorkBenchPage
                 children: [
                   renderDataItem('待办', 'todo', state.todoCount, HomeEnum.work,
                       () {
-                    int i = workController.getTabIndex('todo');
-                    workController.changeSubmenuIndex(i);
-                    workController.state.tabController.index = i;
+                    // int i = workController.getTabIndex('todo');
+                    // workController.changeSubmenuIndex(i);
+                    // workController.state.tabController.index = i;
+                    RoutePages.jumpWork(defaultActiveTabs: ["待办"]);
                   }),
                   renderDataItem(
                       '已办', 'done', state.completedCount, HomeEnum.work, () {
-                    int i = workController.getTabIndex('done');
-                    workController.changeSubmenuIndex(i);
-                    workController.state.tabController.index = i;
+                    // int i = workController.getTabIndex('done');
+                    // workController.changeSubmenuIndex(i);
+                    // workController.state.tabController.index = i;
+                    RoutePages.jumpWork(defaultActiveTabs: ["已办"]);
                   }),
                   renderDataItem('抄送', 'alt', state.copysCount, HomeEnum.work,
                       () {
-                    int i = workController.getTabIndex('alt');
-                    workController.changeSubmenuIndex(i);
-                    workController.state.tabController.index = i;
+                    // int i = workController.getTabIndex('alt');
+                    // workController.changeSubmenuIndex(i);
+                    // workController.state.tabController.index = i;
+                    RoutePages.jumpWork(defaultActiveTabs: ["抄送"]);
                   }),
                   renderDataItem(
                       '发起的', 'create', state.applyCount, HomeEnum.work, () {
-                    int i = workController.getTabIndex('create');
-                    workController.changeSubmenuIndex(i);
-                    workController.state.tabController.index = i;
+                    // int i = workController.getTabIndex('create');
+                    // workController.changeSubmenuIndex(i);
+                    // workController.state.tabController.index = i;
+                    RoutePages.jumpWork(defaultActiveTabs: ["已发起"]);
                   }),
                 ])),
         moreWidget: GestureDetector(
             onTap: () {
-              homeController.jumpTab(HomeEnum.work);
+              // homeController.jumpTab(HomeEnum.work);
+              RoutePages.jumpWork();
             },
             child: const TextArrow(title: '前往审批')));
   }
@@ -300,7 +308,8 @@ class WorkBenchPage
                       ])),
         moreWidget: GestureDetector(
             onTap: () {
-              homeController.jumpTab(HomeEnum.store);
+              // homeController.jumpTab(HomeEnum.store);
+              RoutePages.jumpStore();
             },
             child: const TextArrow(title: '管理数据')));
   }

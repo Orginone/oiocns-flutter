@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:orginone/common/routers/pages.dart';
 import 'package:orginone/config/colors.dart';
 import 'package:orginone/config/unified.dart';
+import 'package:orginone/pages/home/components/user_bar.dart';
 
 class GyScaffold extends StatefulWidget {
   final Widget? body;
@@ -21,6 +23,8 @@ class GyScaffold extends StatefulWidget {
   final Widget? titleWidget;
 
   final List<Widget>? actions;
+
+  final List<Widget>? operations;
 
   final Widget? leading;
 
@@ -49,6 +53,7 @@ class GyScaffold extends StatefulWidget {
       this.titleStyle,
       this.centerTitle = true,
       this.actions,
+      this.operations,
       this.leading,
       this.elevation = 0,
       this.backColor,
@@ -81,6 +86,7 @@ class _GyScaffoldState extends State<GyScaffold> {
   late bool centerTitle;
 
   List<Widget>? actions;
+  List<Widget>? operations;
 
   Widget? leading;
 
@@ -107,13 +113,14 @@ class _GyScaffoldState extends State<GyScaffold> {
   void init() {
     body = widget.body ?? Container();
     supportSafeArea = widget.supportSafeArea;
-    backgroundColor = widget.backgroundColor ?? AppColors.backgroundColor;
+    backgroundColor = widget.backgroundColor ?? Colors.white;
     appBarColor = widget.appBarColor ?? Colors.white;
     titleName = widget.titleName ?? "";
     titleWidget = widget.titleWidget;
     titleStyle = widget.titleStyle;
     centerTitle = widget.centerTitle;
     actions = widget.actions;
+    operations = widget.operations;
     leading = widget.leading;
     elevation = widget.elevation;
     backColor = widget.backColor ?? Colors.black;
@@ -155,6 +162,9 @@ class _GyScaffoldState extends State<GyScaffold> {
     if (oldWidget.actions != widget.actions) {
       actions = widget.actions;
     }
+    if (oldWidget.operations != widget.operations) {
+      operations = widget.operations;
+    }
     if (oldWidget.leading != widget.leading) {
       leading = widget.leading;
     }
@@ -183,6 +193,16 @@ class _GyScaffoldState extends State<GyScaffold> {
 
   @override
   Widget build(BuildContext context) {
+    final hasGyScaffold = context.findAncestorWidgetOfExactType<GyScaffold>();
+    final bool isHomePage = RoutePages.getRouteLevel() == 0;
+    if (null != hasGyScaffold) {
+      return body;
+    }
+
+    // if (RoutePages.getRouteLevel() == 0) {
+    //   return body;
+    // }
+
     if (supportSafeArea) {
       body = SafeArea(
         child: body,
@@ -190,27 +210,53 @@ class _GyScaffoldState extends State<GyScaffold> {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: titleWidget ??
-            Text(
-              titleName,
-              style:
-                  titleStyle ?? TextStyle(color: Colors.black, fontSize: 24.sp),
-            ),
-        centerTitle: centerTitle,
-        elevation: elevation,
-        backgroundColor: appBarColor,
-        actions: actions,
-        leading: leading ?? BackButton(color: backColor),
-        leadingWidth: leadingWidth,
-        titleSpacing: titleSpacing,
-        toolbarHeight: toolbarHeight,
-      ),
+      appBar: _buildTitle(isHomePage),
       backgroundColor: backgroundColor,
-      body: body,
+      body: _buildBody(isHomePage),
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
       resizeToAvoidBottomInset: true,
+    );
+  }
+
+  // 构建主体
+  Widget _buildBody(bool isHomePage) {
+    Widget pageW = body;
+    if (isHomePage) {
+      // pageW = Column(
+      //   children: [const UserBar(), body],
+      // );
+    }
+
+    return pageW;
+  }
+
+  /// 构建二级页面头部
+  PreferredSizeWidget _buildTitle(bool isHomePage) {
+    return AppBar(
+      title: isHomePage
+          ? UserBar(
+              title: titleName,
+              data: RoutePages.getParentRouteParam(),
+              actions: operations,
+            )
+          : titleWidget ??
+              Text(
+                titleName,
+                style: titleStyle ??
+                    TextStyle(color: Colors.black, fontSize: 24.sp),
+              ),
+      centerTitle: centerTitle,
+      elevation: elevation,
+      toolbarOpacity: isHomePage ? 0 : 1.0,
+      backgroundColor: appBarColor,
+      shadowColor: appBarColor,
+      surfaceTintColor: appBarColor,
+      actions: isHomePage ? null : actions,
+      leading: isHomePage ? null : leading ?? BackButton(color: backColor),
+      leadingWidth: isHomePage ? 0 : leadingWidth,
+      titleSpacing: isHomePage ? 0 : titleSpacing,
+      toolbarHeight: isHomePage ? null : toolbarHeight ?? 74.h,
     );
   }
 }

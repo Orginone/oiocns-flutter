@@ -2,7 +2,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 ///对象工具类
 class XObject<T extends Xbase> {

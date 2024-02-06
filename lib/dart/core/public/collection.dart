@@ -1,5 +1,5 @@
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 import '../../base/common/lists.dart';
 import '../../base/schema.dart';

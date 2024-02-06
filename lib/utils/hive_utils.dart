@@ -46,6 +46,7 @@ class HiveUtils {
     return _userBox.get("user");
   }
 
+  // 获得模块页签
   static SubGroup? getSubGroup(String key) {
     return _subGroupConfigBox.get(key);
   }

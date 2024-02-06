@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_item.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 import 'state.dart';
 

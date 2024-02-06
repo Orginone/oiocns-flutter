@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/standard/form.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 abstract class IWorkApply {
   /// 办事空间

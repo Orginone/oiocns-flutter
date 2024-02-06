@@ -7,12 +7,14 @@ class BadgeTabWidget extends StatelessWidget {
   final int mgsCount;
   final Widget? body;
   final String? imgPath;
+  final Color? foreColor;
   final EdgeInsets iconMargin;
   const BadgeTabWidget(
       {Key? key,
       this.mgsCount = 0,
       this.body,
       this.imgPath,
+      this.foreColor,
       this.iconMargin = const EdgeInsets.only(bottom: 5.0)})
       : super(key: key);
 
@@ -24,11 +26,15 @@ class BadgeTabWidget extends StatelessWidget {
         children: [
           imgPath == null
               ? const SizedBox()
-              : XImage.localImage(imgPath!, size: Size(36.w, 36.w)),
+              : XImage.localImage(imgPath!, width: 36.w, color: foreColor),
           SizedBox(
             height: 3.h,
           ),
-          body ?? const SizedBox(),
+          null != body
+              ? DefaultTextStyle(
+                  style: TextStyle(fontSize: 16.sp, color: foreColor),
+                  child: body!)
+              : const SizedBox(),
         ],
       ),
     );

@@ -9,7 +9,7 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/outTeam/cohort.dart';
 import 'package:orginone/dart/core/target/outTeam/storage.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 abstract class IBelong extends ITarget {
   //超管权限，权限为树结构
@@ -22,7 +22,8 @@ abstract class IBelong extends ITarget {
   List<ITarget> parentTarget = [];
   //群会话
   List<ISession> cohortChats = [];
-  //共享组织
+
+  ///共享组织
   List<ITarget> shareTarget = [];
 
   /// 获取存储占用情况

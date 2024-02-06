@@ -7,7 +7,7 @@ import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/logger.dart';
 
 import '../person.dart';

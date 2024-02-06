@@ -4,7 +4,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/relation/home/index.dart';
 import 'package:orginone/pages/relation/widgets/dialog.dart';
 import 'package:orginone/utils/toast_utils.dart';

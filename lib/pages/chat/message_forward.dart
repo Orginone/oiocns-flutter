@@ -1,17 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/components/widgets/common/text/index.dart';
-import 'package:orginone/config/unified.dart';
+import 'package:orginone/components/widgets/list_widget/index.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/system/gy_scaffold.dart';
-import 'package:orginone/components/widgets/common/image/image_widget.dart';
-
-import 'message_routers.dart';
 
 class MessageForward extends StatefulWidget {
   final IMessage msgBody;
@@ -29,63 +25,16 @@ class MessageForward extends StatefulWidget {
 }
 
 class _MessageForwardState extends State<MessageForward> {
-  late List<Hierarchy> list;
+  late List<ISession> _list;
+  late TextEditingController _searchController;
+  late String searchText;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    list = [];
-    List<Hierarchy> companyItems = [];
-
-    // for (var company in relationCtrl.user.companys) {
-    //   for (var chats in company.chats) {
-    //     companyItems.add(
-    //       Hierarchy(
-    //         // type: ChatType.list,
-    //         msg: chats,
-    //         children: [
-    //           // Hierarchy(
-    //           //   msg: relationCtrl.chats.last,
-    //           //   children: company.memberChats
-    //           //       .map((item) => Hierarchy(msg: item, children: []))
-    //           //       .toList(),
-    //           // ),
-    //           // ...company.cohortChats
-    //           //     .where((i) => i.isMyChat)
-    //           //     .map((item) => Hierarchy(msg: item, children: []))
-    //           //     .toList(),
-    //         ],
-    //       ),
-    //     );
-    //   }
-    // }
-    // list = [
-    //   //   Hierarchy(
-    //   //       msg: relationCtrl.chats.last,
-    //   //       children: [
-    //   //         // Hierarchy(
-    //   //         //   msg: relationCtrl.chats.last,
-    //   //         //   children: relationCtrl.user.memberChats
-    //   //         //       .map((chat) => Hierarchy(msg: chat, children: []))
-    //   //         //       .toList(),
-    //   //         // ),
-    //   //         ...relationCtrl.user.cohortChats
-    //   //             .where((i) => i.isMyChat)
-    //   //             .map((item) => Hierarchy(msg: item, children: []))
-    //   //             .toList(),
-    //   //       ],
-    //   //       type: ChatType.list),
-    //   // Hierarchy(
-    //   //   msg: relationCtrl.user.chats.last,
-    //   //   children: [],
-    //   // ),
-    //   ...companyItems,
-    // ];
-
-    for (var element in relationCtrl.chats.value) {
-      list.add(Hierarchy(msg: element, children: []));
-    }
+    _list = relationCtrl.chats.value;
+    _searchController = TextEditingController();
+    searchText = "";
   }
 
   @override
@@ -93,169 +42,356 @@ class _MessageForwardState extends State<MessageForward> {
     return GyScaffold(
       titleName: "发送给",
       body: Container(
-          color: Colors.white,
           padding: EdgeInsets.symmetric(horizontal: 15.w),
-          child: buildList(list)),
+          child: _buildList(
+              context,
+              searchText.isEmpty
+                  ? _list
+                  : _list
+                      .where((element) => element.name.contains(searchText))
+                      .toList())),
     );
   }
 
-  Widget buildList(List<Hierarchy> list,
-      {ScrollPhysics? physics, double leftPadding = 0}) {
-    return ListView.builder(
-      physics: physics,
-      shrinkWrap: true,
-      scrollDirection: Axis.vertical,
-      itemCount: list.length,
-      itemBuilder: (BuildContext context, int index) {
-        var item = list[index];
-        return GestureDetector(
-            onTap: () {
-              if (item.type == ChatType.chat) {
-                showCupertinoDialog(
-                  context: context,
-                  builder: (context) {
-                    return CupertinoAlertDialog(
-                      title: Text("发送给${item.msg.chatdata.value.chatName}?"),
-                      actions: <Widget>[
-                        CupertinoDialogAction(
-                          child: const Text('取消'),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                        ),
-                        CupertinoDialogAction(
-                          child: const Text('确定'),
-                          onPressed: () async {
-                            var msgType = MessageType.getType(widget.msgType);
-                            var success = await item.msg.sendMessage(
-                                msgType!,
-                                msgType == MessageType.text
-                                    ? widget.msgBody.msgSource
-                                    : widget.msgBody.msgSource,
-                                []);
-                            if (success) {
-                              ToastUtils.showMsg(msg: "转发成功");
-                            }
-                            Navigator.pop(context, success);
-                          },
-                        ),
-                      ],
-                    );
-                  },
-                ).then((success) {
-                  if (success ?? false) {
-                    if (widget.onSuccess != null) {
-                      widget.onSuccess!();
-                    }
-                  }
-                });
-              }
-            },
-            child: Container(
-              padding:
-                  EdgeInsets.only(top: 2.h, bottom: 2.h, left: leftPadding),
-              child: Column(
-                children: [
-                  Container(
-                      padding: EdgeInsets.only(
-                          top: 12.h, bottom: 12.h, left: leftPadding),
-                      color: XColors.bgColor,
-                      child: Row(
-                        children: [
-                          ImageWidget(
-                            item.msg.share.avatar?.thumbnailUint8List ??
-                                item.msg.share.avatar?.defaultAvatar,
-                            size: 50.w,
-                          ),
-                          SizedBox(
-                            width: 15.w,
-                          ),
-                          Expanded(
-                              child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                Text(
-                                  item.msg.share.name,
-                                  textAlign: TextAlign.left,
-                                ),
-                                Row(
-                                  children: [...item.labels],
-                                )
-                              ])),
-                          item.children.isNotEmpty
-                              ? IconButton(
-                                  icon: Icon(item.isOpen
-                                      ? Icons.arrow_drop_up
-                                      : Icons.arrow_drop_down),
-                                  onPressed: () {
-                                    item.isOpen = !item.isOpen;
-                                    setState(() {});
-                                  },
-                                )
-                              : const SizedBox(),
-                        ],
-                      )),
-                  item.children.isNotEmpty && item.isOpen
-                      ? buildList(item.children,
-                          physics: const NeverScrollableScrollPhysics(),
-                          leftPadding: 20.w)
-                      : const SizedBox(),
-                ],
-              ),
-            ));
-      },
-    );
-  }
-}
-
-class Hierarchy {
-  late ISession msg;
-  late ChatType type;
-  bool isOpen = false;
-  bool isSelected = false;
-  bool isUserLabel = false;
-  late List<Hierarchy> children;
-
-  Hierarchy(
-      {required this.msg, this.type = ChatType.chat, required this.children});
-
-  List<Widget> get labels {
-    var labels = <Widget>[];
-    for (var item in msg.groupTags) {
-      if (item.isNotEmpty) {
-        bool isTop = item == "置顶";
-
-        Widget label;
-
-        var style = TextStyle(
-          color: isTop ? XColors.fontErrorColor : XColors.designBlue,
-          fontSize: 14.sp,
-        );
-        if (isUserLabel) {
-          label = Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              border: Border.all(color: XColors.tinyBlue),
+  Widget _buildList(BuildContext context, List<ISession> list) {
+    return Column(children: [
+      Container(
+          margin: const EdgeInsets.all(0),
+          padding: const EdgeInsets.all(0),
+          child: TextField(
+            decoration: const InputDecoration(
+              hintText: '请输入搜索内容', // 默认提示文本
+              // border: InputBorder, // 移除边框样式，可根据需要调整
             ),
-            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
-            child: TargetText(userId: item, style: style),
-          );
-        } else {
-          label = TextTag(
-            item,
-            bgColor: Colors.white,
-            padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 3),
-            textStyle: style,
-            borderColor: isTop ? XColors.fontErrorColor : XColors.tinyBlue,
-          );
-        }
+            controller: _searchController,
+            onChanged: _search,
+          )),
+      Expanded(
+          child: ListWidget<ISession>(
+        initDatas: list,
+        getDatas: ([dynamic data]) {
+          if (null == data) {
+            return list ?? [];
+          }
+          return [];
+        },
+        onTap: (dynamic data, List children) {
+          if (data is ISession) {
+            _onTap(data);
+          }
+        },
+      ))
+    ]);
+  }
 
-        labels.add(label);
-        labels.add(Padding(padding: EdgeInsets.only(left: 4.w)));
+  void _search(value) {
+    setState(() {
+      searchText = value;
+    });
+  }
+
+  void _onTap(ISession item) {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: Text("发送给${item.chatdata.value.chatName}?"),
+          actions: <Widget>[
+            CupertinoDialogAction(
+              child: const Text('取消'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            CupertinoDialogAction(
+              child: const Text('确定'),
+              onPressed: () async {
+                var msgType = MessageType.getType(widget.msgType);
+                var success = await item.sendMessage(
+                    msgType!,
+                    msgType == MessageType.text
+                        ? widget.msgBody.msgSource
+                        : widget.msgBody.msgSource,
+                    []);
+                if (success) {
+                  ToastUtils.showMsg(msg: "转发成功");
+                }
+                Navigator.pop(context, success);
+              },
+            ),
+          ],
+        );
+      },
+    ).then((success) {
+      if (success ?? false) {
+        if (widget.onSuccess != null) {
+          widget.onSuccess!();
+        }
       }
-    }
-    return labels;
+    });
   }
 }
+
+// class __MessageForwardState extends State<MessageForward> {
+//   late List<Hierarchy> list;
+//   late TextEditingController _searchController;
+
+//   @override
+//   void initState() {
+//     // TODO: implement initState
+//     super.initState();
+//     list = [];
+//     List<Hierarchy> companyItems = [];
+//     _searchController = TextEditingController();
+
+//     // for (var company in relationCtrl.user.companys) {
+//     //   for (var chats in company.chats) {
+//     //     companyItems.add(
+//     //       Hierarchy(
+//     //         // type: ChatType.list,
+//     //         msg: chats,
+//     //         children: [
+//     //           // Hierarchy(
+//     //           //   msg: relationCtrl.chats.last,
+//     //           //   children: company.memberChats
+//     //           //       .map((item) => Hierarchy(msg: item, children: []))
+//     //           //       .toList(),
+//     //           // ),
+//     //           // ...company.cohortChats
+//     //           //     .where((i) => i.isMyChat)
+//     //           //     .map((item) => Hierarchy(msg: item, children: []))
+//     //           //     .toList(),
+//     //         ],
+//     //       ),
+//     //     );
+//     //   }
+//     // }
+//     // list = [
+//     //   //   Hierarchy(
+//     //   //       msg: relationCtrl.chats.last,
+//     //   //       children: [
+//     //   //         // Hierarchy(
+//     //   //         //   msg: relationCtrl.chats.last,
+//     //   //         //   children: relationCtrl.user.memberChats
+//     //   //         //       .map((chat) => Hierarchy(msg: chat, children: []))
+//     //   //         //       .toList(),
+//     //   //         // ),
+//     //   //         ...relationCtrl.user.cohortChats
+//     //   //             .where((i) => i.isMyChat)
+//     //   //             .map((item) => Hierarchy(msg: item, children: []))
+//     //   //             .toList(),
+//     //   //       ],
+//     //   //       type: ChatType.list),
+//     //   // Hierarchy(
+//     //   //   msg: relationCtrl.user.chats.last,
+//     //   //   children: [],
+//     //   // ),
+//     //   ...companyItems,
+//     // ];
+
+//     for (var element in relationCtrl.chats.value) {
+//       list.add(Hierarchy(msg: element, children: []));
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return GyScaffold(
+//       titleName: "发送给",
+//       body: Container(
+//           color: Colors.white,
+//           padding: EdgeInsets.symmetric(horizontal: 15.w),
+//           child: _buildList(context, relationCtrl.chats) ?? buildList(list)),
+//     );
+//   }
+
+//   Widget _buildList(BuildContext context, List<ISession> list) {
+//     return Column(children: [
+//       Container(
+//           child: TextField(
+//         controller: _searchController,
+//         onChanged: _search,
+//       )),
+//       ListWidget<ISession>(
+//         initDatas: list,
+//         getDatas: ([dynamic data]) {
+//           if (null == data) {
+//             return list ?? [];
+//           }
+//           return [];
+//         },
+//         onTap: (dynamic data, List children) {
+//           if (data is ISession) {
+//             _onTap(data);
+//           }
+//         },
+//       )
+//     ]);
+//   }
+
+//   void _search(value) {}
+
+//   ///旧的列表
+//   Widget buildList(List<Hierarchy> list,
+//       {ScrollPhysics? physics, double leftPadding = 0}) {
+//     return ListView.builder(
+//       physics: physics,
+//       shrinkWrap: true,
+//       scrollDirection: Axis.vertical,
+//       itemCount: list.length,
+//       itemBuilder: (BuildContext context, int index) {
+//         var item = list[index];
+//         return GestureDetector(
+//             onTap: () {
+//               _onTap(item.msg);
+//             },
+//             child: Container(
+//               padding:
+//                   EdgeInsets.only(top: 2.h, bottom: 2.h, left: leftPadding),
+//               child: Column(
+//                 children: [
+//                   Container(
+//                       padding: EdgeInsets.only(
+//                           top: 12.h, bottom: 12.h, left: leftPadding),
+//                       color: XColors.bgColor,
+//                       child: Row(
+//                         children: [
+//                           XImage.entityIcon(item.msg, width: 50.w) ??
+//                               ImageWidget(
+//                                 item.msg.share.avatar?.thumbnailUint8List ??
+//                                     item.msg.share.avatar?.defaultAvatar,
+//                                 size: 50.w,
+//                               ),
+//                           SizedBox(
+//                             width: 15.w,
+//                           ),
+//                           Expanded(
+//                               child: Column(
+//                                   mainAxisAlignment: MainAxisAlignment.start,
+//                                   crossAxisAlignment: CrossAxisAlignment.start,
+//                                   children: [
+//                                 Text(
+//                                   item.msg.share.name,
+//                                   textAlign: TextAlign.left,
+//                                 ),
+//                                 Row(
+//                                   children: [...item.labels],
+//                                 )
+//                               ])),
+//                           item.children.isNotEmpty
+//                               ? IconButton(
+//                                   icon: Icon(item.isOpen
+//                                       ? Icons.arrow_drop_up
+//                                       : Icons.arrow_drop_down),
+//                                   onPressed: () {
+//                                     item.isOpen = !item.isOpen;
+//                                     setState(() {});
+//                                   },
+//                                 )
+//                               : const SizedBox(),
+//                         ],
+//                       )),
+//                   item.children.isNotEmpty && item.isOpen
+//                       ? buildList(item.children,
+//                           physics: const NeverScrollableScrollPhysics(),
+//                           leftPadding: 20.w)
+//                       : const SizedBox(),
+//                 ],
+//               ),
+//             ));
+//       },
+//     );
+//   }
+
+//   void _onTap(ISession item) {
+//     showCupertinoDialog(
+//       context: context,
+//       builder: (context) {
+//         return CupertinoAlertDialog(
+//           title: Text("发送给${item.chatdata.value.chatName}?"),
+//           actions: <Widget>[
+//             CupertinoDialogAction(
+//               child: const Text('取消'),
+//               onPressed: () {
+//                 Navigator.pop(context);
+//               },
+//             ),
+//             CupertinoDialogAction(
+//               child: const Text('确定'),
+//               onPressed: () async {
+//                 var msgType = MessageType.getType(widget.msgType);
+//                 var success = await item.sendMessage(
+//                     msgType!,
+//                     msgType == MessageType.text
+//                         ? widget.msgBody.msgSource
+//                         : widget.msgBody.msgSource,
+//                     []);
+//                 if (success) {
+//                   ToastUtils.showMsg(msg: "转发成功");
+//                 }
+//                 Navigator.pop(context, success);
+//               },
+//             ),
+//           ],
+//         );
+//       },
+//     ).then((success) {
+//       if (success ?? false) {
+//         if (widget.onSuccess != null) {
+//           widget.onSuccess!();
+//         }
+//       }
+//     });
+//   }
+// }
+
+// class Hierarchy {
+//   late ISession msg;
+//   late ChatType type;
+//   bool isOpen = false;
+//   bool isSelected = false;
+//   bool isUserLabel = false;
+//   late List<Hierarchy> children;
+
+//   Hierarchy(
+//       {required this.msg, this.type = ChatType.chat, required this.children});
+
+//   List<Widget> get labels {
+//     var labels = <Widget>[];
+//     for (var item in msg.groupTags) {
+//       if (item.isNotEmpty) {
+//         bool isTop = item == "置顶";
+
+//         Widget label;
+
+//         var style = TextStyle(
+//           color: isTop ? XColors.fontErrorColor : XColors.designBlue,
+//           fontSize: 14.sp,
+//         );
+//         if (isUserLabel) {
+//           label = Container(
+//             decoration: BoxDecoration(
+//               color: Colors.white,
+//               borderRadius: const BorderRadius.all(Radius.circular(10)),
+//               border: Border.all(color: XColors.tinyBlue),
+//             ),
+//             padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 5),
+//             child: TargetText(userId: item, style: style),
+//           );
+//         } else {
+//           label = TextTag(
+//             item,
+//             bgColor: Colors.white,
+//             padding: const EdgeInsets.symmetric(vertical: 1, horizontal: 3),
+//             textStyle: style,
+//             borderColor: isTop ? XColors.fontErrorColor : XColors.tinyBlue,
+//           );
+//         }
+
+//         labels.add(label);
+//         labels.add(Padding(padding: EdgeInsets.only(left: 4.w)));
+//       }
+//     }
+//     return labels;
+//   }
+// }

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/public/consts.dart';
-import 'package:orginone/main_bean.dart';
 import 'package:orginone/components/widgets/common/image/image_widget.dart';
+import 'package:orginone/main_base.dart';
+import 'package:orginone/utils/load_image.dart';
 
 class TeamTypeInfo {
   final bool? preview;
@@ -95,12 +96,20 @@ class _TeamAvatarState extends State<TeamAvatar> {
   Widget avatar(ShareIcon share) {
     var avatar = share.avatar;
     dynamic image = avatar?.thumbnailUint8List ?? avatar?.defaultAvatar;
-    return ImageWidget(
-      image,
-      size: size,
-      fit: BoxFit.cover,
-      gaplessPlayback: true,
-      circular: circular,
-    );
+    return null == image
+        ? XImage.entityIcon(
+            share,
+            width: size,
+            fit: BoxFit.cover,
+            gaplessPlayback: true,
+            circular: circular,
+          )
+        : ImageWidget(
+            image,
+            size: size,
+            fit: BoxFit.cover,
+            gaplessPlayback: true,
+            circular: circular,
+          );
   }
 }

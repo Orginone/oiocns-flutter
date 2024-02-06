@@ -1,6 +1,6 @@
 import 'package:connectivity/connectivity.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 ///app网络状态（手机网络，内核长链接状态）
 class AppDataController extends Emitter {

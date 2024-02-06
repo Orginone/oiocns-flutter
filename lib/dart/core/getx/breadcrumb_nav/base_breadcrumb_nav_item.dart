@@ -11,7 +11,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/components/widgets/common/image/image_widget.dart';
 import 'package:orginone/components/widgets/dialog/popup_widget.dart';
 import 'package:orginone/utils/string_util.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 class BaseBreadcrumbNavItem<T extends BaseBreadcrumbNavModel>
     extends StatelessWidget {

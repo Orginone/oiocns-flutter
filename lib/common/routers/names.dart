@@ -7,11 +7,42 @@
  * @LastEditTime: 2022-12-08 14:13:16
  */
 class Routers {
-// 首页
+  /// 首页
+  static const String homeOld = "/homeOld";
   static const String home = "/home";
   static const String todo = "/todo";
   static const String todoList = "/todoList";
   static const String todoDetail = "/todoDetail";
+
+  /// 数据
+  static const String storePage = "/storePage";
+
+  /// 关系
+  static const String relation = "/relation";
+
+  /// 数据
+
+  /// 关系
+  ///
+  /// 好友关系
+  static const String relationFriend = "/relationFriend";
+
+  /// 群组关系
+  static const String relationCohort = "/relationCohort";
+
+  /// 共用页面
+  ///
+  /// 实体信息
+  static const String entityInfo = "/entityInfo";
+
+  /// 好友/成员列表
+  static const String memberList = "/memberList";
+
+  /// 文件目录列表
+  static const String fileList = "/fileList";
+
+  /// 沟通会话页面
+  static const String chatSession = "/chatSession";
 
   // 登录
   static const String login = "/login";

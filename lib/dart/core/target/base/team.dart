@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/core/chat/session.dart';
@@ -11,7 +12,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 import '../person.dart';
 
@@ -61,6 +62,8 @@ abstract class ITeam implements IEntity<XTarget> {
   //发送组织变更消息
   Future<bool> sendTargetNotity(OperateType operate,
       {XTarget? sub, String? subTargetId});
+  //查找成员会话
+  ISession? findMemberChat(String id);
 }
 
 ///团队基类实现
@@ -381,5 +384,11 @@ abstract class Team extends Entity<XTarget> implements ITeam {
   ///@param timeout 延时时长，单位ms
   Future<bool> sleeps(Duration timeout) async {
     return Future(() => Timer(timeout, () => true) as FutureOr<bool>);
+  }
+
+  //查找成员会话
+  @override
+  ISession? findMemberChat(String id) {
+    return memberChats.firstWhereOrNull((element) => element.id == id);
   }
 }

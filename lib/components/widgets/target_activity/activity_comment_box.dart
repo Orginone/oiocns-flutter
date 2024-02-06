@@ -22,7 +22,7 @@ import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/chat/widgets/text/at_textfield.dart';
 import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
 import 'package:orginone/utils/bus/event_bus_helper.dart';

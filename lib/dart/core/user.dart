@@ -7,7 +7,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/auth.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/logger.dart';
 import 'thing/standard/application.dart';
 import 'work/provider.dart';

@@ -4,7 +4,7 @@ import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/chat/message_routers.dart';
 
 import 'state.dart';

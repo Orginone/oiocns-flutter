@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
-import 'package:orginone/dart/core/getx/submenu_list/item.dart';
-import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/pages/relation/home/item.dart';
 import 'package:orginone/pages/relation/index.dart';
 
@@ -17,31 +15,31 @@ class RelationSubPage
     if (type == 'all') {
       return allWidget();
     }
-    if (type == 'common') {
-      return commonWidget();
-    }
+    // if (type == 'common') {
+    //   return commonWidget();
+    // }
     return Container();
   }
 
-  Widget commonWidget() {
-    return GridView.builder(
-      controller: state.scrollController,
-      gridDelegate:
-          const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
-      itemBuilder: (context, index) {
-        var item = state.shortcutDatas[index];
-        return GridItem(
-            adapter: ListAdapter(
-                title: item.title,
-                labels: [item.shortcut.label],
-                image: item.shortcut.icon,
-                callback: () {
-                  controller.clickCommon(item);
-                }));
-      },
-      itemCount: state.shortcutDatas.length,
-    );
-  }
+  // Widget commonWidget() {
+  //   return GridView.builder(
+  //     controller: state.scrollController,
+  //     gridDelegate:
+  //         const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 4),
+  //     itemBuilder: (context, index) {
+  //       var item = state.shortcutDatas[index];
+  //       return GridItem(
+  //           adapter: ListAdapter(
+  //               title: item.title,
+  //               labels: [item.shortcut.label],
+  //               image: item.shortcut.icon,
+  //               callback: () {
+  //                 controller.clickCommon(item);
+  //               }));
+  //     },
+  //     itemCount: state.shortcutDatas.length,
+  //   );
+  // }
 
   Widget allWidget() {
     return Obx(() {
@@ -53,12 +51,15 @@ class RelationSubPage
             item: item,
             onTap: () {
               controller.jumpDetails(item);
+              print('>>>>====onTap');
             },
             onNext: () {
               controller.onNextLv(item);
+              print('>>>>====onNext');
             },
             onSelected: (key, item) {
               controller.operation(key, item);
+              print('>>>>====onSelected');
             },
           );
         },

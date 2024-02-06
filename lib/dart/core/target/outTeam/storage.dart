@@ -7,7 +7,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/public/operates.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 /// 存储资源接口
 abstract class IStorage implements ITarget {
@@ -41,6 +41,7 @@ class Storage extends Target implements IStorage {
   final List<String> relations;
   @override
   final IBelong space;
+
   @override
   Future<bool> exit() async {
     if (metadata.belongId != space.id) {

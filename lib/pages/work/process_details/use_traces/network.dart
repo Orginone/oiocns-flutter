@@ -1,6 +1,6 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 class UseTracesNetWork {
   static Future<XThingArchives?> getThingArchives(String id) async {

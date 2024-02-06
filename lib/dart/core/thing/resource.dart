@@ -1,13 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:orginone/dart/base/common/entity.dart';
 import 'package:orginone/dart/base/common/format.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/collection.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/index.dart';
+import 'package:uuid/uuid.dart';
 
 /// 数据核资源（前端开发）
 class DataResource {
@@ -114,7 +114,7 @@ class DataResource {
   /// 上传文件
   Future<FileItemModel?> fileUpdate(File file, String key,
       {void Function(double)? progress}) async {
-    var id = uuid.v1();
+    var id = const Uuid().v1();
     final data = BucketOpreateModel(
       key: encodeKey(key),
       operate: BucketOpreates.upload,
@@ -156,7 +156,7 @@ class DataResource {
 
   Future<FileItemModel?> fileUpdate2(File file, String key,
       {void Function(double)? progress}) async {
-    var id = uuid.v1();
+    var id = const Uuid().v1();
     final data = BucketOpreateModel(
       key: base64.encode(utf8.encode(key)),
       operate: BucketOpreates.upload,

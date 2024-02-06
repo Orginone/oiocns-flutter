@@ -7,7 +7,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/work/widgets/approve_widget.dart';
 import 'package:orginone/utils/icons.dart';
 

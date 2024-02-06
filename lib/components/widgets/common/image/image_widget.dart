@@ -85,7 +85,9 @@ class ImageWidget extends StatelessWidget {
       fit: fit,
       width: size,
       height: size,
-      color: color,
+      colorFilter:
+          null != color ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
+      // color: color,
     );
   }
 
@@ -161,7 +163,7 @@ class ImageWidget extends StatelessWidget {
       width: size,
       height: size,
       color: color,
-      gaplessPlayback: gaplessPlayback,
+      gaplessPlayback: true ?? gaplessPlayback,
       errorBuilder: (context, error, stackTrace) {
         return Icon(
           Icons.broken_image,

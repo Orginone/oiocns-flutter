@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/http_util.dart';
 import 'package:orginone/utils/index.dart' as utils;
 import 'package:orginone/utils/toast_utils.dart';

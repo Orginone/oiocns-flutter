@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:orginone/common/values/constants.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/storage.dart';
 
 /// 授权方法提供者

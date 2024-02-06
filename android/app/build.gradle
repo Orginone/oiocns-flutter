@@ -86,22 +86,22 @@ android {
             }
             applicationIdSuffix 'oiocns'
         }
-        debug{
-            ndk {
-                // 设置支持的 so 库架构 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
-                abiFilters 'armeabi-v7a', 'arm64-v8a','x86', 'x86_64'
-            }
-        }
+        // debug{
+        //     ndk {
+        //         // 设置支持的 so 库架构 'armeabi-v7a', 'arm64-v8a', 'x86', 'x86_64'
+        //         abiFilters 'armeabi-v7a', 'arm64-v8a','x86', 'x86_64'
+        //     }
+        // }
     }
         // 不同APP的配置
     productFlavors {
         // 开发环境
-        dev {
-            buildConfigField 'String', 'BASE_HOST', '"orginone.cn"'
-            applicationIdSuffix ".dev"
-            versionNameSuffix ""
-            resValue "string", "app_name", "奥集能(Dev)"
-        }
+        // dev {
+        //     buildConfigField 'String', 'BASE_HOST', '"orginone.cn"'
+        //     applicationIdSuffix ".dev"
+        //     versionNameSuffix ""
+        //     resValue "string", "app_name", "奥集能(Dev)"
+        // }
         
         // 生产环境
         prod {
@@ -111,6 +111,23 @@ android {
             resValue "string", "app_name", "奥集能"
         }
     }
+    // android.applicationVariants.all { variant ->
+    //     variant.outputs.all { output ->
+    //         def env
+    //         def versionName
+    //         def versionCode
+    //         def type
+    //         env = variant.productFlavors[0].name
+    //         versionName = variant.versionName
+    //         versionCode = variant.versionCode
+    //         type = variant.buildType.name
+
+    //         def outputFile = output.outputFile
+    //         if (outputFile != null && outputFile.name.endsWith('.apk')) {
+    //             outputFileName = "oiocns_" + env + "_" + type + "_" + versionName + "_" + versionCode + ".apk"
+    //         }
+    //     }
+    // }
 }
 
 dependencies {

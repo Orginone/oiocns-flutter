@@ -6,7 +6,7 @@ import 'package:orginone/common/index.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/index.dart';
 
 import 'logic.dart';

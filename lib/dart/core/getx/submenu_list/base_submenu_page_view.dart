@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/utils/index.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 import 'base_submenu_controller.dart';
 import 'base_submenu_state.dart';

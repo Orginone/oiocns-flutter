@@ -9,7 +9,7 @@ import 'package:orginone/dart/core/getx/breadcrumb_nav/base_breadcrumb_nav_multi
 import 'package:orginone/dart/core/getx/breadcrumb_nav/base_get_breadcrumb_nav_state.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 import 'widgets/message_breadcrumb_nav_item.dart';
 

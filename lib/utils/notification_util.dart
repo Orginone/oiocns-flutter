@@ -4,7 +4,7 @@ import 'dart:ui';
 
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:orginone/dart/core/chat/message.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/string_util.dart';
 
 const notificationChannelId = 'orginone';

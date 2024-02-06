@@ -1,6 +1,6 @@
 import 'package:orginone/common/models/index.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 import 'state.dart';
 

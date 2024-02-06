@@ -7,7 +7,7 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import '../../../base/common/uint.dart';
 
 /// 单位内部机构（部门）接口

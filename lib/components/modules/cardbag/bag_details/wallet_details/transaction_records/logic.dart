@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 import 'package:orginone/components/modules/cardbag/bag_details/wallet_details/logic.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 import 'state.dart';
 

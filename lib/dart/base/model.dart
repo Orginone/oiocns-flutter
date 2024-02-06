@@ -2587,30 +2587,30 @@ class ShareIcon {
     required this.typeName,
     this.avatar,
   }) {
-    String defaultAvatar = '';
-    if (typeName == TargetType.person.label) {
-      defaultAvatar = AssetsImages.chatDefaultPerson;
-      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
-    } else if (typeName == TargetType.cohort.label) {
-      defaultAvatar = AssetsImages.chatDefaultCohort;
-      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
-    } else if (typeName == TargetType.department.label) {
-      defaultAvatar = AssetsImages.chatDefaultCohort;
-      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
-    } else if (typeName == TargetType.company.label) {
-      // defaultAvatar = AssetsImages.chatDefaultCohort;
-      defaultAvatar = AssetsSvgs.newCompany;
-      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
-    } else if (typeName == TargetType.storage.label) {
-      defaultAvatar = AssetsImages.iconFile;
-      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
-    } else if (typeName == '动态') {
-      defaultAvatar = IconsUtils.icons['x']?['home'] ?? "";
-      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
-    } else {
-      defaultAvatar = AssetsImages.chatDefaultCohort;
-      avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
-    }
+    // String defaultAvatar = '';
+    // if (typeName == TargetType.person.label) {
+    //   defaultAvatar = AssetsImages.chatDefaultPerson;
+    //   avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    // } else if (typeName == TargetType.cohort.label) {
+    //   defaultAvatar = AssetsImages.chatDefaultCohort;
+    //   avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    // } else if (typeName == TargetType.department.label) {
+    //   defaultAvatar = AssetsImages.chatDefaultCohort;
+    //   avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    // } else if (typeName == TargetType.company.label) {
+    //   // defaultAvatar = AssetsImages.chatDefaultCohort;
+    //   defaultAvatar = AssetsSvgs.newCompany;
+    //   avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    // } else if (typeName == TargetType.storage.label) {
+    //   defaultAvatar = AssetsImages.iconFile;
+    //   avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    // } else if (typeName == '动态') {
+    //   defaultAvatar = IconsUtils.icons['x']?['home'] ?? "";
+    //   avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    // } else {
+    //   defaultAvatar = AssetsImages.chatDefaultCohort;
+    //   avatar ??= FileItemShare(defaultAvatar: defaultAvatar);
+    // }
   }
 
   //通过JSON构造

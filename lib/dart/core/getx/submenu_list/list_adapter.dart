@@ -9,7 +9,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/standard/application.dart';
 import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/icons.dart';
 
 class ListAdapter {

@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/common/models/index.dart';
+import 'package:orginone/common/routers/pages.dart';
+import 'package:orginone/components/widgets/list_widget/index.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/dart/core/work/task.dart';
+import 'package:orginone/utils/date_util.dart';
 
 class SearchBar<T> extends SearchDelegate {
   final HomeEnum homeEnum;
@@ -20,6 +24,7 @@ class SearchBar<T> extends SearchDelegate {
 
   @override
   List<Widget>? buildActions(BuildContext context) {
+    print(buildActions);
     return [
       IconButton(
         icon: const Icon(
@@ -35,6 +40,7 @@ class SearchBar<T> extends SearchDelegate {
 
   @override
   Widget? buildLeading(BuildContext context) {
+    print('>>>>>>>>>>>>>buildActions');
     return BackButton(
       color: Colors.black,
       onPressed: () {
@@ -45,21 +51,25 @@ class SearchBar<T> extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
+    print('>>>>>>>>>>>>>buildResults');
     search();
-    return body();
+    return _body();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
+    print('>>>>>>>>>>>>>buildSuggestions');
     search();
-    return body();
+    return _body();
   }
 
   void search() {
     searchData.clear();
     if (query.isEmpty) {
+      searchData.addAll(data);
       return;
     }
+
     for (var element in data) {
       switch (homeEnum) {
         case HomeEnum.chat:
@@ -89,6 +99,33 @@ class SearchBar<T> extends SearchDelegate {
     }
   }
 
+  Widget _body() {
+    return ListWidget<T>(
+      initDatas: searchData,
+      getDatas: ([dynamic data]) {
+        if (null == data) {
+          return searchData ?? [];
+        }
+        return [];
+      },
+      getAction: (dynamic data) {
+        return Text(
+          CustomDateUtil.getSessionTime(data.updateTime),
+          style: XFonts.chatSMTimeTip,
+          textAlign: TextAlign.right,
+        );
+      },
+      onTap: (dynamic data, List children) {
+        print('>>>>>>======点击了列表项 ${data.name}');
+        if (data is ISession) {
+          RoutePages.jumpChatSession(data: data);
+        } else if (data is IWorkTask) {
+          RoutePages.jumpWorkInfo(work: data);
+        }
+      },
+    );
+  }
+
   Widget body() {
     return ListView.builder(
         scrollDirection: Axis.vertical,
@@ -112,6 +149,7 @@ class SearchBar<T> extends SearchDelegate {
 
   @override
   ThemeData appBarTheme(BuildContext context) {
+    print('>>>>>>>>>>>>>appBarTheme');
     return super.appBarTheme(context).copyWith(
           appBarTheme: super.appBarTheme(context).appBarTheme.copyWith(
                 elevation: 0.0,

@@ -9,6 +9,7 @@ import 'package:orginone/dart/core/public/collection.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/target/person.dart';
+import 'package:orginone/utils/load_image.dart';
 
 /// 动态集合名
 const ActivityCollName = '-resource-activity';
@@ -315,7 +316,7 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
             ..._user.metadata.toJson(),
             'name': '全部',
             'typeName': '动态',
-            'icon': '',
+            'icon': XImage.dynamicIcon,
             'id': '${_user.id}xxx',
           }),
           ['全部动态'],

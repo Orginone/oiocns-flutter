@@ -3,18 +3,14 @@ import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/index.dart';
-import 'package:orginone/components/widgets/target_activity/list_item_meta.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/model.dart' as model;
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/work/rules/lib/tools.dart';
-import 'package:orginone/main_bean.dart';
-
-import 'activity_comment.dart';
-import 'activity_comment_box.dart';
-import 'activity_resource.dart';
+import 'package:orginone/main_base.dart';
+import 'package:orginone/utils/load_image.dart';
 
 //渲染动态信息
 class ActivityMessageWidget extends StatelessWidget {
@@ -45,9 +41,9 @@ class ActivityMessageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(() {
       return Container(
-        margin: EdgeInsets.only(top: hideResource ? 6.h : 0, left: 0, right: 0),
-        padding: EdgeInsets.all(10.h),
-        color: XColors.bgListItem,
+        // margin: EdgeInsets.only(top: hideResource ? 6.h : 0, left: 0, right: 0),
+        // padding: EdgeInsets.all(10.h),
+        // color: XColors.bgListItem,
         child: Offstage(
           offstage: isDelete.value,
           child: Column(
@@ -66,6 +62,10 @@ class ActivityMessageWidget extends StatelessWidget {
                       }
                     : null,
               ),
+              // const Divider(thickness: 6),
+              SizedBox(
+                height: 5.h,
+              )
             ],
           ),
         ),
@@ -204,7 +204,19 @@ class RenderCtxMore extends StatelessWidget {
     if (hideResource) {
       return renderTags();
     }
-    return renderOperate(context);
+    return Column(children: [
+      renderOperate(context),
+      Offstage(
+        offstage: item.value.metadata.likes.isEmpty &&
+            item.value.metadata.comments.isEmpty,
+        child: _buildLikeBoxWidget(),
+      ),
+      Padding(padding: EdgeInsets.only(left: 5.w)),
+      Offstage(
+        offstage: item.value.metadata.comments.isEmpty,
+        child: _buildCommentBoxWidget(context),
+      )
+    ]);
   }
 
   //判断是否有回复
@@ -233,22 +245,37 @@ class RenderCtxMore extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Offstage(
-                offstage:
-                    !item.value.metadata.likes.contains(relationCtrl.user.id),
-                child: ButtonWidget.iconTextOutlined(
-                  onTap: () async {
-                    await item.value.like();
-                  },
-                  const ImageWidget(
-                    AssetsImages.iconLike,
-                    size: 18,
-                    color: Colors.red,
-                  ),
-                  '取消',
-                  textColor: XColors.black3,
-                ),
+              ButtonWidget.iconTextOutlined(
+                onTap: () async {
+                  handleReply(context);
+                },
+                // const ImageWidget(
+                //   AssetsImages.iconMsg,
+                //   size: 18,
+                // ),
+                XImage.localImage(XImage.forward, width: 24.w),
+                '转发',
+                textColor: XColors.black3,
               ),
+              Offstage(
+                  offstage:
+                      !item.value.metadata.likes.contains(relationCtrl.user.id),
+                  child: Padding(
+                    padding: EdgeInsets.only(left: 5.w),
+                    child: ButtonWidget.iconTextOutlined(
+                      onTap: () async {
+                        await item.value.like();
+                      },
+                      // const ImageWidget(
+                      //   AssetsImages.iconLike,
+                      //   size: 18,
+                      //   color: Colors.red,
+                      // ),
+                      XImage.localImage(XImage.likeFill, width: 24.w),
+                      '取消',
+                      textColor: XColors.black3,
+                    ),
+                  )),
               Offstage(
                 offstage:
                     item.value.metadata.likes.contains(relationCtrl.user.id),
@@ -256,10 +283,11 @@ class RenderCtxMore extends StatelessWidget {
                   onTap: () async {
                     await item.value.like();
                   },
-                  const ImageWidget(
-                    AssetsImages.iconLike,
-                    size: 18,
-                  ),
+                  // const ImageWidget(
+                  //   AssetsImages.iconLike,
+                  //   size: 18,
+                  // ),
+                  XImage.localImage(XImage.likeOutline, width: 24.w),
                   '点赞',
                   textColor: XColors.black3,
                 ),
@@ -269,73 +297,85 @@ class RenderCtxMore extends StatelessWidget {
                 onTap: () async {
                   handleReply(context);
                 },
-                const ImageWidget(
-                  AssetsImages.iconMsg,
-                  size: 18,
-                ),
+                // const ImageWidget(
+                //   AssetsImages.iconMsg,
+                //   size: 18,
+                // ),
+                XImage.localImage(XImage.commentOutline, width: 24.w),
                 '评论',
                 textColor: XColors.black3,
               ),
-              Padding(padding: EdgeInsets.only(left: 5.w)),
-              Offstage(
-                offstage: !item.value.canDelete,
-                child: ButtonWidget.iconTextOutlined(
+              if (item.value.canDelete) ...[
+                Padding(padding: EdgeInsets.only(left: 5.w)),
+                ButtonWidget.iconTextOutlined(
                   onTap: () async {
                     await item.value.delete();
                     isDelete.value = true;
                     //提醒动态分类更新信息
                     activity.activityList.first.changCallback();
                   },
-                  const Icon(
-                    Icons.delete_outline,
-                    size: 18,
-                    color: XColors.black3,
-                  ),
+                  // const Icon(
+                  //   Icons.delete_outline,
+                  //   size: 18,
+                  //   color: XColors.black3,
+                  // ),
+                  XImage.localImage(XImage.deleteOutline,
+                      color: XColors.black3, width: 24.w),
                   '删除',
                   textColor: XColors.black3,
                 ),
-              )
+              ]
             ],
-          ),
-          Offstage(
-            offstage: item.value.metadata.likes.isEmpty &&
-                item.value.metadata.comments.isEmpty,
-            child: Container(
-                alignment: Alignment.centerLeft,
-                color: XColors.bgListItem1,
-                padding: EdgeInsets.all(5.w),
-                child: Wrap(
-                  direction: Axis.horizontal,
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  runSpacing: 4,
-                  spacing: 1,
-                  children: [
-                    const ImageWidget(AssetsImages.iconLike,
-                        size: 18, color: Colors.red),
-                    for (var e in item.value.metadata.likes) ...getUserAvatar(e)
-                  ],
-                )),
-          ),
-          Padding(padding: EdgeInsets.only(left: 5.w)),
-          Offstage(
-            offstage: item.value.metadata.comments.isEmpty,
-            child: Container(
-                alignment: Alignment.centerLeft,
-                color: XColors.bgListItem1,
-                padding: EdgeInsets.all(5.w),
-                child: Wrap(
-                  direction: Axis.horizontal,
-                  children: [
-                    ...item.value.metadata.comments.map((e) => ActivityComment(
-                        comment: e,
-                        onTap: (comment) =>
-                            handleReply(context, comment.userId)))
-                  ],
-                )),
           )
         ],
       );
     }));
+  }
+
+  ///渲染点赞信息
+  Widget _buildLikeBoxWidget() {
+    return Container(
+      alignment: Alignment.centerLeft,
+      color: XColors.bgListItem1,
+      padding: EdgeInsets.all(5.w),
+      child: Wrap(
+        direction: Axis.horizontal,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        runSpacing: 4,
+        spacing: 1,
+        children: [
+          // const ImageWidget(AssetsImages.iconLike,
+          //     size: 18, color: Colors.red),
+          XImage.localImage(XImage.likeFill, width: 24.w, color: Colors.red),
+          for (var e in item.value.metadata.likes) ...getUserAvatar(e)
+        ],
+      ),
+    );
+  }
+
+  ///渲染评论信息
+  Widget _buildCommentBoxWidget(BuildContext context) {
+    return Container(
+      alignment: Alignment.centerLeft,
+      color: XColors.bgListItem1,
+      margin: EdgeInsets.only(top: 5.w),
+      padding: EdgeInsets.all(5.w),
+      child: Wrap(
+        direction: Axis.horizontal,
+        children: [
+          Padding(
+            padding: EdgeInsets.only(top: 5.h, bottom: 5.h),
+            child: const Text("全部评论",
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                )),
+          ),
+          ...item.value.metadata.comments.map((e) => ActivityComment(
+              comment: e,
+              onTap: (comment) => handleReply(context, comment.userId)))
+        ],
+      ),
+    );
   }
 
   //渲染发布者信息
@@ -357,7 +397,8 @@ class RenderCtxMore extends StatelessWidget {
                   children: [
                     Row(
                       children: [
-                        const ImageWidget(Icons.forward_5, size: 18),
+                        // const ImageWidget(Icons.forward_5, size: 18),
+                        XImage.localImage(XImage.forward, width: 24.w),
                         Container(
                             padding: EdgeInsets.only(left: 6.w),
                             child: const Text("转发"))
@@ -365,8 +406,10 @@ class RenderCtxMore extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        const ImageWidget(AssetsImages.iconLike,
-                            size: 18, color: Colors.red),
+                        // const ImageWidget(AssetsImages.iconLike,
+                        //     size: 18, color: Colors.red),
+                        XImage.localImage(XImage.likeFill,
+                            width: 24.w, color: Colors.red),
                         Container(
                             padding: EdgeInsets.only(left: 6.w),
                             child: Text(
@@ -375,7 +418,8 @@ class RenderCtxMore extends StatelessWidget {
                     ),
                     Row(
                       children: [
-                        const ImageWidget(AssetsImages.iconMsg, size: 18),
+                        // const ImageWidget(AssetsImages.iconMsg, size: 18),
+                        XImage.localImage(XImage.commentOutline, width: 24.w),
                         Container(
                             padding: EdgeInsets.only(left: 6.w),
                             child: Text(
@@ -399,10 +443,9 @@ class RenderCtxMore extends StatelessWidget {
         size: 24.w,
       ),
       Padding(padding: EdgeInsets.only(left: 5.w)),
-      Text(entity?.name ?? "",
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-          ))
+      Text(
+        entity?.name ?? "",
+      )
     ];
   }
 }

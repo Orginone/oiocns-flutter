@@ -17,10 +17,11 @@ import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
 import 'package:orginone/pages/chat/widgets/detail/uploading_detail.dart';
 import 'package:orginone/utils/bus/event_bus_helper.dart';
+import 'package:orginone/utils/load_image.dart';
 import 'package:orginone/utils/string_util.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/components/widgets/common/image/team_avatar.dart';
@@ -34,16 +35,17 @@ import 'detail/voice_detail.dart';
 enum Direction { leftStart, rightStart }
 
 enum DetailFunc {
-  recall("撤回"),
+  recall("撤回", XImage.recall),
   // remove("删除"),
-  forward("转发"),
-  copy("复制"),
-  reply("回复");
+  forward("转发", XImage.forward),
+  copy("复制", XImage.copyOutline),
+  reply("引用", XImage.quote);
   // multipleChoice("多选");
 
-  const DetailFunc(this.label);
+  const DetailFunc(this.label, this.icon);
 
   final String label;
+  final String icon;
 }
 
 double defaultWidth = 10.w;
@@ -86,7 +88,8 @@ class DetailItemWidget extends GetView<IndexController> {
       } else if (chat.members.isNotEmpty) {
         target = chat.members.firstWhereOrNull((element) => element.id == id);
         shareIcon = target?.shareIcon() ??
-            ShareIcon(name: '请稍候', typeName: TargetType.person.label);
+            ShareIcon(
+                name: target?.name ?? "", typeName: TargetType.person.label);
       }
     }
 
@@ -128,8 +131,8 @@ class DetailItemWidget extends GetView<IndexController> {
       children.add(child);
       isCenter = true;
     } else if (msg.msgType == MessageType.notify.label) {
-      Widget child =
-          Text.rich(TextSpan(children: [TextSpan(text: msg.msgBody)]));
+      Widget child = Text.rich(TextSpan(
+          children: [TextSpan(text: msg.msgBody, style: XFonts.size18Black9)]));
       children.add(child);
       isCenter = true;
     } else {
@@ -217,10 +220,11 @@ class DetailItemWidget extends GetView<IndexController> {
       return ClipRRect(
         borderRadius: BorderRadius.circular(5),
         child: Container(
-          height: 50.h,
+          height: 80.h,
           width: 50.w * func.length,
           color: const Color(0xFF4C4C4C),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: func
                 .map(
                   (item) => GestureDetector(
@@ -228,10 +232,17 @@ class DetailItemWidget extends GetView<IndexController> {
                       width: 40.w,
                       margin: EdgeInsets.symmetric(horizontal: 5.w),
                       alignment: Alignment.center,
-                      child: Text(
-                        item.label,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 12),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          XImage.localImage(item.icon,
+                              width: 20, color: Colors.white),
+                          Text(
+                            item.label,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 12),
+                          )
+                        ],
                       ),
                     ),
                     onTap: () {

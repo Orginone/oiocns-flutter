@@ -16,7 +16,7 @@ import 'package:orginone/dart/core/thing/standard/property.dart';
 import 'package:orginone/dart/core/thing/standard/species.dart';
 import 'package:orginone/dart/core/thing/systemfile.dart';
 import 'package:orginone/dart/core/work/index.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/store/models/index.dart';
 
 ///数据模块配置文件  处理数据模块数据

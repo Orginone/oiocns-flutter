@@ -21,6 +21,7 @@ class _MessageListState extends State<MessageList> {
   MessageChatController get controller => Get.find();
 
   ISession get chat => controller.state.chat;
+  bool isBuilded = false;
 
   @override
   void dispose() {
@@ -29,8 +30,18 @@ class _MessageListState extends State<MessageList> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    chat.onMessage((messages) => null).then((value) {
+      if (!isBuilded) {
+        setState(() {});
+      }
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    chat.onMessage((messages) => null);
+    isBuilded = true;
     return NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         if (notification is ScrollStartNotification) {

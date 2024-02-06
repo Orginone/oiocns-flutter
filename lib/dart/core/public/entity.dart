@@ -1,7 +1,7 @@
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/core/public/operates.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../base/model.dart';
@@ -135,12 +135,17 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
 
   @override
   List<String> get groupTags {
+    // null!=_metadata["isDeleted"];
     // if (
-    //   ('isDeleted' in this._metadata && this._metadata.isDeleted === true) ||
+    //   (_metadata.hasProperty('isDeleted') && _metadata.isDeleted === true) ||
     //   ('isDeleted' in this.metadata && this.metadata.isDeleted === true)
     // ) {
     //   return ['已删除'];
     // }
+    if ((_metadata is XStandard && (_metadata as XStandard).isDeleted) ||
+        (metadata is XStandard && (metadata as XStandard).isDeleted)) {
+      return ['已删除'];
+    }
     return this._gtags;
   }
 

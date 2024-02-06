@@ -373,16 +373,18 @@ class Session extends Entity<XEntity> implements ISession {
       if (ids.isNotEmpty) {
         tagMessage(ids, '已读');
         readCount = ids.length;
+        print('>>>>>>>====已读数：$readCount');
       }
     }
 
     chatdata.value.mentionMe = false;
-    if (chatdata.value.noReadCount > 0 && readCount > 0) {
+    if (chatdata.value.noReadCount > 0 || readCount > 0) {
       chatdata.value.noReadCount -= min(chatdata.value.noReadCount, readCount);
       if (null == msg) cacheChatData(true);
+      print('>>>>>>>====总已读数：${chatdata.value.noReadCount}');
       refreshNoReadCount();
     }
-    // print('>>>>>>======readMessages $readCount $msg ${messages.length}');
+    print('>>>>>>>======readMessages $readCount $msg ${messages.length}');
     if (readCount > 0 && null != msg) {
       notification();
     }
@@ -704,7 +706,7 @@ class NewMessageHandler {
 
   NewMessageHandler(this.session);
 
-  get messages => session.messages;
+  RxList<IMessage> get messages => session.messages;
 
   /// 添加消息
   void put(Message message, [int? index]) {
@@ -719,6 +721,7 @@ class NewMessageHandler {
   bool hasNoReadMessage(IMessage msg) {
     if (!msg.isReaded) {
       if (noReadMessageIds.contains(msg.id)) {
+        updateMessage(msg);
         noReadMessageIds.remove(msg.id);
         // print('>>>>>=====remove ${msg.id}');
         return true;
@@ -729,6 +732,18 @@ class NewMessageHandler {
       }
     } else {
       return false;
+    }
+  }
+
+  // 更新消息信息
+  void updateMessage(IMessage msg) {
+    for (var element in messages) {
+      if (element.id == msg.id) {
+        if (element.isReaded != msg.isReaded) {
+          element.isReaded = msg.isReaded;
+        }
+        break;
+      }
     }
   }
 

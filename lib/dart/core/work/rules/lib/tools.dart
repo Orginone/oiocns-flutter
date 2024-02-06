@@ -6,7 +6,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/work/rules/base/ruleBase.dart';
 import 'package:orginone/dart/core/work/rules/base/ruleClass.dart';
 import 'package:orginone/dart/core/work/rules/lib/const.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 // import { DataType } from 'typings/globelType';
 // import { RuleTypes } from '../type';

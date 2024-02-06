@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/config/constant.dart';
 
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
 import 'package:orginone/utils/string_util.dart';

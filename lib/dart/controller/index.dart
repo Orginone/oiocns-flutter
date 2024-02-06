@@ -4,28 +4,33 @@ import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:orginone/common/routers/index.dart';
-import 'package:orginone/common/values/constants.dart';
+import 'package:orginone/common/index.dart';
+import 'package:orginone/components/widgets/list_widget/index.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/auth.dart';
 import 'package:orginone/dart/core/chat/session.dart';
+import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
+import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/dart/core/work/provider.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/relation/widgets/dialog.dart';
 import 'package:orginone/utils/bus/event_bus_helper.dart';
 import 'package:orginone/utils/hive_utils.dart';
 import 'package:orginone/utils/index.dart';
+import 'package:orginone/utils/string_util.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/dialog/loading_dialog.dart';
 
+import '../../components/widgets/infoListPage/index.dart';
 import 'app_data_controller.dart';
 
 enum Shortcut {
@@ -123,6 +128,9 @@ class IndexController extends GetxController {
   ///模块顶部三点菜单控制器
   late CustomPopupMenuController settingMenuController;
 
+  late InfoListPageModel dataStoreModel;
+  late InfoListPageModel relationModel;
+
   /// 授权方法
   AuthProvider get auth {
     return provider.auth;
@@ -145,14 +153,42 @@ class IndexController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    // relationModel = InfoListPageModel(title: "关系", tabItems: [
+    //   TabItemsModel(title: "全部"),
+    //   TabItemsModel(title: "个人"),
+    //   TabItemsModel(title: "单位")
+    // ]);
+    dataStoreModel = InfoListPageModel(
+        title: "奥集能数据核",
+        // avatar: IconWidget.icon(Icons.photo_camera,
+        //     color: Colors.red //AppColors.onPrimary,
+        //     ),
+        tabItems: [
+          TabItemsModel(title: "文件", tabItems: [
+            TabItemsModel(title: "全部"),
+            TabItemsModel(title: "当前目录"),
+            TabItemsModel(title: "下级目录"),
+            TabItemsModel(title: "字典"),
+            TabItemsModel(title: "属性")
+          ]),
+          TabItemsModel(title: "权限", tabItems: [
+            TabItemsModel(title: "全部"),
+            TabItemsModel(title: "内设机构"),
+            TabItemsModel(title: "群组"),
+            TabItemsModel(title: "集群"),
+          ]),
+          TabItemsModel(title: "设置", content: const Text("设置页面")),
+        ]);
+
     appDataController = AppDataController();
     functionMenuController = CustomPopupMenuController();
     settingMenuController = CustomPopupMenuController();
     emitter = Emitter();
     // // 监听消息加载
-    // emitter.subscribe((key, args) {
-    //   loadChats();
-    // }, false);
+    emitter.subscribe((key, args) {
+      // loadChats();
+      loadRelation();
+    }, false);
     _provider = UserProvider(emitter);
     _userSub = EventBusUtil.instance.on<UserLoaded>((event) async {
       EventBusHelper.fire(ShowLoading(true));
@@ -182,6 +218,118 @@ class IndexController extends GetxController {
         this.isConnected.value = isConnected;
       }
     });
+  }
+
+  void loadRelation() {
+    // RelationSubPage relationSubPage = RelationSubPage("_all");
+    relationModel = InfoListPageModel(title: "关系", tabItems: [
+      TabItemsModel(
+          title: "全部",
+          content: ListWidget<IEntity>(
+            getDatas: ([dynamic data]) {
+              if (null == data) {
+                return <IEntity>[
+                  user,
+                  ...user.companys.map((item) => item).toList()
+                ];
+              } else if (data.typeName == "人员") {
+                List<Directory> personData = [];
+                XDirectory friendDir =
+                    XDirectory(id: "1", directoryId: "1", isDeleted: false);
+                friendDir.name = "好友";
+                personData.add(Directory(friendDir, user));
+                return personData;
+              }
+              return [
+                {
+                  "name": "好友",
+                  "share": ShareIcon(
+                    name: "好友",
+                    typeName: "好友",
+                  ),
+                } as IEntity,
+                {
+                  "name": "群组",
+                  "share": ShareIcon(
+                    name: "群组",
+                    typeName: "群组",
+                  ),
+                } as IEntity,
+                {
+                  "name": "资源",
+                  "share": ShareIcon(
+                    name: "资源",
+                    typeName: "资源",
+                  ),
+                } as IEntity
+              ];
+            },
+            // getTitle: (dynamic data) => Text(data.name),
+            // getAvatar: (dynamic data) =>
+            //     TeamAvatar(size: 35, info: TeamTypeInfo(share: data.share)),
+            // getLabels: (dynamic data) => data.groupTags,
+            // getDesc: (dynamic data) => Text(data.remark ?? ""),
+            getAction: (dynamic data) {
+              return GestureDetector(
+                onTap: () {
+                  print('>>>>>>======点击了感叹号');
+                },
+                child: const IconWidget(
+                  color: XColors.black666,
+                  iconData: Icons.info_outlined,
+                ),
+              );
+            },
+            onTap: (dynamic data, List children) {
+              print('>>>>>>======点击了列表项 ${data.name}');
+            },
+          )),
+      TabItemsModel(
+          title: "个人",
+          content: ListWidget<IEntity>(
+            getDatas: ([dynamic data]) {
+              return [
+                user,
+              ];
+            },
+            // getTitle: (dynamic data) {
+            //   return Text(data.name);
+            // },
+            // getAvatar: (dynamic data) {
+            //   return TeamAvatar(
+            //       size: 35, info: TeamTypeInfo(share: data.share));
+            // },
+            // getDesc: (dynamic data) {
+            //   return Text(data.remark ?? "");
+            // },
+          )),
+      TabItemsModel(
+          title: "单位",
+          content: ListWidget<IEntity>(
+            getDatas: ([dynamic data]) {
+              return [...user.companys.map((item) => item).toList()];
+            },
+            // getTitle: (dynamic data) {
+            //   return Text(data.name);
+            // },
+            // getAvatar: (dynamic data) {
+            //   return TeamAvatar(
+            //       size: 35, info: TeamTypeInfo(share: data.share));
+            // },
+            // getDesc: (dynamic data) {
+            //   return Text(data.remark ?? "");
+            // },
+          )),
+      // TabItemsModel(title: "好友", content: const Text("好友页面")),
+      // TabItemsModel(title: "动态", content: const Text("动态页面")),
+      // TabItemsModel(title: "文件", tabItems: [
+      //   TabItemsModel(title: "全部"),
+      //   TabItemsModel(title: "当前目录"),
+      //   TabItemsModel(title: "下级目录"),
+      //   TabItemsModel(title: "字典"),
+      //   TabItemsModel(title: "属性")
+      // ]),
+    ]);
   }
 
   /// 加载消息
@@ -420,6 +568,8 @@ class IndexController extends GetxController {
     Get.toNamed(Routers.qrScan)?.then((value) async {
       if (value != null) {
         if (null != value && value.length == 24 && value.indexOf('==') > 0) {
+          Get.toNamed(Routers.scanLogin, arguments: value);
+        } else if (StringUtil.isJson(value)) {
           Get.toNamed(Routers.scanLogin, arguments: value);
         } else {
           String id = value.split('/').toList().last;

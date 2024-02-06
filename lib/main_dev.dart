@@ -1,4 +1,4 @@
-import 'main_bean.dart';
+import 'main_base.dart';
 import 'env.dart';
 
 Future<void> main() async {

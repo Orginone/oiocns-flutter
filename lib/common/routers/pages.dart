@@ -1,13 +1,22 @@
 //路由 Pages
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
-import 'package:orginone/components/widgets/target_activity/activity_comment_box.dart';
-import 'package:orginone/components/widgets/target_activity/target_activity_view.dart';
+import 'package:orginone/components/modules/chat/chat_session_page.dart';
+import 'package:orginone/components/modules/common/entity_info_page.dart';
+import 'package:orginone/components/modules/common/file_list_page.dart';
+import 'package:orginone/components/modules/common/member_list_page.dart';
+import 'package:orginone/components/modules/relation/relation_cohort_page.dart';
+import 'package:orginone/components/modules/relation/relation_friend_page.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/controller/wallet_controller.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/dart/core/chat/session.dart';
+import 'package:orginone/dart/core/public/enums.dart';
+import 'package:orginone/dart/core/work/task.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/chat/message_chat_info/binding.dart';
 import 'package:orginone/pages/chat/message_chats/bindings.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_list.dart';
@@ -16,6 +25,7 @@ import 'package:orginone/pages/chat/message_records.dart';
 import 'package:orginone/pages/chat/person_list_page.dart';
 import 'package:orginone/pages/error_page/index.dart';
 import 'package:orginone/pages/home/components/scan_login.dart';
+import 'package:orginone/pages/home/home_page.dart';
 import 'package:orginone/pages/home/portal/bindings.dart';
 import 'package:orginone/pages/login/binding.dart';
 import 'package:orginone/pages/login/forgot_password/binding.dart';
@@ -50,6 +60,7 @@ import 'package:orginone/pages/relation/out_agency_info/binding.dart';
 import 'package:orginone/pages/relation/out_agency_info/view.dart';
 import 'package:orginone/pages/relation/permission_info/binding.dart';
 import 'package:orginone/pages/relation/permission_info/view.dart';
+import 'package:orginone/pages/relation/relation_page.dart';
 import 'package:orginone/pages/relation/role_settings/binding.dart';
 import 'package:orginone/pages/relation/role_settings/view.dart';
 import 'package:orginone/pages/relation/station_info/binding.dart';
@@ -59,6 +70,7 @@ import 'package:orginone/pages/relation/user_info/view.dart';
 import 'package:orginone/pages/store/application_details/binding.dart';
 import 'package:orginone/pages/store/application_details/view.dart';
 import 'package:orginone/pages/store/bindings.dart';
+import 'package:orginone/pages/store/store_page.dart';
 import 'package:orginone/pages/work/bindings.dart';
 import 'package:orginone/pages/work/create_work/binding.dart';
 import 'package:orginone/pages/work/create_work/view.dart';
@@ -116,7 +128,7 @@ class RoutePages {
     ),
     GetPage(
       name: Routers.verificationCode,
-      page: () => VerificationCodePage(),
+      page: () => const VerificationCodePage(),
       binding: VerificationCodeBinding(),
     ),
     GetPage(
@@ -133,8 +145,8 @@ class RoutePages {
       page: () => const LoginTransPage(),
     ),
     GetPage(
-      name: Routers.home,
-      page: () => const HomePage(),
+      name: Routers.homeOld,
+      page: () => HomePageOld(),
       bindings: [
         HomeBinding(),
         MessageChatsControllerBinding(),
@@ -145,6 +157,41 @@ class RoutePages {
         UpdateBinding(),
         WalletBinding(),
       ],
+    ),
+
+    /// 首页
+    GetPage(name: Routers.home, page: () => HomePage()),
+
+    /// 数据页面
+    GetPage(name: Routers.storePage, page: () => StorePage()),
+
+    /// 关系页面
+    GetPage(name: Routers.relation, page: () => RelationPage()),
+
+    /// 关系>好友
+    GetPage(
+      name: Routers.relationFriend,
+      page: () => RelationFriendPage(),
+      binding: VideoPlayBinding(),
+    ),
+
+    /// 关系>群组
+    GetPage(name: Routers.relationCohort, page: () => RelationCohortPage()),
+
+    /// 实体详情
+    GetPage(name: Routers.entityInfo, page: () => EntityInfoPage()),
+
+    /// 好友成员列表
+    GetPage(name: Routers.memberList, page: () => MemberListPage()),
+
+    /// 文件目录列表
+    GetPage(name: Routers.fileList, page: () => FileListPage()),
+
+    /// 沟通会话页面
+    GetPage(
+      name: Routers.chatSession,
+      page: () => ChatSessionPage(),
+      binding: VideoPlayBinding(),
     ),
     GetPage(
       name: Routers.messageSetting,
@@ -170,12 +217,12 @@ class RoutePages {
         bindings: [TargetActivityViewBinding(), ActivityCommentBoxBinding()]),
     GetPage(
       name: Routers.storageLocation,
-      page: () => StorageLocationPage(),
+      page: () => const StorageLocationPage(),
       binding: StorageLocationBinding(),
     ),
     GetPage(
       name: Routers.addAsset,
-      page: () => AddAssetPage(),
+      page: () => const AddAssetPage(),
       binding: AddAssetBinding(),
     ),
     GetPage(
@@ -189,7 +236,7 @@ class RoutePages {
     ),
     GetPage(
       name: Routers.webView,
-      page: () => WebViewPage(),
+      page: () => const WebViewPage(),
       binding: WebViewBinding(),
     ),
     GetPage(
@@ -239,7 +286,7 @@ class RoutePages {
     ),
     GetPage(
       name: Routers.companyInfo,
-      page: () => CompanyInfoPage(),
+      page: () => const CompanyInfoPage(),
       binding: CompanyInfoBinding(),
     ),
     GetPage(
@@ -249,42 +296,42 @@ class RoutePages {
     ),
     GetPage(
       name: Routers.departmentInfo,
-      page: () => DepartmentInfoPage(),
+      page: () => const DepartmentInfoPage(),
       binding: DepartmentInfoBinding(),
     ),
     GetPage(
       name: Routers.outAgencyInfo,
-      page: () => OutAgencyInfoPage(),
+      page: () => const OutAgencyInfoPage(),
       binding: OutAgencyInfoBinding(),
     ),
     GetPage(
       name: Routers.stationInfo,
-      page: () => StationInfoPage(),
+      page: () => const StationInfoPage(),
       binding: StationInfoBinding(),
     ),
     GetPage(
       name: Routers.cohortInfo,
-      page: () => CohortInfoPage(),
+      page: () => const CohortInfoPage(),
       binding: CohortInfoBinding(),
     ),
     GetPage(
       name: Routers.roleSettings,
-      page: () => RoleSettingsPage(),
+      page: () => const RoleSettingsPage(),
       binding: RoleSettingsBinding(),
     ),
     GetPage(
       name: Routers.addMembers,
-      page: () => AddMembersPage(),
+      page: () => const AddMembersPage(),
       binding: AddMembersBinding(),
     ),
     GetPage(
       name: Routers.permissionInfo,
-      page: () => PermissionInfoPage(),
+      page: () => const PermissionInfoPage(),
       binding: PermissionInfoBinding(),
     ),
     GetPage(
       name: Routers.classificationInfo,
-      page: () => ClassificationInfoPage(),
+      page: () => const ClassificationInfoPage(),
       binding: ClassificationInfoBinding(),
     ),
     GetPage(
@@ -334,12 +381,12 @@ class RoutePages {
     ),
     GetPage(
       name: Routers.dictInfo,
-      page: () => DictInfoPage(),
+      page: () => const DictInfoPage(),
       binding: DictInfoBinding(),
     ),
     GetPage(
       name: Routers.attributeInfo,
-      page: () => AttributeInfoPage(),
+      page: () => const AttributeInfoPage(),
       binding: AttributeInfoBinding(),
     ),
     GetPage(
@@ -386,12 +433,12 @@ class RoutePages {
     ),
     GetPage(
       name: Routers.videoPlay,
-      page: () => VideoPlayPage(),
+      page: () => const VideoPlayPage(),
       binding: VideoPlayBinding(),
     ),
     GetPage(
       name: Routers.editSubGroup,
-      page: () => EditSubGroupPage(),
+      page: () => const EditSubGroupPage(),
       binding: EditSubGroupBinding(),
     ),
     GetPage(
@@ -482,12 +529,321 @@ class RoutePages {
       });
     } else if (FileUtils.isWord(extension)) {
       // TODO 临时处理方案，让其可以下载通过第三方软件查看
-      Get.toNamed(Routers.fileReader, arguments: {'file': file});
-      // Get.toNamed(Routers.messageFile, arguments: {'file': file});
+      // Get.toNamed(Routers.fileReader, arguments: {'file': file});
+      Get.toNamed(Routers.messageFile, arguments: {'file': file});
     } else if (FileUtils.isVideo(extension)) {
       Get.toNamed(Routers.videoPlay, arguments: {'file': file});
     } else {
       Get.toNamed(Routers.messageFile, arguments: {"file": file});
     }
+  }
+
+  /// 跳转到数据二级页面
+  static void jumpStore({dynamic parentData, List? listDatas}) {
+    jumpHome(
+        home: HomeEnum.store, parentData: parentData, listDatas: listDatas);
+  }
+
+  /// 跳转到数据详情页面
+  /// data 需要展示的目标对象
+  /// defaultActiveTabs 默认激活页签
+  static void jumpStoreInfoPage(
+      {dynamic data, List<String> defaultActiveTabs = const []}) {
+    // if (data.typeName == TargetType.person.label) {
+    //   Get.toNamed(Routers.storage, arguments: {
+    //     "parents": [..._getParentRouteParams(), data],
+    //     "defaultActiveTabs": defaultActiveTabs,
+    //     "datas": data
+    //   });
+    // } else if (data.typeName == TargetType.cohort.label) {
+    //   Get.toNamed(Routers.storage, arguments: {
+    //     "parents": [..._getParentRouteParams(), data],
+    //     "defaultActiveTabs": defaultActiveTabs,
+    //     "datas": data
+    //   });
+    // }
+  }
+
+  /// 跳转到关系二级页面
+  static void jumpRelation({dynamic parentData, List? listDatas}) {
+    jumpHome(
+        home: HomeEnum.relation, parentData: parentData, listDatas: listDatas);
+  }
+
+  /// 跳转到关系详情页面
+  /// data 需要展示的目标对象
+  /// defaultActiveTabs 默认激活页签
+  static void jumpRelationInfo(
+      {dynamic data, List<String>? defaultActiveTabs}) {
+    if (data.typeName == TargetType.person.label) {
+      Get.toNamed(Routers.relationFriend,
+          arguments: RouterParam(
+              parents: [..._getParentRouteParams(), RouterParam(datas: data)],
+              defaultActiveTabs: defaultActiveTabs ?? ["设置"],
+              datas: data));
+      // {
+      //   "parents": [..._getParentRouteParams(), data],
+      //   "defaultActiveTabs": defaultActiveTabs ?? [TargetType.person.label],
+      //   "datas": data
+      // }
+    } else {
+      // if (data.typeName == TargetType.cohort.label)
+      Get.toNamed(Routers.relationCohort,
+          arguments: RouterParam(
+              parents: [..._getParentRouteParams(), RouterParam(datas: data)],
+              defaultActiveTabs: defaultActiveTabs ?? ["设置"],
+              datas: data));
+      // {
+      //   "parents": [..._getParentRouteParams(), data],
+      //   "defaultActiveTabs": defaultActiveTabs ?? [SpaceEnum.member.label],
+      //   "datas": data
+      // }
+    }
+  }
+
+  /// 跳转到关系详情页面
+  /// data 需要展示的目标对象
+  /// defaultActiveTabs 默认激活页签
+  static void jumpRelationMember(
+      {dynamic data, List<String>? defaultActiveTabs}) {
+    if (data.typeName == TargetType.person.label) {
+      Get.toNamed(Routers.relationFriend,
+          arguments: RouterParam(
+              parents: [..._getParentRouteParams(), RouterParam(datas: data)],
+              defaultActiveTabs: defaultActiveTabs ?? [TargetType.person.label],
+              datas: data));
+      // {
+      //   "parents": [..._getParentRouteParams(), data],
+      //   "defaultActiveTabs": defaultActiveTabs ?? [TargetType.person.label],
+      //   "datas": data
+      // }
+    } else if (data.typeName != TargetType.storage.label) {
+      // if (data.typeName == TargetType.cohort.label)
+      Get.toNamed(Routers.relationCohort,
+          arguments: RouterParam(
+              parents: [..._getParentRouteParams(), RouterParam(datas: data)],
+              defaultActiveTabs: defaultActiveTabs ?? [SpaceEnum.member.label],
+              datas: data));
+      // {
+      //   "parents": [..._getParentRouteParams(), data],
+      //   "defaultActiveTabs": defaultActiveTabs ?? [SpaceEnum.member.label],
+      //   "datas": data
+      // }
+    }
+  }
+
+  /// 好友/成员列表
+  static void jumpMemberList<T>({required T data}) {
+    Get.toNamed(Routers.memberList,
+        arguments: RouterParam(
+            parents: [..._getParentRouteParams(), RouterParam(datas: data)],
+            datas: data));
+    // {
+    //   "parents": [..._getParentRouteParams(), data],
+    //   "defaultActiveTabs": [],
+    //   "datas": data
+    // }
+  }
+
+  /// 跳转到实体详情页面
+  static void jumpEneityInfo<T>({required T data}) {
+    Get.toNamed(Routers.entityInfo,
+        arguments: RouterParam(
+            parents: [..._getParentRouteParams(), RouterParam(datas: data)],
+            datas: data));
+    // {
+    //   "parents": [..._getParentRouteParams(), data],
+    //   "defaultActiveTabs": [],
+    //   "datas": data
+    // }
+  }
+
+  /// 跳转到文件目录列表页面
+  static void jumpFileList<T>({required T data}) {
+    Get.toNamed(Routers.fileList,
+        preventDuplicates: false,
+        arguments: RouterParam(
+            parents: [..._getParentRouteParams(), RouterParam(datas: data)],
+            datas: data));
+  }
+
+  /// 跳转到消息模块
+  static void jumpChat({List<String> defaultActiveTabs = const []}) {
+    jumpHome(home: HomeEnum.chat, defaultActiveTabs: defaultActiveTabs);
+  }
+
+  /// 跳转到办事模块
+  static void jumpWork({List<String> defaultActiveTabs = const []}) {
+    jumpHome(home: HomeEnum.work, defaultActiveTabs: defaultActiveTabs);
+  }
+
+  /// 跳转到首页
+  static void jumpHome(
+      {required HomeEnum home,
+      dynamic parentData,
+      List? listDatas,
+      List<String> defaultActiveTabs = const []}) {
+    if (relationCtrl.homeEnum.value != home) {
+      relationCtrl.setHomeEnum(home);
+    }
+    Get.toNamed(
+        preventDuplicates: false,
+        Routers.home,
+        arguments: RouterParam(
+            modelName: home.label,
+            parents: [
+              ..._getParentRouteParams(),
+              if (null != parentData) RouterParam(datas: parentData)
+            ],
+            datas: listDatas,
+            defaultActiveTabs: defaultActiveTabs));
+  }
+
+  static void jumpChatSession({required ISession data}) {
+    jumpRelationMember(data: data, defaultActiveTabs: ["沟通"]);
+  }
+
+  /// 跳转到办事详情
+  static Future<void> jumpWorkInfo<T extends IWorkTask>(
+      {required T work}) async {
+    if (work.targets.isEmpty) {
+      //加载流程实例数据
+      await work.loadInstance();
+    }
+    //跳转办事详情
+    Get.toNamed(Routers.processDetails, arguments: {"todo": work});
+  }
+
+  /// 获取关系子页面参数
+  static List<RouterParam> _getParentRouteParams() {
+    var params = Get.arguments;
+    if (isCurrentModel()) {
+      if (params is RouterParam) {
+        return params.parents;
+      } else if (params is Map) {
+        return params["parents"];
+      }
+    }
+    return [];
+  }
+
+  /// 获取关系子页面参数
+  static String? getRouteTitle() {
+    var params = Get.arguments;
+    if (isCurrentModel()) {
+      if (params is RouterParam) {
+        return params.parents.map((e) => e.datas.name).join("/");
+      } else if (params is Map) {
+        return params["parents"].map((e) => e.name).join("/");
+      }
+    }
+    return null;
+  }
+
+  /// 获取关系子页面参数
+  static List<String>? getRouteDefaultActiveTab() {
+    var params = Get.arguments;
+    // if (isCurrentModel()) {
+    if (params is RouterParam) {
+      return params.defaultActiveTabs;
+    } else if (params is Map) {
+      return params["defaultActiveTabs"];
+    }
+    // }
+    return null;
+  }
+
+  /// 获取关系子页面参数
+  static dynamic getParentRouteParam() {
+    var params = Get.arguments;
+
+    if (isCurrentModel()) {
+      if (params is RouterParam) {
+        return params.parents.last.datas;
+      } else if (params is Map) {
+        return params["parents"].last['datas'];
+      }
+    }
+    return;
+  }
+
+  /// 获取关系子页面参数
+  static dynamic getRootRouteParam() {
+    var params = Get.arguments;
+
+    if (isCurrentModel()) {
+      if (params is RouterParam) {
+        return params.parents.first.datas;
+      } else if (params is Map) {
+        return params["parents"].first.datas;
+      }
+    }
+    return;
+  }
+
+  /// 路由层级
+  static int getRouteLevel() {
+    var params = Get.arguments;
+    if (isCurrentModel()) {
+      if (params is RouterParam) {
+        return params.parents.length;
+      } else if (params is Map) {
+        return params["parents"].length;
+      }
+    }
+    return Get.currentRoute == Routers.home ? 0 : 1;
+  }
+
+  /// 获取关系子页面参数
+  static dynamic getRouteParams() {
+    var params = Get.arguments;
+    if (isCurrentModel()) {
+      if (params is RouterParam) {
+        return params.datas;
+      } else if (params is Map) {
+        return params["datas"];
+      }
+    }
+    return;
+  }
+
+  static bool isCurrentModel() {
+    var params = Get.arguments;
+    if (params is RouterParam) {
+      return params.parents.firstOrNull?.modelName ==
+          relationCtrl.homeEnum.value.label;
+    } else if (params is Map) {
+      return params["parents"]?.firstOrNull?['modelName'] ==
+          relationCtrl.homeEnum.value.label;
+    }
+    return false;
+  }
+
+  static void clearRoute() {
+    // Get.toNamed(Routers.home, preventDuplicates: false);
+    Get.arguments;
+  }
+}
+
+/// 路由参数
+class RouterParam {
+  /// 模块名称
+  late String modelName;
+
+  /// 上级路由参数
+  List<RouterParam> parents;
+
+  /// 默认激活页签
+  List<String> defaultActiveTabs;
+
+  /// 路由穿参
+  dynamic datas;
+
+  RouterParam(
+      {String? modelName,
+      this.parents = const [],
+      this.defaultActiveTabs = const [],
+      this.datas}) {
+    this.modelName = modelName ?? relationCtrl.homeEnum.value.label;
   }
 }

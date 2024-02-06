@@ -10,7 +10,8 @@ import 'package:orginone/dart/core/getx/base_bindings.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/dart/core/target/base/target.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/chat/widgets/chat_box.dart';
 import 'package:orginone/utils/index.dart';
 import 'package:orginone/components/widgets/system/gy_scaffold.dart';
@@ -28,6 +29,7 @@ class MessageChatPage
   Widget buildView() {
     state.noReadCount = state.chat.noReadCount;
     return GyScaffold(
+      toolbarHeight: 80.h,
       titleWidget: _title(),
       actions: _actions(),
       body: GestureDetector(
@@ -79,7 +81,13 @@ class MessageChatPage
 
 class MessageChatController extends BaseController<MessageChatState> {
   @override
-  final MessageChatState state = MessageChatState();
+  late MessageChatState state;
+
+  @override
+  void onInit() {
+    super.onInit();
+    state = MessageChatState();
+  }
 
   @override
   void onReady() {
@@ -192,7 +200,17 @@ class MessageChatState extends BaseGetState {
   final ItemScrollController itemScrollController = ItemScrollController();
 
   MessageChatState() {
-    chat = Get.arguments;
+    dynamic param = Get.arguments;
+    if (param is ISession) {
+      chat = param;
+    } else {
+      param = RoutePages.getParentRouteParam();
+      if (param is ISession) {
+        chat = param;
+      } else if (param is ITarget) {
+        chat = param.session;
+      }
+    }
     scrollKey = GlobalKey();
   }
 }

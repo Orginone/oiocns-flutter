@@ -14,7 +14,7 @@ import 'package:orginone/dart/core/target/outTeam/group.dart';
 import 'package:orginone/dart/core/target/outTeam/storage.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 ///单位类型接口
 abstract class ICompany extends IBelong {
@@ -84,7 +84,7 @@ class Company extends Belong implements ICompany {
     if (!_groupLoaded || reload) {
       final res = await kernel.queryJoinedTargetById(GetJoinedModel(
         id: metadata.id,
-        typeNames: [TargetType.group.label],
+        typeNames: [TargetType.group.label, TargetType.storage.label],
         page: pageAll,
       ));
       if (res.success) {

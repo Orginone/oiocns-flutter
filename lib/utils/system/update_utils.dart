@@ -5,7 +5,7 @@ import 'package:flutter_xupdate/flutter_xupdate.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/http_util.dart';
 import 'package:orginone/utils/log/log_util.dart';
 import 'package:orginone/utils/string_util.dart';

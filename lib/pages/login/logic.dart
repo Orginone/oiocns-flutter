@@ -5,7 +5,7 @@ import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/common/values/constants.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/storage.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:permission_handler/permission_handler.dart';

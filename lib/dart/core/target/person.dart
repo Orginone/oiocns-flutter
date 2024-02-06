@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/chat/session.dart';
@@ -11,7 +12,7 @@ import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/target/team/hospital.dart';
 import 'package:orginone/dart/core/target/team/university.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 import '../../base/model.dart';
 import '../../base/schema.dart';
@@ -49,6 +50,8 @@ abstract class IPerson extends IBelong {
   Future<List<XTarget>> searchTargets(String filter, List<String> typeNames);
   //加载群组
   Future<List<ICohort>> loadCohorts({bool? reload});
+  //查找单位
+  ICompany? findCompany(String id);
 }
 
 //人员类型实现
@@ -442,6 +445,12 @@ class Person extends Belong implements IPerson {
         break;
     }
     return '';
+  }
+
+  //查找单位
+  @override
+  ICompany? findCompany(String id) {
+    return companys.firstWhereOrNull((e) => e.id == id);
   }
 
   @override

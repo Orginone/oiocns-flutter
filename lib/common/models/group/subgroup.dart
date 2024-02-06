@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 part 'subgroup.g.dart';
 
 @HiveType(typeId: 7)
-class SubGroup{
+class SubGroup {
   @HiveField(0)
   String? type;
   @HiveField(1)
@@ -11,36 +11,35 @@ class SubGroup{
   @HiveField(2)
   List<Group>? hidden;
 
-  SubGroup({this.type,this.groups,this.hidden});
+  SubGroup({this.type, this.groups, this.hidden});
 
-  SubGroup.fromJson(Map<String,dynamic> json){
+  SubGroup.fromJson(Map<String, dynamic> json) {
     type = json['type'];
     groups = [];
     hidden = [];
-    if(json['groups']!=null){
-      json['groups'].forEach((json){
+    if (json['groups'] != null) {
+      json['groups'].forEach((json) {
         groups!.add(Group.fromJson(json));
       });
     }
-    if(json['hidden']!=null){
-      json['hidden'].forEach((json){
+    if (json['hidden'] != null) {
+      json['hidden'].forEach((json) {
         hidden!.add(Group.fromJson(json));
       });
     }
   }
 
-  Map<String,dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
-      "type":type,
-      "groups":groups?.map((e) => e.toJson()).toList(),
-      "hidden":hidden?.map((e) => e.toJson()).toList(),
+      "type": type,
+      "groups": groups?.map((e) => e.toJson()).toList(),
+      "hidden": hidden?.map((e) => e.toJson()).toList(),
     };
   }
-
 }
 
 @HiveType(typeId: 8)
-class Group{
+class Group {
   @HiveField(0)
   String? label;
   @HiveField(1)

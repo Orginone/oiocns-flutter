@@ -1,13 +1,17 @@
+import 'package:get/get.dart';
+import 'package:orginone/utils/load_image.dart';
+
 /// 用户对象类型
 enum WorkType {
   //外部用户
-  add("加用户"),
+  add("加用户", XImage.addFriend),
 
-  thing("事项");
+  thing("事项", XImage.formWork);
 
-  const WorkType(this.label);
+  const WorkType(this.label, this.icon);
 
   final String label;
+  final String icon;
 
   static String getName(TargetType type) {
     return type.label;
@@ -21,37 +25,88 @@ enum WorkType {
 /// 用户对象类型
 enum TargetType {
   //外部用户
-  group("组织群"),
-  cohort("群组"),
+  group("组织群", XImage.cluster),
+  cohort("群组", XImage.communicationGroup),
   //内部用户
-  college("学院"),
-  department("部门"),
-  office("办事处"),
-  section("科室"),
-  major("专业"),
-  working("工作组"),
-  research("研究所"),
-  laboratory("实验室"),
-  //岗位
-  station("岗位"),
-  //自归属用户
-  person("人员"),
-  company("单位"),
-  university("大学"),
-  hospital("医院"),
-  storage("存储资源"),
-  jobCohort("工作群"); //内核不存在了
+  college("学院", XImage.folder),
+  department("部门", XImage.unitInstitution),
+  office("办事处", XImage.unitInstitution),
+  section("科室", XImage.unitInstitution),
+  major("专业", XImage.unitInstitution),
+  working("工作组", XImage.unitInstitution),
+  research("研究所", XImage.unitInstitution),
+  laboratory("实验室", XImage.unitInstitution),
 
-  const TargetType(this.label);
+  ///岗位
+  station("岗位", XImage.folder),
+  //自归属用户
+  person("人员", XImage.user),
+  company("单位", XImage.unit),
+  university("大学", XImage.folder),
+  hospital("医院", XImage.folder),
+  storage("存储资源", XImage.folderStore),
+  jobCohort("工作群", XImage.folder), //内核不存在了
+  ;
+
+  const TargetType(this.label, this.icon);
 
   final String label;
+
+  final String icon;
 
   static String getName(TargetType type) {
     return type.label;
   }
 
-  static TargetType getType(String name) {
-    return TargetType.values.firstWhere((element) => element.label == name);
+  static TargetType? getType(String name) {
+    return TargetType.values
+        .firstWhereOrNull((element) => element.label == name);
+  }
+}
+
+/// 目录分类
+enum DirectoryGroupType {
+  // 人员
+  person("人员", [SpaceEnum.groups, SpaceEnum.resources]),
+
+  // 单位
+  company("单位", [
+    SpaceEnum.groups,
+    SpaceEnum.internalAgent,
+    SpaceEnum.cohorts,
+    SpaceEnum.resources
+  ]),
+
+  // 存储
+  storage("存储资源", [
+    SpaceEnum.dataStandards,
+    SpaceEnum.businessModeling,
+    SpaceEnum.applications,
+    SpaceEnum.file,
+    SpaceEnum.code,
+    SpaceEnum.mirroring,
+  ]),
+
+  /// 数据标准
+  dataStandards("数据标准", [
+    SpaceEnum.property,
+    SpaceEnum.species,
+    SpaceEnum.dict,
+  ]),
+  ;
+
+  const DirectoryGroupType(this.name, this.types);
+
+  final List<SpaceEnum> types;
+  final String name;
+
+  static List<SpaceEnum> getName(DirectoryGroupType type) {
+    return type.types;
+  }
+
+  static DirectoryGroupType? getType(String type) {
+    return DirectoryGroupType.values
+        .firstWhereOrNull((element) => element.name == type);
   }
 }
 
@@ -267,25 +322,110 @@ enum TodoType {
 }
 
 enum SpaceEnum {
-  directory("文件夹"),
-  species("分类"),
-  filter("筛选"),
-  property("属性"),
-  applications("应用"),
-  module("模块"),
-  work("办事"),
-  form("表单"),
-  file("文件"),
-  user('个人'),
-  company("公司"),
-  person("成员"),
-  departments("部门"),
-  groups("群组"),
-  cohorts("组织");
+  directory("目录", XImage.folder),
+  species("分类", XImage.folder),
+  filter("筛选", XImage.folder),
+  property("属性", XImage.folder),
+  applications("应用", XImage.folder),
+  module("模块", XImage.folder),
+  work("办事", XImage.folder),
+  form("表单", XImage.folder),
+  file("文件", XImage.folder),
+  user('个人', XImage.folder),
+  company("公司", XImage.folder),
+  person("成员", XImage.folder),
+  departments("部门", XImage.unitInstitution),
+
+  ///群组
+  groups("群组", "communicationGroup"),
+
+  ///组织
+  cohorts("组织群", XImage.cluster),
+
+  ///好友
+  firend("好友", XImage.folder),
+
+  /// 资源
+  resources("资源", XImage.folderStore),
+
+  /// 成员
+  member("成员", XImage.folder),
+
+  /// 内设机构
+  internalAgent("内设机构", XImage.unitInstitution),
+
+  /// 数据标准
+  dataStandards("数据标准", XImage.folder),
+
+  /// 业务模型
+  businessModeling("业务模型", XImage.folder),
+
+  /// 代码
+  code("代码", XImage.folder),
+
+  /// 镜像
+  mirroring("镜像", XImage.folder),
+
+  /// 字典
+  dict("字典", XImage.folder),
+  ;
 
   final String label;
+  final String icon;
 
-  const SpaceEnum(this.label);
+  const SpaceEnum(this.label, this.icon);
+
+  static String getName(TargetType type) {
+    return type.label;
+  }
+
+  static SpaceEnum? getType(String name) {
+    return SpaceEnum.values
+        .firstWhereOrNull((element) => element.label == name);
+  }
+}
+
+enum StorageFileType {
+  ///文件
+  file("文件", XImage.file, []),
+
+  ///音频
+  music("音频", XImage.music, ["video/mp3"]),
+
+  ///视频
+  video("视频", XImage.video, ["video/mp4"]),
+
+  ///图片
+  image("图片", XImage.image,
+      ["image/png", "image/jpeg", "image/jpg", "image/svg"]),
+
+  ///pdf
+  pdf("pdf", XImage.pdf, ["pdf"]),
+
+  ///excel
+  excel("excel", XImage.excel, ["xls", "xlsx"]),
+
+  ///word
+  word("word", XImage.word, ["doc", "docx"]),
+
+  ///ppt
+  ppt("ppt", XImage.ppt, ["ppt", "pptx"]),
+  ;
+
+  final String label;
+  final String icon;
+  final List<String> suffixes;
+  const StorageFileType(this.label, this.icon, this.suffixes);
+
+  static String getName(TargetType type) {
+    return type.label;
+  }
+
+  static StorageFileType getType(String name) {
+    return StorageFileType.values
+            .firstWhereOrNull((element) => element.suffixes.contains(name)) ??
+        file;
+  }
 }
 
 /// 职权类型

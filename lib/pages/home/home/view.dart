@@ -1,15 +1,15 @@
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/index.dart';
+import 'package:orginone/common/routers/pages.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/chat/message_chats/message_chats_page.dart';
 import 'package:orginone/pages/home/components/user_bar.dart';
 import 'package:orginone/pages/home/portal/view.dart';
-import 'package:orginone/pages/relation/view.dart';
+import 'package:orginone/pages/relation/index.dart';
 import 'package:orginone/pages/store/view.dart';
 import 'package:orginone/pages/work/view.dart';
 import 'package:orginone/utils/toast_utils.dart';
@@ -18,8 +18,9 @@ import 'package:orginone/config/unified.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class HomePage extends BaseGetView<HomeController, HomeState> {
-  const HomePage({super.key});
+class HomePageOld extends BaseGetView<HomeController, HomeState> {
+  dynamic data;
+  HomePageOld({super.key, this.data});
 
   @override
   Widget buildView() {
@@ -36,23 +37,30 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
       },
       child: GyScaffold(
           backgroundColor: Colors.white,
-          toolbarHeight: 0,
+          toolbarHeight: null == data ? 0 : null,
           body: Column(
             children: [
-              const UserBar(),
               Expanded(
-                child: ExtendedTabBarView(
-                  shouldIgnorePointerWhenScrolling: false,
-                  controller: state.tabController,
-                  children: const [
-                    KeepAliveWidget(child: MessageChats()),
-                    KeepAliveWidget(child: WorkPage()),
-                    KeepAliveWidget(child: PortalPage()),
-                    KeepAliveWidget(child: StorePage()),
-                    KeepAliveWidget(child: RelationPage()),
+                child: Column(
+                  children: [
+                    if (null == data) UserBar(),
+                    Expanded(
+                      child: ExtendedTabBarView(
+                        shouldIgnorePointerWhenScrolling: false,
+                        controller: state.tabController,
+                        children: const [
+                          KeepAliveWidget(child: MessageChats()),
+                          KeepAliveWidget(child: WorkPage()),
+                          KeepAliveWidget(child: PortalPage()),
+                          KeepAliveWidget(child: StorePage()),
+                          KeepAliveWidget(child: RelationPage()),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
+              // InfoListPage(relationCtrl.relationModel),
               bottomButton(),
             ],
           )),
@@ -68,27 +76,18 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
       ),
       child: TabBar(
         tabs: [
+          ExtendedTab(child: button(homeEnum: HomeEnum.chat, path: 'chat')),
+          ExtendedTab(child: button(homeEnum: HomeEnum.work, path: 'work')),
+          ExtendedTab(child: button(homeEnum: HomeEnum.door, path: 'home')),
+          ExtendedTab(child: button(homeEnum: HomeEnum.store, path: 'store')),
           ExtendedTab(
-              child: button(
-                  homeEnum: HomeEnum.chat, path: 'chat', unPath: 'unchat')),
-          ExtendedTab(
-              child: button(
-                  homeEnum: HomeEnum.work, path: 'work', unPath: 'unwork')),
-          ExtendedTab(
-              child: button(
-                  homeEnum: HomeEnum.door, path: 'home', unPath: 'unhome')),
-          ExtendedTab(
-              child: button(
-                  homeEnum: HomeEnum.store, path: 'store', unPath: 'unstore')),
-          ExtendedTab(
-            child: button(
-                homeEnum: HomeEnum.relation,
-                path: 'relation',
-                unPath: 'unrelation'),
+            child: button(homeEnum: HomeEnum.relation, path: 'relation'),
           ),
         ],
         controller: state.tabController,
         onTap: (index) {
+          print(">>>>====ModelTabs.onTap");
+          RoutePages.clearRoute();
           controller.jumpTab(HomeEnum.values[index]);
         },
         indicator: const BoxDecoration(),
@@ -99,7 +98,6 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
   Widget button({
     required HomeEnum homeEnum,
     required String path,
-    required String unPath,
   }) {
     return Obx(() {
       var isSelected = relationCtrl.homeEnum.value == homeEnum;
@@ -110,17 +108,11 @@ class HomePage extends BaseGetView<HomeController, HomeState> {
         mgsCount = relationCtrl.noReadMgsCount.value;
       }
       return BadgeTabWidget(
-        imgPath: !isSelected ? unPath : path,
-        body: Text(homeEnum.label,
-            style: isSelected ? selectedStyle : unSelectedStyle),
+        imgPath: path,
+        foreColor: isSelected ? XColors.selectedColor : XColors.doorDesGrey,
+        body: Text(homeEnum.label),
         mgsCount: mgsCount,
       );
     });
   }
-
-  TextStyle get unSelectedStyle =>
-      TextStyle(color: XColors.black3, fontSize: 16.sp);
-
-  TextStyle get selectedStyle =>
-      TextStyle(color: XColors.selectedColor, fontSize: 16.sp);
 }

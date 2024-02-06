@@ -6,7 +6,7 @@ import 'package:ionicons/ionicons.dart';
 import 'package:orginone/common/models/index.dart';
 import 'package:orginone/common/routers/index.dart';
 import 'package:orginone/components/widgets/index.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/config/unified.dart';
 

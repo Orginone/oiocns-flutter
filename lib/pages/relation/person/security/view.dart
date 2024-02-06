@@ -5,7 +5,7 @@ import 'package:orginone/common/values/index.dart';
 
 import 'package:orginone/components/widgets/system/gy_scaffold.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 
 import 'index.dart';
 

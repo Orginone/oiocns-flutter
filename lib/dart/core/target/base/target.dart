@@ -11,7 +11,7 @@ import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/thing/resource.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import '../../public/operates.dart';
 import 'team.dart';
 

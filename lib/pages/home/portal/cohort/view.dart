@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/widgets/target_activity/activity_message.dart';
-import 'package:orginone/components/widgets/common/image/team_avatar.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
-import 'package:orginone/dart/base/model.dart' as model;
+import 'package:orginone/utils/load_image.dart';
 
 import 'controller.dart';
 import 'state.dart';
@@ -17,16 +16,29 @@ class CohortActivityPage
     extends BaseGetListPageView<CohortActivityController, CohortActivityState> {
   late String type;
   late String label;
+  late Function()? loadCohortActivity;
   late GroupActivity cohortActivity;
   late ScrollController scrollController;
 
-  CohortActivityPage(this.type, this.label, this.cohortActivity, {super.key}) {
+  CohortActivityPage(
+    this.type,
+    this.label,
+    this.cohortActivity, {
+    super.key,
+    this.loadCohortActivity,
+  }) {
     scrollController = ScrollController();
     state.currentActivity = cohortActivity.activitys.first.obs;
   }
 
   @override
   Widget buildView() {
+    if (controller.cohortActivity.activitys.isEmpty &&
+        null != loadCohortActivity) {
+      cohortActivity = loadCohortActivity?.call();
+      state.currentActivity = cohortActivity.activitys.first.obs;
+    }
+
     return ExtendedNestedScrollView(
       headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
         if (state.currentActivity.value is! GroupActivity) {
@@ -94,13 +106,14 @@ class CohortActivityPage
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisSize: MainAxisSize.min,
               children: [
-                TeamAvatar(
-                  info: TeamTypeInfo(
-                      share: item.metadata.shareIcon() ??
-                          model.ShareIcon(
-                              name: '', typeName: item.typeName ?? "")),
-                  size: 45.w,
-                ),
+                XImage.entityIcon(item.metadata, size: Size(45.w, 45.w)),
+                // TeamAvatar(
+                //   info: TeamTypeInfo(
+                //       share: item.metadata.shareIcon() ??
+                //           model.ShareIcon(
+                //               name: '', typeName: item.typeName ?? "")),
+                //   size: 45.w,
+                // ),
                 SizedBox(
                     width: 100.w,
                     child: Text(item.metadata.name!,

@@ -6,33 +6,37 @@ class ListItemMetaWidget extends StatelessWidget {
   Widget title;
   Widget subTitle;
   Widget avatar;
-  Widget description;
+  Widget? description;
   Function()? onTap;
   ListItemMetaWidget(
       {super.key,
       required this.title,
       required this.subTitle,
       required this.avatar,
-      required this.description,
+      this.description,
       this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.only(left: 10.w, right: 10.w),
-      title: Row(
-        children: [
-          avatar,
-          Padding(
-              padding: EdgeInsets.only(left: 10.w),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [title, subTitle]))
-        ],
+    return Container(
+      padding: EdgeInsets.only(left: 20.w, right: 20.w),
+      color: Colors.white,
+      child: ListTile(
+        contentPadding: EdgeInsets.only(left: 0.w, right: 0.w),
+        title: Row(
+          children: [
+            avatar,
+            Padding(
+                padding: EdgeInsets.only(left: 10.w),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [title, subTitle]))
+          ],
+        ),
+        subtitle: description,
+        onTap: onTap,
       ),
-      subtitle: description,
-      onTap: onTap,
     );
 
     // Container(

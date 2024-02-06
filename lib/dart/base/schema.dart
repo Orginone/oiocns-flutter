@@ -5021,6 +5021,7 @@ class XTarget extends XEntity {
   XTarget.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
     thingId = json["thingId"];
     public = json['public'];
+    storeId = json['storeId'];
     idProofs = XIdProof.fromList(json["idProofs"]);
     shareIdentitys = XIdentity.fromList(json["shareIdentitys"]);
     identitys = XIdentity.fromList(json["identitys"]);

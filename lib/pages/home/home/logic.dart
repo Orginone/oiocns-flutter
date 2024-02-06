@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/components/widgets/dialog/loading_dialog.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
-import 'package:orginone/main_bean.dart';
+import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/system/update_utils.dart';
 
@@ -24,6 +24,7 @@ class HomeController extends BaseController<HomeState>
         initialIndex: 2,
         animationDuration: Duration.zero);
     state.tabController.addListener(() {
+      print('>>>>====${state.tabController.index}');
       if (relationCtrl.homeEnum.value.index != state.tabController.index) {
         relationCtrl.homeEnum.value =
             HomeEnum.values[state.tabController.index];

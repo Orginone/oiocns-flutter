@@ -2,19 +2,23 @@ import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
-import 'package:orginone/common/index.dart' hide ImageWidget, TextWidget;
 import 'package:orginone/common/index.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/controller/index.dart';
-import 'package:orginone/dart/core/chat/session.dart';
-import 'package:orginone/dart/core/work/task.dart';
-import 'package:orginone/utils/icons.dart';
-import 'package:orginone/components/widgets/common/image/image_widget.dart';
 
-import 'search_bar.dart';
+import 'package:orginone/utils/load_image.dart';
 
 class UserBar extends GetView<IndexController> {
-  const UserBar({super.key});
+  ///实体/对象
+  dynamic data;
+
+  ///标题
+  String title;
+
+  ///操作按钮
+  List<Widget>? actions;
+
+  UserBar({super.key, this.title = "", this.data, this.actions});
 
   @override
   Widget build(BuildContext context) {
@@ -180,106 +184,16 @@ class UserBar extends GetView<IndexController> {
   ///右侧事件
   _actionsWidge() {
     return <Widget>[
-      searchWidget,
-      qrScanWidget,
-      moreWidget,
+      ...actions ??
+          XImage.operationIcons([
+            XImage.search,
+            XImage.scan,
+            XImage.add,
+          ]), //[searchWidget, qrScanWidget, moreWidget],
       const SizedBox(
         width: 10,
       ),
     ].toRow();
-  }
-
-  ///搜索
-  Widget get searchWidget {
-    return IconButton(
-      icon: const Icon(Ionicons.search_outline),
-      onPressed: () {
-        SearchBar? search;
-        switch (controller.homeEnum.value) {
-          case HomeEnum.chat:
-            search = SearchBar<ISession>(
-                homeEnum: HomeEnum.chat, data: controller.chats);
-            break;
-          case HomeEnum.work:
-            search = SearchBar<IWorkTask>(
-                homeEnum: HomeEnum.work, data: controller.work.todos);
-            break;
-          // case HomeEnum.store:
-          //   search = SearchBar<RecentlyUseModel>(
-          //       homeEnum: HomeEnum.store, data: controller.storage.recent);
-          // break;
-          case HomeEnum.relation:
-            search =
-                SearchBar<int>(homeEnum: controller.homeEnum.value, data: []);
-            break;
-          case HomeEnum.door:
-            break;
-        }
-        if (search != null) {
-          showSearch(context: Get.context!, delegate: search);
-        }
-      },
-      constraints: BoxConstraints(maxWidth: 50.w),
-    );
-  }
-
-  ///扫描
-  Widget get qrScanWidget {
-    return IconButton(
-      icon: const Icon(Ionicons.scan_outline),
-      onPressed: () {
-        controller.qrScan();
-      },
-    );
-  }
-
-  Widget get moreWidget {
-    return _createCustomPopupMenu(
-      children: controller.menuItems
-          .map(
-            (item) => GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                controller.settingMenuController.hideMenu();
-                controller.showAddFeatures(item);
-              },
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20.w),
-                decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(
-                            color: Colors.grey.shade300, width: 0.5))),
-                child: Row(
-                  children: <Widget>[
-                    Icon(
-                      item.shortcut.icon,
-                      size: 24.w,
-                      color: Colors.black,
-                    ),
-                    Expanded(
-                      child: Container(
-                        margin: EdgeInsets.only(left: 10.w),
-                        padding: EdgeInsets.symmetric(vertical: 15.h),
-                        child: Text(
-                          item.shortcut.label,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 24.sp,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          )
-          .toList(),
-      controller: controller.settingMenuController,
-      child: const Icon(
-        Ionicons.add_sharp,
-      ),
-    );
   }
 
   ///公用构建方法
@@ -316,20 +230,15 @@ class UserBar extends GetView<IndexController> {
       double size = 44,
       double? radius}) {
     return Obx(() {
-      dynamic avatar;
-      var share = controller.provider.user.share;
-      avatar = share.avatar?.thumbnailUint8List ??
-          IconsUtils.icons['x']?['defalutAvatar'];
+      dynamic avatar = XImage.entityIcon(
+        controller.provider.user,
+        width: size.w,
+        circular: circular,
+        radius: radius,
+        fit: fit,
+      );
 
-      return Container(
-          margin: insets,
-          child: ImageWidget(
-            avatar,
-            fit: fit,
-            size: size.w,
-            circular: circular,
-            radius: radius,
-          ));
+      return Container(margin: insets, child: avatar);
     });
   }
 }
