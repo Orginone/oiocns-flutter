@@ -24,7 +24,6 @@ class WalletController extends GetxController implements WalletApi {
 
   @override
   void onReady() {
-    // TODO: implement onReady
     super.onReady();
     wallet.value = HiveUtils.getAllWallet();
   }

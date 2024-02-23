@@ -12,6 +12,7 @@ import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/main_base.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 /// 关系页面
 class StorePage extends StatelessWidget {
@@ -79,13 +80,13 @@ class StorePage extends StatelessWidget {
           getAction: (dynamic data) {
             return GestureDetector(
               onTap: () {
-                print('>>>>>>======点击了感叹号');
+                LogUtil.d('>>>>>>======点击了感叹号');
               },
               child: const XImageWidget.asset(width: 35, height: 35, ''),
             );
           },
           onTap: (dynamic data, List children) {
-            print('>>>>>>======点击了列表项 ${data.name} ${children.length}');
+            LogUtil.d('>>>>>>======点击了列表项 ${data.name} ${children.length}');
             if (children.isNotEmpty) {
               RoutePages.jumpStore(parentData: data, listDatas: children);
             } else {

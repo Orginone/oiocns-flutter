@@ -137,6 +137,7 @@ class ActivityMessageWidget extends StatelessWidget {
             return true;
           });
         }
+      default:
     }
     return null;
   }

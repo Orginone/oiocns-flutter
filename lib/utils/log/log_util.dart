@@ -1,7 +1,9 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:logger/logger.dart';
 
 class LogUtil {
-  static Logger _logger = Logger(
+  static final Logger _logger = Logger(
     printer: PrefixPrinter(PrettyPrinter(
       stackTraceBeginIndex: 1,
       methodCount: 1,

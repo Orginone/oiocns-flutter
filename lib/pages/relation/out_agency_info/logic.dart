@@ -13,6 +13,7 @@ import 'state.dart';
 class OutAgencyInfoController extends BaseController<OutAgencyInfoState>
     with GetTickerProviderStateMixin {
   @override
+  // ignore: overridden_fields
   final OutAgencyInfoState state = OutAgencyInfoState();
 
   OutAgencyInfoController() {

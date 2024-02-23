@@ -14,6 +14,7 @@ import 'package:orginone/pages/relation/relation_page.dart';
 import 'package:orginone/pages/store/store_page.dart';
 import 'package:orginone/pages/work/work_page.dart';
 import 'package:orginone/utils/load_image.dart';
+import 'package:orginone/utils/log/log_util.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/config/unified.dart';
 
@@ -33,7 +34,7 @@ class _HomePageState extends OrginoneStatefulState<HomePage> {
 
   @override
   Widget buildWidget(BuildContext context, dynamic data) {
-    print(">>>>>>>=======home");
+    LogUtil.d(">>>>>>>=======home");
     return WillPopScope(
         onWillPop: () async {
           if (null == data &&
@@ -98,7 +99,7 @@ class _HomePageState extends OrginoneStatefulState<HomePage> {
           ),
         ],
         onTap: (index) {
-          print(">>>>====ModelTabs.onTap");
+          LogUtil.d(">>>>====ModelTabs.onTap");
           RoutePages.clearRoute();
           jumpTab(HomeEnum.values[index]);
         },
@@ -113,7 +114,7 @@ class _HomePageState extends OrginoneStatefulState<HomePage> {
   }) {
     return Obx(() {
       var isSelected = relationCtrl.homeEnum.value == homeEnum;
-      print('>>>>>>>======$isSelected ${relationCtrl.homeEnum} $homeEnum');
+      LogUtil.d('>>>>>>>======$isSelected ${relationCtrl.homeEnum} $homeEnum');
       var mgsCount = 0;
       if (homeEnum == HomeEnum.work) {
         mgsCount = relationCtrl.provider.work?.todos.length ?? 0;
@@ -171,7 +172,7 @@ class _HomePageState extends OrginoneStatefulState<HomePage> {
   //       initialIndex: 2,
   //       animationDuration: Duration.zero);
   //   state.tabController.addListener(() {
-  //     print('>>>>====${state.tabController.index}');
+  //     LogUtil.d('>>>>====${state.tabController.index}');
   //     if (relationCtrl.homeEnum.value.index != state.tabController.index) {
   //       relationCtrl.homeEnum.value =
   //           HomeEnum.values[state.tabController.index];

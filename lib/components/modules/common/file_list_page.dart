@@ -11,6 +11,7 @@ import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/systemfile.dart';
+import 'package:orginone/utils/index.dart';
 
 /// 文件列表页面
 class FileListPage extends OrginoneStatefulWidget {
@@ -63,7 +64,7 @@ class _FileListPageState extends OrginoneStatefulState<FileListPage> {
 
   List<IDirectory> loadDirectorys<T extends IDirectory>(T target) {
     List<IDirectory> directorys = target.children;
-    print('>>>>>>======directorys ${directorys.length}');
+    LogUtil.d('>>>>>>======directorys ${directorys.length}');
     if (directorys.isEmpty) {
       target.loadContent().then((value) {
         if (value && target.children.isNotEmpty) {
@@ -76,7 +77,7 @@ class _FileListPageState extends OrginoneStatefulState<FileListPage> {
 
   List<ISysFileInfo> loadFiels<T extends IDirectory>(T target) {
     List<ISysFileInfo> files = target.files;
-    print('>>>>>>======files ${files.length}');
+    LogUtil.d('>>>>>>======files ${files.length}');
     if (files.isEmpty) {
       target.loadContent().then((value) {
         if (value && target.files.isNotEmpty) {
@@ -94,20 +95,21 @@ class _FileListPageState extends OrginoneStatefulState<FileListPage> {
         if (null == parentData) {
           return datas;
         }
-        print('>>>>>>======${parentData.runtimeType}');
+        LogUtil.d('>>>>>>======${parentData.runtimeType}');
         return [];
       },
       getAction: (dynamic data) {
         return GestureDetector(
           onTap: () {
-            print('>>>>>>======点击了感叹号');
+            LogUtil.d('>>>>>>======点击了感叹号');
             RoutePages.jumpEneityInfo(data: data);
           },
           child: const XImageWidget.asset(width: 35, height: 35, ''),
         );
       },
       onTap: (dynamic item, List children) {
-        print('>>>>>>======点击了列表项 ${item.name} ${item.id} ${children.length}');
+        LogUtil.d(
+            '>>>>>>======点击了列表项 ${item.name} ${item.id} ${children.length}');
         if (item is IDirectory) {
           RoutePages.jumpFileList(data: item);
         } else {

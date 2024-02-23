@@ -10,6 +10,7 @@ import 'state.dart';
 class InitiateWorkController
     extends BaseBreadcrumbNavController<InitiateWorkState> {
   @override
+  // ignore: overridden_fields
   final InitiateWorkState state = InitiateWorkState();
 
   void jumpNext(WorkBreadcrumbNav work) {

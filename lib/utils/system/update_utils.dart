@@ -70,15 +70,15 @@ class AppUpdate {
               ///在下载过程中，如果点击了取消的话，是否弹出切换下载方式的重试提示弹窗
               enableRetry: false)
           .then((value) {
-        // print(value);
+        // LogUtil.d(value);
       }).catchError((error) {
-        // print(error);
+        // LogUtil.d(error);
         ToastUtils.showMsg(msg: error.toString());
       });
 
       FlutterXUpdate.setErrorHandler(
           onUpdateError: (Map<String, dynamic>? message) async {
-        // print(message);
+        // LogUtil.d(message);
         ToastUtils.showMsg(msg: message.toString());
       });
 
@@ -107,10 +107,10 @@ class AppUpdate {
 
   ///将自定义的json内容解析为UpdateEntity实体类
   static Future<UpdateEntity> updateEntity() async {
-    // print(packageInfo.packageName); // app包名，如：com.ppw.ppw_app.dev
-    // print(packageInfo.appName); // app名称，如：豪波公物仓
-    // print(packageInfo.version); // 版本号，如：1.6.2-dev
-    // print(packageInfo.buildNumber); // 构建号，如：1
+    // LogUtil.d(packageInfo.packageName); // app包名，如：com.ppw.ppw_app.dev
+    // LogUtil.d(packageInfo.appName); // app名称，如：豪波公物仓
+    // LogUtil.d(packageInfo.version); // 版本号，如：1.6.2-dev
+    // LogUtil.d(packageInfo.buildNumber); // 构建号，如：1
     // String url = 'http://183.134.111.2:9090/apk/ppw/version.json';
 
     return UpdateEntity(

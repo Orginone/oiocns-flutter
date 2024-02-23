@@ -16,7 +16,7 @@ class HomeController extends BaseController<HomeState>
 
   @override
   void onInit() {
-    // TODO: implement onInit
+    //
     super.onInit();
     state.tabController = TabController(
         length: 5,
@@ -24,7 +24,7 @@ class HomeController extends BaseController<HomeState>
         initialIndex: 2,
         animationDuration: Duration.zero);
     state.tabController.addListener(() {
-      print('>>>>====${state.tabController.index}');
+      LogUtil.d('>>>>====${state.tabController.index}');
       if (relationCtrl.homeEnum.value.index != state.tabController.index) {
         relationCtrl.homeEnum.value =
             HomeEnum.values[state.tabController.index];
@@ -37,7 +37,7 @@ class HomeController extends BaseController<HomeState>
 
   @override
   void onReady() {
-    // TODO: implement onReady
+    //
     super.onReady();
     AppUpdate.instance.update();
   }

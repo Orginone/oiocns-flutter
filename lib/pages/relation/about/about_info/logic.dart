@@ -17,7 +17,7 @@ class VersionInfoController extends BaseController<VersionInfoState> {
     dynamic result = await rootBundle.loadString(filePath);
     if (result != null) {
       state.mk.value = result.toString();
-      // print(state.mk.value);
+      // LogUtil.d(state.mk.value);
     }
   }
 

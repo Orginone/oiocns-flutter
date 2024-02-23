@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/pages/relation/home/item.dart';
 import 'package:orginone/pages/relation/index.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 class RelationSubPage
     extends BaseGetListPageView<RelationSubController, RelationSubState> {
@@ -51,15 +52,15 @@ class RelationSubPage
             item: item,
             onTap: () {
               controller.jumpDetails(item);
-              print('>>>>====onTap');
+              LogUtil.d('>>>>====onTap');
             },
             onNext: () {
               controller.onNextLv(item);
-              print('>>>>====onNext');
+              LogUtil.d('>>>>====onNext');
             },
             onSelected: (key, item) {
               controller.operation(key, item);
-              print('>>>>====onSelected');
+              LogUtil.d('>>>>====onSelected');
             },
           );
         },

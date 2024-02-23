@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
-import 'package:orginone/components/widgets/system/gy_scaffold.dart';
 import 'package:pin_input_text_field/pin_input_text_field.dart';
 
 import 'logic.dart';

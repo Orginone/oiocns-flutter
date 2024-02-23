@@ -11,11 +11,11 @@ import 'state.dart';
 
 class CohortInfoController extends BaseController<CohortInfoState> {
   @override
+  // ignore: overridden_fields
   final CohortInfoState state = CohortInfoState();
 
   @override
   void onReady() async {
-    // TODO: implement onReady
     super.onReady();
     await init();
   }

@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:orginone/utils/regex/regex_constants.dart';
 
 /// 常见正则表达式工具类

@@ -13,6 +13,7 @@ import 'package:get/get.dart';
 import 'package:logging/logging.dart';
 import 'package:orginone/channel/wallet_channel.dart';
 import 'package:orginone/utils/hive_utils.dart';
+import 'package:orginone/utils/log/log_util.dart';
 import 'package:orginone/utils/notification_util.dart';
 import 'package:orginone/utils/storage.dart';
 
@@ -37,7 +38,7 @@ class Global {
     Logger.root.level = Level.ALL;
     Logger.root.onRecord.listen((event) {
       if (kDebugMode) {
-        print('${event.level.name}: ${event.time}: ${event.message}');
+        LogUtil.d('${event.level.name}: ${event.time}: ${event.message}');
       }
     });
   }

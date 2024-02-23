@@ -68,7 +68,7 @@ class StringUtils {
   /// 比较两个长度一样的字符串有几个字符不同
   static int hammingDistance(String str1, String str2) {
     if (str1.length != str2.length) {
-      throw FormatException('Strings must have the same length');
+      throw const FormatException('Strings must have the same length');
     }
     var l1 = str1.runes.toList();
     var l2 = str2.runes.toList();

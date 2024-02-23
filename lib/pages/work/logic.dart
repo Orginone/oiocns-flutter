@@ -7,6 +7,7 @@ import 'state.dart';
 
 class WorkController extends BaseSubmenuController<WorkState> {
   @override
+  // ignore: overridden_fields
   final WorkState state = WorkState();
   @override
   void onInit() {

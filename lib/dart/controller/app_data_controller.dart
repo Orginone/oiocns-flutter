@@ -70,18 +70,18 @@ class AppDataController extends Emitter {
 }
 // if (msg == 'AppLifecycleState.resumed') {
 //   if (kernel.user == null) {
-//     print('>>>>>>======resumed 1');
+//     LogUtil.d('>>>>>>======resumed 1');
 //     await relationCtrl.autoLogin();
 //   } else if (!kernel.isOnline) {
 //     if (!relationCtrl.provider.inited) {
-//       print('>>>>>>======resumed 2');
+//       LogUtil.d('>>>>>>======resumed 2');
 //       relationCtrl.autoLogin();
 //     } else {
-//       print('>>>>>>======resumed 3');
+//       LogUtil.d('>>>>>>======resumed 3');
 //       relationCtrl.wakeUp();
 //     }
 //   } else {
-//     print('>>>>>>======resumed 4');
+//     LogUtil.d('>>>>>>======resumed 4');
 //     relationCtrl.isConnected.value = true;
 //   }
 // }

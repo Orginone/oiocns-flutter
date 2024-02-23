@@ -1,4 +1,6 @@
-/// 日期时间工具类
+// 日期时间工具类
+// ignore_for_file: constant_identifier_names, non_constant_identifier_names, file_names
+
 class DateTimeUtils {
   /// get DateTime By DateStr.
   /// 将字符串时间转化为DateTime

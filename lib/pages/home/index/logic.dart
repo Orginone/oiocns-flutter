@@ -14,7 +14,6 @@ class IndexController extends BaseController<IndexState>
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     state.tabController = TabController(
         length: tabTitle.length, vsync: this, animationDuration: Duration.zero);

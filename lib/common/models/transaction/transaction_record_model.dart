@@ -1,4 +1,3 @@
-
 class TransactionRecord {
   int? blocktime;
   String? fee;
@@ -13,15 +12,15 @@ class TransactionRecord {
 
   TransactionRecord(
       {this.blocktime,
-        this.fee,
-        this.from,
-        this.height,
-        this.note,
-        this.status,
-        this.to,
-        this.txid,
-        this.type,
-        this.value});
+      this.fee,
+      this.from,
+      this.height,
+      this.note,
+      this.status,
+      this.to,
+      this.txid,
+      this.type,
+      this.value});
 
   TransactionRecord.fromJson(Map<String, dynamic> json) {
     blocktime = json['blocktime'];
@@ -37,17 +36,17 @@ class TransactionRecord {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['blocktime'] = this.blocktime;
-    data['fee'] = this.fee;
-    data['from'] = this.from;
-    data['height'] = this.height;
-    data['note'] = this.note;
-    data['status'] = this.status;
-    data['to'] = this.to;
-    data['txid'] = this.txid;
-    data['type'] = this.type;
-    data['value'] = this.value;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['blocktime'] = blocktime;
+    data['fee'] = fee;
+    data['from'] = from;
+    data['height'] = height;
+    data['note'] = note;
+    data['status'] = status;
+    data['to'] = to;
+    data['txid'] = txid;
+    data['type'] = type;
+    data['value'] = value;
     return data;
   }
 }

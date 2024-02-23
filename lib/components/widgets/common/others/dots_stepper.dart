@@ -1,12 +1,11 @@
 library dots_indicator;
 
 import 'dart:math';
-import 'dart:ui';
 
 import 'package:dots_indicator/src/dots_decorator.dart';
 import 'package:flutter/material.dart';
 
-typedef void OnTap(double position);
+typedef OnTap = void Function(double position);
 
 class DotsStepper extends StatelessWidget {
   final int dotsCount;

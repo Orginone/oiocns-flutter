@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/config/unified.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 @immutable
 class IndexBar extends StatelessWidget {
@@ -23,16 +24,16 @@ class IndexBar extends StatelessWidget {
       child: GestureDetector(
         onVerticalDragDown: (DragDownDetails detail) {
           int i = detail.localPosition.dy ~/ 20.h;
-          debugPrint("--->滑动开始$i");
+          LogUtil.d("--->滑动开始$i");
           _updateSelectIndex(i, false);
         },
         onVerticalDragUpdate: (DragUpdateDetails detail) {
           int i = detail.localPosition.dy ~/ 20.h;
-          debugPrint('---> 拖动了$i');
+          LogUtil.d('---> 拖动了$i');
           _updateSelectIndex(i, false);
         },
         onVerticalDragEnd: (DragEndDetails detail) {
-          debugPrint("--->滑动结束i");
+          LogUtil.d("--->滑动结束i");
           _updateSelectIndex(-1, true);
         },
         onTapUp: (TapUpDetails detail) {

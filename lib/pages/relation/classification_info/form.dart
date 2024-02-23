@@ -6,7 +6,6 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
-import 'package:orginone/components/widgets/dialog/loading_dialog.dart';
 
 import 'logic.dart';
 
@@ -46,7 +45,7 @@ class FormPage extends BaseGetPageView<FormController, FormState> {
 
   @override
   String tag() {
-    // TODO: implement tag
+    //
     return 'form';
   }
 }
@@ -61,7 +60,6 @@ class FormController extends BaseController<FormState> {
 
   @override
   void onReady() async {
-    // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
     await loadForm();

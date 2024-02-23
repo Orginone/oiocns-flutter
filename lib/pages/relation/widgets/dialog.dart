@@ -104,6 +104,7 @@ Future<void> showCreateIdentityDialog(
                                 try {
                                   selected = allAuth.firstWhere((element) =>
                                       element.metadata.name == str);
+                                  // ignore: empty_catches
                                 } catch (e) {}
                               });
                             });
@@ -567,6 +568,7 @@ Future<void> showCreateOrganizationDialog(
                           try {
                             selectedTarget = targetType
                                 .firstWhere((element) => element.label == str);
+                            // ignore: empty_catches
                           } catch (e) {}
                         });
                       });
@@ -1020,6 +1022,7 @@ Future<void> showCreateAuthDialog(BuildContext context, List<ITarget> targets,
                           try {
                             selectedTarget = targets.firstWhere(
                                 (element) => element.metadata.name == str);
+                            // ignore: empty_catches
                           } catch (e) {}
                         });
                       });
@@ -1117,6 +1120,7 @@ Future<void> showClassCriteriaDialog(
                             selectedSpecies = speciesTypes
                                 .firstWhere((element) => element.label == str)
                                 .label;
+                            // ignore: empty_catches
                           } catch (e) {}
                         });
                       });

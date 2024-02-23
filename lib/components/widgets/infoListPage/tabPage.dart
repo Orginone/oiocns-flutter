@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/utils/load_image.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 import '../tab_bar/expand_tab_bar.dart';
 import 'index.dart';
@@ -57,7 +58,7 @@ class _TabPageState extends State<TabPage> {
         content = element.content;
         return true;
       }
-      print(
+      LogUtil.d(
           '>>>>>>======${element.content.runtimeType} ${content.runtimeType} ${element.content.runtimeType == content.runtimeType}');
       return element.content.runtimeType == content.runtimeType;
     });
@@ -79,7 +80,7 @@ class _TabPageState extends State<TabPage> {
   @override
   Widget build(BuildContext context) {
     final ancestorState = context.findAncestorStateOfType<InfoListPageState>();
-    print('>>>>>>======$ancestorState');
+    LogUtil.d('>>>>>>======$ancestorState');
 
     return _tabPage();
   }
@@ -109,7 +110,7 @@ class _TabPageState extends State<TabPage> {
   }
 
   PreferredSizeWidget _tabBar(List<TabItemsModel> tabItems) {
-    print('>>>>>>======${tabItems.first.title} ${tabItems.length}');
+    LogUtil.d('>>>>>>======${tabItems.first.title} ${tabItems.length}');
     return hasIcon() ? _tabItems(tabItems) : _subTabBar(tabItems);
   }
 
@@ -230,7 +231,7 @@ class _TabPageState extends State<TabPage> {
           // splashFactory: NoSplash.splashFactory,
           // overlayColor: MaterialStateProperty.resolveWith<Color?>(
           //   (Set<MaterialState> states) {
-          //     print('>>>>>>======>$states');
+          //     LogUtil.d('>>>>>>======>$states');
           //     return states.contains(MaterialState.pressed)
           //         ? Colors.red
           //         : Colors.blue;
@@ -260,7 +261,7 @@ class _TabPageState extends State<TabPage> {
   }
 
   Widget _tabContent(TabItemsModel item) {
-    print(
+    LogUtil.d(
         '>>>>>>======bbb${item.title} ${item.tabItems.length} ${item.content == null}');
     return item.content ??
         _tabListContent(item) ??

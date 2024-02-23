@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names, prefer_typing_uninitialized_variables
+
 import 'dart:convert';
 import 'dart:io';
 import 'dart:ui';
@@ -614,6 +616,7 @@ void createDir(RelationNavModel item,
         case SpaceEnum.cohorts:
           dir = await item.source!.directory.create(model);
           break;
+        default:
       }
       if (dir != null) {
         ToastUtils.showMsg(msg: "创建成功");
@@ -648,6 +651,7 @@ void uploadFile(RelationNavModel item,
     case SpaceEnum.cohorts:
       dir = await item.source!.directory;
       break;
+    default:
   }
 
   FilePickerResult? result =
@@ -715,6 +719,7 @@ void createSpecies(RelationNavModel item, String typeName,
         case SpaceEnum.cohorts:
           species = await item.source!.directory.createSpecies(model);
           break;
+        default:
       }
       if (species != null) {
         ToastUtils.showMsg(msg: "创建成功");
@@ -802,6 +807,7 @@ void createTarget(PopupMenuKey key, RelationNavModel model,
       ];
       spaceEnum = SpaceEnum.company;
       break;
+    default:
   }
   var item = model.source ?? model.space;
   showCreateOrganizationDialog(Get.context!, targetType, callBack: (String name,
@@ -914,6 +920,7 @@ void createAttr(RelationNavModel item,
         case SpaceEnum.cohorts:
           property = await item.source!.directory.createProperty(data);
           break;
+        default:
       }
       if (property != null) {
         ToastUtils.showMsg(msg: "创建成功");
@@ -990,6 +997,7 @@ void createApplication(RelationNavModel item,
         case SpaceEnum.cohorts:
           application = await item.source!.directory.createApplication(data);
           break;
+        default:
       }
       if (application != null) {
         ToastUtils.showMsg(msg: "创建成功");

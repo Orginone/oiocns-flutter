@@ -11,6 +11,7 @@ import 'package:orginone/dart/core/target/outTeam/storage.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main_base.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 /// 办事页面
 class WorkPage extends StatefulWidget {
@@ -103,13 +104,13 @@ class _WorkPageState extends State<WorkPage> {
           // getAction: (dynamic data) {
           //   return GestureDetector(
           //     onTap: () {
-          //       print('>>>>>>======点击了感叹号');
+          //       LogUtil.d('>>>>>>======点击了感叹号');
           //     },
           //     child: const XImageWidget.asset(width: 35, height: 35, ''),
           //   );
           // },
           onTap: (dynamic data, List children) async {
-            print('>>>>>>======点击了列表项 ${data.name} ${children.length}');
+            LogUtil.d('>>>>>>======点击了列表项 ${data.name} ${children.length}');
             if (data is IWorkTask) {
               await RoutePages.jumpWorkInfo(work: data);
             }

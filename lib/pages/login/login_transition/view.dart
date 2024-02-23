@@ -23,7 +23,9 @@ class _LoginTransPageState extends State<LoginTransPage> {
           relationCtrl.unsubscribe(key);
         });
       });
-    } catch (e) {}
+    } catch (e) {
+      //
+    }
     return Scaffold(
       // backgroundColor: Colors.white,
       // body: SizedBox(
@@ -126,41 +128,39 @@ class _LoginTransPageState extends State<LoginTransPage> {
 
   //背景图
   Widget background() {
-    return Container(
-      child: Stack(
-        children: [
-          Positioned(
-            left: -200,
-            child: Container(
-              width: 900,
-              height: 500,
-              decoration: const BoxDecoration(
-                image: DecorationImage(
-                  image: AssetImage(AssetsImages.logoBackground),
-                  fit: BoxFit.cover,
-                ),
+    return Stack(
+      children: [
+        Positioned(
+          left: -200,
+          child: Container(
+            width: 900,
+            height: 500,
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage(AssetsImages.logoBackground),
+                fit: BoxFit.cover,
               ),
             ),
           ),
-          Positioned(
-            left: -200,
-            child: Container(
-              width: 900,
-              height: 500,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Color.fromRGBO(249, 249, 249, 0),
-                    Color.fromRGBO(255, 255, 255, 1),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
+        ),
+        Positioned(
+          left: -200,
+          child: Container(
+            width: 900,
+            height: 500,
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Color.fromRGBO(249, 249, 249, 0),
+                  Color.fromRGBO(255, 255, 255, 1),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

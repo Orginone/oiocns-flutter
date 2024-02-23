@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 import 'base_breadcrumb_nav_controller.dart';
 
@@ -13,31 +12,29 @@ class BreadcrumbNavInstance {
 
   static final Map<String, _BreadcrumbNavInstance> _breadcrumbNav = {};
 
-
-  void put(BaseBreadcrumbNavController controller,{String? tag}){
+  void put(BaseBreadcrumbNavController controller, {String? tag}) {
     var router = ModalRoute.of(controller.context)?.settings.name;
 
-    if(router!=null){
-       var info = controller.state.bcNav.last;
-       info.route = router;
-      _breadcrumbNav[router+(tag??"")] = _BreadcrumbNavInstance(router,controller,tag);
+    if (router != null) {
+      var info = controller.state.bcNav.last;
+      info.route = router;
+      _breadcrumbNav[router + (tag ?? "")] =
+          _BreadcrumbNavInstance(router, controller, tag);
     }
   }
 
-  BaseBreadcrumbNavController? find(String router,{String? tag}){
-   return _breadcrumbNav[router+(tag??"")]?.controller;
+  BaseBreadcrumbNavController? find(String router, {String? tag}) {
+    return _breadcrumbNav[router + (tag ?? "")]?.controller;
   }
 
-
-
-  BaseBreadcrumbNavController? previous(){
-    if(_breadcrumbNav.isEmpty){
+  BaseBreadcrumbNavController? previous() {
+    if (_breadcrumbNav.isEmpty) {
       return null;
     }
     return _breadcrumbNav.values.last.controller;
   }
 
-  void pop(){
+  void pop() {
     var router = _breadcrumbNav.keys.last;
     _breadcrumbNav.remove(router);
   }
@@ -48,5 +45,5 @@ class _BreadcrumbNavInstance {
   late BaseBreadcrumbNavController controller;
   String? tag;
 
-  _BreadcrumbNavInstance(this.route,this.controller,this.tag);
+  _BreadcrumbNavInstance(this.route, this.controller, this.tag);
 }

@@ -14,6 +14,7 @@ import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/core/public/collection.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
+import 'package:orginone/utils/log/log_util.dart';
 import 'package:orginone/utils/notification_util.dart';
 
 import '../target/team/company.dart';
@@ -373,7 +374,7 @@ class Session extends Entity<XEntity> implements ISession {
       if (ids.isNotEmpty) {
         tagMessage(ids, '已读');
         readCount = ids.length;
-        print('>>>>>>>====已读数：$readCount');
+        LogUtil.d('>>>>>>>====已读数：$readCount');
       }
     }
 
@@ -381,10 +382,10 @@ class Session extends Entity<XEntity> implements ISession {
     if (chatdata.value.noReadCount > 0 || readCount > 0) {
       chatdata.value.noReadCount -= min(chatdata.value.noReadCount, readCount);
       if (null == msg) cacheChatData(true);
-      print('>>>>>>>====总已读数：${chatdata.value.noReadCount}');
+      LogUtil.d('>>>>>>>====总已读数：${chatdata.value.noReadCount}');
       refreshNoReadCount();
     }
-    print('>>>>>>>======readMessages $readCount $msg ${messages.length}');
+    LogUtil.d('>>>>>>>======readMessages $readCount $msg ${messages.length}');
     if (readCount > 0 && null != msg) {
       notification();
     }
@@ -407,11 +408,11 @@ class Session extends Entity<XEntity> implements ISession {
         return e;
       }).toList();
     }
-    print(
+    LogUtil.d(
         '>>>==========================================================================');
-    print(
+    LogUtil.d(
         '>>>KEY:$key ID:$id hashCode:$hashCode belong:$belongId target:${target.id} name:$name');
-    print(
+    LogUtil.d(
         '>>>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
     var data = await coll.insert(
         ChatMessageType.fromJson({
@@ -520,7 +521,7 @@ class Session extends Entity<XEntity> implements ISession {
     isLoaded = false;
     messages.clear();
     newMessageHandler.clear();
-    // print('>>>>>>======clear');
+    // LogUtil.d('>>>>>>======clear');
   }
 
   Future<bool> notify(
@@ -550,7 +551,7 @@ class Session extends Entity<XEntity> implements ISession {
         command.emitterFlag('session');
       }
     });
-    // print('>>>>=======$key');
+    // LogUtil.d('>>>>=======$key');
     _subscribeMessage();
   }
 
@@ -560,7 +561,7 @@ class Session extends Entity<XEntity> implements ISession {
         .get<MsgChatData>(cachePath, MsgChatData.fromJson);
     if (data?.fullId == chatdata.value.fullId) {
       chatdata.value = data!;
-      // print('>>>>>>======loadCacheChatData ${data.toJson()}');
+      // LogUtil.d('>>>>>>======loadCacheChatData ${data.toJson()}');
       refreshNoReadCount();
       msgChatNotify.changCallback();
     }
@@ -619,11 +620,11 @@ class Session extends Entity<XEntity> implements ISession {
   /// 接收推送消息
   void receiveMessage(String operate, ChatMessageType data) {
     var imsg = Message(data, this);
-    print(
+    LogUtil.d(
         '>>>==========================================================================');
-    print(
+    LogUtil.d(
         '>>>KEY:$key ID:$id hashCode:$hashCode belong:$belongId target:${target.id} name:$name');
-    print(
+    LogUtil.d(
         '>>>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
     if (operate == 'insert') {
       newMessage(data, imsg);
@@ -723,11 +724,11 @@ class NewMessageHandler {
       if (noReadMessageIds.contains(msg.id)) {
         updateMessage(msg);
         noReadMessageIds.remove(msg.id);
-        // print('>>>>>=====remove ${msg.id}');
+        // LogUtil.d('>>>>>=====remove ${msg.id}');
         return true;
       } else {
         noReadMessageIds.add(msg.id);
-        // print('>>>>>=====add ${msg.id}');
+        // LogUtil.d('>>>>>=====add ${msg.id}');
         return false;
       }
     } else {

@@ -13,6 +13,7 @@ import 'state.dart';
 class DepartmentInfoController extends BaseController<DepartmentInfoState>
     with GetTickerProviderStateMixin {
   @override
+  // ignore: overridden_fields
   final DepartmentInfoState state = DepartmentInfoState();
 
   DepartmentInfoController() {

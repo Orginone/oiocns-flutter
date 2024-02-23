@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_ticket_provider_mixin.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:orginone/components/widgets/infoListPage/index.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 class InfoListPageController extends GetxController
     with GetTickerProviderStateMixin {
@@ -30,7 +31,7 @@ class InfoListPageController extends GetxController
     state.widget.infoListPageModel.activeTabTitle ??= getActiveTab().title;
     isActive = state.widget.infoListPageModel.activeTabTitle == e.title;
 
-    print('>>>>>>======$isActive');
+    LogUtil.d('>>>>>>======$isActive');
 
     if (isActive) {
       state.activeTab = e;
@@ -48,7 +49,7 @@ class InfoListPageController extends GetxController
   void _changeTab() {
     state.activeTab = state
         .widget.infoListPageModel.tabItems[state.tabController?.index ?? 0];
-    print('>>>>>>======${state.tabController?.index} ${state.activeTab}');
+    LogUtil.d('>>>>>>======${state.tabController?.index} ${state.activeTab}');
   }
 
   ///页签切换
@@ -56,7 +57,7 @@ class InfoListPageController extends GetxController
     state.setState(() {
       state.activeTab = state
           .widget.infoListPageModel.tabItems[state.tabController?.index ?? 0];
-      print('>>>>>>======${state.tabController?.index} ${state.activeTab}');
+      LogUtil.d('>>>>>>======${state.tabController?.index} ${state.activeTab}');
     });
   }
 

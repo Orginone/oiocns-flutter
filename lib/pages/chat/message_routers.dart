@@ -11,6 +11,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/team.dart';
 import 'package:orginone/main_base.dart';
 
+import '../../utils/log/log_util.dart';
 import 'widgets/message_breadcrumb_nav_item.dart';
 
 class MessageRouters
@@ -113,7 +114,7 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
           type: ChatType.list),
       ...companyItems,
     ], name: "沟通", target: relationCtrl.chats.last);
-    print('');
+    LogUtil.d('');
   }
 
   ChatBreadcrumbNav createNav(

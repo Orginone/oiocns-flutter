@@ -9,6 +9,7 @@ import 'package:orginone/dart/core/getx/submenu_list/item.dart';
 import 'package:orginone/dart/core/getx/submenu_list/list_adapter.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/utils/date_util.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 class SearchBar<T> extends SearchDelegate {
   final HomeEnum homeEnum;
@@ -24,7 +25,7 @@ class SearchBar<T> extends SearchDelegate {
 
   @override
   List<Widget>? buildActions(BuildContext context) {
-    print(buildActions);
+    LogUtil.d(buildActions);
     return [
       IconButton(
         icon: const Icon(
@@ -40,7 +41,7 @@ class SearchBar<T> extends SearchDelegate {
 
   @override
   Widget? buildLeading(BuildContext context) {
-    print('>>>>>>>>>>>>>buildActions');
+    LogUtil.d('>>>>>>>>>>>>>buildActions');
     return BackButton(
       color: Colors.black,
       onPressed: () {
@@ -51,14 +52,14 @@ class SearchBar<T> extends SearchDelegate {
 
   @override
   Widget buildResults(BuildContext context) {
-    print('>>>>>>>>>>>>>buildResults');
+    LogUtil.d('>>>>>>>>>>>>>buildResults');
     search();
     return _body();
   }
 
   @override
   Widget buildSuggestions(BuildContext context) {
-    print('>>>>>>>>>>>>>buildSuggestions');
+    LogUtil.d('>>>>>>>>>>>>>buildSuggestions');
     search();
     return _body();
   }
@@ -116,7 +117,7 @@ class SearchBar<T> extends SearchDelegate {
         );
       },
       onTap: (dynamic data, List children) {
-        print('>>>>>>======点击了列表项 ${data.name}');
+        LogUtil.d('>>>>>>======点击了列表项 ${data.name}');
         if (data is ISession) {
           RoutePages.jumpChatSession(data: data);
         } else if (data is IWorkTask) {
@@ -149,7 +150,7 @@ class SearchBar<T> extends SearchDelegate {
 
   @override
   ThemeData appBarTheme(BuildContext context) {
-    print('>>>>>>>>>>>>>appBarTheme');
+    LogUtil.d('>>>>>>>>>>>>>appBarTheme');
     return super.appBarTheme(context).copyWith(
           appBarTheme: super.appBarTheme(context).appBarTheme.copyWith(
                 elevation: 0.0,

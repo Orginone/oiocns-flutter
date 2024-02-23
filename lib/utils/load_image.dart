@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart' hide SearchBar;
-import 'package:orginone/components/widgets/common/image/image_widget.dart';
 import 'dart:math';
 
 import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/extension/ex_widget.dart';
-import 'package:orginone/components/widgets/team_avatar.dart';
+import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/config/space.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/base/model.dart' hide Column;

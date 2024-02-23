@@ -7,6 +7,7 @@ import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/date_util.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 /// 沟通页面
 class ChatPage extends StatefulWidget {
@@ -108,7 +109,7 @@ class _ChatPageState extends State<ChatPage> {
           getAction: (dynamic data) {
             return GestureDetector(
               onTap: () {
-                print('>>>>>>======点击了感叹号');
+                LogUtil.d('>>>>>>======点击了感叹号');
                 RoutePages.jumpMemberList(data: data);
               },
               child: Text(
@@ -119,7 +120,7 @@ class _ChatPageState extends State<ChatPage> {
             );
           },
           onTap: (dynamic data, List children) {
-            print('>>>>>>======点击了列表项 ${data.name}');
+            LogUtil.d('>>>>>>======点击了列表项 ${data.name}');
             if (data is ISession) {
               RoutePages.jumpChatSession(data: data);
             }

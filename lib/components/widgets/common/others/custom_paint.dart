@@ -58,7 +58,7 @@ class CustomAssetsListItemButton extends CustomPainter {
 
 class CustomTopNotchShape extends ShapeBorder {
   @override
-  // TODO: implement dimensions
+  //
   EdgeInsetsGeometry get dimensions => EdgeInsets.zero;
 
   @override

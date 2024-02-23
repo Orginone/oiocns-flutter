@@ -12,6 +12,7 @@ import 'package:orginone/pages/home/portal/view.dart';
 import 'package:orginone/pages/relation/index.dart';
 import 'package:orginone/pages/store/view.dart';
 import 'package:orginone/pages/work/view.dart';
+import 'package:orginone/utils/log/log_util.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/config/unified.dart';
 
@@ -86,7 +87,7 @@ class HomePageOld extends BaseGetView<HomeController, HomeState> {
         ],
         controller: state.tabController,
         onTap: (index) {
-          print(">>>>====ModelTabs.onTap");
+          LogUtil.d(">>>>====ModelTabs.onTap");
           RoutePages.clearRoute();
           controller.jumpTab(HomeEnum.values[index]);
         },

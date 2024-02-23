@@ -8,14 +8,15 @@ import 'state.dart';
 
 class DictInfoController extends BaseController<DictInfoState> {
   @override
+  // ignore: overridden_fields
   final DictInfoState state = DictInfoState();
 
   @override
   void onReady() async {
-    // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
     await loadDictItems();
+    // ignore: use_build_context_synchronously
     LoadingDialog.dismiss(context);
   }
 

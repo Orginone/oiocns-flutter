@@ -177,7 +177,7 @@ class ListItem extends StatelessWidget {
 
   Widget get _avatarContainer {
     var noRead = adapter.noReadCount;
-    // print('>>>>>>======view $noRead');
+    // LogUtil.d('>>>>>>======view $noRead');
     Widget child = ImageWidget(
       adapter.image,
       size: 65.w,

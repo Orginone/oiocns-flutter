@@ -910,7 +910,6 @@ class _LisTileDefaultsM2 extends ListTileThemeData {
       case ListTileStyle.list:
         return _textTheme.titleMedium;
     }
-    return null;
   }
 
   @override
@@ -932,7 +931,6 @@ class _LisTileDefaultsM2 extends ListTileThemeData {
       case Brightness.dark:
         return null; // null, Use current icon theme color
     }
-    return null;
   }
 }
 

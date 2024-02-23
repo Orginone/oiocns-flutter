@@ -9,6 +9,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/utils/load_image.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:orginone/utils/log/log_util.dart';
 
 class ListWidget<T> extends StatefulWidget {
   List<T>? initDatas;
@@ -52,7 +53,7 @@ class ListWidget<T> extends StatefulWidget {
     this.getDesc ??= (dynamic data) =>
         Text(data is IEntity || data is XEntity ? data.remark : "");
     this.getAvatar ??= (dynamic data) {
-      print(
+      LogUtil.d(
           '>>>>>>======${data.runtimeType} ${data is XEntity} ${data is IEntity} ${data.runtimeType is XEntity} ${TargetType.getType(data.typeName)?.icon}');
       return XImage.entityIcon(data, width: 40);
       //     null != TargetType.getType(data.typeName)

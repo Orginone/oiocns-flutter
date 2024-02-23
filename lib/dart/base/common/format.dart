@@ -4,6 +4,7 @@ import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:get/get.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 const sizeUnits = ['', 'KB', 'MB', 'GB', 'TB', 'PB'];
 
@@ -79,7 +80,7 @@ class StringGzip {
         base64.encode(gzip.encode(utf8.encode(input))).replaceAll('=', '*');
     var endStr = randomStr(5);
     String str = '^!:${randomStr(5)}$output${randomStr(5)}';
-    print(str);
+    LogUtil.d(str);
     return str;
   }
 

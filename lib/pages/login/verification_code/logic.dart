@@ -4,11 +4,11 @@ import '../../../dart/core/getx/base_controller.dart';
 import 'state.dart';
 
 class VerificationCodeController extends BaseController<VerificationCodeState> {
+  @override
   final VerificationCodeState state = VerificationCodeState();
 
   @override
   void onReady() {
-    // TODO: implement onReady
     super.onReady();
     startCountDown();
   }

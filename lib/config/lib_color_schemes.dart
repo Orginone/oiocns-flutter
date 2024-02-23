@@ -8,7 +8,7 @@
  */
 import 'package:flutter/material.dart';
 
-const primary = const Color(0xff29a9ee);
+const primary = Color(0xff29a9ee);
 
 ///亮主题色
 const lightColorScheme = ColorScheme(

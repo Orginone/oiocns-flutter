@@ -12,21 +12,21 @@ import 'package:orginone/dart/controller/wallet_controller.dart';
 import 'package:orginone/global.dart';
 import 'package:orginone/pages/login/login_transition/view.dart';
 import 'dart/controller/index.dart';
-import 'utils/index.dart';
+import 'utils/storage.dart';
 
 initApp() async {
   errorWatch();
   await Global.init();
 
   SystemChannels.lifecycle.setMessageHandler((msg) async {
-    print(
+    LogUtil.d(
         '>>>===state:$msg user:${kernel.user == null} isOnline:${kernel.isOnline} inited:${relationCtrl.provider.inited}');
     relationCtrl.appDataController.appLifecycleState = msg ?? "";
     return msg;
   });
   // 监听网络状态变化
   Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
-    print('网络状态变化: $result ${result.index}');
+    LogUtil.d('网络状态变化: $result ${result.index}');
     relationCtrl.appDataController.connectivityResult = result;
   });
   // 开启 app
@@ -53,8 +53,8 @@ void errorWatch() {
         errorArray = jsonDecode(json);
       }
 
-      print('=================');
-      print('${details.exceptionAsString()}\r\n${details.stack}');
+      LogUtil.d('=================');
+      LogUtil.d('${details.exceptionAsString()}\r\n${details.stack}');
       errorArray.add({
         't': t,
         'errorText': '${details.exceptionAsString()}\r\n${details.stack}'

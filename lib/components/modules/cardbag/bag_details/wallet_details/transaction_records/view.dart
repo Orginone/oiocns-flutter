@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 
 import 'item.dart';
 import 'logic.dart';
 import 'state.dart';
 
-class TransactionRecordsPage extends BaseGetListPageView<TransactionRecordsController,TransactionRecordsState>{
-
+class TransactionRecordsPage extends BaseGetListPageView<
+    TransactionRecordsController, TransactionRecordsState> {
   final int type;
 
-  TransactionRecordsPage(this.type);
+  TransactionRecordsPage(this.type, {super.key});
   @override
   Widget buildView() {
     return ListView.builder(
       itemBuilder: (BuildContext context, int index) {
         var item = state.dataList[index];
-        return RecordItem(record: item,);
+        return RecordItem(
+          record: item,
+        );
       },
       itemCount: state.dataList.length,
     );

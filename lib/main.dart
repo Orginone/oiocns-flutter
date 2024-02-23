@@ -112,7 +112,7 @@ Future<void> main() async {
 //           //   onPressed: () {
 //           //     // 模拟懒加载数据，这里可以根据实际需求加载数据
 //           //     Future.delayed(const Duration(seconds: 2), () {
-//           //       print();
+//           //       LogUtil.d();
 //           //       // 加载完成后的操作，例如更新数据或显示加载完成提示等。
 //           //     });
 //           //   },

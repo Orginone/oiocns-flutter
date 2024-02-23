@@ -35,7 +35,7 @@ class MessageChatsListController extends GetxController {
 
   @override
   void onInit() {
-    // TODO: implement onInit
+    //
     super.onInit();
     chats = Get.arguments['chats'];
     chats.sort((f, s) {

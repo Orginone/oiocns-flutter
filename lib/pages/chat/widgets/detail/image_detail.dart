@@ -34,7 +34,8 @@ class ImageDetail extends BaseDetail {
   Widget body(BuildContext context) {
     dynamic link = msgBody.shareLink ?? '';
     dynamic thumbnail = msgBody.thumbnailUint8List;
-    // TODO 待处理小的预览图
+
+    /// 待处理小的预览图
     if (thumbnail != null) {
       link = thumbnail;
     } else if (!link.startsWith('/orginone/kernel/load/')) {

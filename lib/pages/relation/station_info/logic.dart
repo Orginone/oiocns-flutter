@@ -9,6 +9,7 @@ import 'state.dart';
 
 class StationInfoController extends BaseController<StationInfoState> {
   @override
+  // ignore: overridden_fields
   final StationInfoState state = StationInfoState();
 
   @override

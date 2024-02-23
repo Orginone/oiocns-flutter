@@ -5,7 +5,6 @@ import 'package:orginone/dart/core/target/authority/authority.dart';
 import 'package:orginone/dart/core/target/identity/identity.dart';
 import 'package:orginone/common/data_config/relation_config.dart';
 import 'package:orginone/pages/relation/widgets/dialog.dart';
-import 'package:orginone/pages/relation/request/network.dart';
 import 'package:orginone/utils/toast_utils.dart';
 
 import '../../../dart/core/getx/base_controller.dart';

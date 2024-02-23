@@ -27,6 +27,7 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/chat/widgets/text/rich_text_input_formatter.dart';
 import 'package:orginone/utils/bus/event_bus_helper.dart';
+import 'package:orginone/utils/log/log_util.dart';
 import 'package:orginone/utils/permission_util.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:path_provider/path_provider.dart';
@@ -892,7 +893,7 @@ class ChatBoxController with WidgetsBindingObserver {
       // 创建临时文件
       var tempDir = await getTemporaryDirectory();
       _currentFile = '${tempDir.path}/orginone${ext[Codec.aacMP4.index]}';
-      print("voiceFile--------------$_currentFile");
+      LogUtil.d("voiceFile--------------$_currentFile");
       // 开启监听
 
       await _recorder.startRecorder(

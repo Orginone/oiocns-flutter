@@ -39,7 +39,7 @@ class _AvatarsState extends State<Avatars> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    //
     super.initState();
     persons = widget.persons;
     showCount = widget.showCount;

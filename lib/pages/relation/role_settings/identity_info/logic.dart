@@ -13,6 +13,7 @@ import 'state.dart';
 
 class IdentityInfoController extends BaseController<IdentityInfoState> {
   @override
+  // ignore: overridden_fields
   final IdentityInfoState state = IdentityInfoState();
   late Rx<IIdentity> identity;
 

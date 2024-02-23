@@ -7,6 +7,7 @@ import 'state.dart';
 
 class StoreController extends BaseSubmenuController<StoreState> {
   @override
+  // ignore: overridden_fields
   final StoreState state = StoreState();
 
   ///初始化 子分组

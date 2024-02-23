@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 import 'index.dart';
 
@@ -9,16 +10,16 @@ class RouteObservers<R extends Route<dynamic>> extends RouteObserver<R> {
     super.didPush(route, previousRoute);
     var name = route.settings.name ?? '';
     if (name.isNotEmpty) RoutePages.history.add(name);
-    debugPrint('didPush');
-    debugPrint('did ${RoutePages.history.toString()}');
+    LogUtil.d('didPush');
+    LogUtil.d('did ${RoutePages.history.toString()}');
   }
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPop(route, previousRoute);
     RoutePages.history.remove(route.settings.name);
-    debugPrint('didPop');
-    debugPrint('did ${RoutePages.history.toString()}');
+    LogUtil.d('didPop');
+    LogUtil.d('did ${RoutePages.history.toString()}');
   }
 
   @override
@@ -37,15 +38,15 @@ class RouteObservers<R extends Route<dynamic>> extends RouteObserver<R> {
         }
       }
     }
-    debugPrint('didReplace');
-    debugPrint('did ${RoutePages.history.toString()}');
+    LogUtil.d('didReplace');
+    LogUtil.d('did ${RoutePages.history.toString()}');
   }
 
   @override
   void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didRemove(route, previousRoute);
     RoutePages.history.remove(route.settings.name);
-    debugPrint('didRemove');
-    debugPrint('did ${RoutePages.history.toString()}');
+    LogUtil.d('didRemove');
+    LogUtil.d('did ${RoutePages.history.toString()}');
   }
 }

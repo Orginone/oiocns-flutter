@@ -11,7 +11,6 @@ class StorageLocationState extends BaseGetState {
 
   var selectedGroup = <StorageLocation>[].obs;
 
-
   var searchList = <StorageLocation>[].obs;
 
   //显示搜索页面
@@ -60,8 +59,7 @@ class StorageLocation {
     }
   }
 
-
-  bool hasSelected(){
+  bool hasSelected() {
     return getAllSelected().isNotEmpty;
   }
 
@@ -81,31 +79,30 @@ class StorageLocation {
     return selected;
   }
 
-  List<StorageLocation> getAllLastList(){
+  List<StorageLocation> getAllLastList() {
     List<StorageLocation> list = [];
     for (var element in children!) {
-      if(element.last??false){
+      if (element.last ?? false) {
         list.add(element);
-      }else{
+      } else {
         list.addAll(element.getAllLastList());
       }
     }
     return list;
   }
 
-
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['tenantId'] = this.tenantId;
-    data['placeNo'] = this.placeNo;
-    data['placeName'] = this.placeName;
-    data['pid'] = this.pid;
-    data['fullName'] = this.fullName;
-    data['number'] = this.number;
-    data['last'] = this.last;
-    if (this.children != null) {
-      data['children'] = this.children!.map((v) => v.toJson()).toList();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['tenantId'] = tenantId;
+    data['placeNo'] = placeNo;
+    data['placeName'] = placeName;
+    data['pid'] = pid;
+    data['fullName'] = fullName;
+    data['number'] = number;
+    data['last'] = last;
+    if (children != null) {
+      data['children'] = children!.map((v) => v.toJson()).toList();
     }
     return data;
   }

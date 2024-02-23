@@ -148,7 +148,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
     //       try {
     //         data.add(await _converField(field, thing.otherInfo[field.id]));
     //       } catch (e) {
-    //         print('');
+    //         LogUtil.d('');
     //       }
     //     }
     //   }

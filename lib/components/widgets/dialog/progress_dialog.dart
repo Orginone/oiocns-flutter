@@ -8,6 +8,7 @@ import 'package:getwidget/components/progress_bar/gf_progress_bar.dart';
 import 'package:getwidget/types/gf_progress_type.dart';
 import 'package:orginone/config/a_font.dart';
 import 'package:orginone/components/widgets/common/image/image_widget.dart';
+import 'package:orginone/utils/log/log_util.dart';
 import 'package:orginone/utils/system/index.dart';
 import 'package:ota_update/ota_update.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -37,7 +38,7 @@ class UpdaterDialog extends Dialog {
 
   @override
   Widget build(BuildContext context) {
-    debugPrint("path====$icon");
+    LogUtil.d("path====$icon");
     return Center(
       child: Material(
         child: Container(

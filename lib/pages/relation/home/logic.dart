@@ -11,6 +11,7 @@ import 'package:orginone/components/widgets/dialog/loading_dialog.dart';
 class RelationCenterController
     extends BaseBreadcrumbNavController<RelationCenterState> {
   @override
+  // ignore: overridden_fields
   final RelationCenterState state = RelationCenterState();
 
   RelationSubController get sub => Get.find(tag: 'relation_all');
@@ -23,6 +24,7 @@ class RelationCenterController
       await loadUserRelation(state.model);
       await loadCompanyRelation(state.model);
       state.model.refresh();
+      // ignore: use_build_context_synchronously
       LoadingDialog.dismiss(context);
     }
   }

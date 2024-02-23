@@ -46,7 +46,7 @@ class InfoListPageState extends State<InfoListPage> {
   @override
   Widget build(BuildContext context) {
     // final ancestorState = context.findAncestorStateOfType<InfoListPageState>();
-    // print('>>>>>>======$ancestorState');
+    // LogUtil.d('>>>>>>======$ancestorState');
 
     return GyScaffold(
       toolbarHeight: showHeader ? null : 0,
@@ -131,7 +131,7 @@ class InfoListPageState extends State<InfoListPage> {
 
   // ///页签内容
   // Widget _content(TabItemsModel item) {
-  //   print(
+  //   LogUtil.d(
   //       '>>>>>>======aaa${item.title} ${item.tabItems.length} ${item.content == null}');
   //   return item.content ??
   //       _tabListContent(item) ??
@@ -246,7 +246,7 @@ class InfoListPageState extends State<InfoListPage> {
   // //   //       key: Get.nestedKey(1), // create a key by index
   // //   //       initialRoute: '/',
   // //   //       onGenerateRoute: (settings) {
-  // //   //         print('>>>>>>======${settings.name}');
+  // //   //         LogUtil.d('>>>>>>======${settings.name}');
   // //   //         if (settings.name == '/second') {
   // //   //           return GetPageRoute(
   // //   //             page: () => const Text("跳转下一页"),

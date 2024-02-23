@@ -1,3 +1,5 @@
+// ignore_for_file: empty_catches
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
@@ -16,7 +18,7 @@ abstract class BaseGroupNavListController<S extends BaseGroupNavListState>
   HomeController homeController = Get.find();
   @override
   void onInit() {
-    // TODO: implement onInit
+    //
 
     initSubGroup();
     super.onInit();

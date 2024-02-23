@@ -114,7 +114,6 @@ class MessageFileController extends BaseController<MessageFileState> {
   final MessageFileState state = MessageFileState();
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
     FileDownloader().database.allRecords().then((records) {
       try {

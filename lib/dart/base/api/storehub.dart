@@ -102,7 +102,7 @@ class StoreHub {
   }
 
   void _callDisconnectedCallbacks([Exception? error]) {
-    print(
+    LogUtil.d(
         '>>>===onDisconnected:${_disconnectedCallbacks.length} ${_connection.state}');
     for (final callback in _disconnectedCallbacks) {
       callback(error);
@@ -110,7 +110,7 @@ class StoreHub {
   }
 
   void _callConnectedCallbacks() {
-    print(
+    LogUtil.d(
         '>>>===onConnected:${_connectedCallbacks.length} ${_connection.state}');
     for (final callback in _connectedCallbacks) {
       callback();
@@ -160,7 +160,7 @@ class StoreHub {
     //   // start();
     //   // });
     // } else
-    print('>>>===$isConnected ${_connection.state}');
+    LogUtil.d('>>>===$isConnected ${_connection.state}');
     if (_connection.state != HubConnectionState.Connected &&
         _connection.state != HubConnectionState.Connecting &&
         _connection.state != HubConnectionState.Reconnecting) {

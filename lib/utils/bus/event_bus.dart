@@ -10,13 +10,11 @@ class EventBusUtil {
   EventBusUtil._internal();
 
   static EventBusUtil _getInstance() {
-    if (_instance == null) {
-      _instance = EventBusUtil._internal();
-    }
+    _instance ??= EventBusUtil._internal();
     return _instance!;
   }
 
-  EventBus _eventBus = EventBus();
+  final EventBus _eventBus = EventBus();
 
   EventBus get eventBus {
     return _eventBus;
@@ -28,7 +26,7 @@ class EventBusUtil {
   }
 
   // 订阅事件
-  StreamSubscription<T>? on<T>(void onEvent(T event)) {
+  StreamSubscription<T>? on<T>(void Function(T event) onEvent) {
     return eventBus.on<T>().listen((event) {
       onEvent(event);
     });

@@ -7,9 +7,8 @@ class CreateBagController extends BaseController<CreateBagState> {
 
   @override
   void onInit() {
-    // TODO: implement onInit
     super.onInit();
-    state.pages.add(Tips());
+    state.pages.add(const Tips());
     state.pages.add(const BackupMnemonics());
     state.pages.add(const VerifyMnemonic());
     state.pages.add(const CreateWallet());

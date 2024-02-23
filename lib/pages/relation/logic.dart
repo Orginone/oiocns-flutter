@@ -7,11 +7,12 @@ import 'state.dart';
 
 class RelationController extends BaseSubmenuController<RelationState> {
   @override
+  // ignore: overridden_fields
   final RelationState state = RelationState();
 
   @override
   void onInit() {
-    // TODO: implement onInit
+    //
     super.onInit();
     // [
     //   FrequentlyUsed(
@@ -44,7 +45,6 @@ class RelationController extends BaseSubmenuController<RelationState> {
 
   @override
   void initSubGroup() {
-    // TODO: implement initSubGroup
     super.initSubGroup();
     var relationSubGroup = HiveUtils.getSubGroup('Relation');
     if (relationSubGroup == null) {

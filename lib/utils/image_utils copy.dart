@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/services.dart';
@@ -47,28 +49,28 @@ class ImageUtils {
           image: DecorationImage(
               image: imageProvider,
               fit: BoxFit.cover,
-              colorFilter:
-                  ColorFilter.mode(Colors.transparent, BlendMode.colorBurn)),
+              colorFilter: const ColorFilter.mode(
+                  Colors.transparent, BlendMode.colorBurn)),
         ),
       ),
       placeholder: (context, url) => Center(
         child: Container(
           height: 40,
           width: 40,
-          margin: EdgeInsets.all(5),
-          child: CircularProgressIndicator(
+          margin: const EdgeInsets.all(5),
+          child: const CircularProgressIndicator(
             strokeWidth: 2.0,
             valueColor: AlwaysStoppedAnimation(Colors.blue),
           ),
         ),
       ),
       errorWidget: (context, url, error) => Container(
-        child: Icon(
+        alignment: Alignment.center,
+        color: Colors.black12,
+        child: const Icon(
           Icons.terrain,
           size: 64,
         ),
-        alignment: Alignment.center,
-        color: Colors.black12,
       ),
     );
   }
@@ -86,28 +88,28 @@ class ImageUtils {
           image: DecorationImage(
               image: imageProvider,
               fit: BoxFit.cover,
-              colorFilter:
-                  ColorFilter.mode(Colors.transparent, BlendMode.colorBurn)),
+              colorFilter: const ColorFilter.mode(
+                  Colors.transparent, BlendMode.colorBurn)),
         ),
       ),
       placeholder: (context, url) => Center(
         child: Container(
           height: 40,
           width: 40,
-          margin: EdgeInsets.all(5),
-          child: CircularProgressIndicator(
+          margin: const EdgeInsets.all(5),
+          child: const CircularProgressIndicator(
             strokeWidth: 2.0,
             valueColor: AlwaysStoppedAnimation(Colors.blue),
           ),
         ),
       ),
       errorWidget: (context, url, error) => Container(
-        child: Icon(
+        alignment: Alignment.center,
+        color: Colors.black12,
+        child: const Icon(
           Icons.terrain,
           size: 64,
         ),
-        alignment: Alignment.center,
-        color: Colors.black12,
       ),
     );
   }
@@ -124,28 +126,28 @@ class ImageUtils {
           image: DecorationImage(
               image: imageProvider,
               fit: BoxFit.cover,
-              colorFilter:
-                  ColorFilter.mode(Colors.transparent, BlendMode.colorBurn)),
+              colorFilter: const ColorFilter.mode(
+                  Colors.transparent, BlendMode.colorBurn)),
         ),
       ),
       placeholder: (context, url) => Center(
         child: Container(
           height: 40,
           width: 40,
-          margin: EdgeInsets.all(5),
-          child: CircularProgressIndicator(
+          margin: const EdgeInsets.all(5),
+          child: const CircularProgressIndicator(
             strokeWidth: 2.0,
             valueColor: AlwaysStoppedAnimation(Colors.blue),
           ),
         ),
       ),
       errorWidget: (context, url, error) => Container(
-        child: Icon(
+        alignment: Alignment.center,
+        color: Colors.black12,
+        child: const Icon(
           Icons.terrain,
           size: 64,
         ),
-        alignment: Alignment.center,
-        color: Colors.black12,
       ),
     );
   }
@@ -162,7 +164,7 @@ class ImageUtils {
                 image: DecorationImage(
                     image: imageProvider,
                     fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
+                    colorFilter: const ColorFilter.mode(
                         Colors.transparent, BlendMode.colorBurn)),
               ),
             ),
@@ -170,8 +172,8 @@ class ImageUtils {
               child: Container(
                 height: 40,
                 width: 40,
-                margin: EdgeInsets.all(5),
-                child: CircularProgressIndicator(
+                margin: const EdgeInsets.all(5),
+                child: const CircularProgressIndicator(
                   strokeWidth: 2.0,
                   valueColor: AlwaysStoppedAnimation(Colors.blue),
                 ),
@@ -196,7 +198,7 @@ class ImageUtils {
                 image: DecorationImage(
                     image: imageProvider,
                     fit: BoxFit.cover,
-                    colorFilter: ColorFilter.mode(
+                    colorFilter: const ColorFilter.mode(
                         Colors.transparent, BlendMode.colorBurn)),
               ),
             ),

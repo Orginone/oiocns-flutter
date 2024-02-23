@@ -1,3 +1,5 @@
+// ignore_for_file: overridden_fields
+
 import 'package:orginone/dart/core/consts.dart';
 import 'package:orginone/dart/core/getx/base_list_controller.dart';
 import 'package:orginone/dart/core/work/task.dart';

@@ -14,6 +14,7 @@ import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/main_base.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 /// 关系页面
 class RelationPage extends StatelessWidget {
@@ -101,7 +102,7 @@ class RelationPage extends StatelessWidget {
             if (data is! IDirectory && data is! IStorage) {
               return GestureDetector(
                 onTap: () {
-                  print('>>>>>>======点击了感叹号');
+                  LogUtil.d('>>>>>>======点击了感叹号');
                   RoutePages.jumpRelationInfo(data: data);
                 },
                 child: const XImageWidget.asset(width: 35, height: 35, ''),
@@ -110,7 +111,7 @@ class RelationPage extends StatelessWidget {
             return null;
           },
           onTap: (dynamic data, List children) {
-            print('>>>>>>======点击了列表项 ${data.name}');
+            LogUtil.d('>>>>>>======点击了列表项 ${data.name}');
             if (children.isNotEmpty) {
               RoutePages.jumpRelation(parentData: data, listDatas: children);
             } else {

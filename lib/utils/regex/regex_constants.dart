@@ -1,4 +1,6 @@
 /// 正则表达式的常量，参考AndroidUtils：https://github.com/Blankj/AndroidUtilCode
+// ignore_for_file: constant_identifier_names
+
 class RegexConstants {
   ///Regex of simple mobile.
   ///简单移动电话的正则表达式

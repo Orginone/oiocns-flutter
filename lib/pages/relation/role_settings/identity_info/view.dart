@@ -107,13 +107,12 @@ class IdentityInfoPage
 
   @override
   IdentityInfoController getController() {
-    // TODO: implement getController
     return IdentityInfoController(identity);
   }
 
   @override
   String tag() {
-    // TODO: implement tag
+    //
     return "IdentityInfo_${identity.value.metadata.name}";
   }
 }

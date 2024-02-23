@@ -272,7 +272,7 @@ class IndexController extends GetxController {
             getAction: (dynamic data) {
               return GestureDetector(
                 onTap: () {
-                  print('>>>>>>======点击了感叹号');
+                  LogUtil.d('>>>>>>======点击了感叹号');
                 },
                 child: const IconWidget(
                   color: XColors.black666,
@@ -281,7 +281,7 @@ class IndexController extends GetxController {
               );
             },
             onTap: (dynamic data, List children) {
-              print('>>>>>>======点击了列表项 ${data.name}');
+              LogUtil.d('>>>>>>======点击了列表项 ${data.name}');
             },
           )),
       TabItemsModel(

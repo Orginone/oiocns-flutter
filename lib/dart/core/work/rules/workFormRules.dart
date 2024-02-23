@@ -9,6 +9,7 @@ import 'package:orginone/dart/core/work/rules/base/enum.dart';
 import 'package:orginone/dart/core/work/rules/lib/tools.dart';
 import 'package:orginone/dart/core/work/rules/type.dart';
 import 'package:orginone/main_base.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 // import OrgCtrl from '../../../controller';
 
@@ -145,7 +146,7 @@ class WorkFormRules extends Emitter implements WorkFormRulesType {
   @override
   loadRemoteRules(String path) async {
     // await sleep(500);
-    print('$path暂无远程规则库');
+    LogUtil.d('$path暂无远程规则库');
   }
 
   /// 触发表单规则的处理
@@ -194,7 +195,7 @@ class WorkFormRules extends Emitter implements WorkFormRulesType {
               {"id": formId, "data": resultObj} as FormData);
         }
       } else {
-        print('未设置回调函数：$formId');
+        LogUtil.d('未设置回调函数：$formId');
       }
     }
   }
@@ -287,7 +288,7 @@ class WorkFormRules extends Emitter implements WorkFormRulesType {
     });
     // );
 
-    print('所有规则最终数据结果$Rules===>$resultObj====非赋值操作===》$other');
+    LogUtil.d('所有规则最终数据结果$Rules===>$resultObj====非赋值操作===》$other');
     return resultObj;
   }
 

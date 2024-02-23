@@ -16,6 +16,7 @@ import 'state.dart';
 
 class StoreTreeController extends BaseGroupNavListController<StoreTreeState> {
   @override
+  // ignore: overridden_fields
   final StoreTreeState state = StoreTreeState();
 
   List<String> tags = [];
@@ -53,6 +54,7 @@ class StoreTreeController extends BaseGroupNavListController<StoreTreeState> {
       await loadUserSetting();
       await loadCompanySetting();
       state.model.refresh();
+      // ignore: use_build_context_synchronously
       LoadingDialog.dismiss(context);
     }
   }
@@ -230,6 +232,7 @@ class StoreTreeController extends BaseGroupNavListController<StoreTreeState> {
   void operation(PopupMenuKey key, StoreTreeNavModel item) {
     switch (key) {
       case PopupMenuKey.shareQr:
+        // ignore: prefer_typing_uninitialized_variables
         var entity;
         if (item.spaceEnum == SpaceEnum.user ||
             item.spaceEnum == SpaceEnum.company) {

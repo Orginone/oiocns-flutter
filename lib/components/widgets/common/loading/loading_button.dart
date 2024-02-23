@@ -3,8 +3,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:orginone/config/constant.dart';
 
 enum LoadingButtonStatus { normal, loading }
@@ -16,7 +14,8 @@ class LoadingButton extends StatelessWidget {
   final LoadingButtonController loadingBtnCtrl;
   final AnimationController animationCtrl;
 
-  LoadingButton({Key? key,
+  LoadingButton({
+    Key? key,
     required this.child,
     required this.callback,
     required this.loadingBtnCtrl,
@@ -24,7 +23,8 @@ class LoadingButton extends StatelessWidget {
         animationCtrl = AnimationController(
           vsync: loadingBtnCtrl,
           duration: const Duration(seconds: 1),
-        )..repeat(), super(key: key);
+        )..repeat(),
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {

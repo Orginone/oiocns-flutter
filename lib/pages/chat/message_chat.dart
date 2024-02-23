@@ -167,11 +167,10 @@ class MessageChatController extends BaseController<MessageChatState> {
 
   @override
   void onClose() {
-    // TODO: implement onClose
     //TODO:无此方法
     // settingCtrl.chat.currentChat = null;
     super.onClose();
-    // print(
+    // LogUtil.d(
     //     '>>>>>>======messageChat ${state.chat.noReadCount} ${state.noReadCount}');
     if (state.chat.noReadCount != state.noReadCount) {
       relationCtrl.loadChats();

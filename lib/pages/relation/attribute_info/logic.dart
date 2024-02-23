@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, empty_catches
+
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
@@ -13,7 +15,6 @@ class AttributeInfoController extends BaseController<AttributeInfoState> {
 
   @override
   void onReady() async {
-    // TODO: implement onReady
     super.onReady();
     LoadingDialog.showLoading(context);
     var res = await state.data.source

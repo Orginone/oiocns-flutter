@@ -5,6 +5,7 @@ import 'dart:ui';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/main_base.dart';
+import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/string_util.dart';
 
 const notificationChannelId = 'orginone';
@@ -55,9 +56,9 @@ class NotificationUtil {
   }
 
   static void showMsgNotification(String id, String title, String body) {
-    print('>>>===悬浮通知$id $nId');
+    LogUtil.d('>>>===悬浮通知$id $nId');
     // [Permission.notification, Permission.storage].request().then((val) {
-    //   print('>>>===$val');
+    //   LogUtil.d('>>>===$val');
     //   if (PermissionStatus.granted == val) {
     flutterLocalNotificationsPlugin.show(
       nId++,
@@ -82,7 +83,7 @@ Future<void> onStart(service) async {
 
   if (Platform.isAndroid) {
     // Timer.periodic(const Duration(seconds: 3), (timer) async {
-    print('>>>===奥集能前台进程运行中');
+    LogUtil.d('>>>===奥集能前台进程运行中');
     // });
   }
 }

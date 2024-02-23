@@ -1,11 +1,9 @@
-
 import 'package:hive/hive.dart';
 
 part 'user_model.g.dart';
 
 @HiveType(typeId: 0)
 class UserModel {
-
   @HiveField(0)
   String? account;
 
@@ -44,26 +42,25 @@ class UserModel {
 
   UserModel(
       {this.account,
-        this.userName,
-        this.workspaceId,
-        this.workspaceName,
-        this.attrs,
-        this.person,
-        this.accessToken,
-        this.expiresIn,
-        this.authority,
-        this.license,
-        this.tokenType,
-        this.motto});
+      this.userName,
+      this.workspaceId,
+      this.workspaceName,
+      this.attrs,
+      this.person,
+      this.accessToken,
+      this.expiresIn,
+      this.authority,
+      this.license,
+      this.tokenType,
+      this.motto});
 
   UserModel.fromJson(Map<String, dynamic> json) {
     account = json['account'];
     userName = json['userName'];
     workspaceId = json['workspaceId'];
     workspaceName = json['workspaceName'];
-    attrs = json['attrs'] != null ? new Attrs.fromJson(json['attrs']) : null;
-    person =
-    json['person'] != null ? new Person.fromJson(json['person']) : null;
+    attrs = json['attrs'] != null ? Attrs.fromJson(json['attrs']) : null;
+    person = json['person'] != null ? Person.fromJson(json['person']) : null;
     accessToken = json['accessToken'];
     expiresIn = json['expiresIn'];
     authority = json['authority'];
@@ -73,31 +70,29 @@ class UserModel {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['account'] = this.account;
-    data['userName'] = this.userName;
-    data['workspaceId'] = this.workspaceId;
-    data['workspaceName'] = this.workspaceName;
-    if (this.attrs != null) {
-      data['attrs'] = this.attrs!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['account'] = account;
+    data['userName'] = userName;
+    data['workspaceId'] = workspaceId;
+    data['workspaceName'] = workspaceName;
+    if (attrs != null) {
+      data['attrs'] = attrs!.toJson();
     }
-    if (this.person != null) {
-      data['person'] = this.person!.toJson();
+    if (person != null) {
+      data['person'] = person!.toJson();
     }
-    data['accessToken'] = this.accessToken;
-    data['expiresIn'] = this.expiresIn;
-    data['authority'] = this.authority;
-    data['license'] = this.license;
-    data['tokenType'] = this.tokenType;
-    data['motto'] = this.motto;
+    data['accessToken'] = accessToken;
+    data['expiresIn'] = expiresIn;
+    data['authority'] = authority;
+    data['license'] = license;
+    data['tokenType'] = tokenType;
+    data['motto'] = motto;
     return data;
   }
 }
 
-
 @HiveType(typeId: 1)
 class Attrs {
-
   @HiveField(1)
   int? limit;
 
@@ -108,15 +103,14 @@ class Attrs {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['limit'] = this.limit;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['limit'] = limit;
     return data;
   }
 }
 
 @HiveType(typeId: 2)
 class Person {
-
   @HiveField(0)
   String? id;
 
@@ -155,17 +149,17 @@ class Person {
 
   Person(
       {this.id,
-        this.name,
-        this.code,
-        this.typeName,
-        this.thingId,
-        this.status,
-        this.createUser,
-        this.updateUser,
-        this.version,
-        this.createTime,
-        this.updateTime,
-        this.team});
+      this.name,
+      this.code,
+      this.typeName,
+      this.thingId,
+      this.status,
+      this.createUser,
+      this.updateUser,
+      this.version,
+      this.createTime,
+      this.updateTime,
+      this.team});
 
   Person.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -179,33 +173,31 @@ class Person {
     version = json['version'];
     createTime = json['createTime'];
     updateTime = json['updateTime'];
-    team = json['team'] != null ? new Team.fromJson(json['team']) : null;
+    team = json['team'] != null ? Team.fromJson(json['team']) : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['code'] = this.code;
-    data['typeName'] = this.typeName;
-    data['thingId'] = this.thingId;
-    data['status'] = this.status;
-    data['createUser'] = this.createUser;
-    data['updateUser'] = this.updateUser;
-    data['version'] = this.version;
-    data['createTime'] = this.createTime;
-    data['updateTime'] = this.updateTime;
-    if (this.team != null) {
-      data['team'] = this.team!.toJson();
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['code'] = code;
+    data['typeName'] = typeName;
+    data['thingId'] = thingId;
+    data['status'] = status;
+    data['createUser'] = createUser;
+    data['updateUser'] = updateUser;
+    data['version'] = version;
+    data['createTime'] = createTime;
+    data['updateTime'] = updateTime;
+    if (team != null) {
+      data['team'] = team!.toJson();
     }
     return data;
   }
 }
 
-
 @HiveType(typeId: 3)
 class Team {
-
   @HiveField(0)
   String? id;
 
@@ -241,16 +233,16 @@ class Team {
 
   Team(
       {this.id,
-        this.name,
-        this.code,
-        this.targetId,
-        this.remark,
-        this.status,
-        this.createUser,
-        this.updateUser,
-        this.version,
-        this.createTime,
-        this.updateTime});
+      this.name,
+      this.code,
+      this.targetId,
+      this.remark,
+      this.status,
+      this.createUser,
+      this.updateUser,
+      this.version,
+      this.createTime,
+      this.updateTime});
 
   Team.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -267,18 +259,18 @@ class Team {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['id'] = this.id;
-    data['name'] = this.name;
-    data['code'] = this.code;
-    data['targetId'] = this.targetId;
-    data['remark'] = this.remark;
-    data['status'] = this.status;
-    data['createUser'] = this.createUser;
-    data['updateUser'] = this.updateUser;
-    data['version'] = this.version;
-    data['createTime'] = this.createTime;
-    data['updateTime'] = this.updateTime;
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['name'] = name;
+    data['code'] = code;
+    data['targetId'] = targetId;
+    data['remark'] = remark;
+    data['status'] = status;
+    data['createUser'] = createUser;
+    data['updateUser'] = updateUser;
+    data['version'] = version;
+    data['createTime'] = createTime;
+    data['updateTime'] = updateTime;
     return data;
   }
 }

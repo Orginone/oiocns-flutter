@@ -1,3 +1,5 @@
+// ignore_for_file: use_function_type_syntax_for_parameters
+
 import 'dart:async';
 
 import 'package:event_bus/event_bus.dart';

@@ -68,7 +68,6 @@ class WalletChannel {
       }
       return records;
     }
-    return records;
   }
 
   Future<bool> createTransaction(Map<String, dynamic> params) async {

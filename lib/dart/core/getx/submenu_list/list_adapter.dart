@@ -253,9 +253,9 @@ class ListAdapter {
 
   void refreshNoReadMgsCount([List<dynamic>? args]) {
     if (null != args && args.isNotEmpty) {
-      // print('>>>>>>======start ${noReadCount.value}');
+      // LogUtil.d('>>>>>>======start ${noReadCount.value}');
       noReadCount.value = args[0] > 0 ? args[0].toString() : '';
-      // print('>>>>>>======end ${noReadCount.value}');
+      // LogUtil.d('>>>>>>======end ${noReadCount.value}');
     }
   }
 }

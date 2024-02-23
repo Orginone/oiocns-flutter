@@ -5,12 +5,12 @@ import 'package:get/get.dart';
 import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/config/unified.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 import 'state.dart';
 
 class WalletDetailsController extends BaseController<WalletDetailsState>
     with GetTickerProviderStateMixin {
+  @override
   final WalletDetailsState state = WalletDetailsState();
 
   @override

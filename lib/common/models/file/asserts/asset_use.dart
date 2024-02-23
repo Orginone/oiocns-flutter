@@ -1,3 +1,5 @@
+// ignore_for_file: unused_local_variable
+
 import 'assets_info.dart';
 
 class AssetUse {

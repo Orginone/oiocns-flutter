@@ -33,7 +33,7 @@ class _PersonListPageState extends State<PersonListPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
+    //
     super.initState();
     persons = Get.arguments['persons'];
     personInfo =

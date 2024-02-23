@@ -11,6 +11,7 @@ import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/date_utils.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 typedef GraphData = dynamic Function();
 
@@ -235,7 +236,7 @@ class Transfer extends StandardFileInfo<XTransfer> implements ITransfer {
       'decrypt': decrypt,
       'encrypt': encrypt,
       'log': (args) {
-        print(args);
+        LogUtil.d(args);
       },
     };
     // sandbox(code)(runtime);

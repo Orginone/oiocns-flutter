@@ -12,6 +12,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/load_image.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 class RelationFriendPage extends OrginoneStatelessWidget {
   late InfoListPageModel? relationModel;
@@ -92,7 +93,7 @@ class RelationFriendPage extends OrginoneStatelessWidget {
           getAction: (dynamic data) {
             return GestureDetector(
               onTap: () {
-                print('>>>>>>======点击了感叹号');
+                LogUtil.d('>>>>>>======点击了感叹号');
               },
               child: const IconWidget(
                 color: XColors.black666,
@@ -101,7 +102,7 @@ class RelationFriendPage extends OrginoneStatelessWidget {
             );
           },
           onTap: (dynamic data, List children) {
-            print('>>>>>>======点击了列表项 ${data.name}');
+            LogUtil.d('>>>>>>======点击了列表项 ${data.name}');
           },
         ));
   }

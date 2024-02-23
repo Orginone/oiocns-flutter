@@ -3,6 +3,7 @@ import 'package:orginone/dart/base/api/kernelapi.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/main_base.dart';
+import 'package:orginone/utils/log/log_util.dart';
 
 ///对象工具类
 class XObject<T extends Xbase> {
@@ -52,9 +53,8 @@ class XObject<T extends Xbase> {
       if (res.success) {
         this._cache = res.data;
         this._loaded = true;
-        // print('>>>>>>======all $res');
       } else {
-        print('>>>>>>======allErr $res');
+        LogUtil.d('>>>>>>======allErr $res');
       }
     }
     return this._cache;
