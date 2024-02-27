@@ -10,6 +10,7 @@ import 'package:orginone/dart/core/getx/base_controller.dart';
 import 'package:orginone/dart/core/getx/base_get_state.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
+import 'package:orginone/utils/load_image.dart';
 import 'package:orginone/utils/log/log_util.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/config/unified.dart';
@@ -35,10 +36,11 @@ class MessageFilePage
                     SizedBox(
                       height: 100.h,
                     ),
-                    Icon(
-                      Icons.file_open,
-                      size: 60.w,
-                    ),
+                    XImage.entityIcon(state.fileShare, width: 60.w),
+                    // Icon(
+                    //   Icons.file_open,
+                    //   size: 60.w,
+                    // ),
                     SizedBox(
                       height: 40.h,
                     ),

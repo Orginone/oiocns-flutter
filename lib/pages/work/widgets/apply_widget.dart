@@ -76,15 +76,15 @@ class ApplyWidget extends StatelessWidget {
     ShareIcon? icon;
     if (target?.icon == null) {
       icon = shareIcon ??
-          relationCtrl.provider.user.findShareById(target?.id ?? '');
-      if (icon.name.isEmpty) {
-        icon.name = (shareIcon == null
+          relationCtrl.provider.user?.findShareById(target?.id ?? '');
+      if (icon?.name.isEmpty ?? false) {
+        icon?.name = (shareIcon == null
                 ? target == null
                     ? ''
                     : target.name
                 : shareIcon.typeName) ??
             '';
-        icon.typeName = (shareIcon == null
+        icon?.typeName = (shareIcon == null
                 ? target == null
                     ? ''
                     : target.typeName
@@ -102,7 +102,7 @@ class ApplyWidget extends StatelessWidget {
     // LogUtil.d(icon?.name);
     // LogUtil.d(icon?.typeName);
     // LogUtil.d(icon?.avatar?.thumbnail);
-    return icon.avatar?.thumbnailUint8List == null
+    return icon?.avatar?.thumbnailUint8List == null
         ? XImageWidget.asset(
             IconsUtils.workDefaultAvatar(
                 target?.typeName ?? shareIcon?.typeName ?? ''),
@@ -112,7 +112,7 @@ class ApplyWidget extends StatelessWidget {
             fit: BoxFit.fill,
           )
         : XImageWidget(
-            data: icon.avatar?.thumbnailUint8List,
+            data: icon?.avatar?.thumbnailUint8List,
             width: 20,
             height: 20,
             type: ImageWidgetType.memory,
@@ -127,7 +127,7 @@ class ApplyWidget extends StatelessWidget {
   }
 
   _buildApplyResultView() {
-    ShareIcon? record = relationCtrl.provider.user.findShareById(
+    ShareIcon? record = relationCtrl.provider.user?.findShareById(
         todo?.taskdata.records == null
             ? ''
             : todo?.taskdata.records?.first.createUser ?? '');
@@ -139,7 +139,7 @@ class ApplyWidget extends StatelessWidget {
     var result = <Widget>[
       // Image.network('src'),
       _imageWidget(shareIcon: record),
-      TextWidget.body1(record.name ?? '').paddingLeft(AppSpace.listItem),
+      TextWidget.body1(record?.name ?? '').paddingLeft(AppSpace.listItem),
       const SizedBox(
               height: 15, width: 4, child: VerticalDivider(color: Colors.grey))
           .paddingLeft(AppSpace.listItem),

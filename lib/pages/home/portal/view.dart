@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/components/index.dart';
-import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/getx/submenu_list/base_submenu_page_view.dart';
-import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/home/portal/workBench/view.dart';
 
-import 'cohort/view.dart';
 import 'controller.dart';
 import 'state.dart';
 
@@ -18,35 +15,35 @@ class PortalPage extends BaseSubmenuPage<PortalController, PortalState> {
       case "workbench":
         return KeepAliveWidget(child: WorkBenchPage(type, label));
       case "activity":
-        if (null != kernel.user) {
-          var cohortActivity = GroupActivity(
-            relationCtrl.user,
-            relationCtrl.chats
-                .where((i) => i.isMyChat && i.isGroup)
-                .map((i) => i.activity)
-                .toList(),
-            false,
-          );
-          return KeepAliveWidget(
-              child: CohortActivityPage(type, label, cohortActivity));
-        } else {
-          return KeepAliveWidget(child: Container());
-        }
+      // if (null != kernel.user && null != relationCtrl.user) {
+      //   var cohortActivity = GroupActivity(
+      //     relationCtrl.user!,
+      //     relationCtrl.chats
+      //         .where((i) => i.isMyChat && i.isGroup)
+      //         .map((i) => i.activity)
+      //         .toList(),
+      //     false,
+      //   );
+      //   return KeepAliveWidget(
+      //       child: CohortActivityPage(type, label, cohortActivity));
+      // } else {
+      //   return KeepAliveWidget(child: Container());
+      // }
       case "circle":
-        if (null != kernel.user) {
-          var friendsActivity = GroupActivity(
-            relationCtrl.user,
-            [
-              relationCtrl.user.session.activity,
-              ...relationCtrl.user.memberChats.map((i) => i.activity).toList()
-            ],
-            true,
-          );
-          return KeepAliveWidget(
-              child: CohortActivityPage(type, label, friendsActivity));
-        } else {
-          return KeepAliveWidget(child: Container());
-        }
+      // if (null != kernel.user && null != relationCtrl.user) {
+      //   var friendsActivity = GroupActivity(
+      //     relationCtrl.user!,
+      //     [
+      //       relationCtrl.user!.session.activity,
+      //       ...relationCtrl.user!.memberChats.map((i) => i.activity).toList()
+      //     ],
+      //     true,
+      //   );
+      //   return KeepAliveWidget(
+      //       child: CohortActivityPage(type, label, friendsActivity));
+      // } else {
+      //   return KeepAliveWidget(child: Container());
+      // }
       default:
         return KeepAliveWidget(
           child: Container(),

@@ -9,7 +9,7 @@ import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 
 /// 默认文件接口
-abstract class IFile extends IFileInfo<XEntity> {}
+// abstract class IFile extends IFileInfo<XEntity> {}
 
 abstract class IFileInfo<T extends XEntity> extends IEntity<T> {
   /// 缓存
@@ -33,7 +33,7 @@ abstract class IFileInfo<T extends XEntity> extends IEntity<T> {
   late IDirectory directory;
 
   /// 上级
-  late IFile superior;
+  late IFileInfo<XEntity> superior;
 
   /// 路径Key
   late String locationKey;
@@ -59,7 +59,7 @@ abstract class IFileInfo<T extends XEntity> extends IEntity<T> {
   Future<bool> loadContent({bool reload = false});
 
   ///目录下的内容
-  List<IFile> content({bool? args});
+  List<IFileInfo<XEntity>> content({bool? args});
 
   /// 缓存用户数据
   Future<bool> cacheUserData({bool? notify});
@@ -113,8 +113,8 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
   String get cachePath => '$cacheFlag.${cache.fullId}';
   abstract String cacheFlag;
   @override
-  IFile get superior {
-    return this.directory as IFile;
+  IFileInfo<XEntity> get superior {
+    return this.directory;
   }
 
   @override
@@ -156,8 +156,8 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
     if (data?.fullId == cache.fullId) {
       cache = data!;
     }
-    target.user?.cacheObj.subscribe(cachePath, (XCache data) {
-      if (data.fullId == cache.fullId) {
+    target.user?.cacheObj.subscribe(cachePath, (dynamic data) {
+      if (data is XCache && data.fullId == cache.fullId) {
         cache = data;
         target.user?.cacheObj.setValue(cachePath, data);
         directory.changCallback();
@@ -184,7 +184,7 @@ abstract class FileInfo<T extends XEntity> extends Entity<T>
   }
 
   @override
-  List<IFile> content({bool? args}) {
+  List<IFileInfo<XEntity>> content({bool? args}) {
     return [];
   }
 
@@ -243,9 +243,6 @@ abstract class StandardFileInfo<T extends XStandard> extends FileInfo<T>
   @override
   Future<bool> move(IDirectory destination);
 
-  @override
-  T get metadata => this.metadata;
-
   bool allowCopy(IDirectory destination) {
     return target.belongId != destination.target.belongId;
   }
@@ -283,7 +280,7 @@ abstract class StandardFileInfo<T extends XStandard> extends FileInfo<T>
   Future<bool> rename(String name) async {
     return await update({
       'name': name,
-      ...this.metadata.toJson(),
+      ...metadata.toJson(),
     } as T);
   }
 

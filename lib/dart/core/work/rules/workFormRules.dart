@@ -10,6 +10,7 @@ import 'package:orginone/dart/core/work/rules/lib/tools.dart';
 import 'package:orginone/dart/core/work/rules/type.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/log/log_util.dart';
+import 'package:orginone/utils/toast_utils.dart';
 
 // import OrgCtrl from '../../../controller';
 
@@ -259,28 +260,32 @@ class WorkFormRules extends Emitter implements WorkFormRulesType {
     // await Promise.all(
     Rules.map((R) async {
       try {
-        // 执行该规则，并将规则返回的数据保存到 res 中
-        var res = await R.dealRule({
-          "#formData": formData.data, //主表数据
-          "#attrs": formData.attrs, //主表所有特性
-          "#things": formData.things ?? [], //子表数据
-          "#company": companyMeta, //单位信息
-          "#user": relationCtrl.user.metadata, //用户信息
-          "tools": {} //Tools, //方法库
-        });
+        if (null != relationCtrl.user) {
+          // 执行该规则，并将规则返回的数据保存到 res 中
+          var res = await R.dealRule({
+            "#formData": formData.data, //主表数据
+            "#attrs": formData.attrs, //主表所有特性
+            "#things": formData.things ?? [], //子表数据
+            "#company": companyMeta, //单位信息
+            "#user": relationCtrl.user!.metadata, //用户信息
+            "tools": {} //Tools, //方法库
+          });
 
-        // 如果规则执行成功，则将规则返回的数据合并到 resultObj 中
-        if (res.success) {
-          // 判断赋值类型
-          if (R.effect == EffectEnum.mainVals || !R.effect) {
-            if (resultObj is List) {
-              resultObj.add(res.data);
+          // 如果规则执行成功，则将规则返回的数据合并到 resultObj 中
+          if (res.success) {
+            // 判断赋值类型
+            if (R.effect == EffectEnum.mainVals || !R.effect) {
+              if (resultObj is List) {
+                resultObj.add(res.data);
+              } else {
+                resultObj = {resultObj, res.data};
+              }
             } else {
-              resultObj = {resultObj, res.data};
+              other.add(res);
             }
-          } else {
-            other.add(res);
           }
+        } else {
+          ToastUtils.showMsg(msg: "用户信息异常，请重新登陆");
         }
       } catch (error) {
         throw Exception('规则解析错误：${R.name}');

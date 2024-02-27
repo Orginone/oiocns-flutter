@@ -75,7 +75,7 @@ class WorkProvider implements IWorkProvider {
   Emitter notity = Emitter();
 
   @override
-  String get userId => user.user.id;
+  String get userId => user.user?.id ?? "";
   bool _todoLoaded = false;
 
   @override

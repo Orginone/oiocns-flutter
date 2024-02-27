@@ -188,7 +188,7 @@ class MessageItemWidget extends GetView<IndexController> {
     }
     return Builder(builder: (context) {
       var showTxt = "";
-      if (lastMessage.fromId != controller.user.metadata.id) {
+      if (lastMessage.fromId != controller.user?.metadata.id) {
         if (chat.share.typeName != TargetType.person.label) {
           var target = chat.members
               .firstWhere((element) => element.id == lastMessage.fromId);
@@ -201,7 +201,7 @@ class MessageItemWidget extends GetView<IndexController> {
 
       showTxt = showTxt +
           StringUtil.msgConversion(
-              Message(lastMessage, chat), controller.user.userId);
+              Message(lastMessage, chat), controller.user?.userId ?? "");
 
       return Text(
         showTxt,

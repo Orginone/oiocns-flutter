@@ -51,6 +51,7 @@ class InfoListPageState extends State<InfoListPage> {
     return GyScaffold(
       toolbarHeight: showHeader ? null : 0,
       titleWidget: showHeader ? _header() : null,
+      centerTitle: false,
       operations: widget.getActions?.call(),
       body: Container(
         color: Colors.white,

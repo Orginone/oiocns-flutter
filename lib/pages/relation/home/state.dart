@@ -11,12 +11,12 @@ class RelationCenterState extends BaseBreadcrumbNavState<RelationNavModel> {
     model.value = Get.arguments?['data'];
     isRelationSubPage = Get.arguments?['isRelationSubPage'] ?? false;
     if (model.value == null) {
-      var joinedCompanies = relationCtrl.provider.user.companys;
+      var joinedCompanies = relationCtrl.provider.user?.companys ?? [];
       model.value = RelationNavModel(name: "设置", children: [
         RelationNavModel(
-          name: relationCtrl.provider.user.metadata.name ?? "",
-          id: relationCtrl.provider.user.metadata.id ?? "",
-          image: relationCtrl.provider.user.metadata.avatarThumbnail(),
+          name: relationCtrl.provider.user?.metadata.name ?? "",
+          id: relationCtrl.provider.user?.metadata.id ?? "",
+          image: relationCtrl.provider.user?.metadata.avatarThumbnail(),
           children: [],
           space: relationCtrl.provider.user,
           spaceEnum: SpaceEnum.user,

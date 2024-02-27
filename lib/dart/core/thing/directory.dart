@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:get/get.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/common/format.dart';
@@ -48,7 +49,7 @@ abstract class IDirectory implements IStandardFileInfo<XDirectory> {
   /// 目录下的内容
 
   @override
-  List<IFile> content({bool? args});
+  List<IFileInfo<XEntity>> content({bool? args});
 
   /// 创建子目录
   Future<XDirectory?> create(XDirectory data);
@@ -73,6 +74,13 @@ abstract class IDirectory implements IStandardFileInfo<XDirectory> {
 
   /// 加载目录资源
   Future<bool> notifyReloadFiles();
+
+  /// 搜索文件
+  Future<IFileInfo<XEntity>?> searchFile(
+    String directoryId,
+    String applicationId,
+    String id,
+  );
 }
 
 ///MirrorDirectory作为 Directory影子类  用来初始化避免直接在Directory 创建Directory 造成递归
@@ -86,7 +94,7 @@ class MirrorDirectory implements IDirectory {
 ///目录实现类
 class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   Directory(
-    this.metadata,
+    metadata,
     this.target, {
     this.parent,
     List<XDirectory>? directorys,
@@ -105,8 +113,8 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   late Emitter taskEmitter;
   @override
   IDirectory? parent;
-  @override
-  final XDirectory metadata;
+  // @override
+  // final XDirectory metadata;
   @override
   final ITarget target;
   @override
@@ -122,10 +130,10 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   @override
   String get cacheFlag => 'directorys';
   @override
-  IFile get superior {
+  IFileInfo<XEntity> get superior {
     return parent == null
-        ? (target.superior.directory as IFile)
-        : parent as IFile;
+        ? target.superior.directory
+        : parent as IFileInfo<XEntity>;
   }
 
   @override
@@ -181,28 +189,28 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
   }
 
   @override
-  List<IFile> content({bool? args}) {
+  List<IFileInfo<XEntity>> content({bool? args}) {
     args ??= true;
-    List<IFile> cnt = [];
-    cnt.addAll(children.map((e) => e as IFile).toList());
+    List<IFileInfo<XEntity>> cnt = [];
+    cnt.addAll(children.map((e) => e).toList());
 
     if (target.session.isMyChat || target.hasRelationAuth()) {
-      cnt.addAll(files.map((e) => e as IFile).toList());
-      cnt.addAll(standard.forms.map((e) => e as IFile));
-      cnt.addAll(standard.applications.map((e) => e as IFile));
-      cnt.addAll(standard.propertys.map((e) => e as IFile));
-      cnt.addAll(standard.specieses.map((e) => e as IFile));
-      cnt.addAll(standard.transfers.map((e) => e as IFile));
-      cnt.addAll(standard.templates.map((e) => e as IFile));
+      cnt.addAll(files.map((e) => e).toList());
+      cnt.addAll(standard.forms.map((e) => e));
+      cnt.addAll(standard.applications.map((e) => e));
+      cnt.addAll(standard.propertys.map((e) => e));
+      cnt.addAll(standard.specieses.map((e) => e));
+      cnt.addAll(standard.transfers.map((e) => e));
+      cnt.addAll(standard.templates.map((e) => e));
       if (parent != null && args == true) {
         for (var item in target.content()) {
           var target = item;
           if (item is ITarget || item is IDirectory || item is IStorage) {
             if (item is IDirectory) {
-              cnt.add(target.directory as IFile);
+              cnt.add(target.directory);
             }
             if (item is IStorage) {
-              cnt.add(target.directory as IFile);
+              cnt.add(target.directory);
             }
           }
         }
@@ -372,6 +380,35 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
       templates.addAll((await item.loadAllTemplate(reload: reload)));
     }
     return templates;
+  }
+
+  @override
+  Future<IFileInfo<XEntity>?> searchFile(
+    String directoryId,
+    String applicationId,
+    String id,
+  ) async {
+    if (this.id == directoryId) {
+      if (applicationId == directoryId) {
+        await loadContent();
+        return content().firstWhereOrNull((i) => i.id == id);
+      } else {
+        for (var item in standard.applications) {
+          var file = await item.searchFile(applicationId, id);
+          if (null != file) {
+            return file;
+          }
+        }
+      }
+    } else {
+      for (var item in children) {
+        var file = await item.searchFile(directoryId, applicationId, id);
+        if (null != file) {
+          return file;
+        }
+      }
+    }
+    return null;
   }
 
   @override
@@ -561,4 +598,13 @@ class Directory extends StandardFileInfo<XDirectory> implements IDirectory {
 
   @override
   dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
+}
+
+///固定目录实现类
+class FixedDirectory extends Directory {
+  FixedDirectory(super.metadata, super.target, {standard}) {
+    if (null != standard) {
+      this.standard = standard;
+    }
+  }
 }

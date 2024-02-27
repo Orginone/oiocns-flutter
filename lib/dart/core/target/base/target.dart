@@ -140,8 +140,8 @@ abstract class Target extends Team implements ITarget {
     if (data != null && data.fullId == cache.fullId) {
       cache = data;
     }
-    user?.cacheObj.subscribe(cachePath, (XCache data) {
-      if (data.fullId == cache.fullId) {
+    user?.cacheObj.subscribe(cachePath, (dynamic data) {
+      if (data is XCache && data.fullId == cache.fullId) {
         cache = data;
         user?.cacheObj.setValue(cachePath, data);
         directory.changCallback();

@@ -95,7 +95,7 @@ class CardbagPage extends BaseGetView<CardbagController, CardbagState> {
   }
 
   Widget get card {
-    var avatar = relationCtrl.user.metadata.avatarThumbnail();
+    var avatar = relationCtrl.user?.metadata.avatarThumbnail();
     var defalut = IconsUtils.icons['x']!['defalutAvatar'].toString();
 
     ImageProvider provider;
@@ -140,7 +140,7 @@ class CardbagPage extends BaseGetView<CardbagController, CardbagState> {
                           Container(
                             width: 20,
                           ),
-                          Text(relationCtrl.user.share.name,
+                          Text(relationCtrl.user?.share.name ?? "",
                               style: const TextStyle(
                                   color: Colors.white, fontSize: 15)),
                         ],

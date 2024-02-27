@@ -4,6 +4,7 @@ import 'package:orginone/common/widgets/image.dart';
 import 'package:orginone/components/widgets/infoListPage/index.dart';
 import 'package:orginone/components/widgets/list_widget/index.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
@@ -11,22 +12,68 @@ import 'package:orginone/dart/core/target/outTeam/storage.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
+import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/log/log_util.dart';
 
 /// 关系页面
-class StorePage extends StatelessWidget {
+class StorePage extends StatefulWidget {
+  // late InfoListPageModel? storeModel;
+  // late dynamic datas;
+
+  // StorePage({super.key, dynamic datas}) {
+  //   storeModel = null;
+  //   this.datas = datas ?? RoutePages.getRouteParams(homeEnum: HomeEnum.store);
+  // }
+  const StorePage({super.key});
+  @override
+  State<StatefulWidget> createState() => _StorePageState();
+}
+
+class _StorePageState extends State<StorePage> {
+  // InfoListPageModel? get storeModel => widget.storeModel;
+  // set storeModel(InfoListPageModel? storeModel) {
+  //   widget.storeModel = storeModel;
+  // }
+
+  // dynamic get datas => widget.datas;
+  // set datas(dynamic value) {
+  //   widget.datas = value;
+  // }
+
   late InfoListPageModel? storeModel;
   late dynamic datas;
-  StorePage({super.key, dynamic datas}) {
+  _StorePageState() {
+    // if (relationCtrl.homeEnum.value == HomeEnum.store &&
+    //     RoutePages.getRouteLevel() > 0) {
+    relationCtrl.homeEnum.listen((homeEnum) {
+      if (homeEnum == HomeEnum.store) {
+        setState(() {
+          storeModel = null;
+          datas = RoutePages.getRouteParams(homeEnum: HomeEnum.store);
+        });
+      }
+    });
+    // }
+  }
+  @override
+  void initState() {
+    super.initState();
     storeModel = null;
-    this.datas = datas ?? RoutePages.getRouteParams();
+    datas = RoutePages.getRouteParams(homeEnum: HomeEnum.store);
+  }
+
+  @override
+  void didUpdateWidget(StorePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // storeModel = oldWidget.storeModel;
+    // datas = oldWidget.datas;
   }
 
   @override
   Widget build(BuildContext context) {
     if (null == storeModel) {
-      datas = RoutePages.getRouteParams();
+      // datas = RoutePages.getRouteParams();
       load();
     }
 
@@ -42,7 +89,7 @@ class StorePage extends StatelessWidget {
         createTabItemsModel(title: "单位")
       ]
     ]);
-    relationCtrl.user.loadMembers();
+    // relationCtrl.user?.loadMembers();
   }
 
   TabItemsModel createTabItemsModel({
@@ -51,14 +98,14 @@ class StorePage extends StatelessWidget {
     List<IEntity<dynamic>> initDatas = [];
     if (null == datas) {
       initDatas = getFirstLevelDirectories(title);
-    } else {
+    } else if (datas is List<IEntity<dynamic>>) {
       initDatas = datas;
     }
     return TabItemsModel(
         title: title,
         content: ListWidget(
           initDatas: initDatas,
-          getDatas: ([dynamic parentData]) {
+          getLazyDatas: ([dynamic parentData]) async {
             if (null == parentData) {
               return loadStorages(RoutePages.getRootRouteParam());
             } else if (parentData is ICompany &&
@@ -70,9 +117,26 @@ class StorePage extends StatelessWidget {
             } else if (parentData is IStorage &&
                 parentData.typeName == TargetType.storage.label) {
               return loadStoragesDirectory(parentData);
-            } else if (parentData.typeName == SpaceEnum.dataStandards.label &&
+            } else if (parentData.typeName == SpaceEnum.directory.label &&
+                parentData.name == SpaceEnum.dataStandards.label &&
                 parentData is Directory) {
               return loadDataStandards(parentData);
+            } else if (parentData.typeName == SpaceEnum.directory.label &&
+                parentData.name == DirectoryType.Property.label &&
+                parentData is Directory) {
+              return loadProperties(parentData);
+            } else if (parentData.typeName == SpaceEnum.directory.label &&
+                parentData.name == DirectoryType.Species.label &&
+                parentData is Directory) {
+              return loadSpecies(parentData);
+            } else if (parentData.typeName == SpaceEnum.directory.label &&
+                parentData.name == DirectoryType.Dict.label &&
+                parentData is Directory) {
+              return loadDicts(parentData);
+            } else if (parentData.typeName == SpaceEnum.directory.label &&
+                parentData.name == DirectoryType.App.label &&
+                parentData is Directory) {
+              return loadApps(parentData);
             }
 
             return [];
@@ -87,11 +151,11 @@ class StorePage extends StatelessWidget {
           },
           onTap: (dynamic data, List children) {
             LogUtil.d('>>>>>>======点击了列表项 ${data.name} ${children.length}');
-            if (children.isNotEmpty) {
-              RoutePages.jumpStore(parentData: data, listDatas: children);
-            } else {
-              // RoutePages.jumpFileInfo(data: data);
-            }
+            // if (children.isNotEmpty) {
+            RoutePages.jumpStore(parentData: data, listDatas: children);
+            // } else {
+            //   // RoutePages.jumpFileInfo(data: data);
+            // }
           },
         ));
   }
@@ -99,11 +163,14 @@ class StorePage extends StatelessWidget {
   // 获得一级目录
   List<IEntity<dynamic>> getFirstLevelDirectories(String title) {
     List<IEntity<dynamic>> datas = [];
-    if (title == "个人" || title == "全部") {
-      datas.add(relationCtrl.user);
-    }
-    if (title == "单位" || title == "全部") {
-      datas.addAll(relationCtrl.user.companys.map((item) => item).toList());
+    if (null != relationCtrl.user) {
+      if (title == "个人" || title == "全部") {
+        datas.add(relationCtrl.user!);
+      }
+      if (title == "单位" || title == "全部") {
+        datas.addAll(
+            relationCtrl.user?.companys.map((item) => item).toList() ?? []);
+      }
     }
     return datas;
   }
@@ -112,9 +179,9 @@ class StorePage extends StatelessWidget {
   List<IStorage> loadStorages(ITarget target) {
     TargetType? type = TargetType.getType(target.typeName);
     if (type == TargetType.person) {
-      return relationCtrl.user.storages;
+      return relationCtrl.user?.storages ?? [];
     } else if (type == TargetType.company) {
-      return relationCtrl.user.findCompany(target.id)?.storages ?? [];
+      return relationCtrl.user?.findCompany(target.id)?.storages ?? [];
     }
     return [];
   }
@@ -124,13 +191,19 @@ class StorePage extends StatelessWidget {
     List<Directory> datas = [];
     XDirectory tmpDir;
     int id = 0;
-    DirectoryGroupType.getType(data.typeName)?.types.forEach((e) {
-      tmpDir = XDirectory(
-          id: id.toString(), directoryId: id.toString(), isDeleted: false);
-      tmpDir.name = e.label;
-      tmpDir.typeName = e.label;
-      datas.add(Directory(tmpDir, relationCtrl.user));
-    });
+    if (null != relationCtrl.user) {
+      DirectoryGroupType.getType(data.typeName)?.types.forEach((e) {
+        tmpDir = XDirectory(
+            id: "${data.id}_$id",
+            directoryId: "${data.id}_$id",
+            isDeleted: false);
+        tmpDir.name = e.label;
+        tmpDir.typeName = SpaceEnum.directory.label;
+        datas.add(FixedDirectory(tmpDir, relationCtrl.user!,
+            standard: getCurrentCompany()?.standard));
+        id++;
+      });
+    }
     return datas;
   }
 
@@ -139,13 +212,68 @@ class StorePage extends StatelessWidget {
     List<Directory> datas = [];
     XDirectory tmpDir;
     int id = 0;
-    DirectoryGroupType.getType(item.typeName)?.types.forEach((e) {
-      tmpDir = XDirectory(
-          id: id.toString(), directoryId: id.toString(), isDeleted: false);
-      tmpDir.name = e.label;
-      tmpDir.typeName = e.label;
-      datas.add(Directory(tmpDir, relationCtrl.user));
-    });
+    if (null != relationCtrl.user) {
+      DirectoryGroupType.getType(item.name)?.types.forEach((e) {
+        tmpDir = XDirectory(
+            id: "${item.id}_$id",
+            directoryId: "${item.id}_$id",
+            isDeleted: false);
+        tmpDir.name = e.label;
+        tmpDir.typeName = SpaceEnum.directory.label;
+        datas.add(FixedDirectory(tmpDir, relationCtrl.user!,
+            standard: getCurrentCompany()?.standard));
+        id++;
+      });
+    }
     return datas;
+  }
+
+  /// 获得当前单位
+  ICompany? getCurrentCompany({String? companyId}) {
+    return null != relationCtrl.user
+        ? relationCtrl.user!
+            .findCompany(companyId ?? RoutePages.getRootRouteParam().id)
+        : null;
+  }
+
+  /// 加载属性
+  Future<List<IProperty>> loadProperties(Directory item) async {
+    List<IProperty> files = item.standard.propertys;
+    print('>>>>>>======files ${files.length}');
+    if (files.isEmpty) {
+      return await item.standard.loadPropertys();
+    }
+    return files;
+  }
+
+  ///加载分类
+  Future<List<ISpecies>> loadSpecies(Directory item) async {
+    List<ISpecies> files = item.standard.specieses;
+    print('>>>>>>======files ${files.length}');
+    if (files.isEmpty) {
+      return await item.standard.loadSpecieses();
+    }
+    return files;
+  }
+
+  ///加载字典
+  Future<List<ISpecies>> loadDicts(Directory item) async {
+    List<ISpecies> files = item.standard.dicts;
+    print('>>>>>>======files ${files.length}');
+    if (files.isEmpty) {
+      return await item.standard.loadDicts();
+    }
+    return files;
+  }
+
+  ///加载应用
+  Future<List<IApplication>> loadApps(Directory item) async {
+    List<IApplication> files = item.standard.applications;
+    print('>>>>>>======files ${files.length}');
+    if (files.isEmpty) {
+      return await item.standard.loadApplications();
+    }
+
+    return files;
   }
 }

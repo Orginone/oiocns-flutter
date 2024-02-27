@@ -5,17 +5,20 @@ import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/extension/ex_widget.dart';
-import 'package:orginone/components/widgets/index.dart';
+import 'package:orginone/components/widgets/common/image/image_widget.dart';
+import 'package:orginone/components/widgets/common/image/team_avatar.dart';
 import 'package:orginone/config/space.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/base/model.dart' hide Column;
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/index.dart';
+import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/systemfile.dart';
+import 'package:orginone/dart/core/work/index.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/home/components/search_bar.dart';
@@ -65,6 +68,20 @@ class XImage {
   ///关系线条
   static const String relationOutline = "relationOutline";
 
+  ///工作台图标
+  ///
+  ///办事
+  static const String homeWork = "homeWork";
+
+  ///任务
+  static const String homeTask = "homeTask";
+
+  ///提醒
+  static const String homeRemind = "homeRemind";
+
+  ///未读消息
+  static const String homeChat = "homeChat";
+
   ///系统logo
   static const String logo = "logo";
 
@@ -110,6 +127,9 @@ class XImage {
   ///目录
   static const String folder = "folder";
 
+  ///属性
+  static const String property = "property";
+
   ///资源
   static const String folderStore = "folderStore";
 
@@ -148,6 +168,9 @@ class XImage {
 
   ///图片
   static const String image = "image";
+
+  ///app应用
+  static const String app = "app";
 
   ///搜索
   static const String search = "search";
@@ -191,23 +214,67 @@ class XImage {
   ///表单办事
   static const String formWork = "formWork";
 
+  ///办事-申请加入人员
+  static const String workApplyAddPerson = "workApplyAddPerson";
+
+  ///办事-申请加入单位
+  static const String workApplyAddUnit = "workApplyAddUnit";
+
+  ///办事-申请加入群组
+  static const String workApplyAddGroup = "workApplyAddGroup";
+
+  ///办事-申请加入存储资源
+  static const String workApplyAddStorage = "workApplyAddStorage";
+
+  ///办事-申请加入群
+  static const String workApplyAddCohort = "workApplyAddCohort";
+
+  ///应用
+  static const String application = "application";
+
+  ///动态
+  static const String activity = "activity";
+
+  ///字典
+  static const String dictionary = "dictionary";
+
+  ///分类
+  static const String species = "species";
+
   static Widget localImage(String name,
       {double? width,
       BoxFit? fit,
       Color? color,
+      Color? bgColor,
       bool circular = false,
       double? radius}) {
     ///常规图
     String iconPath = (IconsUtils.icons['x']?[name]) ?? "";
 
-    return ImageWidget(
-      iconPath,
-      fit: fit ?? BoxFit.cover,
-      size: width,
-      color: color,
-      circular: circular,
-      radius: radius,
-    );
+    return null == bgColor
+        ? ImageWidget(
+            iconPath,
+            fit: fit ?? BoxFit.cover,
+            size: width,
+            color: color,
+            circular: circular,
+            radius: radius,
+          )
+        : Container(
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.all(Radius.circular(radius ?? 0)),
+            ),
+            padding: const EdgeInsets.all(10),
+            child: ImageWidget(
+              iconPath,
+              fit: fit ?? BoxFit.cover,
+              size: width,
+              color: color,
+              circular: circular,
+              radius: radius,
+            ),
+          );
   }
 
   /// 获得实体图标
@@ -222,6 +289,7 @@ class XImage {
     bool gaplessPlayback = false,
   }) {
     Widget iconW;
+    if (null == data) return XImage.localImage(XImage.user);
     if (null != width && null != height) {
       size = Size(width, height);
     } else if (null != width) {
@@ -234,11 +302,13 @@ class XImage {
     //   dynamic metadata = relationCtrl.user.findMetadata(data);
     //   if (null != metadata) data = metadata;
     // }
-    if (data is ShareIcon &&
-        data.typeName == TargetType.person.label &&
-        data.name.isNotEmpty) {
-      iconW = _defaultShareIcon(data, size: size, circular: circular);
-    } else if (data is XEntity && null != data.shareIcon()) {
+
+    // if (data is XTarget &&
+    //     data.typeName == TargetType.person.label &&
+    //     null == data.shareIcon()) {
+    //   iconW = _defaultPersonIcon(data, size: size, circular: circular);
+    // }
+    if (data is XEntity && null != data.shareIcon()) {
       iconW = TeamAvatar(
         key: ValueKey(data.shareIcon()),
         size: size?.width,
@@ -252,7 +322,7 @@ class XImage {
         circular: circular,
         radius: radius,
       );
-    } else if (data is IEntity &&
+    } else if ((data is IEntity || data is IActivityMessage) &&
         null != data.share.avatar &&
         null != data.share.avatar?.thumbnailUint8List) {
       // iconW = TeamAvatar(
@@ -265,8 +335,12 @@ class XImage {
         fit: fit,
         size: size?.width,
         circular: circular,
-        radius: radius,
+        radius: radius ?? 7,
       );
+    } else if ((data is ShareIcon || data is XTarget || data is IEntity) &&
+        data.typeName == TargetType.person.label &&
+        data.name.isNotEmpty) {
+      iconW = _defaultPersonIcon(data.name, size: size, circular: circular);
     } else if (data is IEntity && null != SpaceEnum.getType(data.typeName)) {
       iconW = XImage.localImage(
         SpaceEnum.getType(data.typeName)!.icon,
@@ -274,7 +348,9 @@ class XImage {
         circular: circular,
         radius: radius,
       );
-    } else if (data is IEntity && null != TargetType.getType(data.typeName)) {
+    } else if (data is IEntity &&
+        data.typeName != TargetType.person.label &&
+        null != TargetType.getType(data.typeName)) {
       iconW = XImage.localImage(
         TargetType.getType(data.typeName)!.icon,
         width: size?.width,
@@ -283,7 +359,8 @@ class XImage {
       );
     } else if (data is ISysFileInfo) {
       iconW = XImage.localImage(
-        StorageFileType.getType(data.typeName).icon,
+        StorageFileType.getType(data.typeName)?.icon ??
+            StorageFileType.getTypeByFileName(data.name).icon,
         width: size?.width,
         circular: circular,
         radius: radius,
@@ -297,15 +374,26 @@ class XImage {
         circular: circular,
         radius: radius,
       );
-    } else if (data is XTarget &&
-        data.typeName == TargetType.person.label &&
-        null == data.shareIcon()) {
-      iconW = _defaultPersonIcon(data, size: size, circular: circular);
+    } else if (data is Work && data.typeName.isNotEmpty) {
+      iconW = XImage.localImage(
+        WorkType.getType(data.typeName).icon,
+        width: size?.width,
+        circular: circular,
+        radius: radius,
+      );
     } else if (data is XTarget &&
         null != TargetType.getType(data.typeName ?? "")) {
       //会影响用户头像
       iconW = XImage.localImage(
         TargetType.getType(data.typeName!)!.icon,
+        width: size?.width,
+        circular: circular,
+        radius: radius,
+      );
+    } else if (data is FileItemShare) {
+      iconW = XImage.localImage(
+        StorageFileType.getType(data.contentType ?? "")?.icon ??
+            StorageFileType.getTypeByFileName(data.name ?? "").icon,
         width: size?.width,
         circular: circular,
         radius: radius,
@@ -334,14 +422,14 @@ class XImage {
     //                   IconsUtils.workDefaultAvatar(data.typeName))
   }
 
-  static Widget _defaultShareIcon(ShareIcon data,
-      {Size? size, bool circular = false}) {
-    return _defaultIcon(data.name, size: size, circular: circular);
-  }
+  // static Widget _defaultShareIcon(ShareIcon data,
+  //     {Size? size, bool circular = false}) {
+  //   return _defaultIcon(data.name, size: size, circular: circular);
+  // }
 
-  static Widget _defaultPersonIcon(XTarget data,
+  static Widget _defaultPersonIcon(String name,
       {Size? size, bool circular = false}) {
-    return _defaultIcon(data.name, size: size, circular: circular);
+    return _defaultIcon(name, size: size, circular: circular);
   }
 
   static Widget _defaultIcon(String? data,
@@ -356,15 +444,17 @@ class XImage {
         gradient: LinearGradient(
           begin: const Alignment(0.71, -0.71),
           end: const Alignment(-0.71, 0.71),
-          colors: colors[Random().nextInt(colors.length)],
+          colors: colors[data.hashCode % colors.length],
         ),
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(circular ? 50 : 4)),
       ),
       child: Center(
           child: Text(name.substring(max(0, name.length - 2), name.length),
-              style: const TextStyle(
-                  color: XColors.white, fontWeight: FontWeight.bold))),
+              style: TextStyle(
+                  fontSize: (size?.width ?? 0) > 33 ? 14 : 12,
+                  color: XColors.white,
+                  fontWeight: FontWeight.bold))),
     );
   }
 

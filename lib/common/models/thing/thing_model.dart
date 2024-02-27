@@ -26,7 +26,8 @@ class ThingModel {
     id = json['Id'];
     creater = json['Creater'];
 
-    ShareIcon shareIcon = relationCtrl.user.findShareById(creater ?? "");
+    ShareIcon shareIcon = relationCtrl.user?.findShareById(creater ?? "") ??
+        ShareIcon(name: "", typeName: "未知类型");
     createrName = shareIcon.name;
     createTime = json['CreateTime'];
     modifiedTime = json['ModifiedTime'];

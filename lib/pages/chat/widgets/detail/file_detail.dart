@@ -3,13 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:orginone/common/routers/index.dart';
-import 'package:orginone/common/values/index.dart';
 import 'package:orginone/dart/base/model.dart' as model;
 
 import 'package:orginone/pages/chat/widgets/detail/base_detail.dart';
 import 'package:orginone/pages/chat/widgets/info_item.dart';
-import 'package:orginone/components/widgets/common/image/image_widget.dart';
 import 'package:orginone/config/unified.dart';
+import 'package:orginone/utils/load_image.dart';
 
 import 'image_detail.dart';
 import 'shadow_widget.dart';
@@ -48,42 +47,69 @@ class FileDetail extends BaseDetail {
   Widget body(BuildContext context) {
     /// 限制大小
     BoxConstraints boxConstraints = BoxConstraints(
-        minWidth: 200.w, minHeight: 70.h, maxWidth: 250.w, maxHeight: 100.h);
+        minWidth: 280.w,
+        minHeight: 90.h,
+        maxWidth: MediaQuery.of(context).size.width - 110,
+        maxHeight: 130.h);
 
     Widget child = Container(
-      constraints: boxConstraints,
-      color: bgColor != null ? Colors.transparent : Colors.white,
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
+        constraints: boxConstraints,
+        color: bgColor != null ? Colors.transparent : Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
+        child: Column(children: [
           Expanded(
-            child: Column(
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                // ImageWidget(AssetsImages.iconFile, size: 40.w),
+                XImage.entityIcon(msgBody),
                 Expanded(
-                  child: Text(
-                    msgBody.name ?? "",
-                    style: XFonts.chatSMSysTip,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        msgBody.name ?? "",
+                        style: XFonts.chatSMSysTip,
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        getFileSizeString(bytes: msgBody.size ?? 0),
+                        style: XFonts.size16Black9,
+                      ),
+                    ],
                   ),
-                ),
-                SizedBox(
-                  height: 5.h,
-                ),
-                Text(
-                  getFileSizeString(bytes: msgBody.size ?? 0),
-                  style: XFonts.size16Black9,
                 ),
               ],
             ),
           ),
-          ImageWidget(AssetsImages.iconFile, size: 40.w),
-        ],
-      ),
-    );
+          const Divider(),
+          SizedBox(
+            // color: Colors.red,
+            height: 20,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                TextButton(
+                    onPressed: () {
+                      _onTap(context);
+                    },
+                    style: ButtonStyle(
+                        padding:
+                            MaterialStateProperty.all(const EdgeInsets.all(0))),
+                    child: const Text("在线预览")),
+                const VerticalDivider(),
+                TextButton(
+                    onPressed: () {},
+                    style: ButtonStyle(
+                        padding:
+                            MaterialStateProperty.all(const EdgeInsets.all(0))),
+                    child: const Text("在线编辑"))
+              ],
+            ),
+          )
+        ]));
 
     if (showShadow) {
       child = ShadowWidget(
@@ -93,8 +119,8 @@ class FileDetail extends BaseDetail {
     return child;
   }
 
-  @override
-  void onTap(BuildContext context) {
+  // @override
+  void _onTap(BuildContext context) {
     RoutePages.jumpFile(file: model.FileItemShare.fromJson(msgBody.toJson()));
   }
 }

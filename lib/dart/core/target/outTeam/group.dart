@@ -154,8 +154,8 @@ class Group extends Target implements IGroup {
   }
 
   @override
-  List<IFile> content({bool? args}) {
-    return [...children.map((e) => e as IFile)];
+  List<IFileInfo<XEntity>> content({bool? args}) {
+    return [...children.map((e) => e)];
   }
 
   @override

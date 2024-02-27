@@ -5,19 +5,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:orginone/common/index.dart';
-import 'package:orginone/components/widgets/list_widget/index.dart';
-import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/common/emitter.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/auth.dart';
+import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/chat/session.dart';
-import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/person.dart';
-import 'package:orginone/dart/core/thing/directory.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/dart/core/user.dart';
 import 'package:orginone/dart/core/work/provider.dart';
@@ -30,7 +28,6 @@ import 'package:orginone/utils/string_util.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/components/widgets/dialog/loading_dialog.dart';
 
-import '../../components/widgets/infoListPage/index.dart';
 import 'app_data_controller.dart';
 
 enum Shortcut {
@@ -101,7 +98,7 @@ class IndexController extends GetxController {
   UserProvider get provider => _provider;
 
   /// 当前用户
-  IPerson get user => provider.user;
+  IPerson? get user => provider.user;
 
   /// 办事提供者
   IWorkProvider get work => provider.work!;
@@ -128,8 +125,11 @@ class IndexController extends GetxController {
   ///模块顶部三点菜单控制器
   late CustomPopupMenuController settingMenuController;
 
-  late InfoListPageModel dataStoreModel;
-  late InfoListPageModel relationModel;
+  ///群动态
+  Rxn<GroupActivity> cohortActivity = Rxn<GroupActivity>();
+
+  ///好友圈
+  Rxn<GroupActivity> friendsActivity = Rxn<GroupActivity>();
 
   /// 授权方法
   AuthProvider get auth {
@@ -153,33 +153,6 @@ class IndexController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    // relationModel = InfoListPageModel(title: "关系", tabItems: [
-    //   TabItemsModel(title: "全部"),
-    //   TabItemsModel(title: "个人"),
-    //   TabItemsModel(title: "单位")
-    // ]);
-    dataStoreModel = InfoListPageModel(
-        title: "奥集能数据核",
-        // avatar: IconWidget.icon(Icons.photo_camera,
-        //     color: Colors.red //AppColors.onPrimary,
-        //     ),
-        tabItems: [
-          TabItemsModel(title: "文件", tabItems: [
-            TabItemsModel(title: "全部"),
-            TabItemsModel(title: "当前目录"),
-            TabItemsModel(title: "下级目录"),
-            TabItemsModel(title: "字典"),
-            TabItemsModel(title: "属性")
-          ]),
-          TabItemsModel(title: "权限", tabItems: [
-            TabItemsModel(title: "全部"),
-            TabItemsModel(title: "内设机构"),
-            TabItemsModel(title: "群组"),
-            TabItemsModel(title: "集群"),
-          ]),
-          TabItemsModel(title: "设置", content: const Text("设置页面")),
-        ]);
-
     appDataController = AppDataController();
     functionMenuController = CustomPopupMenuController();
     settingMenuController = CustomPopupMenuController();
@@ -187,7 +160,6 @@ class IndexController extends GetxController {
     // // 监听消息加载
     emitter.subscribe((key, args) {
       // loadChats();
-      loadRelation();
     }, false);
     _provider = UserProvider(emitter);
     _userSub = EventBusUtil.instance.on<UserLoaded>((event) async {
@@ -220,130 +192,68 @@ class IndexController extends GetxController {
     });
   }
 
-  void loadRelation() {
-    // RelationSubPage relationSubPage = RelationSubPage("_all");
-    relationModel = InfoListPageModel(title: "关系", tabItems: [
-      TabItemsModel(
-          title: "全部",
-          content: ListWidget<IEntity>(
-            getDatas: ([dynamic data]) {
-              if (null == data) {
-                return <IEntity>[
-                  user,
-                  ...user.companys.map((item) => item).toList()
-                ];
-              } else if (data.typeName == "人员") {
-                List<Directory> personData = [];
-                XDirectory friendDir =
-                    XDirectory(id: "1", directoryId: "1", isDeleted: false);
-                friendDir.name = "好友";
-                personData.add(Directory(friendDir, user));
-                return personData;
-              }
-              return [
-                {
-                  "name": "好友",
-                  "share": ShareIcon(
-                    name: "好友",
-                    typeName: "好友",
-                  ),
-                } as IEntity,
-                {
-                  "name": "群组",
-                  "share": ShareIcon(
-                    name: "群组",
-                    typeName: "群组",
-                  ),
-                } as IEntity,
-                {
-                  "name": "资源",
-                  "share": ShareIcon(
-                    name: "资源",
-                    typeName: "资源",
-                  ),
-                } as IEntity
-              ];
-            },
-            // getTitle: (dynamic data) => Text(data.name),
-            // getAvatar: (dynamic data) =>
-            //     TeamAvatar(size: 35, info: TeamTypeInfo(share: data.share)),
-            // getLabels: (dynamic data) => data.groupTags,
-            // getDesc: (dynamic data) => Text(data.remark ?? ""),
-            getAction: (dynamic data) {
-              return GestureDetector(
-                onTap: () {
-                  LogUtil.d('>>>>>>======点击了感叹号');
-                },
-                child: const IconWidget(
-                  color: XColors.black666,
-                  iconData: Icons.info_outlined,
-                ),
-              );
-            },
-            onTap: (dynamic data, List children) {
-              LogUtil.d('>>>>>>======点击了列表项 ${data.name}');
-            },
-          )),
-      TabItemsModel(
-          title: "个人",
-          content: ListWidget<IEntity>(
-            getDatas: ([dynamic data]) {
-              return [
-                user,
-              ];
-            },
-            // getTitle: (dynamic data) {
-            //   return Text(data.name);
-            // },
-            // getAvatar: (dynamic data) {
-            //   return TeamAvatar(
-            //       size: 35, info: TeamTypeInfo(share: data.share));
-            // },
-            // getDesc: (dynamic data) {
-            //   return Text(data.remark ?? "");
-            // },
-          )),
-      TabItemsModel(
-          title: "单位",
-          content: ListWidget<IEntity>(
-            getDatas: ([dynamic data]) {
-              return [...user.companys.map((item) => item).toList()];
-            },
-            // getTitle: (dynamic data) {
-            //   return Text(data.name);
-            // },
-            // getAvatar: (dynamic data) {
-            //   return TeamAvatar(
-            //       size: 35, info: TeamTypeInfo(share: data.share));
-            // },
-            // getDesc: (dynamic data) {
-            //   return Text(data.remark ?? "");
-            // },
-          )),
-      // TabItemsModel(title: "好友", content: const Text("好友页面")),
-      // TabItemsModel(title: "动态", content: const Text("动态页面")),
-      // TabItemsModel(title: "文件", tabItems: [
-      //   TabItemsModel(title: "全部"),
-      //   TabItemsModel(title: "当前目录"),
-      //   TabItemsModel(title: "下级目录"),
-      //   TabItemsModel(title: "字典"),
-      //   TabItemsModel(title: "属性")
-      // ]),
-    ]);
+  /// 初始化动态
+  _initActivity() async {
+    if (null != user) {
+      cohortActivity.value = GroupActivity(
+        user!,
+        chats
+            .where((i) => i.isMyChat && i.isGroup)
+            .map((i) => i.activity)
+            .toList(),
+        false,
+      );
+      await cohortActivity.value!.load();
+      // cohortActivity.refresh();
+      friendsActivity.value = GroupActivity(
+        user!,
+        [
+          user!.session.activity,
+          ...user!.memberChats.map((i) => i.activity).toList()
+        ],
+        true,
+      );
+      await friendsActivity.value!.load();
+      friendsActivity.refresh();
+    }
+  }
+
+  /// 加载所有常用
+  Future<List<IFileInfo<XEntity>>> loadCommons() async {
+    List<IFileInfo<XEntity>> files = [];
+    if (null != provider.user) {
+      for (var item in provider.user!.commons) {
+        var target = provider.targets.firstWhereOrNull(
+          (i) => i.id == item.targetId && i.spaceId == item.spaceId,
+        );
+        if (null != target) {
+          var file = await target.directory.searchFile(
+            item.directoryId,
+            item.applicationId,
+            item.id,
+          );
+          if (null != file) {
+            files.add(file);
+          }
+        }
+      }
+    }
+    return files;
   }
 
   /// 加载消息
   Future<void> loadChats([bool reload = false]) async {
+    if (null == provider.user) return;
     try {
       if (reload) {
-        await provider.user.cacheObj.all(true);
+        await provider.user!.cacheObj.all(true);
         // TODO 后期刷新列表
         await Future.wait(chats.map((element) => element.refreshMessage()));
         chats.value = filterAndSortChats(chats);
       } else {
         List<ISession> tmpChats = <ISession>[];
-        tmpChats.addAll(provider.user.chats ?? []);
-        for (var company in provider.user.companys ?? []) {
+        tmpChats.addAll(provider.user!.chats ?? []);
+        for (var company in provider.user!.companys ?? []) {
           tmpChats.addAll(company.chats ?? []);
         }
         chats.value = filterAndSortChats(tmpChats);
@@ -398,6 +308,7 @@ class IndexController extends GetxController {
     command.subscribeByFlag('session', ([List<dynamic>? args]) {
       if (provider.inited) {
         loadChats();
+        _initActivity();
       }
     });
   }
@@ -459,44 +370,48 @@ class IndexController extends GetxController {
   }
 
   void showAddFeatures(ShortcutData item) {
-    switch (item.shortcut) {
-      case Shortcut.createCompany:
-      case Shortcut.addCohort:
-        showCreateOrganizationDialog(
-          Get.context!,
-          [item.targetType!],
-          callBack: (String name, String code, String nickName, String identify,
-              String remark, TargetType type) async {
-            var target = TargetModel(
-              name: nickName,
-              code: code,
-              typeName: type.label,
-              teamName: name,
-              teamCode: code,
-              remark: remark,
-            );
-            var data = item.shortcut == Shortcut.createCompany
-                ? await user.createCompany(target)
-                : await user.createCohort(target);
-            if (data != null) {
-              ToastUtils.showMsg(msg: "创建成功");
+    if (null != user) {
+      switch (item.shortcut) {
+        case Shortcut.createCompany:
+        case Shortcut.addCohort:
+          showCreateOrganizationDialog(
+            Get.context!,
+            [item.targetType!],
+            callBack: (String name, String code, String nickName,
+                String identify, String remark, TargetType type) async {
+              var target = TargetModel(
+                name: nickName,
+                code: code,
+                typeName: type.label,
+                teamName: name,
+                teamCode: code,
+                remark: remark,
+              );
+              var data = item.shortcut == Shortcut.createCompany
+                  ? await user!.createCompany(target)
+                  : await user!.createCohort(target);
+              if (data != null) {
+                ToastUtils.showMsg(msg: "创建成功");
+              }
+            },
+          );
+          break;
+        case Shortcut.addPerson:
+        case Shortcut.addGroup:
+        case Shortcut.addCompany:
+          showSearchDialog(Get.context!, item.targetType!,
+              title: item.title, hint: item.hint, onSelected: (targets) async {
+            if (targets.isNotEmpty) {
+              bool success = await user!.applyJoin(targets);
+              if (success) {
+                ToastUtils.showMsg(msg: "发送申请成功");
+              }
             }
-          },
-        );
-        break;
-      case Shortcut.addPerson:
-      case Shortcut.addGroup:
-      case Shortcut.addCompany:
-        showSearchDialog(Get.context!, item.targetType!,
-            title: item.title, hint: item.hint, onSelected: (targets) async {
-          if (targets.isNotEmpty) {
-            bool success = await user.applyJoin(targets);
-            if (success) {
-              ToastUtils.showMsg(msg: "发送申请成功");
-            }
-          }
-        });
-        break;
+          });
+          break;
+      }
+    } else {
+      ToastUtils.showMsg(msg: "用户信息异常，请重新登陆");
     }
   }
 
@@ -565,34 +480,38 @@ class IndexController extends GetxController {
   }
 
   void qrScan() {
-    Get.toNamed(Routers.qrScan)?.then((value) async {
-      if (value != null) {
-        if (null != value && value.length == 24 && value.indexOf('==') > 0) {
-          Get.toNamed(Routers.scanLogin, arguments: value);
-        } else if (StringUtil.isJson(value)) {
-          Get.toNamed(Routers.scanLogin, arguments: value);
-        } else {
-          String id = value.split('/').toList().last;
-          XEntity? entity = await user.findEntityAsync(id);
-          if (entity != null) {
-            List<XTarget> target =
-                await user.searchTargets(entity.code!, [entity.typeName!]);
-            if (target.isNotEmpty) {
-              var success = await user.applyJoin(target);
-              if (success) {
-                ToastUtils.showMsg(msg: "申请发送成功");
+    if (null != user) {
+      Get.toNamed(Routers.qrScan)?.then((value) async {
+        if (value != null) {
+          if (null != value && value.length == 24 && value.indexOf('==') > 0) {
+            Get.toNamed(Routers.scanLogin, arguments: value);
+          } else if (StringUtil.isJson(value)) {
+            Get.toNamed(Routers.scanLogin, arguments: value);
+          } else {
+            String id = value.split('/').toList().last;
+            XEntity? entity = await user!.findEntityAsync(id);
+            if (entity != null) {
+              List<XTarget> target =
+                  await user!.searchTargets(entity.code!, [entity.typeName!]);
+              if (target.isNotEmpty) {
+                var success = await user!.applyJoin(target);
+                if (success) {
+                  ToastUtils.showMsg(msg: "申请发送成功");
+                } else {
+                  ToastUtils.showMsg(msg: "申请发送失败");
+                }
               } else {
-                ToastUtils.showMsg(msg: "申请发送失败");
+                ToastUtils.showMsg(msg: "获取用户失败");
               }
             } else {
               ToastUtils.showMsg(msg: "获取用户失败");
             }
-          } else {
-            ToastUtils.showMsg(msg: "获取用户失败");
           }
         }
-      }
-    });
+      });
+    } else {
+      ToastUtils.showMsg(msg: "用户信息异常，请重新登陆");
+    }
   }
 
   void jumpSetting(SettingEnum item) {

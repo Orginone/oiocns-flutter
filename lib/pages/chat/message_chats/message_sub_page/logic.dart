@@ -32,54 +32,54 @@ class MessageSubController extends BaseListController<MessageSubState> {
     }
   }
 
-  Future<void> initChatBreadNav() async {
-    List<ChatBreadcrumbNav> companyItems = [];
-    for (var company in relationCtrl.user.companys) {
-      companyItems.add(
-        createNav(
-            company.id,
-            company.session,
-            [
-              createNav(
-                "${company.id}0",
-                company.session,
-                company.memberChats
-                    .map((item) => createNav(item.sessionId, item, []))
-                    .toList(),
-              ),
-              ...company.cohortChats
-                  .where((i) => i.isMyChat)
-                  .map((item) => createNav(item.sessionId, item, [],
-                      spaceEnum: SpaceEnum.departments))
-                  .toList(),
-            ],
-            type: ChatType.list,
-            spaceEnum: SpaceEnum.company),
-      );
-    }
-    state.nav = ChatBreadcrumbNav(children: [
-      createNav(
-          relationCtrl.user.id,
-          relationCtrl.user.session,
-          [
-            createNav(
-              "${relationCtrl.user.id}0",
-              relationCtrl.user.session,
-              relationCtrl.user.memberChats
-                  .map((chat) => createNav(chat.sessionId, chat, [],
-                      spaceEnum: SpaceEnum.person))
-                  .toList(),
-            ),
-            ...relationCtrl.user.cohortChats
-                .where((i) => i.isMyChat)
-                .map((item) => createNav(item.sessionId, item, [],
-                    spaceEnum: SpaceEnum.departments))
-                .toList(),
-          ],
-          type: ChatType.list),
-      ...companyItems,
-    ], name: "沟通", target: relationCtrl.user.session);
-  }
+  // Future<void> initChatBreadNav() async {
+  //   List<ChatBreadcrumbNav> companyItems = [];
+  //   for (var company in relationCtrl.user.companys) {
+  //     companyItems.add(
+  //       createNav(
+  //           company.id,
+  //           company.session,
+  //           [
+  //             createNav(
+  //               "${company.id}0",
+  //               company.session,
+  //               company.memberChats
+  //                   .map((item) => createNav(item.sessionId, item, []))
+  //                   .toList(),
+  //             ),
+  //             ...company.cohortChats
+  //                 .where((i) => i.isMyChat)
+  //                 .map((item) => createNav(item.sessionId, item, [],
+  //                     spaceEnum: SpaceEnum.departments))
+  //                 .toList(),
+  //           ],
+  //           type: ChatType.list,
+  //           spaceEnum: SpaceEnum.company),
+  //     );
+  //   }
+  //   state.nav = ChatBreadcrumbNav(children: [
+  //     createNav(
+  //         relationCtrl.user.id,
+  //         relationCtrl.user.session,
+  //         [
+  //           createNav(
+  //             "${relationCtrl.user.id}0",
+  //             relationCtrl.user.session,
+  //             relationCtrl.user.memberChats
+  //                 .map((chat) => createNav(chat.sessionId, chat, [],
+  //                     spaceEnum: SpaceEnum.person))
+  //                 .toList(),
+  //           ),
+  //           ...relationCtrl.user.cohortChats
+  //               .where((i) => i.isMyChat)
+  //               .map((item) => createNav(item.sessionId, item, [],
+  //                   spaceEnum: SpaceEnum.departments))
+  //               .toList(),
+  //         ],
+  //         type: ChatType.list),
+  //     ...companyItems,
+  //   ], name: "沟通", target: relationCtrl.user.session);
+  // }
 
   ChatBreadcrumbNav createNav(
       String id, ISession target, List<ChatBreadcrumbNav> children,

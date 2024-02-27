@@ -19,6 +19,20 @@ class IconsUtils {
       XImage.relation: "assets/icons/relation.svg",
       //关系线条
       XImage.relationOutline: "assets/icons/relation.svg",
+
+      ///工作台图标
+      ///
+      ///办事
+      XImage.homeWork: "assets/icons/home_work.svg",
+
+      ///任务
+      XImage.homeTask: "assets/icons/home_task.svg",
+
+      ///提醒
+      XImage.homeRemind: "assets/icons/home_remind.svg",
+
+      ///未读消息
+      XImage.homeChat: "assets/icons/home_chat.svg",
       //系统logo
       XImage.logo: "assets/icons/logo.png",
       //动态
@@ -55,6 +69,9 @@ class IconsUtils {
 
       //目录
       XImage.folder: "assets/icons/folder.svg",
+
+      ///属性
+      XImage.property: "assets/icons/property.svg",
       //资源
       XImage.folderStore: "assets/icons/folder_store.svg",
       //用户
@@ -68,19 +85,22 @@ class IconsUtils {
       //单位
       XImage.unit: "assets/icons/Communication_Unit-1.svg",
       //pdf
-      XImage.pdf: "assets/icons/file_pdf.svg",
+      XImage.pdf: "assets/icons/pdf.svg",
       //word
-      XImage.word: "assets/icons/file_word.svg",
+      XImage.word: "assets/icons/word.svg",
       //excel
-      XImage.excel: "assets/icons/file_excel.svg",
+      XImage.excel: "assets/icons/excel.svg",
       //ppt
       XImage.ppt: "assets/icons/file_ppt.svg",
       //音频
-      XImage.music: "assets/icons/file_music.svg",
+      XImage.music: "assets/icons/audio.svg",
       //视频
       XImage.video: "assets/icons/file_video.svg",
       //图片
-      XImage.image: "assets/icons/file_image.svg",
+      XImage.image: "assets/icons/image.svg",
+
+      ///app应用
+      XImage.app: "assets/icons/File_Application.svg",
 
       ///搜索
       XImage.search: "assets/icons/search.svg",
@@ -110,10 +130,10 @@ class IconsUtils {
       XImage.copyOutline: "assets/icons/copyOutline.svg",
 
       ///引用
-      XImage.quote: "assets/icons/Forward.svg",
+      XImage.quote: "assets/icons/devices-share.svg",
 
       ///撤回
-      XImage.recall: "assets/icons/Forward.svg",
+      XImage.recall: "assets/icons/message-x.svg",
 
       ///评论线条
       XImage.commentOutline: "assets/icons/Communication.svg",
@@ -123,6 +143,33 @@ class IconsUtils {
 
       ///表单办事
       XImage.formWork: "assets/icons/work_1.svg",
+
+      ///办事-申请加入人员
+      XImage.workApplyAddPerson: "assets/icons/work_apply_add_person.svg",
+
+      ///办事-申请加入单位
+      XImage.workApplyAddUnit: "assets/icons/work_apply_add_unit.svg",
+
+      ///办事-申请加入群组
+      XImage.workApplyAddGroup: "assets/icons/work_apply_add_group.svg",
+
+      ///办事-申请加入存储资源
+      XImage.workApplyAddStorage: "assets/icons/work_apply_add_storage.svg",
+
+      ///办事-申请加入群
+      XImage.workApplyAddCohort: "assets/icons/work_apply_add_cohort.svg",
+
+      ///应用
+      XImage.application: "assets/icons/application.svg",
+
+      ///动态
+      XImage.activity: "assets/icons/activity.svg",
+
+      ///字典
+      XImage.dictionary: "assets/icons/dictionary.svg",
+
+      ///分类
+      XImage.species: "assets/icons/species.svg",
 
       // "defalutAvatar": "assets/icons/defalut_avatar.png",
       // 'joinFriend': "assets/icons/joinFriend.svg",
@@ -161,7 +208,7 @@ class IconsUtils {
 
   static String workDefaultAvatar(String typeName) {
     String defaultAvatar = '';
-    if (typeName == WorkType.add.label) {
+    if (typeName == WorkType.addPerson.label) {
       defaultAvatar = AssetsImages.workAdd;
     } else if (typeName == WorkType.thing.label) {
       defaultAvatar = AssetsImages.workThing;

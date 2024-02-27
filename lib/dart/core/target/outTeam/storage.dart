@@ -33,8 +33,11 @@ class Storage extends Target implements IStorage {
               TargetType.hospital,
               TargetType.university,
               TargetType.person,
-            ]);
+            ]) {
+    // this.children = this.createStandardDirectory(StoreStandardDirectory);
+  }
 
+  // List<StandardDirectory> children;
   @override
   final XTarget metadata;
   @override

@@ -40,7 +40,7 @@ class ActivityComment extends StatelessWidget {
   }
 
   List<Widget> getUserAvatar(String userId) {
-    XEntity? entity = relationCtrl.user.findMetadata<XEntity>(userId);
+    XEntity? entity = relationCtrl.user?.findMetadata<XEntity>(userId);
     return [
       Padding(padding: EdgeInsets.only(left: 5.w)),
       TeamAvatar(

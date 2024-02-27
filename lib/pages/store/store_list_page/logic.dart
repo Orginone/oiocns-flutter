@@ -36,16 +36,16 @@ class StoreListController extends BaseListController<StoreListState> {
   ///点击tab标签调用
   ///加载全部数据
   loadAllData() async {
-    List<ICompany> joinedCompanies = relationCtrl.user.companys;
+    List<ICompany> joinedCompanies = relationCtrl.user?.companys ?? [];
 
     List<StoreTreeNavModel> user = [];
     List<StoreTreeNavModel> organization = [];
     List<StoreTreeNavModel> children = [];
 
     user.add(StoreTreeNavModel(
-      name: relationCtrl.provider.user.metadata.name ?? "",
-      id: relationCtrl.provider.user.metadata.id ?? "",
-      image: relationCtrl.provider.user.metadata.avatarThumbnail(),
+      name: relationCtrl.provider.user?.metadata.name ?? "",
+      id: relationCtrl.provider.user?.metadata.id ?? "",
+      image: relationCtrl.provider.user?.metadata.avatarThumbnail(),
       children: [],
       space: relationCtrl.provider.user,
       spaceEnum: SpaceEnum.user,

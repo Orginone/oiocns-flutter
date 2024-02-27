@@ -74,8 +74,10 @@ class ProcessInfoPage
               !snapshot.hasData) {
             return Container();
           }
-          Widget child = testMappingComponents[element.field.type ?? ""]!(
-              element.field, relationCtrl.user);
+          Widget child = null != relationCtrl.user
+              ? testMappingComponents[element.field.type ?? ""]!(
+                  element.field, relationCtrl.user!)
+              : Container();
           return child;
         },
         future: controller.loadMainFieldData(element, info),

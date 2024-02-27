@@ -109,7 +109,8 @@ abstract class Team extends Entity<XTarget> implements ITeam {
     }
     List<String> gtags = [...super.groupTags];
     if (metadata.belongId != space?.id) {
-      if (user?.findShareById(belongId).name != null) {
+      String? name = user?.findShareById(belongId).name;
+      if (name != null && name.isNotEmpty) {
         gtags.add(user!.findShareById(belongId).name);
       }
     }

@@ -4,19 +4,22 @@ import 'package:orginone/components/index.dart';
 import 'package:orginone/components/widgets/infoListPage/infoListPage.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/public/entity.dart';
+import 'package:orginone/utils/load_image.dart';
 
 /// 静态组件
 abstract class OrginoneStatelessWidget extends StatelessWidget
     with _OrginoneController {
-  late dynamic data;
+  late dynamic _data;
+
+  dynamic get data => _data;
 
   OrginoneStatelessWidget({super.key, data}) {
-    this.data = data ?? RoutePages.getParentRouteParam();
+    _data = data ?? RoutePages.getParentRouteParam();
   }
 
   @override
   Widget build(BuildContext context) {
-    return _build(context, data);
+    return _build(context, _data);
   }
 }
 
@@ -47,9 +50,15 @@ mixin _OrginoneController {
         // backgroundColor: Colors.white,
         // titleName: data.name ?? "详情",
         titleWidget: _title(data),
+        centerTitle: false,
+        titleSpacing: 0,
+        leadingWidth: 35,
+        // actions: [XImage.localImage(XImage.user)],
+        // leading: XImage.localImage(XImage.user),
         operations: buildButtons(context, data),
-        toolbarHeight: _getToolbarHeight(data),
+        // toolbarHeight: _getToolbarHeight(data),
         body: Container(
+          color: const Color(0xFFF0F0F0),
           margin: hasTabs ? null : EdgeInsets.symmetric(vertical: 1.h),
           decoration: hasTabs ? null : const BoxDecoration(color: Colors.white),
           child: body,
@@ -90,11 +99,29 @@ mixin _OrginoneController {
     //   name += "(${state.chat.members.length})";
     // }
     var spaceName = "";
-    if (data is IEntity) spaceName = data.groupTags.join(" | ");
-    return Column(
+    if (data is IEntity) {
+      spaceName = data.groupTags.reversed.firstWhere(
+          (element) => element != "未读"); //data.groupTags.join(" | ");
+    }
+    return Row(
       children: [
-        Text(name, style: XFonts.size24Black3),
-        Text(spaceName, style: XFonts.size16Black9),
+        Padding(
+          padding: const EdgeInsets.only(right: 5),
+          child: XImage.entityIcon(data, width: 44.w),
+        ),
+        Expanded(
+            child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(name,
+                maxLines: 1,
+                style: XFonts.size26Black3
+                    .merge(const TextStyle(overflow: TextOverflow.ellipsis))),
+            // Padding(
+            //     padding: const EdgeInsets.only(top: 2),
+            //     child: Text(spaceName, style: XFonts.size16Black9)),
+          ],
+        ))
       ],
     );
   }

@@ -836,11 +836,11 @@ class ActivityCommentBoxController with WidgetsBindingObserver {
   }
 
   void imagePicked(XFile pickedImage, ISession chat) async {
-    var docDir = relationCtrl.user.directory;
+    var docDir = relationCtrl.user?.directory;
     String ext = pickedImage.name.split('.').last;
 
     var save = ChatMessageType.fromFileUpload(
-        relationCtrl.user.id,
+        relationCtrl.user?.id ?? "",
         chat.sessionId,
         chat.sessionId,
         pickedImage.name,
@@ -850,7 +850,7 @@ class ActivityCommentBoxController with WidgetsBindingObserver {
     chat.messages.insert(0, msg);
     //chat.chatdata.value.lastMessage!
 
-    var item = await docDir.createFile(
+    var item = await docDir?.createFile(
       File(pickedImage.path),
       p: (progress) {
         // var msg = chat.messages
@@ -870,7 +870,7 @@ class ActivityCommentBoxController with WidgetsBindingObserver {
   }
 
   Future<void> filePicked(PlatformFile file, ISession chat) async {
-    var docDir = relationCtrl.user.directory;
+    var docDir = relationCtrl.user?.directory;
 
     String ext = file.name.split('.').last;
 
@@ -881,7 +881,7 @@ class ActivityCommentBoxController with WidgetsBindingObserver {
 
     var file1 = File(file.path!);
     var save = ChatMessageType.fromFileUpload(
-        relationCtrl.user.id,
+        relationCtrl.user?.id ?? "",
         chat.sessionId,
         chat.sessionId,
         file.name,
@@ -891,7 +891,7 @@ class ActivityCommentBoxController with WidgetsBindingObserver {
     var msg = Message(save, chat);
     chat.messages.insert(0, msg);
 
-    var item = await docDir.createFile(
+    var item = await docDir?.createFile(
       file1,
       p: (progress) {
         //TODO:无此方法

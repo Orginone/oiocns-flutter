@@ -7741,3 +7741,42 @@ class DiskInfoType {
         fsTotalSize = json['fsTotalSize'] ?? 0,
         getTime = json['getTime'];
 }
+
+// 标准目录
+class StandardDirectoryType extends XDirectory {
+  // 排序
+  int sort;
+  // 内容支持类型
+  List<DirectoryType>? accept;
+  // 子级目录
+  List<StandardDirectoryType>? children;
+
+  StandardDirectoryType(
+      {required this.sort,
+      this.accept,
+      this.children,
+      super.directoryId = "",
+      super.id = "",
+      super.isDeleted = false});
+  StandardDirectoryType.fromJson(Map<String, dynamic> json)
+      : sort = json['sort'] ?? 0,
+        accept = json['accept'] != null
+            ? Lists.fromList(json['accept'],
+                (element) => DirectoryType.getType(json['accept']))
+            : null,
+        children = json['children'] != null
+            ? Lists.fromList(json['children'], StandardDirectoryType.fromJson)
+            : null,
+        super.fromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'code': code,
+      'sort': sort,
+      'accept': accept?.map((e) => e.label).toList(),
+      'children': children?.map((e) => e.toJson()).toList(),
+    };
+  }
+}

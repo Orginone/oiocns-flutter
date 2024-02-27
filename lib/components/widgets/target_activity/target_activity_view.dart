@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 import 'package:getwidget/components/button/gf_icon_button.dart';
+import 'package:orginone/common/routers/pages.dart';
 import 'package:orginone/components/widgets/system/gy_scaffold.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
@@ -26,7 +25,7 @@ class TargetActivityView
       titleWidget: _title(),
       actions: _actions(),
       body: ActivityCommentBox(
-        body: const TargetActivityList(),
+        body: TargetActivityList(),
       ),
     );
   }
@@ -88,11 +87,12 @@ class TargetActivityViewState extends BaseGetState {
   RxInt activityCount = 1.obs;
 
   TargetActivityViewState() {
-    if (Get.arguments is ActivityMessage) {
-      activityMessage = Get.arguments;
+    dynamic params = RoutePages.getRouteParams();
+    if (params is ActivityMessage) {
+      activityMessage = params;
       activity = activityMessage!.activity;
-    } else {
-      activity = Get.arguments;
+    } else if (params is IActivity) {
+      activity = params;
       activityCount.value = activity.activityList.length;
     }
     scrollKey = GlobalKey();

@@ -28,12 +28,12 @@ class UserInfoController extends BaseController<UserInfoState>
 
   ///大概有问题
   Future<void> init() async {
-    await relationCtrl.user.deepLoad(reload: true);
-    var users = await relationCtrl.user.loadMembers(reload: true);
+    await relationCtrl.user?.deepLoad(reload: true);
+    var users = await relationCtrl.user?.loadMembers(reload: true);
     state.unitMember.clear();
     state.joinCompany.clear();
     state.unitMember.addAll(users ?? []);
-    state.joinCompany.addAll(relationCtrl.user.companys ?? []);
+    state.joinCompany.addAll(relationCtrl.user?.companys ?? []);
   }
 
   void changeView(int index) {
@@ -51,7 +51,7 @@ class UserInfoController extends BaseController<UserInfoState>
             title: "添加好友",
             hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {
-            bool success = await relationCtrl.user.pullMembers(list);
+            bool success = await relationCtrl.user?.pullMembers(list) ?? false;
             if (success) {
               ToastUtils.showMsg(msg: "添加成功");
             } else {
@@ -65,7 +65,7 @@ class UserInfoController extends BaseController<UserInfoState>
             title: "加入单位",
             hint: "请输入单位的社会统一信用代码", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {
-            await relationCtrl.user.applyJoin(list);
+            await relationCtrl.user?.applyJoin(list);
           }
         });
         break;
@@ -74,7 +74,7 @@ class UserInfoController extends BaseController<UserInfoState>
 
   void removeMember(String data) async {
     var user = state.unitMember.firstWhere((element) => element.code == data);
-    bool success = await relationCtrl.user.removeMembers([user]);
+    bool success = await relationCtrl.user?.removeMembers([user]) ?? false;
     if (success) {
       state.unitMember.removeWhere((element) => element.code == data);
       state.unitMember.refresh();

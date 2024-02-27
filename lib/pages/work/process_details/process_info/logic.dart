@@ -37,7 +37,7 @@ class ProcessInfoController extends BaseController<ProcessInfoState> {
         case "selectDepartment":
         case "selectGroup":
           field.field.defaultData.value =
-              relationCtrl.user.findShareById(value);
+              relationCtrl.user?.findShareById(value);
           return field.field.defaultData.value.name;
         case "select":
         case 'switch':

@@ -79,7 +79,7 @@ class MemberListPage extends OrginoneStatelessWidget {
         if (children.isNotEmpty) {
           RoutePages.jumpRelation(parentData: data, listDatas: children);
         } else if (data is XTarget) {
-          ISession? session = relationCtrl.user.findMemberChat(data.id);
+          ISession? session = relationCtrl.user?.findMemberChat(data.id);
           if (null != session) {
             RoutePages.jumpRelationInfo(data: session);
           } else {

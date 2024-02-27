@@ -229,29 +229,31 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
 
   Future<List<XTarget>> search(String code) async {
     List<XTarget>? targets;
-    switch (targetType) {
-      case TargetType.group:
-        targets = await relationCtrl.user
-            .searchTargets(code, [TargetType.group.label]);
-        break;
-      case TargetType.cohort:
-        targets = await relationCtrl.user
-            .searchTargets(code, [TargetType.cohort.label]);
-        break;
-      case TargetType.person:
-        targets = await relationCtrl.user
-            .searchTargets(code, [TargetType.person.label]);
-        break;
-      case TargetType.company:
-      case TargetType.hospital:
-      case TargetType.university:
-        targets = await relationCtrl.user.searchTargets(code, [
-          TargetType.company.label,
-          TargetType.hospital.label,
-          TargetType.university.label
-        ]);
-        break;
-      default:
+    if (null != relationCtrl.user) {
+      switch (targetType) {
+        case TargetType.group:
+          targets = await relationCtrl.user!
+              .searchTargets(code, [TargetType.group.label]);
+          break;
+        case TargetType.cohort:
+          targets = await relationCtrl.user!
+              .searchTargets(code, [TargetType.cohort.label]);
+          break;
+        case TargetType.person:
+          targets = await relationCtrl.user!
+              .searchTargets(code, [TargetType.person.label]);
+          break;
+        case TargetType.company:
+        case TargetType.hospital:
+        case TargetType.university:
+          targets = await relationCtrl.user!.searchTargets(code, [
+            TargetType.company.label,
+            TargetType.hospital.label,
+            TargetType.university.label
+          ]);
+          break;
+        default:
+      }
     }
     return targets ?? [];
   }

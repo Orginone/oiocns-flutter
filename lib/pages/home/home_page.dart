@@ -15,6 +15,7 @@ import 'package:orginone/pages/store/store_page.dart';
 import 'package:orginone/pages/work/work_page.dart';
 import 'package:orginone/utils/load_image.dart';
 import 'package:orginone/utils/log/log_util.dart';
+import 'package:orginone/utils/system/update_utils.dart';
 import 'package:orginone/utils/toast_utils.dart';
 import 'package:orginone/config/unified.dart';
 
@@ -30,11 +31,15 @@ class HomePage extends OrginoneStatefulWidget {
 class _HomePageState extends OrginoneStatefulState<HomePage> {
   var currentIndex = 0.obs;
   DateTime? lastCloseApp;
-  // late TabController tabController;
+  @override
+  void initState() {
+    super.initState();
+    AppUpdate.instance.update();
+  }
 
   @override
   Widget buildWidget(BuildContext context, dynamic data) {
-    LogUtil.d(">>>>>>>=======home");
+    // LogUtil.d(">>>>>>>=======home");
     return WillPopScope(
         onWillPop: () async {
           if (null == data &&
@@ -50,6 +55,7 @@ class _HomePageState extends OrginoneStatefulState<HomePage> {
         child: DefaultTabController(
             length: 5,
             initialIndex: _getTabCurrentIndex(),
+            animationDuration: Duration.zero,
             child: Column(
               children: [
                 Expanded(
@@ -62,13 +68,13 @@ class _HomePageState extends OrginoneStatefulState<HomePage> {
                       //   ),
                       Expanded(
                         child: ExtendedTabBarView(
-                          shouldIgnorePointerWhenScrolling: false,
+                          // shouldIgnorePointerWhenScrolling: false,
                           children: [
                             KeepAliveWidget(child: ChatPage()),
                             KeepAliveWidget(child: WorkPage()),
                             KeepAliveWidget(child: PortalPage()),
-                            KeepAliveWidget(child: StorePage()),
-                            KeepAliveWidget(child: RelationPage()),
+                            const KeepAliveWidget(child: StorePage()),
+                            const KeepAliveWidget(child: RelationPage()),
                           ],
                         ),
                       ),
@@ -84,6 +90,7 @@ class _HomePageState extends OrginoneStatefulState<HomePage> {
   Widget bottomButton() {
     return Container(
       decoration: BoxDecoration(
+        color: Colors.white,
         border: Border(
           top: BorderSide(color: Colors.grey.shade400, width: 0.4),
         ),
@@ -100,7 +107,6 @@ class _HomePageState extends OrginoneStatefulState<HomePage> {
         ],
         onTap: (index) {
           LogUtil.d(">>>>====ModelTabs.onTap");
-          RoutePages.clearRoute();
           jumpTab(HomeEnum.values[index]);
         },
         indicator: const BoxDecoration(),
@@ -113,8 +119,8 @@ class _HomePageState extends OrginoneStatefulState<HomePage> {
     required String path,
   }) {
     return Obx(() {
-      var isSelected = relationCtrl.homeEnum.value == homeEnum;
-      LogUtil.d('>>>>>>>======$isSelected ${relationCtrl.homeEnum} $homeEnum');
+      var isSelected = relationCtrl.homeEnum == homeEnum;
+      // LogUtil.d('>>>>>>>======$isSelected ${relationCtrl.homeEnum} $homeEnum');
       var mgsCount = 0;
       if (homeEnum == HomeEnum.work) {
         mgsCount = relationCtrl.provider.work?.todos.length ?? 0;
@@ -132,7 +138,9 @@ class _HomePageState extends OrginoneStatefulState<HomePage> {
 
   void jumpTab(HomeEnum relation) {
     relationCtrl.homeEnum.value = relation;
+    RoutePages.clearRoute();
     setState(() {});
+    // RoutePages.jumpHome(home: relation, preventDuplicates: true);
   }
 
   int _getTabCurrentIndex() {
@@ -142,18 +150,18 @@ class _HomePageState extends OrginoneStatefulState<HomePage> {
 
   @override
   List<Widget>? buildButtons(BuildContext context, dynamic data) {
-    if (relationCtrl.homeEnum.value == HomeEnum.work) {
+    if (relationCtrl.homeEnum == HomeEnum.work) {
       return XImage.operationIcons([
         XImage.search,
         XImage.scan,
         XImage.startWork,
       ]);
-    } else if (relationCtrl.homeEnum.value == HomeEnum.store) {
+    } else if (relationCtrl.homeEnum == HomeEnum.store) {
       return XImage.operationIcons([
         XImage.addStorage,
         XImage.search,
       ]);
-    } else if (relationCtrl.homeEnum.value == HomeEnum.relation) {
+    } else if (relationCtrl.homeEnum == HomeEnum.relation) {
       return XImage.operationIcons([
         XImage.joinGroup,
         XImage.search,

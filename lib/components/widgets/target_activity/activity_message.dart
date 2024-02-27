@@ -55,10 +55,11 @@ class ActivityMessageWidget extends StatelessWidget {
                 description: description(context),
                 onTap: hideResource
                     ? () {
-                        Get.toNamed(
-                          Routers.targetActivity,
-                          arguments: item.value,
-                        );
+                        RoutePages.jumpActivityInfo(item.value);
+                        // Get.toNamed(
+                        //   Routers.targetActivity,
+                        //   arguments: item.value,
+                        // );
                       }
                     : null,
               ),
@@ -90,8 +91,10 @@ class ActivityMessageWidget extends StatelessWidget {
   }
 
   Widget subTitle() {
-    XEntity? entity = relationCtrl.user
-        .findMetadata<XEntity>(item.value.metadata.createUser!);
+    XEntity? entity = null != relationCtrl.user
+        ? relationCtrl.user!
+            .findMetadata<XEntity>(item.value.metadata.createUser!)
+        : null;
     return Row(
       children: [
         // TeamAvatar(
@@ -148,12 +151,13 @@ class ActivityMessageWidget extends StatelessWidget {
     //   backgroundImage: AssetImage(activity.typeName),
     // );
     return Column(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-      TeamAvatar(
-        info: TeamTypeInfo(
-            share: activity.metadata.shareIcon() ??
-                model.ShareIcon(name: '', typeName: activity.typeName ?? "")),
-        size: 35.w,
-      ),
+      XImage.entityIcon(activity.metadata, width: 35)
+      // TeamAvatar(
+      //   info: TeamTypeInfo(
+      //       share: activity.metadata.shareIcon() ??
+      //           model.ShareIcon(name: '', typeName: activity.typeName ?? "")),
+      //   size: 35.w,
+      // ),
     ]);
   }
 
@@ -224,7 +228,7 @@ class RenderCtxMore extends StatelessWidget {
   Future<void> handleReply(BuildContext context, [String userId = '']) async {
     replyTo = null;
     if (userId.isNotEmpty) {
-      var user = await relationCtrl.user.findEntityAsync(userId);
+      var user = await relationCtrl.user?.findEntityAsync(userId);
       replyTo = user;
     }
     ShowCommentBoxNotification((text) async {
@@ -259,8 +263,8 @@ class RenderCtxMore extends StatelessWidget {
                 textColor: XColors.black3,
               ),
               Offstage(
-                  offstage:
-                      !item.value.metadata.likes.contains(relationCtrl.user.id),
+                  offstage: !item.value.metadata.likes
+                      .contains(relationCtrl.user?.id),
                   child: Padding(
                     padding: EdgeInsets.only(left: 5.w),
                     child: ButtonWidget.iconTextOutlined(
@@ -279,7 +283,7 @@ class RenderCtxMore extends StatelessWidget {
                   )),
               Offstage(
                 offstage:
-                    item.value.metadata.likes.contains(relationCtrl.user.id),
+                    item.value.metadata.likes.contains(relationCtrl.user?.id),
                 child: ButtonWidget.iconTextOutlined(
                   onTap: () async {
                     await item.value.like();
@@ -381,8 +385,10 @@ class RenderCtxMore extends StatelessWidget {
 
   //渲染发布者信息
   Widget renderTags() {
-    XEntity? entity = relationCtrl.user
-        .findMetadata<XEntity>(item.value.metadata.createUser!);
+    XEntity? entity = null != relationCtrl.user
+        ? relationCtrl.user!
+            .findMetadata<XEntity>(item.value.metadata.createUser!)
+        : null;
     var showLikes = item.value.metadata.likes.isEmpty &&
         item.value.metadata.comments.isEmpty;
     return Container(
@@ -436,7 +442,7 @@ class RenderCtxMore extends StatelessWidget {
   }
 
   List<Widget> getUserAvatar(String userId) {
-    XEntity? entity = relationCtrl.user.findMetadata<XEntity>(userId);
+    XEntity? entity = relationCtrl.user?.findMetadata<XEntity>(userId);
     return [
       Padding(padding: EdgeInsets.only(left: 5.w)),
       TeamAvatar(

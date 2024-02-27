@@ -1,10 +1,15 @@
 import 'package:get/get.dart';
 import 'package:orginone/utils/load_image.dart';
+import 'package:orginone/utils/regex/regex_constants.dart';
 
 /// 用户对象类型
 enum WorkType {
   //外部用户
-  add("加用户", XImage.addFriend),
+  addPerson("加人员", XImage.workApplyAddPerson),
+  addUnit("加单位", XImage.workApplyAddUnit),
+  addGroup("加群组", XImage.workApplyAddGroup),
+  addStorage("加存储资源", XImage.workApplyAddStorage),
+  addCohort("加组织群", XImage.workApplyAddCohort),
 
   thing("事项", XImage.formWork);
 
@@ -46,6 +51,7 @@ enum TargetType {
   hospital("医院", XImage.folder),
   storage("存储资源", XImage.folderStore),
   jobCohort("工作群", XImage.folder), //内核不存在了
+  activity("动态", XImage.activity),
   ;
 
   const TargetType(this.label, this.icon);
@@ -65,6 +71,7 @@ enum TargetType {
 }
 
 /// 目录分类
+// @Deprecated("DirectoryType")
 enum DirectoryGroupType {
   // 人员
   person("人员", [SpaceEnum.groups, SpaceEnum.resources]),
@@ -323,10 +330,10 @@ enum TodoType {
 
 enum SpaceEnum {
   directory("目录", XImage.folder),
-  species("分类", XImage.folder),
+  species("分类", XImage.species),
   filter("筛选", XImage.folder),
-  property("属性", XImage.folder),
-  applications("应用", XImage.folder),
+  property("属性", XImage.property),
+  applications("应用", XImage.application),
   module("模块", XImage.folder),
   work("办事", XImage.folder),
   form("表单", XImage.folder),
@@ -367,7 +374,7 @@ enum SpaceEnum {
   mirroring("镜像", XImage.folder),
 
   /// 字典
-  dict("字典", XImage.folder),
+  dict("字典", XImage.dictionary),
   ;
 
   final String label;
@@ -386,44 +393,57 @@ enum SpaceEnum {
 }
 
 enum StorageFileType {
-  ///文件
-  file("文件", XImage.file, []),
-
   ///音频
-  music("音频", XImage.music, ["video/mp3"]),
+  music("音频", XImage.music, ["video/mp3"], RegexConstants.audio),
 
   ///视频
-  video("视频", XImage.video, ["video/mp4"]),
+  video("视频", XImage.video, ["video/mp4"], RegexConstants.vector),
 
   ///图片
-  image("图片", XImage.image,
-      ["image/png", "image/jpeg", "image/jpg", "image/svg"]),
+  image(
+      "图片",
+      XImage.image,
+      ["image/png", "image/jpeg", "image/jpg", "image/svg"],
+      RegexConstants.image),
 
   ///pdf
-  pdf("pdf", XImage.pdf, ["pdf"]),
+  pdf("pdf", XImage.pdf, ["application/pdf"], RegexConstants.pdf),
 
   ///excel
-  excel("excel", XImage.excel, ["xls", "xlsx"]),
+  excel("excel", XImage.excel, ["xls", "xlsx"], RegexConstants.excel),
 
   ///word
-  word("word", XImage.word, ["doc", "docx"]),
+  word("word", XImage.word, ["doc", "docx"], RegexConstants.doc),
 
   ///ppt
-  ppt("ppt", XImage.ppt, ["ppt", "pptx"]),
+  ppt("ppt", XImage.ppt, ["ppt", "pptx"], RegexConstants.ppt),
+
+  ///app
+  app("app", XImage.app, ["apk", "ipa"], RegexConstants.app),
+
+  ///文件
+  file("文件", XImage.file, [], r'.*$'),
   ;
 
   final String label;
   final String icon;
   final List<String> suffixes;
-  const StorageFileType(this.label, this.icon, this.suffixes);
+  final Pattern pattern;
+  const StorageFileType(this.label, this.icon, this.suffixes, this.pattern);
 
   static String getName(TargetType type) {
     return type.label;
   }
 
-  static StorageFileType getType(String name) {
+  static StorageFileType? getType(String name) {
     return StorageFileType.values
-            .firstWhereOrNull((element) => element.suffixes.contains(name)) ??
+        .firstWhereOrNull((element) => element.suffixes.contains(name));
+  }
+
+  static StorageFileType getTypeByFileName(String name) {
+    return StorageFileType.values.firstWhereOrNull((element) =>
+            RegExp(element.pattern.toString(), caseSensitive: false)
+                .hasMatch(name)) ??
         file;
   }
 }
@@ -476,4 +496,65 @@ enum PopupMenuKey {
   final String label;
 
   const PopupMenuKey(this.label);
+}
+
+/// 文件类型
+enum DirectoryType {
+  /// 一级类目
+  ///
+  /// 存储资源
+  Storage("存储资源"),
+
+  ///数据标准
+  DataStandard("数据标准"),
+
+  ///业务模型
+  Model("业务模型"),
+
+  ///应用
+  App("应用"),
+
+  ///文件
+  File("文件"),
+
+  ///代码
+  Code("代码"),
+
+  ///镜像
+  Mirror("镜像"),
+
+  /// 二级类目
+  ///
+  ///属性
+  Property("属性"),
+
+  ///分类
+  Species("分类"),
+
+  ///字典
+  Dict("字典"),
+
+  ///表单
+  Form("表单"),
+
+  ///报表
+  Report("报表"),
+
+  ///模板
+  PageTemplate("模板"),
+
+  ///迁移
+  Transfer("迁移");
+
+  const DirectoryType(this.label);
+
+  final String label;
+
+  static String getName(DirectoryType type) {
+    return type.label;
+  }
+
+  static DirectoryType getType(String name) {
+    return DirectoryType.values.firstWhere((element) => element.label == name);
+  }
 }

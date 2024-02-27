@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:orginone/dart/base/common/commands.dart';
 import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/chat/session.dart';
@@ -27,9 +28,17 @@ abstract class IPerson extends IBelong {
   late List<XIdProof> givedIdentitys;
   //用户缓存对象
   late XObject<Xbase> cacheObj;
+
+  /// 个人常用文件
+  late List<XCommon> commons;
   //拷贝的文件
   late Map<String, IFileInfo<XEntity>> copyFiles;
 
+  /// 更新常用
+  Future<bool> updateCommons(List<XCommon> datas);
+
+  /// 常用设置
+  Future<bool> toggleCommon(XCommon data, bool isSet);
   //根据ID查询共享信息
   ShareIcon findShareById(String id);
   //根据Id查询共享信息
@@ -56,12 +65,6 @@ abstract class IPerson extends IBelong {
 
 //人员类型实现
 class Person extends Belong implements IPerson {
-  Person(metadata) : super(metadata, []) {
-    cacheObj = XObject(metadata, 'target-cache', [], [key]);
-
-    ///TODO:FriendsActivity类需创建
-// friendsActivity = FriendsActivity(this);
-  }
   // @override
   // final XTarget metadata;
   @override
@@ -69,6 +72,10 @@ class Person extends Belong implements IPerson {
   late IActivity friendsActivity;
   @override
   late XObject<Xbase> cacheObj;
+
+  /// 个人常用文件
+  @override
+  late List<XCommon> commons;
   @override
   List<XIdProof> givedIdentitys = [];
 
@@ -76,6 +83,14 @@ class Person extends Belong implements IPerson {
   Map<String, IFileInfo<XEntity>> copyFiles = {};
   bool _cohortLoaded = false;
   bool _givedIdentityLoaded = false;
+
+  Person(metadata) : super(metadata, []) {
+    cacheObj = XObject(metadata, 'target-cache', [], [key]);
+    commons = [];
+
+    ///TODO:FriendsActivity类需创建
+// friendsActivity = FriendsActivity(this);
+  }
   @override
   Future<List<XIdProof>> loadGivedIdentitys({bool reload = false}) async {
     if (!_givedIdentityLoaded || reload) {
@@ -333,6 +348,7 @@ class Person extends Belong implements IPerson {
   @override
   Future<void> deepLoad({bool? reload = false}) async {
     await cacheObj.all();
+    await _loadCommons();
     await Future.wait([
       loadCohorts(reload: reload!),
       loadMembers(reload: reload),
@@ -373,8 +389,8 @@ class Person extends Belong implements IPerson {
   }
 
   @override
-  List<IFile> content({bool? args}) =>
-      [...cohorts.map((e) => e as IFile), ...storages.map((e) => e as IFile)];
+  List<IFileInfo<XEntity>> content({bool? args}) =>
+      [...cohorts.map((e) => e), ...storages.map((e) => e)];
   @override
   Future<XEntity?> findEntityAsync(String id) async {
     if (id.isEmpty) return null;
@@ -400,6 +416,37 @@ class Person extends Belong implements IPerson {
       typeName: metadata?.typeName ?? '',
       avatar: parseAvatar(metadata?.icon),
     );
+  }
+
+  @override
+  Future<bool> toggleCommon(XCommon data, bool isSet) async {
+    if (isSet) {
+      commons.insert(0, data);
+    } else {
+      commons = commons
+          .where(
+            (i) => !(i.id == data.id && i.spaceId == data.spaceId),
+          )
+          .toList();
+    }
+    if (await cacheObj.set('commons', commons)) {
+      await cacheObj.notity('commons', commons,
+          onlyTarget: true, ignoreSelf: false);
+      return true;
+    }
+    return false;
+  }
+
+  @override
+  Future<bool> updateCommons(List<XCommon> datas) async {
+    if (commons.isEmpty) return false;
+    commons = datas;
+    if (await cacheObj.set('commons', commons)) {
+      await cacheObj.notity('commons', commons,
+          onlyTarget: true, ignoreSelf: false);
+      return true;
+    }
+    return false;
   }
 
   Future<String> _removeJoinTarget(XTarget target) async {
@@ -451,6 +498,19 @@ class Person extends Belong implements IPerson {
   @override
   ICompany? findCompany(String id) {
     return companys.firstWhereOrNull((e) => e.id == id);
+  }
+
+  Future<void> _loadCommons() async {
+    var data = await cacheObj.get<List<XCommon>>('commons', XCommon.fromList);
+    if (null != data && data.isNotEmpty) {
+      commons = data;
+    }
+    cacheObj.subscribe('commons', (dynamic res) {
+      if (res && res is List<XCommon>) {
+        commons = res;
+        command.emitterFlag('commons', [true]);
+      }
+    });
   }
 
   @override

@@ -6,8 +6,8 @@ import 'package:orginone/pages/chat/message_chats/message_chats_state.dart';
 import 'package:orginone/utils/hive_utils.dart';
 
 class MessageChatsController extends BaseSubmenuController<MessageChatsState> {
-  @override
-  final MessageChatsState state = MessageChatsState();
+  // @override
+  // final MessageChatsState state = MessageChatsState();
 
   @override
   void onInit() {

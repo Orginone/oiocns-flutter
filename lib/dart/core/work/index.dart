@@ -145,14 +145,14 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
   }
 
   @override
-  List<IFile> content({bool? args}) {
+  List<IFileInfo<XEntity>> content({bool? args}) {
     if (node != null) {
       return forms
           .where(
             (a) => node!.forms!.indexWhere((s) => s.id == a.id) > -1,
           )
           .toList()
-          .map((e) => e as IFile)
+          .map((e) => e)
           .toList();
     }
     return [];
@@ -312,7 +312,7 @@ class Work extends FileInfo<XWorkDefine> implements IWork {
   }
 
   @override
-  set superior(IFile superior) {
+  set superior(IFileInfo<XEntity> superior) {
     // TODO: implement superior
   }
 }

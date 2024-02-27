@@ -15,7 +15,7 @@ class StoreTreeState extends BaseGroupNavListState<StoreTreeNavModel> {
 
     ///返回的时候才会执行
     if (model.value == null) {
-      var joinedCompanies = relationCtrl.user.companys;
+      var joinedCompanies = relationCtrl.user?.companys ?? [];
 
       List<StoreTreeNavModel> organization = [];
       for (var value in joinedCompanies) {
@@ -34,9 +34,9 @@ class StoreTreeState extends BaseGroupNavListState<StoreTreeNavModel> {
         name: HomeEnum.store.label,
         children: [
           StoreTreeNavModel(
-            name: relationCtrl.provider.user.metadata.name ?? "",
-            id: relationCtrl.provider.user.metadata.id ?? "",
-            image: relationCtrl.provider.user.metadata.avatarThumbnail(),
+            name: relationCtrl.provider.user?.metadata.name ?? "",
+            id: relationCtrl.provider.user?.metadata.id ?? "",
+            image: relationCtrl.provider.user?.metadata.avatarThumbnail(),
             children: [],
             space: relationCtrl.provider.user,
             spaceEnum: SpaceEnum.user,

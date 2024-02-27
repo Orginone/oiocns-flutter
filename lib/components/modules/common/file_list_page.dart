@@ -10,6 +10,7 @@ import 'package:orginone/dart/core/target/outTeam/group.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
+import 'package:orginone/dart/core/thing/standard/property.dart';
 import 'package:orginone/dart/core/thing/systemfile.dart';
 import 'package:orginone/utils/index.dart';
 
@@ -50,6 +51,7 @@ class _FileListPageState extends OrginoneStatefulState<FileListPage> {
     List<IEntity> directorys = [];
     directorys.addAll(loadDirectorys<T>(targtet));
     directorys.addAll(loadFiels<T>(targtet));
+    directorys.addAll(loadPropertys<T>(targtet));
     directorys = _filterDeleteed(directorys);
 
     return directorys;
@@ -62,6 +64,7 @@ class _FileListPageState extends OrginoneStatefulState<FileListPage> {
         .toList();
   }
 
+  ///加载目录
   List<IDirectory> loadDirectorys<T extends IDirectory>(T target) {
     List<IDirectory> directorys = target.children;
     LogUtil.d('>>>>>>======directorys ${directorys.length}');
@@ -75,6 +78,7 @@ class _FileListPageState extends OrginoneStatefulState<FileListPage> {
     return directorys;
   }
 
+  ///加载文件
   List<ISysFileInfo> loadFiels<T extends IDirectory>(T target) {
     List<ISysFileInfo> files = target.files;
     LogUtil.d('>>>>>>======files ${files.length}');
@@ -86,6 +90,20 @@ class _FileListPageState extends OrginoneStatefulState<FileListPage> {
       });
     }
     return files;
+  }
+
+  ///加载属性
+  List<IProperty> loadPropertys<T extends IDirectory>(T target) {
+    List<IProperty> propertys = target.standard.propertys;
+    print('>>>>>>======propertys ${propertys.length}');
+    if (propertys.isEmpty) {
+      target.standard.loadPropertys().then((value) {
+        if (value.isNotEmpty) {
+          setState(() {});
+        }
+      });
+    }
+    return propertys;
   }
 
   _buildList(BuildContext context, List datas) {
@@ -112,6 +130,8 @@ class _FileListPageState extends OrginoneStatefulState<FileListPage> {
             '>>>>>>======点击了列表项 ${item.name} ${item.id} ${children.length}');
         if (item is IDirectory) {
           RoutePages.jumpFileList(data: item);
+        } else if (item is SysFileInfo) {
+          RoutePages.jumpFile(file: item.shareInfo());
         } else {
           RoutePages.jumpRelationInfo(data: item);
         }

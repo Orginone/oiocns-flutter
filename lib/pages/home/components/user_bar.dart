@@ -61,8 +61,8 @@ class UserBar extends GetView<IndexController> {
             controller: controller.functionMenuController),
         Text(
           controller.homeEnum.value.label,
-          style:
-              AppTextStyles.titleLarge?.copyWith(fontWeight: FontWeight.w900),
+          style: AppTextStyles
+              .titleLarge, //?.copyWith(fontWeight: FontWeight.w900)
         ).paddingLeft(AppSpace.listRow),
       ],
     );
@@ -91,7 +91,7 @@ class UserBar extends GetView<IndexController> {
                 child: Row(
                   children: [
                     TextWidget(
-                      text: controller.provider.user.metadata.name ?? "",
+                      text: controller.provider.user?.metadata.name ?? "",
                       style: AppTextStyles.titleSmall
                           ?.copyWith(fontWeight: FontWeight.w900),
                     ),
@@ -104,7 +104,7 @@ class UserBar extends GetView<IndexController> {
                             controller.functionMenuController.hideMenu();
                             Get.toNamed(
                               Routers.shareQrCode,
-                              arguments: {"entity": controller.user.metadata},
+                              arguments: {"entity": controller.user?.metadata},
                             );
                           },
                           icon: Icon(
@@ -122,7 +122,7 @@ class UserBar extends GetView<IndexController> {
               SizedBox(
                 width: 240.w,
                 child: Text(
-                  controller.provider.user.metadata.remark ?? "",
+                  controller.provider.user?.metadata.remark ?? "",
                   overflow: TextOverflow.ellipsis,
                   maxLines: 1,
                   style: TextStyle(fontSize: 16.sp),

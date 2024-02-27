@@ -36,6 +36,8 @@ abstract class IApplication implements IStandardFileInfo<XApplication> {
   ///新建模块
   Future<XApplication?> createModule(XApplication data);
 
+  /// 搜索文件
+  Future<IFileInfo<XEntity>?> searchFile(String applicationId, String id);
   // ///接收模块变更消息
   // Future<bool> receiveMessage(String operate, XApplication data);
 }
@@ -73,10 +75,10 @@ class Application extends StandardFileInfo<XApplication>
   }
 
   @override
-  List<IFile> content({bool? args}) {
-    final List<IFile> fileList = [
-      ...children.map((e) => e as IFile),
-      ...works.map((e) => e as IFile)
+  List<IFileInfo<XEntity>> content({bool? args}) {
+    final List<IFileInfo<XEntity>> fileList = [
+      ...children.map((e) => e),
+      ...works.map((e) => e)
     ];
     fileList.sort((a, b) => DateTime.parse(a.metadata.updateTime ?? "")
         .compareTo(DateTime.parse(b.metadata.updateTime ?? "")));
@@ -227,6 +229,23 @@ class Application extends StandardFileInfo<XApplication>
   }
 
   @override
+  Future<IFileInfo<XEntity>?> searchFile(
+      String applicationId, String id) async {
+    if (this.id == applicationId) {
+      await loadContent();
+      return content().firstWhereOrNull((i) => i.id == id);
+    } else {
+      for (var item in children) {
+        var file = await item.searchFile(applicationId, id);
+        if (null != file) {
+          return file;
+        }
+      }
+    }
+    return null;
+  }
+
+  @override
   bool receive(String operate, dynamic data) {
     var d = data as XApplication;
     if (d.id == id) {
@@ -334,7 +353,7 @@ class Application extends StandardFileInfo<XApplication>
   }
 
   @override
-  set superior(IFile superior) {
+  set superior(IFileInfo<XEntity> superior) {
     // TODO: implement superior
   }
 }

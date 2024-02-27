@@ -1,5 +1,6 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/thing/resource.dart';
@@ -21,8 +22,11 @@ class StandardFiles {
   /// 属性
   List<IProperty> propertys = [];
 
-  /// 分类字典
+  /// 分类
   List<ISpecies> specieses = [];
+
+  ///字典
+  List<ISpecies> dicts = [];
 
   /// 目录
   List<IDirectory> directorys = [];
@@ -39,12 +43,19 @@ class StandardFiles {
   /// 迁移配置加载完成标志
   bool transfersLoaded = false;
 
-  /// 分类字典加载完成标志
+  /// 分类加载完成标志
   bool speciesesLoaded = false;
+
+  ///字典加载完成标志
+  bool dictsLoaded = false;
 
   /// 属性加载完成标志
   bool propertysLoaded = false;
-  StandardFiles(this.directory) {
+
+  /// 条件匹配名称
+  String matchName;
+
+  StandardFiles(this.directory, {this.matchName = "directoryId"}) {
     if (directory.parent == null) {
       subscribeNotity(directory);
     }
@@ -64,6 +75,7 @@ class StandardFiles {
       ...transfers,
       ...propertys,
       ...specieses,
+      ...dicts,
       ...directorys,
       ...applications,
       ...templates,
@@ -77,6 +89,7 @@ class StandardFiles {
       loadTransfers(reload: reload),
       loadPropertys(reload: reload),
       loadSpecieses(reload: reload),
+      loadDicts(reload: reload),
       loadTemplates(reload: reload),
     ]);
     return standardFiles;
@@ -87,7 +100,7 @@ class StandardFiles {
       formLoaded = true;
       dynamic options = <dynamic, dynamic>{};
       options['options'] = {
-        "match": {"directoryId": id}
+        "match": {matchName: id}
       };
       var data = await resource.formColl.loadSpace(options, (data) {
         return XForm.fromJson(data);
@@ -102,7 +115,7 @@ class StandardFiles {
       propertysLoaded = true;
       dynamic options = <dynamic, dynamic>{};
       options['options'] = {
-        "match": {"directoryId": id}
+        "match": {matchName: id}
       };
       var data = await resource.propertyColl
           .loadSpace(options, (json) => XProperty.fromJson(json));
@@ -116,7 +129,7 @@ class StandardFiles {
       speciesesLoaded = true;
       dynamic options = <dynamic, dynamic>{};
       options['options'] = {
-        "match": {"directoryId": id}
+        "match": {matchName: id, 'typeName': SpaceEnum.species.label}
       };
       var data = await resource.speciesColl
           .loadSpace(options, (json) => XSpecies.fromJson(json));
@@ -125,12 +138,26 @@ class StandardFiles {
     return specieses;
   }
 
+  Future<List<ISpecies>> loadDicts({bool reload = false}) async {
+    if (dictsLoaded == false || reload) {
+      dictsLoaded = true;
+      dynamic options = <dynamic, dynamic>{};
+      options['options'] = {
+        "match": {matchName: id, 'typeName': SpaceEnum.dict.label}
+      };
+      var data = await resource.speciesColl
+          .loadSpace(options, (json) => XSpecies.fromJson(json));
+      dicts = data.map((i) => Species(i, directory)).toList();
+    }
+    return dicts;
+  }
+
   Future<List<ITransfer>> loadTransfers({bool reload = false}) async {
     if (transfersLoaded == false || reload) {
       transfersLoaded = true;
       dynamic options = <dynamic, dynamic>{};
       options['options'] = {
-        "match": {"directoryId": id}
+        "match": {matchName: id}
       };
       var data = await resource.transferColl
           .loadSpace(options, (json) => XTransfer.fromJson(json));
@@ -142,7 +169,7 @@ class StandardFiles {
   Future<List<IApplication>> loadApplications({bool reload = false}) async {
     var apps = resource.applicationColl.cache
         .where(
-          (i) => i.directoryId == directory.id,
+          (i) => i.toJson()[matchName] == directory.id,
         )
         .toList();
     applications = apps
@@ -171,9 +198,11 @@ class StandardFiles {
   }
 
   Future<List<IPageTemplate>> loadTemplates({bool reload = false}) async {
-    var templates = resource.templateColl.cache.where(
-      (i) => i.directoryId == directory.id,
-    );
+    var templates = resource.templateColl.cache
+        .where(
+          (i) => i.directoryId == directory.id,
+        )
+        .toList();
     this.templates = templates.map((i) => PageTemplate(i, directory)).toList();
     return this.templates;
   }

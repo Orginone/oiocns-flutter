@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:orginone/common/routers/pages.dart';
 import 'package:orginone/components/widgets/common/others/keep_alive_widget.dart';
 import 'package:orginone/components/widgets/infoListPage/index.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
@@ -24,11 +26,19 @@ class PortalPage extends StatelessWidget {
   }
 
   void load() {
-    relationModel = InfoListPageModel(title: "门户", tabItems: [
-      TabItemsModel(title: "工作台", content: buildWorkBench()),
-      TabItemsModel(title: "群动态", content: buildDynamic()),
-      TabItemsModel(title: "好友圈", content: buildFriends())
-    ]);
+    relationModel = InfoListPageModel(
+        title: "门户",
+        activeTabTitle: getActiveTabTitle(),
+        tabItems: [
+          TabItemsModel(title: "工作台", content: buildWorkBench()),
+          TabItemsModel(title: "群动态", content: buildDynamic()),
+          TabItemsModel(title: "好友圈", content: buildFriends())
+        ]);
+  }
+
+  /// 获得激活页签
+  getActiveTabTitle() {
+    return RoutePages.getRouteDefaultActiveTab()?.firstOrNull;
   }
 
   /// 构建工作台
@@ -39,24 +49,22 @@ class PortalPage extends StatelessWidget {
   /// 构建群动态
   Widget buildDynamic() {
     // if (null != kernel.user) {
-    var cohortActivity = GroupActivity(
-      relationCtrl.user,
-      relationCtrl.chats
-          .where((i) => i.isMyChat && i.isGroup)
-          .map((i) => i.activity)
-          .toList(),
-      false,
-    );
-    return KeepAliveWidget(
-        child: CohortActivityPage("activity", "群动态", cohortActivity,
-            loadCohortActivity: () => GroupActivity(
-                  relationCtrl.user,
-                  relationCtrl.chats
-                      .where((i) => i.isMyChat && i.isGroup)
-                      .map((i) => i.activity)
-                      .toList(),
-                  false,
-                )));
+    return Obx(() {
+      return null != relationCtrl.cohortActivity.value &&
+              null != relationCtrl.user
+          ? KeepAliveWidget(
+              child: CohortActivityPage(
+                  "activity", "群动态", relationCtrl.cohortActivity,
+                  loadCohortActivity: () => GroupActivity(
+                        relationCtrl.user!,
+                        relationCtrl.chats
+                            .where((i) => i.isMyChat && i.isGroup)
+                            .map((i) => i.activity)
+                            .toList(),
+                        false,
+                      )))
+          : Container();
+    });
     // } else {
     //   return Container(
     //     child: const Center(child: Text("--暂无动态内容--")),
@@ -67,28 +75,27 @@ class PortalPage extends StatelessWidget {
   /// 构建好友圈
   Widget buildFriends() {
     // if (null != kernel.user) {
-    var friendsActivity = GroupActivity(
-      relationCtrl.user,
-      [
-        relationCtrl.user.session.activity,
-        ...relationCtrl.user.memberChats.map((i) => i.activity).toList()
-      ],
-      true,
-    );
-    return KeepAliveWidget(
-        child: CohortActivityPage(
-      "circle",
-      "好友圈",
-      friendsActivity,
-      loadCohortActivity: () => GroupActivity(
-        relationCtrl.user,
-        [
-          relationCtrl.user.session.activity,
-          ...relationCtrl.user.memberChats.map((i) => i.activity).toList()
-        ],
-        true,
-      ),
-    ));
+    return Obx(() {
+      return null != relationCtrl.friendsActivity.value &&
+              null != relationCtrl.user
+          ? KeepAliveWidget(
+              child: CohortActivityPage(
+              "circle",
+              "好友圈",
+              relationCtrl.friendsActivity,
+              loadCohortActivity: () => GroupActivity(
+                relationCtrl.user!,
+                [
+                  relationCtrl.user!.session.activity,
+                  ...relationCtrl.user!.memberChats
+                      .map((i) => i.activity)
+                      .toList()
+                ],
+                true,
+              ),
+            ))
+          : Container();
+    });
     // } else {
     //   return Container(
     //     child: const Center(child: Text("--暂无好友圈内容--")),

@@ -60,7 +60,7 @@ class RelationFriendPage extends OrginoneStatelessWidget {
     if (data is ISession) {
       chat = data;
     } else {
-      data = relationCtrl.user.findMemberChat(data.id);
+      chat = relationCtrl.user?.findMemberChat(data.id);
     }
     if (null != chat) {
       return Container(
@@ -112,7 +112,7 @@ class RelationFriendPage extends OrginoneStatelessWidget {
   }
 
   List<XTarget> getFriends() {
-    return relationCtrl.user.members;
+    return relationCtrl.user?.members ?? [];
   }
 
   Widget buildSetting() {

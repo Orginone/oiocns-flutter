@@ -107,10 +107,14 @@ class MyApp extends StatelessWidget {
           ],
           darkTheme: ThemeData(
               useMaterial3: false,
+              //主标题
+              textTheme: const TextTheme(titleLarge: TextStyle(fontSize: 19)),
               listTileTheme: const ListTileThemeData(
                   titleAlignment: ListTileTitleAlignment.center)),
           theme: ThemeData(
               useMaterial3: false,
+              //主标题
+              textTheme: const TextTheme(titleLarge: TextStyle(fontSize: 19)),
               listTileTheme: const ListTileThemeData(
                   titleAlignment: ListTileTitleAlignment.center)),
           textDirection: TextDirection.ltr,

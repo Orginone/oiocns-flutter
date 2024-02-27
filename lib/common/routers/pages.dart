@@ -13,6 +13,7 @@ import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/controller/wallet_controller.dart';
+import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/work/task.dart';
@@ -110,6 +111,7 @@ import '../../pages/store/store_tree/index.dart';
 class RoutePages {
   static final RouteObserver<Route> observer = RouteObservers();
   static List<String> history = [];
+  static List<Route<dynamic>> historyRoute = [];
   static String get main {
     var user = HiveUtils.getUser();
     if (user != null) {
@@ -163,10 +165,10 @@ class RoutePages {
     GetPage(name: Routers.home, page: () => HomePage()),
 
     /// 数据页面
-    GetPage(name: Routers.storePage, page: () => StorePage()),
+    GetPage(name: Routers.storePage, page: () => const StorePage()),
 
     /// 关系页面
-    GetPage(name: Routers.relation, page: () => RelationPage()),
+    GetPage(name: Routers.relation, page: () => const RelationPage()),
 
     /// 关系>好友
     GetPage(
@@ -186,6 +188,12 @@ class RoutePages {
 
     /// 文件目录列表
     GetPage(name: Routers.fileList, page: () => FileListPage()),
+
+    ///动态详情
+    GetPage(
+      name: Routers.targetActivity,
+      page: () => TargetActivityList(),
+    ),
 
     /// 沟通会话页面
     GetPage(
@@ -212,7 +220,7 @@ class RoutePages {
       page: () => const MessageReceivePage(),
     ),
     GetPage(
-        name: Routers.targetActivity,
+        name: Routers.targetActivityOld,
         page: () => const TargetActivityView(),
         bindings: [TargetActivityViewBinding(), ActivityCommentBoxBinding()]),
     GetPage(
@@ -586,6 +594,7 @@ class RoutePages {
       //   "defaultActiveTabs": defaultActiveTabs ?? [TargetType.person.label],
       //   "datas": data
       // }
+    } else if (data.typeName == SpaceEnum.property.label) {
     } else {
       // if (data.typeName == TargetType.cohort.label)
       Get.toNamed(Routers.relationCohort,
@@ -682,21 +691,31 @@ class RoutePages {
       {required HomeEnum home,
       dynamic parentData,
       List? listDatas,
-      List<String> defaultActiveTabs = const []}) {
+      List<String> defaultActiveTabs = const [],
+      bool preventDuplicates = false}) {
     if (relationCtrl.homeEnum.value != home) {
       relationCtrl.setHomeEnum(home);
+      Get.offAndToNamed(Routers.home,
+          arguments: RouterParam(
+              modelName: home.label,
+              parents: [
+                ..._getParentRouteParams(),
+                if (null != parentData) RouterParam(datas: parentData)
+              ],
+              datas: listDatas,
+              defaultActiveTabs: defaultActiveTabs));
+    } else {
+      Get.toNamed(Routers.home,
+          preventDuplicates: preventDuplicates,
+          arguments: RouterParam(
+              modelName: home.label,
+              parents: [
+                ..._getParentRouteParams(),
+                if (null != parentData) RouterParam(datas: parentData)
+              ],
+              datas: listDatas,
+              defaultActiveTabs: defaultActiveTabs));
     }
-    Get.toNamed(
-        preventDuplicates: false,
-        Routers.home,
-        arguments: RouterParam(
-            modelName: home.label,
-            parents: [
-              ..._getParentRouteParams(),
-              if (null != parentData) RouterParam(datas: parentData)
-            ],
-            datas: listDatas,
-            defaultActiveTabs: defaultActiveTabs));
   }
 
   static void jumpChatSession({required ISession data}) {
@@ -714,10 +733,19 @@ class RoutePages {
     Get.toNamed(Routers.processDetails, arguments: {"todo": work});
   }
 
+  ///跳转动态详情
+  static void jumpActivityInfo(IActivityMessage data) {
+    Get.toNamed(Routers.targetActivity,
+        arguments: RouterParam(
+          parents: [..._getParentRouteParams(), RouterParam(datas: data)],
+          datas: data,
+        ));
+  }
+
   /// 获取关系子页面参数
   static List<RouterParam> _getParentRouteParams() {
     var params = Get.arguments;
-    if (isCurrentModel()) {
+    if (isValidParams()) {
       if (params is RouterParam) {
         return params.parents;
       } else if (params is Map) {
@@ -730,7 +758,7 @@ class RoutePages {
   /// 获取关系子页面参数
   static String? getRouteTitle() {
     var params = Get.arguments;
-    if (isCurrentModel()) {
+    if (isValidParams()) {
       if (params is RouterParam) {
         return params.parents.map((e) => e.datas.name).join("/");
       } else if (params is Map) {
@@ -743,7 +771,7 @@ class RoutePages {
   /// 获取关系子页面参数
   static List<String>? getRouteDefaultActiveTab() {
     var params = Get.arguments;
-    // if (isCurrentModel()) {
+    // if (isValidParams()) {
     if (params is RouterParam) {
       return params.defaultActiveTabs;
     } else if (params is Map) {
@@ -757,11 +785,13 @@ class RoutePages {
   static dynamic getParentRouteParam() {
     var params = Get.arguments;
 
-    if (isCurrentModel()) {
+    if (isValidParams()) {
       if (params is RouterParam) {
-        return params.parents.last.datas;
+        return params.parents.isNotEmpty ? params.parents.last.datas : null;
       } else if (params is Map) {
-        return params["parents"].last['datas'];
+        return params["parents"].isNotEmpty
+            ? params["parents"].last['datas']
+            : null;
       }
     }
     return;
@@ -771,7 +801,7 @@ class RoutePages {
   static dynamic getRootRouteParam() {
     var params = Get.arguments;
 
-    if (isCurrentModel()) {
+    if (isValidParams()) {
       if (params is RouterParam) {
         return params.parents.first.datas;
       } else if (params is Map) {
@@ -783,21 +813,22 @@ class RoutePages {
 
   /// 路由层级
   static int getRouteLevel() {
-    var params = Get.arguments;
-    if (isCurrentModel()) {
-      if (params is RouterParam) {
-        return params.parents.length;
-      } else if (params is Map) {
-        return params["parents"].length;
-      }
-    }
-    return Get.currentRoute == Routers.home ? 0 : 1;
+    // var params = Get.arguments;
+    // if (isValidParams()) {
+    //   if (params is RouterParam) {
+    //     return params.parents.length;
+    //   } else if (params is Map) {
+    //     return params["parents"].length;
+    //   }
+    // }
+    // return Get.currentRoute == Routers.home ? 0 : 1;
+    return RoutePages.history.length - 1;
   }
 
   /// 获取关系子页面参数
-  static dynamic getRouteParams() {
+  static dynamic getRouteParams({HomeEnum? homeEnum}) {
     var params = Get.arguments;
-    if (isCurrentModel()) {
+    if (isValidParams(homeEnum: homeEnum) && getRouteLevel() > 0) {
       if (params is RouterParam) {
         return params.datas;
       } else if (params is Map) {
@@ -807,11 +838,14 @@ class RoutePages {
     return;
   }
 
-  static bool isCurrentModel() {
+  static bool isValidParams({HomeEnum? homeEnum}) {
     var params = Get.arguments;
     if (params is RouterParam) {
-      return params.parents.firstOrNull?.modelName ==
-          relationCtrl.homeEnum.value.label;
+      return null == homeEnum
+          ? true
+          : homeEnum == relationCtrl.homeEnum.value
+              ? getRouteLevel() > 0
+              : false;
     } else if (params is Map) {
       return params["parents"]?.firstOrNull?['modelName'] ==
           relationCtrl.homeEnum.value.label;
@@ -819,9 +853,24 @@ class RoutePages {
     return false;
   }
 
+  // static bool isClearParams = false;
   static void clearRoute() {
+    print('>>>>>>>>> 1>${Get.routeTree.routes}');
+    debugPrint('did ${RoutePages.history.toString()}');
+    if (RoutePages.history.length <= 1) return;
+    RoutePages.historyRoute.sublist(1).map((e) {
+      // observer.didRemove(e, null);
+      Get.removeRoute(e);
+      e.didPop(e);
+    });
+    RoutePages.history.removeRange(1, RoutePages.history.length);
+    RoutePages.historyRoute.removeRange(1, RoutePages.historyRoute.length);
+    debugPrint('did ${RoutePages.history.toString()}');
+    // Get.routeTree.routes.removeRange(1, Get.routeTree.routes.length);
+    print('>>>>>>>>> 2>${Get.routeTree.routes}');
+    // isClearParams = true;
     // Get.toNamed(Routers.home, preventDuplicates: false);
-    Get.arguments;
+    // Get.closeCurrentSnackbar();
   }
 }
 

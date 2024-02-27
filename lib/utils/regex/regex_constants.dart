@@ -140,47 +140,48 @@ class RegexConstants {
 
   /// Image vector regex
   /// 图像向量正则表达式
-  static Pattern vector = r'.(svg)$';
+  static const Pattern vector = r'.(svg)$';
 
   /// Image regex
   /// 图像正则表达式
-  static Pattern image = r'.(jpeg|jpg|gif|png|bmp)$';
+  static const Pattern image = r'.(jpeg|jpg|gif|png|bmp)$';
 
   /// Audio regex
   /// 音频正则表达式
-  static Pattern audio = r'.(mp3|wav|wma|amr|ogg)$';
+  static const Pattern audio = r'.(mp3|wav|wma|amr|ogg)$';
 
   /// Video regex
   /// 视频正则表达式
-  static Pattern video = r'.(mp4|avi|wmv|rmvb|mpg|mpeg|3gp)$';
+  static const Pattern video = r'.(mp4|avi|wmv|rmvb|mpg|mpeg|3gp)$';
 
   /// Txt regex
   /// 文本正则表达式
-  static Pattern txt = r'.txt$';
+  static const Pattern txt = r'.txt$';
 
   /// Document regex
   /// word正则表达式
-  static Pattern doc = r'.(doc|docx)$';
+  static const Pattern doc = r'.(doc|docx)$';
 
   /// Excel regex
   /// Excel正则表达式
-  static Pattern excel = r'.(xls|xlsx)$';
+  static const Pattern excel = r'.(xls|xlsx)$';
 
   /// PPT regex
   /// ppt正则表达式
-  static Pattern ppt = r'.(ppt|pptx)$';
+  static const Pattern ppt = r'.(ppt|pptx)$';
 
   /// Document regex
   /// apk正则表达式
-  static Pattern apk = r'.apk$';
+  static const Pattern apk = r'.apk$';
+  static const Pattern app = r'.(apk|ipa)$';
 
   /// PDF regex
   /// pdf正则表达式
-  static Pattern pdf = r'.pdf$';
+  static const Pattern pdf = r'.pdf$';
 
   /// HTML regex
   /// html正则表达式
-  static Pattern html = r'.html$';
+  static const Pattern html = r'.html$';
 
   /// DateTime regex (UTC)
   /// 时间正则表达式

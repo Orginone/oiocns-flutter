@@ -12,13 +12,13 @@ import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/index.dart';
 import 'package:orginone/utils/toast_utils.dart';
 
-abstract class IWorkTask extends IFile {
+abstract class IWorkTask extends IFileInfo<XEntity> {
   //内容
   late String comment;
   //当前用户
   late UserProvider user;
   //归属空间  与父类IEntity中的belong冲突 更名为ibelong
-  late IBelong ibelong;
+  late IBelong? ibelong;
   //任务元数据
   late XWorkTask taskdata;
   //流程实例
@@ -46,7 +46,7 @@ abstract class IWorkTask extends IFile {
 
 class WorkTask extends FileInfo<XEntity> implements IWorkTask {
   WorkTask(this.taskdata, this.user)
-      : super(XEntity.fromJson(taskdata.toJson()), user.user.directory);
+      : super(XEntity.fromJson(taskdata.toJson()), user.user!.directory);
 
   @override
   late XWorkTask taskdata;
@@ -64,6 +64,22 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
 
   @override
   String get id => taskdata.id;
+
+  @override
+  XEntity get metadata {
+    var typeName = taskdata.taskType;
+    if (['子流程', '网关'].contains(taskdata.approveType) &&
+        null != taskdata.identityId &&
+        taskdata.identityId!.length > 5) {
+      typeName = '子流程';
+    }
+    if (targets.length == 2) {
+      typeName = '加${targets[1].typeName}';
+    }
+    taskdata.taskType = typeName;
+    return super.metadata;
+  }
+
   @override
   List<String> get groupTags {
     List<String> tags = [];
@@ -90,22 +106,27 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
     if (targets.length == 2) {
       return '${targets[0].name}[${targets[0].typeName}]申请加入${targets[1].name}[${targets[1].typeName}]';
     }
-    return taskdata.content ?? '';
+    return (null != taskdata.content && taskdata.content!.isNotEmpty)
+        ? taskdata.content!
+        : '暂无信息';
   }
 
   @override
-  IBelong get ibelong {
-    for (final company in user.user.companys) {
-      if (company.id == taskdata.belongId) {
-        return company;
+  IBelong? get ibelong {
+    if (null != user.user) {
+      for (final company in user.user!.companys) {
+        if (company.id == taskdata.belongId) {
+          return company;
+        }
       }
+      return user.user!;
     }
-    return user.user;
+    return null;
   }
 
   @override
   List<XTarget> get targets {
-    if (taskdata.taskType == '加用户') {
+    if (taskdata.taskType != WorkType.thing.label) {
       try {
         final parsedContent =
             jsonDecode(taskdata.content ?? "[]") as List<dynamic>;
@@ -185,7 +206,7 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
   @override
   Future<bool> recallApply() async {
     if (await loadInstance() && instance != null) {
-      if (instance?.createUser == ibelong.userId) {
+      if (null != ibelong && instance?.createUser == ibelong!.userId) {
         if ((await kernel.recallWorkInstance(IdModel(instance!.id))).success) {
           return true;
         }
@@ -200,7 +221,7 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
       if (status == -1) {
         return await recallApply();
       }
-      if (taskdata.taskType == WorkType.add.label) {
+      if (taskdata.taskType != WorkType.thing.label) {
         return approvalJoinTask(status, comment: comment);
       } else if (await loadInstance(reload: true)) {
         final res = await kernel.approvalTask(ApprovalTaskReq(

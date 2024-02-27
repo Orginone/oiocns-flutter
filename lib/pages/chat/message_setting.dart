@@ -201,8 +201,10 @@ class MessageSetting extends GetView<IndexController> {
         List<GeneralBreadcrumbNav> navs = [];
         IDirectory dir;
         if (chat.share.typeName == TargetType.person.label) {
-          dir = relationCtrl.user.directory;
-          navs = await _buildNav([dir], relationCtrl.user);
+          if (null != relationCtrl.user) {
+            dir = relationCtrl.user!.directory;
+            navs = await _buildNav([dir], relationCtrl.user!);
+          }
         } else {
           dir = (chat as ITarget).directory;
           navs = await _buildNav([dir], chat.target);

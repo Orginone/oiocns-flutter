@@ -42,10 +42,12 @@ class _ChatPageState extends State<ChatPage> {
     //   setState(() {});
     // });
     chats.listen((values) {
-      setState(() {
-        widget.datas = values;
-        widget.relationModel = null;
-      });
+      if (mounted) {
+        setState(() {
+          widget.datas = values;
+          widget.relationModel = null;
+        });
+      }
     });
   }
 

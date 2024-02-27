@@ -34,7 +34,7 @@ class _SecurityViewGetX extends GetView<SecurityController> {
   // 主视图
   Widget _buildView() {
     int cont = 0;
-    for (ICompany company in relationCtrl.provider.user.companys ?? []) {
+    for (ICompany company in relationCtrl.provider.user?.companys ?? []) {
       cont += company.chats.length;
     }
     // List<Widget> widgetList = [

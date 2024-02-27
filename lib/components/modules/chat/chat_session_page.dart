@@ -16,17 +16,18 @@ class ChatSessionPage extends OrginoneStatefulWidget {
 
 class _ChatSessionPageState extends OrginoneStatefulState<ChatSessionPage> {
   late ChatBoxController chatBoxCtrl;
+  late MessageChatController chatCtrl;
 
   @override
   void initState() {
     super.initState();
-    MessageChatController chatCtrl = MessageChatController();
+    chatCtrl = MessageChatController();
     chatCtrl.context = context;
-    Get.lazyPut(() => chatCtrl);
+    Get.put(chatCtrl);
     PlayController playCtrl = PlayController();
     Get.lazyPut(() => playCtrl);
     chatBoxCtrl = ChatBoxController();
-    Get.lazyPut(() => chatBoxCtrl);
+    Get.put(chatBoxCtrl);
   }
 
   @override
@@ -47,7 +48,7 @@ class _ChatSessionPageState extends OrginoneStatefulState<ChatSessionPage> {
             },
             child: Column(
               children: [
-                const Expanded(child: MessageList()),
+                Expanded(child: MessageList(chat: session)),
                 ChatBox(chat: session, controller: chatBoxCtrl)
               ],
             ),

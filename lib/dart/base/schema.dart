@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/services.dart';
 import 'package:orginone/common/models/file/index.dart';
+import 'package:orginone/dart/base/common/lists.dart';
 import 'package:orginone/dart/core/public/entity.dart';
 
 import 'model.dart';
@@ -103,6 +104,9 @@ class XEntity extends Xbase {
 
   // 类型名称
   String? typeName;
+
+  /// 快捷方式目标
+  String? sourceId;
   // 创建类别标准的用户
   XTarget? belong;
 
@@ -112,6 +116,7 @@ class XEntity extends Xbase {
     this.remark,
     this.icon,
     this.typeName,
+    this.sourceId,
     this.belong,
     required super.id,
     super.belongId,
@@ -128,6 +133,7 @@ class XEntity extends Xbase {
     code = json['code'];
     remark = json['remark'];
     icon = json['icon'];
+    sourceId = json['sourceId'];
     belongId = json['belongId'];
     typeName = json['typeName'];
     belong = json['belong'] != null ? XTarget.fromJson(json['belong']) : null;
@@ -140,6 +146,7 @@ class XEntity extends Xbase {
       'code': code,
       'remark': remark,
       'icon': icon,
+      'sourceId': sourceId,
       'belongId': belongId,
       'typeName': typeName,
       'belong': belong?.toJson(),
@@ -212,6 +219,49 @@ class XStandard extends XEntity {
   }
 }
 
+/// 常用定义
+class XCommon {
+  /// 唯一标识
+  late String id;
+
+  /// 空间ID
+  late String spaceId;
+
+  /// 用户ID
+  late String targetId;
+
+  /// 目录ID
+  late String directoryId;
+
+  /// 应用ID
+  late String applicationId;
+
+  /// 分组信息
+  String? groupName;
+
+  XCommon({
+    required this.id,
+    required this.spaceId,
+    required this.targetId,
+    required this.directoryId,
+    required this.applicationId,
+    this.groupName,
+  });
+  XCommon.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    spaceId = json['spaceId'];
+    targetId = json['targetId'];
+    directoryId = json['directoryId'];
+    applicationId = json['applicationId'];
+    groupName = json['groupName'];
+  }
+
+  static List<XCommon> fromList(Map<String, dynamic> list) {
+    return Lists.fromList(list['data'], XCommon.fromJson);
+  }
+}
+
+/// 应用定义
 class XApplication extends XStandard {
   String? parentId; // 父ID
   String? resource; // 应用资源
@@ -4680,6 +4730,7 @@ class XProperty extends XStandard {
   String? speciesId;
 
   // 来源用户ID
+  @override
   String? sourceId;
 
   // 给物的度量标准
@@ -4842,6 +4893,7 @@ class XRelation extends Xbase {
 }
 
 class XSpecies extends XStandard {
+  @override
   String? sourceId;
   List<XSpeciesItem>? speciesItems;
   List<XProperty>? speciesProps;

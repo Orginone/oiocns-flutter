@@ -218,7 +218,7 @@ class XFonts {
     return TextStyle(fontSize: 26.sp, color: XColors.black);
   }
 
-  static get size26Black3 {
+  static TextStyle get size26Black3 {
     return TextStyle(fontSize: 26.sp, color: XColors.black3);
   }
 

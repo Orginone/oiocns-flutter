@@ -157,7 +157,7 @@ class WorkSubController extends BaseListController<WorkSubState> {
   }
 
   void initNav() async {
-    var joinedCompanies = relationCtrl.user.companys;
+    var joinedCompanies = relationCtrl.user?.companys ?? [];
     List<WorkBreadcrumbNav> organization = [];
     for (var value in joinedCompanies) {
       organization.add(
@@ -200,7 +200,7 @@ class WorkSubController extends BaseListController<WorkSubState> {
     }
     state.nav = WorkBreadcrumbNav(children: [
       WorkBreadcrumbNav(
-          name: relationCtrl.user.metadata.name ?? "",
+          name: relationCtrl.user?.metadata.name ?? "",
           children: [
             WorkBreadcrumbNav(
                 name: WorkEnum.todo.label,
@@ -227,12 +227,13 @@ class WorkSubController extends BaseListController<WorkSubState> {
                 space: relationCtrl.user,
                 image: WorkEnum.initiationWork.imagePath,
                 onNext: (nav) async {
-                  nav.children =
-                      await buildApplication(relationCtrl.user.directory);
+                  nav.children = null != relationCtrl.user
+                      ? await buildApplication(relationCtrl.user!.directory)
+                      : [];
                 }),
           ],
           space: relationCtrl.user,
-          image: relationCtrl.user.metadata.avatarThumbnail()),
+          image: relationCtrl.user?.metadata.avatarThumbnail()),
       ...organization,
     ]);
   }

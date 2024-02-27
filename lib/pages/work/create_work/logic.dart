@@ -97,7 +97,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
         var main = FormEditData(
           createTime: DateTime.now().toString(),
           nodeId: state.work.node?.id,
-          creator: relationCtrl.user.id,
+          creator: relationCtrl.user?.id,
           after: [],
           before: [],
         );
@@ -111,7 +111,7 @@ class CreateWorkController extends BaseController<CreateWorkState>
         var sub = FormEditData(
             createTime: DateTime.now().toString(),
             nodeId: state.work.node?.id,
-            creator: relationCtrl.user.id,
+            creator: relationCtrl.user?.id,
             before: [],
             after: []);
         //TODO:IForm没有这个数据 things  用到时候要研究一下逻辑
@@ -165,8 +165,8 @@ class CreateWorkController extends BaseController<CreateWorkState>
         case "selectPerson":
         case "selectDepartment":
         case "selectGroup":
-          var share = relationCtrl.user.findShareById(value);
-          return share.name;
+          var share = relationCtrl.user?.findShareById(value);
+          return share?.name ?? "";
         case "select":
         case 'switch':
           Map<dynamic, String> select = {};

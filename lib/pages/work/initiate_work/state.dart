@@ -9,7 +9,7 @@ class InitiateWorkState extends BaseBreadcrumbNavState<WorkBreadcrumbNav> {
   InitiateWorkState() {
     showSearchButton = false;
 
-    var joinedCompanies = relationCtrl.user.companys;
+    var joinedCompanies = relationCtrl.user?.companys ?? [];
     //异常参数处理 解决类型不匹配问题
     var args = Get.arguments is Map ? Get.arguments['data'] : Get.arguments;
     model.value = args is WorkBreadcrumbNav ? args : null;

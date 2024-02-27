@@ -43,7 +43,7 @@ abstract class BaseDetail extends StatelessWidget {
     if (isReply) {
       ShareIcon? shareIcon;
       if (isSelf) {
-        shareIcon = relationCtrl.user.share;
+        shareIcon = relationCtrl.user?.share;
       } else {
         if (chat!.share.typeName == TargetType.person.label) {
           shareIcon = chat!.share;
@@ -73,7 +73,8 @@ abstract class BaseDetail extends StatelessWidget {
         onTap(context);
       },
       child: Container(
-        constraints: constraints ?? BoxConstraints(maxWidth: 350.w),
+        constraints: constraints ??
+            BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 110),
         padding:
             padding ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
         margin: textDirection == TextDirection.ltr

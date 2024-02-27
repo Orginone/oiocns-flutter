@@ -101,7 +101,7 @@ class HomePageOld extends BaseGetView<HomeController, HomeState> {
     required String path,
   }) {
     return Obx(() {
-      var isSelected = relationCtrl.homeEnum.value == homeEnum;
+      var isSelected = relationCtrl.homeEnum == homeEnum;
       var mgsCount = 0;
       if (homeEnum == HomeEnum.work) {
         mgsCount = relationCtrl.provider.work?.todos.length ?? 0;

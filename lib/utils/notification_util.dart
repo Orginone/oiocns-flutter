@@ -52,7 +52,7 @@ class NotificationUtil {
   static void showChatMessageNotification(IMessage msg) async {
     // ShareIcon share = relationCtrl.user.findShareById(msg.metadata.fromId);
     showMsgNotification(msg.id, "${msg.from.name}发来一条消息",
-        StringUtil.msgConversion(msg, relationCtrl.user.id));
+        StringUtil.msgConversion(msg, relationCtrl.user?.id ?? ""));
   }
 
   static void showMsgNotification(String id, String title, String body) {

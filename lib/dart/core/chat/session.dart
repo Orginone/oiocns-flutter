@@ -375,6 +375,8 @@ class Session extends Entity<XEntity> implements ISession {
         tagMessage(ids, '已读');
         readCount = ids.length;
         LogUtil.d('>>>>>>>====已读数：$readCount');
+      } else {
+        readCount = chatdata.value.noReadCount;
       }
     }
 
@@ -569,11 +571,11 @@ class Session extends Entity<XEntity> implements ISession {
 
   @override
   Future<bool> cacheChatData([bool? notify = false]) async {
-    var success = await target.user?.cacheObj.set(cachePath, chatdata);
+    var success = await target.user?.cacheObj.set(cachePath, chatdata.value);
     if (success! && notify!) {
       await target.user?.cacheObj.notity(
         chatdata.value.fullId,
-        chatdata,
+        chatdata.value,
         onlyTarget: true,
         ignoreSelf: true,
       );

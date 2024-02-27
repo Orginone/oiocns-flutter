@@ -31,6 +31,12 @@ abstract class IActivityMessage extends Emitter {
   /// 创建时间
   late int createTime;
 
+  String get id;
+
+  String get name;
+
+  ShareIcon get share;
+
   /// 更新元数据
   void update(ActivityType data);
 
@@ -55,6 +61,12 @@ class ActivityMessage extends Emitter implements IActivityMessage {
     this.metadata,
     this.activity,
   );
+  @override
+  String get id => activity.id;
+  @override
+  String get name => activity.name;
+  @override
+  ShareIcon get share => activity.share;
 
   @override
   int get createTime {
@@ -310,6 +322,10 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
   List<String> subscribeIds = [];
   late List<IActivity> subActivitys;
   int lastTime = DateTime.now().millisecondsSinceEpoch;
+
+  /// 是否初始化完成
+  late bool _inited;
+
   GroupActivity(IPerson _user, List<IActivity> _activitys, bool userPublish)
       : super(
           XTarget.fromJson({
@@ -324,6 +340,7 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
     allPublish = userPublish;
     session = _user.session;
     subActivitys = _activitys;
+    _inited = false;
   }
 
   @override
@@ -350,8 +367,11 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
 
   @override
   Future<List<IActivityMessage>> load([int take = 10]) async {
-    await Future.wait(subActivitys.map((i) => i.load(take)));
+    if (_inited) return activityList;
+
+    _inited = true;
     List<IActivityMessage> more = [];
+    await Future.wait(subActivitys.map((i) => i.load(take)));
     for (var activity in subActivitys) {
       more.addAll(activity.activityList.where((i) => i.createTime < lastTime));
     }

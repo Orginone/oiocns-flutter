@@ -40,7 +40,7 @@ class MessageChatPage
         },
         child: Column(
           children: [
-            const Expanded(child: MessageList()),
+            Expanded(child: MessageList()),
             ChatBox(chat: state.chat, controller: state.chatBoxCtrl)
           ],
         ),
@@ -82,10 +82,7 @@ class MessageChatPage
 class MessageChatController extends BaseController<MessageChatState> {
   @override
   late MessageChatState state;
-
-  @override
-  void onInit() {
-    super.onInit();
+  MessageChatController() {
     state = MessageChatState();
   }
 
@@ -208,6 +205,8 @@ class MessageChatState extends BaseGetState {
         chat = param;
       } else if (param is ITarget) {
         chat = param.session;
+      } else {
+        print('>>>>>>>>>> $param');
       }
     }
     scrollKey = GlobalKey();

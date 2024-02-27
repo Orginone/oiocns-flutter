@@ -14,6 +14,7 @@ import 'package:orginone/dart/core/target/outTeam/group.dart';
 import 'package:orginone/dart/core/target/outTeam/storage.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
+import 'package:orginone/dart/core/thing/standard/index_standart.dart';
 import 'package:orginone/main_base.dart';
 
 ///单位类型接口
@@ -29,6 +30,9 @@ abstract class ICompany extends IBelong {
 
   //支持的内设机构类型
   late List<String> departmentTypes;
+
+  ///单位下标注类
+  late StandardFiles standard;
 
   //退出单位
   @override
@@ -61,6 +65,7 @@ class Company extends Belong implements ICompany {
       TargetType.laboratory.label,
       TargetType.department.label,
     ];
+    standard = StandardFiles(directory, matchName: "belongId");
   }
 
   @override
@@ -78,6 +83,10 @@ class Company extends Belong implements ICompany {
   List<String> departmentTypes = [];
   bool _groupLoaded = false;
   bool _departmentLoaded = false;
+
+  ///单位下标注类
+  @override
+  late StandardFiles standard;
 
   @override
   Future<List<IGroup>> loadGroups({bool reload = false}) async {
@@ -350,12 +359,12 @@ class Company extends Belong implements ICompany {
   }
 
   @override
-  List<IFile> content({bool? args}) {
+  List<IFileInfo<XEntity>> content({bool? args}) {
     return [
-      ...groups.map((e) => e as IFile),
-      ...departments.map((e) => e as IFile),
-      ...cohorts.map((e) => e as IFile),
-      ...storages.map((e) => e as IFile)
+      ...groups.map((e) => e),
+      ...departments.map((e) => e),
+      ...cohorts.map((e) => e),
+      ...storages.map((e) => e)
     ];
   }
 

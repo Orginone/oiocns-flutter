@@ -44,8 +44,8 @@ class UserProvider {
   }
 
   /// 当前用户
-  IPerson get user {
-    return _user.value!;
+  IPerson? get user {
+    return _user.value;
   }
 
   IWorkProvider? get work {

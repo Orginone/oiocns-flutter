@@ -14,7 +14,9 @@ import 'package:orginone/utils/log/log_util.dart';
 class ListWidget<T> extends StatefulWidget {
   List<T>? initDatas;
   // 列表数据
-  List<T> Function([T? data]) getDatas;
+  List<T> Function([T? data])? getDatas;
+  // 列表数据
+  Future<List<T>> Function([T? data])? getLazyDatas;
 
   // 获得标题
   Widget Function(T data)? getTitle;
@@ -39,7 +41,8 @@ class ListWidget<T> extends StatefulWidget {
 
   ListWidget(
       {super.key,
-      required this.getDatas,
+      this.getDatas,
+      this.getLazyDatas,
       this.getTitle,
       this.initDatas,
       this.getLabels,
@@ -49,9 +52,9 @@ class ListWidget<T> extends StatefulWidget {
       this.getBadge,
       this.onTap}) {
     this.getTitle ??= (dynamic data) =>
-        Text(data is IEntity || data is XEntity ? data.name : "");
+        Text(data is IEntity || data is XEntity ? data.name : "暂无信息");
     this.getDesc ??= (dynamic data) =>
-        Text(data is IEntity || data is XEntity ? data.remark : "");
+        Text(data is IEntity || data is XEntity ? data.remark : "暂无信息");
     this.getAvatar ??= (dynamic data) {
       LogUtil.d(
           '>>>>>>======${data.runtimeType} ${data is XEntity} ${data is IEntity} ${data.runtimeType is XEntity} ${TargetType.getType(data.typeName)?.icon}');
@@ -93,28 +96,52 @@ class _ListWidgetState<T> extends State<ListWidget> {
 
   @override
   Widget build(BuildContext context) {
-    if (datas.isEmpty) {
-      datas = widget.getDatas();
+    if (datas.isEmpty && null != widget.getDatas) {
+      datas = widget.getDatas?.call();
     }
     return Container(
       color: Colors.white,
-      child: ListView.separated(
-          itemCount: datas.length,
-          padding: const EdgeInsets.only(top: 5),
-          separatorBuilder: (BuildContext context, int index) =>
-              const Divider(),
-          itemBuilder: (BuildContext context, int index) {
-            T item = datas[index];
-            return ListItemWidget(
-                leading: _buildAvatar(item),
-                title: _buildTitle(item),
-                subtitle: getSubtitle(item),
-                trailing: widget.getAction?.call(item),
-                onTap: () {
-                  widget.onTap?.call(item, widget.getDatas(item));
-                });
-          }),
+      child: null != widget.getLazyDatas && datas.isEmpty
+          ? FutureBuilder<List<dynamic>>(
+              future: datas.isEmpty && RoutePages.getRouteLevel() > 0
+                  ? widget.getLazyDatas?.call(RoutePages.getParentRouteParam())
+                  : null,
+              initialData: datas.isEmpty ? null : datas,
+              builder: (BuildContext context,
+                  AsyncSnapshot<List<dynamic>> snapshot) {
+                if (snapshot.hasData) {
+                  datas = snapshot.data ?? [];
+                  return _listWidget();
+                }
+                return const Center(child: Text("数据加载中。。。"));
+              },
+            )
+          : _listWidget(),
     );
+  }
+
+  Widget _listWidget() {
+    return ListView.separated(
+        itemCount: datas.length,
+        padding: const EdgeInsets.only(top: 5),
+        separatorBuilder: (BuildContext context, int index) =>
+            const Divider(indent: 60),
+        itemBuilder: (BuildContext context, int index) {
+          T item = datas[index];
+          return ListItemWidget(
+              leading: _buildAvatar(item),
+              title: _buildTitle(item),
+              subtitle: getSubtitle(item),
+              trailing: widget.getAction?.call(item),
+              onTap: () {
+                if (null != widget.getDatas) {
+                  dynamic list = widget.getDatas?.call(item) ?? [];
+                  widget.onTap?.call(item, list);
+                } else {
+                  widget.onTap?.call(item, []);
+                }
+              });
+        });
   }
 
   Widget? _buildTitle(item) {

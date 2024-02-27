@@ -228,9 +228,9 @@ var fixedCharacterResolver = (String ruleStr) async {
       case '「单位编码」':
         return company.id;
       case '「使用人名称」':
-        return relationCtrl.user.metadata.name ?? "";
+        return relationCtrl.user?.metadata.name ?? "";
       case '「使用人编码」':
-        return relationCtrl.user.metadata.id;
+        return relationCtrl.user?.metadata.id??"";
       case '「系统时间」':
         return '${DateTime.new}';
       default:

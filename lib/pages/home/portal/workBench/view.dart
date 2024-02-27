@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
@@ -5,8 +7,10 @@ import 'package:orginone/common/index.dart';
 import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/base/common/format.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
+import 'package:orginone/dart/core/thing/fileinfo.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/home/index/widget/widget.dart';
@@ -28,22 +32,144 @@ class WorkBenchPage
 
   @override
   Widget buildView() {
-    return Container(
-        color: XColors.bgListBody,
-        padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
-        child: ListView(children: [
-          RenderOperate(),
-          RenderChat(),
-          RenderWork(),
-          RendeStore(),
-          // RendeAppInfo()
-        ]));
+    return Obx(() {
+      return Container(
+          color: XColors.bgListBody,
+          // padding: const EdgeInsets.fromLTRB(8, 4, 8, 0),
+          child: ListView(children: [
+            _renderWorkV1(),
+            RenderOperate(),
+            _renderRecentApp(),
+            _renderGroupActivity(),
+            _renderFieldCircle(),
+            // RenderChat(),
+            // RenderWork(),
+            // RendeStore(),
+            // RendeAppInfo()
+          ]));
+    });
+  }
+
+  // 发送快捷命令
+  renderCmdBtn(IFileInfo<XEntity> file) {
+    return GestureDetector(
+      onTap: () {},
+      child: SizedBox(
+        width: 120.w,
+        child: Column(
+          children: [
+            XImage.entityIcon(file, width: 60.w),
+            Container(
+              // padding: const EdgeInsets.only(top: 16),
+              margin: EdgeInsets.only(top: 10.h),
+              child: SizedBox(
+                height: 16,
+                child: Text(
+                  file.name,
+                  // softWrap: true,
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: XColors.doorDesGrey,
+                    fontSize: 18.sp,
+                    fontFamily: 'PingFang SC',
+                    // height: 0.16,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // 渲染最近应用
+  Widget _renderRecentApp() {
+    // var datas = (await relationCtrl.loadCommons())
+    //       .where((element) => element.typeName == WorkType.thing.label)
+    //       .toList();
+    return modelWindow("最近应用",
+        contentWidget: FutureBuilder<List<IFileInfo<XEntity>>>(
+          builder: (BuildContext context,
+              AsyncSnapshot<List<IFileInfo<XEntity>>> datas) {
+            return Container(
+                padding:
+                    EdgeInsets.only(left: 0, right: 0, top: 0.h, bottom: 30.h),
+                child: Wrap(
+                  spacing: 8.0,
+                  runSpacing: 18.0,
+                  children: datas.data
+                          ?.sublist(0, min(8, datas.data!.length))
+                          .map<Widget>((e) => renderCmdBtn(e))
+                          .toList() ??
+                      [],
+                ));
+          },
+          future: relationCtrl.loadCommons(),
+        ));
+  }
+
+  // 渲染群动态
+  Widget _renderGroupActivity() {
+    return modelWindow("动态",
+        contentWidget: null != relationCtrl.cohortActivity.value
+            ? Container(
+                child: Column(
+                children: relationCtrl.cohortActivity.value!.activityList
+                    .sublist(
+                        0,
+                        min(
+                            2,
+                            relationCtrl
+                                .cohortActivity.value!.activityList.length))
+                    .map((item) {
+                  return ActivityMessageWidget(
+                    item: item,
+                    activity: item.activity,
+                    hideResource: true,
+                  );
+                }).toList(),
+              ))
+            : Container(), onMoreTap: () {
+      RoutePages.jumpHome(
+          home: relationCtrl.homeEnum.value, defaultActiveTabs: ["群动态"]);
+    });
+  }
+
+  // 渲染好友圈
+  Widget _renderFieldCircle() {
+    return modelWindow("好友圈",
+        contentWidget: null != relationCtrl.friendsActivity.value
+            ? Container(
+                child: Column(
+                children: relationCtrl.friendsActivity.value!.activityList
+                    .sublist(
+                        0,
+                        min(
+                            2,
+                            relationCtrl
+                                .friendsActivity.value!.activityList.length))
+                    .map((item) {
+                  return ActivityMessageWidget(
+                    item: item,
+                    activity: item.activity,
+                    hideResource: true,
+                  );
+                }).toList(),
+              ))
+            : Container(), onMoreTap: () {
+      RoutePages.jumpHome(
+          home: relationCtrl.homeEnum.value, defaultActiveTabs: ["好友圈"]);
+    });
   }
 
   // 操作组件
   Widget RenderOperate() {
     // 发送快捷命令
-    renderCmdBtn(String cmd, String title, String iconType, ShortcutData item) {
+    renderCmdBtn(String cmd, String title, String iconType, ShortcutData item,
+        Color btnColor) {
       return GestureDetector(
         onTap: () {
           relationCtrl.settingMenuController.hideMenu();
@@ -52,7 +178,11 @@ class WorkBenchPage
         child: Container(
           child: Column(
             children: [
-              XImage.localImage(cmd, width: 40.w, color: XColors.selectedColor),
+              XImage.localImage(cmd,
+                  width: 30.w,
+                  color: Colors.white,
+                  bgColor: btnColor,
+                  radius: 5),
               Container(
                 padding: const EdgeInsets.only(top: 16),
                 margin: EdgeInsets.only(top: 10.h),
@@ -84,28 +214,28 @@ class WorkBenchPage
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 renderCmdBtn('addFriend', '添加好友', 'joinFriend',
-                    relationCtrl.menuItems[0]),
-                renderCmdBtn(
-                    'createGroup', '创建群组', '群组', relationCtrl.menuItems[4]),
+                    relationCtrl.menuItems[0], const Color(0xFFFF9A5C)),
+                renderCmdBtn('createGroup', '创建群组', '群组',
+                    relationCtrl.menuItems[4], const Color(0xFF228DEF)),
                 renderCmdBtn('joinGroup', '加入群聊', 'joinCohort',
-                    relationCtrl.menuItems[1]),
+                    relationCtrl.menuItems[1], const Color(0xFFFFCE39)),
                 renderCmdBtn('establishmentUnit', '新建单位', '单位',
-                    relationCtrl.menuItems[2]),
+                    relationCtrl.menuItems[2], const Color(0xFFFFCE39)),
                 renderCmdBtn('joinUnit', '加入单位', 'joinCompany',
-                    relationCtrl.menuItems[3]),
+                    relationCtrl.menuItems[3], const Color(0xFF59D8A5)),
               ],
             )));
   }
 
   //更多操作
   Widget modelWindow(String title,
-      {Widget? moreWidget, Widget? contentWidget}) {
+      {Function()? onMoreTap, Widget? moreWidget, Widget? contentWidget}) {
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+        // borderRadius: BorderRadius.all(Radius.circular(5.0)),
       ),
-      margin: const EdgeInsets.fromLTRB(0, 5, 0, 5),
+      margin: const EdgeInsets.fromLTRB(0, 1, 0, 0),
       child: Column(
         children: [
           CommonWidget.commonDoorHeadInfoWidget(title,
@@ -113,10 +243,12 @@ class WorkBenchPage
                   GestureDetector(
                       onTap: () {
                         // homeController.jumpTab(HomeEnum.relation);
-                        RoutePages.jumpRelation();
+                        null != onMoreTap
+                            ? onMoreTap.call()
+                            : RoutePages.jumpRelation();
                       },
                       child: const TextArrow(
-                        title: '更多操作',
+                        title: '更多',
                       ))),
           SizedBox(
             height: 10.h,
@@ -199,6 +331,60 @@ class WorkBenchPage
             ],
           ),
         ));
+  }
+
+  // 渲染办事信息v1
+  Widget _renderWorkV1() {
+    return modelWindow("事项提醒",
+        contentWidget: Container(
+            // color: Colors.red,
+            padding: EdgeInsets.only(left: 10.w, bottom: 10.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween, // 子元素之间的对齐方式
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                _buildWorkItemV1("未读", relationCtrl.noReadMgsCount.toString(),
+                    XImage.homeChat, const Color(0x205B66FF), onTab: () {
+                  RoutePages.jumpChat();
+                }),
+                _buildWorkItemV1("待办", state.todoCount.value, XImage.homeWork,
+                    const Color(0x20FF9A5C), onTab: () {
+                  RoutePages.jumpWork();
+                }),
+                _buildWorkItemV1(
+                    "任务", "0", XImage.homeTask, const Color(0x2059D8A5)),
+                _buildWorkItemV1(
+                    "提醒", "0", XImage.homeRemind, const Color(0x20E1516B))
+              ],
+            )),
+        moreWidget: Container());
+  }
+
+  Widget _buildWorkItemV1(
+      String title, String count, String icon, Color bgColor,
+      {void Function()? onTab}) {
+    return Expanded(
+        child: GestureDetector(
+            onTap: onTab,
+            child: Container(
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  color: bgColor,
+                ),
+                padding: const EdgeInsets.all(10),
+                margin: EdgeInsets.only(right: 10.w),
+                child: Column(
+                  children: [
+                    XImage.localImage(icon, color: bgColor.withOpacity(1)),
+                    Text(title, style: const TextStyle(fontSize: 12)),
+                    Text(count,
+                        style: const TextStyle(
+                          fontSize: 22,
+                          height: 1.5,
+                        )),
+                  ],
+                ))));
   }
 
   // 渲染办事信息

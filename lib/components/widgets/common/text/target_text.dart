@@ -116,7 +116,12 @@ class _TargetTextState extends State<TargetText> {
           textAlign: textAlign,
         );
       },
-      future: Future(() => relationCtrl.provider.user.findShareById(userId)),
+      future: Future(() =>
+          relationCtrl.provider.user?.findShareById(userId) ??
+          ShareIcon(
+            name: '',
+            typeName: '未知',
+          )),
     );
   }
 }

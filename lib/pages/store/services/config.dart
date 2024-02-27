@@ -24,13 +24,16 @@ import 'package:orginone/pages/store/models/index.dart';
 ///加载数据 最外层的标签数据
 SubGroup loadDataTabs() {
   IPerson? user = relationCtrl.provider.user;
-  List<ICompany> companys = relationCtrl.user.companys;
+  List<ICompany> companys = relationCtrl.user?.companys ?? [];
 
   List<Group> group = [];
   Set<String> distinctValues = <String>{};
   //添加全部标签
   group.add(Group(label: '全部', value: '全部', allowEdit: true));
-  group.add(Group(label: user.typeName, value: user.typeName, allowEdit: true));
+  if (null != user) {
+    group.add(
+        Group(label: user.typeName, value: user.typeName, allowEdit: true));
+  }
 
   for (var e in companys) {
     if (!distinctValues.contains(e.typeName)) {

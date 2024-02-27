@@ -8,6 +8,8 @@
 import 'package:extended_tabs/extended_tabs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:orginone/components/base/network_tip.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/utils/load_image.dart';
 import 'package:orginone/utils/log/log_util.dart';
@@ -34,8 +36,9 @@ class _TabPageState extends State<TabPage> {
   void initState() {
     super.initState();
     if (widget.iTabModel.activeTabTitle != null) {
-      activeTab = widget.iTabModel.tabItems.firstWhere(
+      TabItemsModel? activeTabTmp = widget.iTabModel.tabItems.firstWhereOrNull(
           (element) => element.title == widget.iTabModel.activeTabTitle);
+      activeTab = activeTabTmp ?? widget.iTabModel.tabItems.first;
     } else {
       activeTab = widget.iTabModel.tabItems.first;
     }
@@ -261,16 +264,20 @@ class _TabPageState extends State<TabPage> {
   }
 
   Widget _tabContent(TabItemsModel item) {
-    LogUtil.d(
-        '>>>>>>======bbb${item.title} ${item.tabItems.length} ${item.content == null}');
-    return item.content ??
-        _tabListContent(item) ??
-        Center(
-          child: Text(item.title),
-        );
+    return __tabContent(item) ?? _tabDefContent(item);
   }
 
-  Widget _tabListContent(TabItemsModel item) {
+  Widget? __tabContent(TabItemsModel item) {
+    return null != item.content
+        ? Container(
+            child: Column(
+              children: [const NetworkTip(), Expanded(child: item.content!)],
+            ),
+          )
+        : null;
+  }
+
+  Widget _tabDefContent(TabItemsModel item) {
     return Center(child: Text(item.title));
   }
 }

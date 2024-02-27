@@ -256,7 +256,7 @@ class _GyScaffoldState extends State<GyScaffold> {
       leading: isHomePage ? null : leading ?? BackButton(color: backColor),
       leadingWidth: isHomePage ? 0 : leadingWidth,
       titleSpacing: isHomePage ? 0 : titleSpacing,
-      toolbarHeight: isHomePage ? null : toolbarHeight ?? 74.h,
+      // toolbarHeight: isHomePage ? null : toolbarHeight ?? 74.h,
     );
   }
 }

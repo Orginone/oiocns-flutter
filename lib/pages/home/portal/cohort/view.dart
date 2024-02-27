@@ -17,7 +17,7 @@ class CohortActivityPage
   late String type;
   late String label;
   late Function()? loadCohortActivity;
-  late GroupActivity cohortActivity;
+  late Rxn<GroupActivity> cohortActivity;
   late ScrollController scrollController;
 
   CohortActivityPage(
@@ -28,7 +28,7 @@ class CohortActivityPage
     this.loadCohortActivity,
   }) {
     scrollController = ScrollController();
-    state.currentActivity = cohortActivity.activitys.first.obs;
+    state.currentActivity = cohortActivity.value!.activitys.first.obs;
   }
 
   @override
@@ -36,45 +36,44 @@ class CohortActivityPage
     if (controller.cohortActivity.activitys.isEmpty &&
         null != loadCohortActivity) {
       cohortActivity = loadCohortActivity?.call();
-      state.currentActivity = cohortActivity.activitys.first.obs;
+      state.currentActivity = cohortActivity.value!.activitys.first.obs;
     }
-
     return ExtendedNestedScrollView(
-      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-        if (state.currentActivity.value is! GroupActivity) {
-          state.activityMessageList.value =
-              state.currentActivity.value.activitys.first.activityList ?? [];
-        }
-        return [
-          SliverToBoxAdapter(
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              padding: EdgeInsets.only(
-                  top: 10.h, left: 10.w, right: 10.w, bottom: 12.w),
-              child: Row(
-                children: activityGroup(controller.cohortActivity),
+        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+          if (state.currentActivity.value is! GroupActivity ||
+              state.activityMessageList.isEmpty) {
+            state.activityMessageList.value =
+                state.currentActivity.value.activitys.first.activityList ?? [];
+          }
+          return [
+            SliverToBoxAdapter(
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.only(
+                    top: 10.h, left: 10.w, right: 10.w, bottom: 12.w),
+                child: Row(
+                  children: activityGroup(controller.cohortActivity),
+                ),
               ),
             ),
-          ),
-        ];
-      },
-      onlyOneScrollInBody: true,
-      pinnedHeaderSliverHeightBuilder: () {
-        return 0;
-      },
-      body: Obx(() {
-        return Container(
-          color: XColors.bgListBody,
-          child: ListView(
-              controller: scrollController,
-              children: GroupActivityItem(
-                  cohortActivity: controller.cohortActivity,
-                  activity: controller.cohortActivity.activitys.isNotEmpty
-                      ? controller.cohortActivity.activitys.first
-                      : null)),
-        );
-      }),
-    );
+          ];
+        },
+        onlyOneScrollInBody: true,
+        pinnedHeaderSliverHeightBuilder: () {
+          return 0;
+        },
+        body: Obx(() {
+          return Container(
+            color: XColors.bgListBody,
+            child: ListView(
+                controller: scrollController,
+                children: GroupActivityItem(
+                    cohortActivity: controller.cohortActivity,
+                    activity: controller.cohortActivity.activitys.isNotEmpty
+                        ? controller.cohortActivity.activitys.first
+                        : null)),
+          );
+        }));
   }
 
   //渲染动态列表
@@ -131,7 +130,7 @@ class CohortActivityPage
 
   @override
   CohortActivityController getController() {
-    return CohortActivityController(type, cohortActivity);
+    return CohortActivityController(type, cohortActivity.value!);
   }
 
   @override

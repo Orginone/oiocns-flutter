@@ -70,6 +70,7 @@ class Routers {
 
   //动态
   static const String targetActivity = "/targetActivity";
+  static const String targetActivityOld = "/targetActivityOld";
 
   // 首页
   static const String index = "/index";

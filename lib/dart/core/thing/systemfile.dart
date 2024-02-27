@@ -218,7 +218,7 @@ class SysFileInfo extends FileInfo<XEntity> implements ISysFileInfo {
   }
 
   @override
-  List<IFile> content({bool? args}) {
+  List<IFileInfo<XEntity>> content({bool? args}) {
     return [];
   }
 

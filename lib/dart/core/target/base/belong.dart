@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/chat/session.dart';
@@ -16,6 +17,9 @@ abstract class IBelong extends ITarget {
   late IAuthority? superAuth;
   //加入/管理的群
   List<ICohort> cohorts = [];
+
+  /// 激活的数据核
+  IStorage? get activated;
   //存储资源群
   List<IStorage> storages = [];
   //上级用户
@@ -79,6 +83,12 @@ abstract class Belong extends Target implements IBelong {
 
   @override
   IAuthority? superAuth;
+
+  @override
+  IStorage? get activated {
+    return storages.firstWhereOrNull((i) => i.isActivate);
+  }
+
   @override
   Future<IAuthority?> loadSuperAuth({bool reload = false}) async {
     if (superAuth != null || reload) {

@@ -65,8 +65,11 @@ class XObject<T extends Xbase> {
     if (!this._loaded) {
       await this.all();
     }
-    return null != fromJson && null != getValue(path) && getValue(path) is! T
-        ? fromJson(getValue(path))
+    var val = getValue(path);
+    return null != fromJson && null != val && val is! T
+        ? val is List
+            ? fromJson({'data': val})
+            : fromJson(val)
         : this.getValue<T>(path); //翻译getValue后再处理
   }
 
@@ -93,7 +96,7 @@ class XObject<T extends Xbase> {
   Future<bool> delete(String path) async {
     var kernel = KernelApi();
     var res = await kernel.objectDelete(
-      this._target.belongId!,
+      this._target.belongId ?? "",
       this._relations,
       this._objName,
     );
@@ -122,7 +125,7 @@ class XObject<T extends Xbase> {
     return res.success;
   }
 
-  void subscribe(String flag, Function(XCache data) callback, [String? id]) {
+  void subscribe(String flag, Function(dynamic data) callback, [String? id]) {
     if (flag.isEmpty) {
       return;
     }

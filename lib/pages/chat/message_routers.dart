@@ -68,8 +68,9 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
   }
 
   initChatBreadNav() async {
+    if (null == relationCtrl.user) return;
     List<ChatBreadcrumbNav> companyItems = [];
-    for (var company in relationCtrl.user.companys) {
+    for (var company in relationCtrl.user!.companys) {
       companyItems.add(
         createNav(
             company.id,
@@ -94,18 +95,18 @@ class Controller extends BaseBreadcrumbNavController<ChatBreadNavState> {
     }
     state.model.value = ChatBreadcrumbNav(children: [
       createNav(
-          relationCtrl.user.id,
+          relationCtrl.user!.id,
           relationCtrl.chats.last,
           [
             createNav(
-              "${relationCtrl.user.id}0",
+              "${relationCtrl.user!.id}0",
               relationCtrl.chats.last,
-              relationCtrl.user.memberChats
+              relationCtrl.user!.memberChats
                   .map((chat) => createNav(chat.sessionId, chat, [],
                       spaceEnum: SpaceEnum.person))
                   .toList(),
             ),
-            ...relationCtrl.user.cohortChats
+            ...relationCtrl.user!.cohortChats
                 .where((i) => i.isMyChat)
                 .map((item) => createNav(item.sessionId, item, [],
                     spaceEnum: SpaceEnum.departments))

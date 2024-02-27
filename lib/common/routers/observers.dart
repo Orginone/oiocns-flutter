@@ -9,7 +9,10 @@ class RouteObservers<R extends Route<dynamic>> extends RouteObserver<R> {
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPush(route, previousRoute);
     var name = route.settings.name ?? '';
-    if (name.isNotEmpty) RoutePages.history.add(name);
+    if (name.isNotEmpty) {
+      RoutePages.history.add(name);
+      RoutePages.historyRoute.add(route);
+    }
     LogUtil.d('didPush');
     LogUtil.d('did ${RoutePages.history.toString()}');
   }
@@ -18,6 +21,7 @@ class RouteObservers<R extends Route<dynamic>> extends RouteObserver<R> {
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPop(route, previousRoute);
     RoutePages.history.remove(route.settings.name);
+    RoutePages.historyRoute.remove(route);
     LogUtil.d('didPop');
     LogUtil.d('did ${RoutePages.history.toString()}');
   }
@@ -33,8 +37,10 @@ class RouteObservers<R extends Route<dynamic>> extends RouteObserver<R> {
       if (name.isNotEmpty) {
         if (index > 0) {
           RoutePages.history[index] = name;
+          RoutePages.historyRoute[index] = newRoute;
         } else {
           RoutePages.history.add(name);
+          RoutePages.historyRoute.add(newRoute);
         }
       }
     }
@@ -46,6 +52,7 @@ class RouteObservers<R extends Route<dynamic>> extends RouteObserver<R> {
   void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didRemove(route, previousRoute);
     RoutePages.history.remove(route.settings.name);
+    RoutePages.historyRoute.remove(route);
     LogUtil.d('didRemove');
     LogUtil.d('did ${RoutePages.history.toString()}');
   }

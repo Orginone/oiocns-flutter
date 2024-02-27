@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/schema.dart';
-import 'package:orginone/components/widgets/common/image/team_avatar.dart';
+import 'package:orginone/utils/load_image.dart';
 
 class MessageReceiveItem extends StatelessWidget {
   const MessageReceiveItem({
@@ -22,10 +22,13 @@ class MessageReceiveItem extends StatelessWidget {
 
   Widget _buildView() {
     return <Widget>[
-      TeamAvatar(
-        info: TeamTypeInfo(userId: target.id),
-        size: 50.w,
-      ).clipRRect(all: 8.w).marginOnly(right: AppSpace.listItem),
+      XImage.entityIcon(target, width: 40)
+          .clipRRect(all: 8.w)
+          .marginOnly(right: AppSpace.listItem),
+      // TeamAvatar(
+      //   info: TeamTypeInfo(userId: target.id),
+      //   size: 50.w,
+      // ).clipRRect(all: 8.w).marginOnly(right: AppSpace.listItem),
       <Widget>[
         Text(target.name!),
         Text(

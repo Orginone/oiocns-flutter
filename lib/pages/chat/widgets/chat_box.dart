@@ -165,7 +165,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
             valueChangedCallback: (rules, value) {
               controller.rules = rules;
             },
-            style: XFonts.size22Black3,
+            style: XFonts.chatSMInfo,
             controller: controller.inputController,
             decoration: InputDecoration(
               isCollapsed: true,
@@ -389,6 +389,7 @@ class ChatBox extends StatelessWidget with WidgetsBindingObserver {
   /// 发送按钮
   Widget _sendBtn(BuildContext context) {
     return Container(
+      height: boxDefaultHeight,
       margin: EdgeInsets.only(left: 8.w),
       child: ElevatedButton(
         onPressed: () {
@@ -746,11 +747,11 @@ class ChatBoxController with WidgetsBindingObserver {
   }
 
   void imagePicked(XFile pickedImage, ISession chat) async {
-    var docDir = relationCtrl.user.directory;
+    var docDir = relationCtrl.user?.directory;
     String ext = pickedImage.name.split('.').last;
 
     var save = ChatMessageType.fromFileUpload(
-        relationCtrl.user.id,
+        relationCtrl.user?.id ?? "",
         chat.sessionId,
         chat.sessionId,
         pickedImage.name,
@@ -760,7 +761,7 @@ class ChatBoxController with WidgetsBindingObserver {
     chat.messages.insert(0, msg);
     //chat.chatdata.value.lastMessage!
 
-    var item = await docDir.createFile(
+    var item = await docDir?.createFile(
       File(pickedImage.path),
       p: (progress) {
         // var msg = chat.messages
@@ -780,7 +781,7 @@ class ChatBoxController with WidgetsBindingObserver {
   }
 
   Future<void> filePicked(PlatformFile file, ISession chat) async {
-    var docDir = relationCtrl.user.directory;
+    var docDir = relationCtrl.user?.directory;
 
     String ext = file.name.split('.').last;
 
@@ -791,7 +792,7 @@ class ChatBoxController with WidgetsBindingObserver {
 
     var file1 = File(file.path!);
     var save = ChatMessageType.fromFileUpload(
-        relationCtrl.user.id,
+        relationCtrl.user?.id ?? "",
         chat.sessionId,
         chat.sessionId,
         file.name,
@@ -801,7 +802,7 @@ class ChatBoxController with WidgetsBindingObserver {
     var msg = Message(save, chat);
     chat.messages.insert(0, msg);
 
-    var item = await docDir.createFile(
+    var item = await docDir?.createFile(
       file1,
       p: (progress) {
         //TODO:无此方法

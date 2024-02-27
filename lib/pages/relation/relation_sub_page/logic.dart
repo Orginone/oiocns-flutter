@@ -40,12 +40,12 @@ class RelationSubController extends BaseListController<RelationSubState> {
     }
 
     if (type == 'all') {
-      var joinedCompanies = relationCtrl.provider.user.companys;
+      var joinedCompanies = relationCtrl.provider.user?.companys ?? [];
       state.nav.value = RelationNavModel(name: "设置", children: [
         RelationNavModel(
-          name: relationCtrl.provider.user.metadata.name ?? "",
-          id: relationCtrl.provider.user.metadata.id ?? "",
-          image: relationCtrl.provider.user.metadata.avatarThumbnail(),
+          name: relationCtrl.provider.user?.metadata.name ?? "",
+          id: relationCtrl.provider.user?.metadata.id ?? "",
+          image: relationCtrl.provider.user?.metadata.avatarThumbnail(),
           children: [],
           space: relationCtrl.provider.user,
           spaceEnum: SpaceEnum.user,
@@ -209,8 +209,8 @@ class RelationSubController extends BaseListController<RelationSubState> {
               remark: remark,
             );
             var data = item.shortcut == Shortcut.createCompany
-                ? await relationCtrl.user.createCompany(target)
-                : await relationCtrl.user.createCohort(target);
+                ? await relationCtrl.user?.createCompany(target)
+                : await relationCtrl.user?.createCohort(target);
             if (data != null) {
               ToastUtils.showMsg(msg: "创建成功");
             }
@@ -223,7 +223,7 @@ class RelationSubController extends BaseListController<RelationSubState> {
         showSearchDialog(Get.context!, item.targetType!,
             title: item.title, hint: item.hint, onSelected: (targets) async {
           if (targets.isNotEmpty) {
-            bool success = await relationCtrl.user.applyJoin(targets);
+            bool success = await relationCtrl.user?.applyJoin(targets) ?? false;
             if (success) {
               ToastUtils.showMsg(msg: "发送申请成功");
             }

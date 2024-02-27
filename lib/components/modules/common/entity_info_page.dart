@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/base/orginone_stateful_widget.dart';
-import 'package:orginone/components/modules/common/orginone_logo.dart';
+import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/schema.dart';
+import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/load_image.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 /// 实体详情页面
 class EntityInfoPage extends OrginoneStatelessWidget {
@@ -16,6 +18,9 @@ class EntityInfoPage extends OrginoneStatelessWidget {
   @override
   Widget buildWidget(BuildContext context, dynamic data) {
     Widget? content;
+    if (data is ISession) {
+      data = data.metadata;
+    }
     if (data is XTarget || data is IEntity) {
       content = Scrollbar(
         child: SingleChildScrollView(
@@ -101,22 +106,47 @@ class EntityInfoPage extends OrginoneStatelessWidget {
           //       ],
           //     )),
           _buildColumnTextInfo('简介', entity.remark),
-          _buildColumnInfo('二维码', const OrginoneLogo()),
+          _buildColumnInfo('二维码', _buildQRCode()),
         ],
       ),
     ));
   }
 
+  Widget _buildQRCode() {
+    return QrImageView(
+      data: '${Constant.host}/${data.id}',
+      semanticsLabel: "${Constant.host}/${data.id}",
+      version: QrVersions.auto,
+      size: 300.w,
+      embeddedImage: data is IEntity && data.share.avatar != null
+          ? MemoryImage(data.share.avatar?.thumbnailUint8List)
+          : null,
+      // errorCorrectionLevel: QrErrorCorrectLevel.H,
+      embeddedImageStyle: QrEmbeddedImageStyle(size: Size(60.w, 60.w)),
+      dataModuleStyle: const QrDataModuleStyle(
+        dataModuleShape: QrDataModuleShape.square,
+        color: Colors.black,
+      ),
+      eyeStyle: const QrEyeStyle(
+        eyeShape: QrEyeShape.square,
+        color: Colors.black,
+      ),
+    );
+  }
+
   XTarget? _getStorageTarget(dynamic entity) {
     XTarget? target;
     if (entity is XTarget && null != entity.storeId) {
-      target = relationCtrl.user.findMetadata(entity.storeId!);
-    } else if (entity is IEntity && null != entity.metadata.storeId) {
-      target = relationCtrl.user.findMetadata(entity.metadata.storeId!);
+      target = relationCtrl.user?.findMetadata(entity.storeId!);
     } else if (entity is IEntity &&
+        entity.metadata is XTarget &&
+        null != entity.metadata.storeId) {
+      target = relationCtrl.user?.findMetadata(entity.metadata.storeId!);
+    } else if (entity is IEntity &&
+        entity.metadata is XTarget &&
         null != entity.metadata.belongId &&
         entity.metadata.belongId != entity.id) {
-      target = relationCtrl.user.findMetadata(entity.metadata.belongId!);
+      target = relationCtrl.user?.findMetadata(entity.metadata.belongId!);
     }
     return target;
   }

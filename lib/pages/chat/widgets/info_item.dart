@@ -63,6 +63,7 @@ class DetailItemWidget extends GetView<IndexController> {
   }
 
   MessageChatController get chatController => Get.find();
+  ChatBoxController get chatBoxController => Get.find<ChatBoxController>();
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +71,7 @@ class DetailItemWidget extends GetView<IndexController> {
   }
 
   bool get isSelf {
-    return msg.metadata.fromId == controller.user.id;
+    return msg.metadata.fromId == controller.user?.id;
   }
 
   /// 消息详情
@@ -79,8 +80,8 @@ class DetailItemWidget extends GetView<IndexController> {
     ShareIcon? shareIcon;
     XTarget? target;
     if (isSelf) {
-      id = relationCtrl.user.id;
-      shareIcon = relationCtrl.user.share;
+      id = relationCtrl.user?.id ?? "";
+      shareIcon = relationCtrl.user?.share;
     } else {
       id = msg.metadata.fromId;
       if (chat.share.typeName == TargetType.person.label) {
@@ -221,7 +222,7 @@ class DetailItemWidget extends GetView<IndexController> {
         borderRadius: BorderRadius.circular(5),
         child: Container(
           height: 80.h,
-          width: 50.w * func.length,
+          width: 70.w * func.length,
           color: const Color(0xFF4C4C4C),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -230,7 +231,7 @@ class DetailItemWidget extends GetView<IndexController> {
                   (item) => GestureDetector(
                     child: Container(
                       width: 40.w,
-                      margin: EdgeInsets.symmetric(horizontal: 5.w),
+                      margin: EdgeInsets.symmetric(horizontal: 10.w),
                       alignment: Alignment.center,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -258,9 +259,7 @@ class DetailItemWidget extends GetView<IndexController> {
                           chatController.forward(msg.msgType, msg);
                           break;
                         case DetailFunc.reply:
-                          ChatBoxController controller =
-                              Get.find<ChatBoxController>();
-                          controller.reply.value = msg;
+                          chatBoxController.reply.value = msg;
                           break;
                         case DetailFunc.copy:
                           ////TODO:没有此方法
@@ -302,7 +301,7 @@ class DetailItemWidget extends GetView<IndexController> {
         isRead = tag != null;
       } else {
         for (var member in chat.members) {
-          if (member.id != controller.user.id) {
+          if (member.id != controller.user?.id) {
             if (msg.labels
                 .where((element) => element.userId == member.id)
                 .isEmpty) {

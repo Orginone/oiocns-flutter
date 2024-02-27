@@ -87,7 +87,7 @@ abstract class Entity<T extends XEntity> extends Emitter implements IEntity<T> {
 
   @override
   String get remark {
-    return metadata.remark ?? '';
+    return metadata.remark ?? '暂无信息';
   }
 
   @override
