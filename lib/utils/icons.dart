@@ -102,6 +102,12 @@ class IconsUtils {
       ///app应用
       XImage.app: "assets/icons/File_Application.svg",
 
+      ///表单
+      XImage.form: "assets/icons/form.svg",
+
+      ///页面模版
+      XImage.pageTemplate: "assets/icons/page.svg",
+
       ///搜索
       XImage.search: "assets/icons/search.svg",
 

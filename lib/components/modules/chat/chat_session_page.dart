@@ -21,13 +21,24 @@ class _ChatSessionPageState extends OrginoneStatefulState<ChatSessionPage> {
   @override
   void initState() {
     super.initState();
-    chatCtrl = MessageChatController();
-    chatCtrl.context = context;
-    Get.put(chatCtrl);
-    PlayController playCtrl = PlayController();
-    Get.lazyPut(() => playCtrl);
-    chatBoxCtrl = ChatBoxController();
-    Get.put(chatBoxCtrl);
+    if (!Get.isRegistered<MessageChatController>()) {
+      chatCtrl = MessageChatController();
+      chatCtrl.context = context;
+      Get.put(chatCtrl);
+    } else {
+      chatCtrl = Get.find<MessageChatController>();
+      chatCtrl.context = context;
+    }
+    if (!Get.isRegistered<PlayController>()) {
+      PlayController playCtrl = PlayController();
+      Get.lazyPut(() => playCtrl);
+    }
+    if (!Get.isRegistered<ChatBoxController>()) {
+      chatBoxCtrl = ChatBoxController();
+      Get.put(chatBoxCtrl);
+    } else {
+      chatBoxCtrl = Get.find<ChatBoxController>();
+    }
   }
 
   @override

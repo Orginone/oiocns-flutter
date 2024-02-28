@@ -38,12 +38,37 @@ class XCollection<T extends Xbase> {
   }
 
   Future<List<T>> all(
-      {bool reload = false, T Function(Map<String, dynamic>)? fromJson}) async {
+      {bool reload = false,
+      int skip = 0,
+      T Function(Map<String, dynamic>)? fromJson}) async {
     if (!_loaded || reload) {
       _cache = await load({}, fromJson);
       _loaded = true;
     }
     return _cache;
+  }
+
+  Future<List<T>> _all(
+      {bool reload = false,
+      int skip = 0,
+      T Function(Map<String, dynamic>)? fromJson}) async {
+    if (!_loaded || reload) {
+      var res = await loadResult({
+        'skip': skip,
+        'take': 100,
+        'requireTotalCount': true,
+      }, fromJson);
+      if (res.success) {
+        if (null != res.data && res.data!.isNotEmpty) {
+          this._cache.addAll(res.data ?? []);
+          if (this._cache.length < res.totalCount && res.data!.length == 100) {
+            await this.all(reload: true, skip: this._cache.length);
+          }
+        }
+        this._loaded = true;
+      }
+    }
+    return this._cache;
   }
 
   Future<List<T>> find({required List<String> ids}) async {
@@ -88,6 +113,25 @@ class XCollection<T extends Xbase> {
       }
     }
     return [];
+  }
+
+  Future<LoadResult<List<T>>> loadResult(dynamic options,
+      [T Function(Map<String, dynamic>)? cvt]) async {
+    options = options ?? {};
+    options['userData'] = options['userData'] ?? {};
+    options['options'] = options['options'] ?? {};
+    // options['options']['match'] = options['options']['match'] ?? {};
+    var res = await kernel.collectionLoad<List<T>>(
+      this._target.belongId!,
+      this._relations,
+      this._collName,
+      options,
+      fromJson: (data) {
+        return Lists.fromList(data['data'] is List ? data['data'] : [],
+            cvt == null ? null : (d) => cvt(d));
+      },
+    );
+    return res;
   }
 
   Future<List<T>> load(dynamic options,

@@ -13,6 +13,7 @@ import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
+import 'package:orginone/dart/core/thing/standard/page.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/log/log_util.dart';
 
@@ -48,10 +49,12 @@ class _StorePageState extends State<StorePage> {
     //     RoutePages.getRouteLevel() > 0) {
     relationCtrl.homeEnum.listen((homeEnum) {
       if (homeEnum == HomeEnum.store) {
-        setState(() {
-          storeModel = null;
-          datas = RoutePages.getRouteParams(homeEnum: HomeEnum.store);
-        });
+        if (mounted) {
+          setState(() {
+            storeModel = null;
+            datas = RoutePages.getRouteParams(homeEnum: HomeEnum.store);
+          });
+        }
       }
     });
     // }
@@ -87,7 +90,7 @@ class _StorePageState extends State<StorePage> {
       if (null == datas) ...[
         createTabItemsModel(title: "个人"),
         createTabItemsModel(title: "单位")
-      ]
+      ],
     ]);
     // relationCtrl.user?.loadMembers();
   }
@@ -122,6 +125,10 @@ class _StorePageState extends State<StorePage> {
                 parentData is Directory) {
               return loadDataStandards(parentData);
             } else if (parentData.typeName == SpaceEnum.directory.label &&
+                parentData.name == SpaceEnum.businessModeling.label &&
+                parentData is Directory) {
+              return loadDataStandards(parentData);
+            } else if (parentData.typeName == SpaceEnum.directory.label &&
                 parentData.name == DirectoryType.Property.label &&
                 parentData is Directory) {
               return loadProperties(parentData);
@@ -137,17 +144,32 @@ class _StorePageState extends State<StorePage> {
                 parentData.name == DirectoryType.App.label &&
                 parentData is Directory) {
               return loadApps(parentData);
+            } else if (parentData.typeName == SpaceEnum.directory.label &&
+                parentData.name == DirectoryType.Model.label &&
+                parentData is Directory) {
+              return loadApps(parentData);
+            } else if (parentData.typeName == SpaceEnum.directory.label &&
+                parentData.name == DirectoryType.Form.label &&
+                parentData is Directory) {
+              return loadForms(parentData);
+            } else if (parentData.typeName == SpaceEnum.directory.label &&
+                parentData.name == DirectoryType.PageTemplate.label &&
+                parentData is Directory) {
+              return loadPageTemplates(parentData);
             }
 
             return [];
           },
           getAction: (dynamic data) {
-            return GestureDetector(
-              onTap: () {
-                LogUtil.d('>>>>>>======点击了感叹号');
-              },
-              child: const XImageWidget.asset(width: 35, height: 35, ''),
-            );
+            if (data is! IDirectory) {
+              return GestureDetector(
+                onTap: () {
+                  LogUtil.d('>>>>>>======点击了感叹号');
+                },
+                child: const XImageWidget.asset(width: 35, height: 35, ''),
+              );
+            }
+            return null;
           },
           onTap: (dynamic data, List children) {
             LogUtil.d('>>>>>>======点击了列表项 ${data.name} ${children.length}');
@@ -272,6 +294,28 @@ class _StorePageState extends State<StorePage> {
     print('>>>>>>======files ${files.length}');
     if (files.isEmpty) {
       return await item.standard.loadApplications();
+    }
+
+    return files;
+  }
+
+  ///加载表单
+  Future<List<IForm>> loadForms(Directory item) async {
+    List<IForm> files = item.standard.forms;
+    print('>>>>>>======files ${files.length}');
+    if (files.isEmpty) {
+      return await item.standard.loadForms();
+    }
+
+    return files;
+  }
+
+  ///加载页面模版
+  Future<List<IPageTemplate>> loadPageTemplates(Directory item) async {
+    List<IPageTemplate> files = item.standard.templates;
+    print('>>>>>>======files ${files.length}');
+    if (files.isEmpty) {
+      return await item.standard.loadTemplates();
     }
 
     return files;

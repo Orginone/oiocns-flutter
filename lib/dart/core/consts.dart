@@ -24,7 +24,8 @@ enum TaskType {
   wait("待办事项"),
   done("已办事项"),
   altMe("抄送我的"),
-  create("我发起的");
+  create("我发起的"),
+  completed("已完结");
 
   final String label;
   const TaskType(this.label);

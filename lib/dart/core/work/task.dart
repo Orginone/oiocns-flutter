@@ -151,6 +151,8 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
         return taskdata.status! >= TaskStatus.approvalStart.status;
       case '我发起的':
         return taskdata.createUser == userId;
+      case '已完结':
+        return taskdata.createUser == userId;
       case '待办事项':
         return taskdata.status! < TaskStatus.approvalStart.status;
       case '抄送我的':

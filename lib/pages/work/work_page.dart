@@ -143,7 +143,7 @@ class _WorkPageState extends State<WorkPage> {
     } else if (title == "已发起") {
       datas = await relationCtrl.work.loadContent(TaskType.create);
     } else if (title == "已完结") {
-      // datas = await relationCtrl.work.loadContent(TaskType.create);
+      datas = await relationCtrl.work.loadContent(TaskType.completed);
     }
     return datas;
   }

@@ -204,6 +204,9 @@ class WorkProvider implements IWorkProvider {
       case '我发起的':
         return {
           'createUser': userId,
+          'status': {
+            '_lt_': 100,
+          },
           'nodeId': {
             '_exists_': false,
           },
@@ -211,6 +214,16 @@ class WorkProvider implements IWorkProvider {
       case '抄送我的':
         return {
           'approveType': '抄送',
+        };
+      case '已完结':
+        return {
+          'createUser': userId,
+          'status': {
+            '_gte_': 100,
+          },
+          'nodeId': {
+            '_exists_': false,
+          },
         };
       default:
         return {

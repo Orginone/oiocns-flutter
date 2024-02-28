@@ -63,20 +63,20 @@ class FileDetail extends BaseDetail {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // ImageWidget(AssetsImages.iconFile, size: 40.w),
-                XImage.entityIcon(msgBody),
+                XImage.entityIcon(msgBody, width: 40),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         msgBody.name ?? "",
-                        style: XFonts.chatSMSysTip,
+                        style: XFonts.chatSMInfo,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         getFileSizeString(bytes: msgBody.size ?? 0),
-                        style: XFonts.size16Black9,
+                        style: XFonts.size14Black9,
                       ),
                     ],
                   ),

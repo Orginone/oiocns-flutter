@@ -88,7 +88,7 @@ class _ChatPageState extends State<ChatPage> {
     if (null == datas) {
       initDatas.value = getSessionsByLabel(title);
     } else {
-      initDatas.value = datas ?? [];
+      initDatas.value = getSessionsByLabel(title, datas: datas) ?? [];
     }
 
     return TabItemsModel(
@@ -131,8 +131,9 @@ class _ChatPageState extends State<ChatPage> {
   }
 
   // 根据标签获得沟通会话列表
-  List<ISession> getSessionsByLabel(String label) {
-    return chats
+  List<ISession> getSessionsByLabel(String label, {List<ISession>? datas}) {
+    datas ??= chats.value;
+    return datas
         .where((element) => label == '最近' || element.groupTags.contains(label))
         .toList();
   }

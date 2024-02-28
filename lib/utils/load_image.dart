@@ -241,6 +241,12 @@ class XImage {
   ///分类
   static const String species = "species";
 
+  ///表单
+  static const String form = "form";
+
+  ///页面模版
+  static const String pageTemplate = "pageTemplate";
+
   static Widget localImage(String name,
       {double? width,
       BoxFit? fit,

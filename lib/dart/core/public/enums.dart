@@ -100,6 +100,14 @@ enum DirectoryGroupType {
     SpaceEnum.species,
     SpaceEnum.dict,
   ]),
+
+  /// 业务模型
+  businessModeling("业务模型", [
+    SpaceEnum.form,
+    SpaceEnum.report,
+    SpaceEnum.rransfer,
+    SpaceEnum.pageTemplate,
+  ]),
   ;
 
   const DirectoryGroupType(this.name, this.types);
@@ -336,7 +344,12 @@ enum SpaceEnum {
   applications("应用", XImage.application),
   module("模块", XImage.folder),
   work("办事", XImage.folder),
-  form("表单", XImage.folder),
+
+  ///表单
+  form("表单", XImage.form),
+  report("报表", XImage.folder),
+  rransfer("迁移", XImage.folder),
+  pageTemplate("页面模板", XImage.pageTemplate),
   file("文件", XImage.folder),
   user('个人', XImage.folder),
   company("公司", XImage.folder),
