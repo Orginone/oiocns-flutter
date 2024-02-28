@@ -9,6 +9,7 @@ import 'package:orginone/components/modules/common/file_list_page.dart';
 import 'package:orginone/components/modules/common/member_list_page.dart';
 import 'package:orginone/components/modules/relation/relation_cohort_page.dart';
 import 'package:orginone/components/modules/relation/relation_friend_page.dart';
+import 'package:orginone/components/widgets/form_widget/form_detail/index.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/index.dart';
@@ -484,6 +485,10 @@ class RoutePages {
       name: Routers.searchCoin,
       page: () => const SearchCoinPage(),
       binding: SearchCoinBinding(),
+    ),
+    GetPage(
+      name: Routers.formDetail,
+      page: () => const FormDetailPage(),
     ),
     GetPage(
       name: Routers.errorPage,

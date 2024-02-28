@@ -7,19 +7,21 @@ import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:omni_datetime_picker/omni_datetime_picker.dart';
+import 'package:orginone/common/extension/ex_list.dart';
 import 'package:orginone/common/models/file/index.dart' hide FileType;
 import 'package:orginone/components/widgets/index.dart';
 import 'package:orginone/dart/core/target/base/belong.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
 import 'package:orginone/dart/core/target/team/company.dart';
-import 'package:orginone/utils/date_utils.dart';
 import 'package:orginone/config/unified.dart';
+import 'package:orginone/utils/index.dart';
 
 typedef MappingComponentsCallback = Widget Function(
     Fields data, ITarget target);
 
-Map<String, MappingComponentsCallback> testMappingComponents = {
+Map<String, MappingComponentsCallback> mappingComponents = {
+  "keyValueText": mappingKeyVueTextWidget,
   "text": mappingTextWidget,
   "input": mappingInputWidget,
   "select": mappingSelectBoxWidget,
@@ -35,6 +37,39 @@ Map<String, MappingComponentsCallback> testMappingComponents = {
   "upload": mappingUploadWidget,
 };
 
+MappingComponentsCallback mappingKeyVueTextWidget =
+    (Fields data, ITarget target) {
+  if (data.hidden ?? false) {
+    return Container();
+  }
+
+  String content = "";
+  if (data.defaultData.value != null) {
+    if (data.defaultData.value is String) {
+      content = data.defaultData.value;
+    } else {
+      content = data.defaultData.value?.values?.first.toString() ?? "";
+    }
+  } else {
+    content = data.controller?.text ?? '';
+  }
+  // LogUtil.d('mappingKeyVueTextWidget');
+  // LogUtil.d(content);
+  Widget row = <Widget>[
+    Text('${data.title}:  '),
+    // Text(data.defaultData.value ?? data.controller?.text ?? ''),
+    Text(content),
+  ].toRow();
+
+  return Container(
+    margin: EdgeInsets.only(
+        left: (data.marginLeft ?? 0).h,
+        right: (data.marginRight ?? 0).h,
+        top: (data.marginTop ?? 0).h,
+        bottom: (data.marginBottom ?? 0).h),
+    child: row,
+  );
+};
 MappingComponentsCallback mappingTextWidget = (Fields data, ITarget target) {
   if (data.hidden ?? false) {
     return Container();

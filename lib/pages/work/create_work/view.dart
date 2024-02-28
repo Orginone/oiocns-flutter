@@ -68,7 +68,7 @@ class CreateWorkPage
                     if (e.field.type == null) {
                       return Container();
                     }
-                    Widget child = testMappingComponents[e.field.type ?? ""]!(
+                    Widget child = mappingComponents[e.field.type ?? ""]!(
                         e.field, state.target);
                     return child;
                   }).toList() ??

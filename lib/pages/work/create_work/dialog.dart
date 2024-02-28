@@ -29,9 +29,8 @@ Future<void> showCreateAuthDialog(
                           dynamic value = thing.otherInfo[e.code];
                           e.field.defaultData.value = value;
                         }
-                        Widget child =
-                            testMappingComponents[e.field.type ?? ""]!(
-                                e.field, target);
+                        Widget child = mappingComponents[e.field.type ?? ""]!(
+                            e.field, target);
                         return child;
                       }).toList() ??
                       [],

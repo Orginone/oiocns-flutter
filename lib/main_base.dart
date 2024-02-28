@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:common_utils/common_utils.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -15,7 +16,10 @@ import 'dart/controller/index.dart';
 import 'utils/storage.dart';
 
 initApp() async {
-  errorWatch();
+  if (!kDebugMode) {
+    errorWatch();
+  }
+
   await Global.init();
 
   SystemChannels.lifecycle.setMessageHandler((msg) async {

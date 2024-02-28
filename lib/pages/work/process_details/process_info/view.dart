@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/index.dart';
+import 'package:orginone/components/widgets/form_widget/index.dart';
+
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/work/widgets/approve_widget.dart';
@@ -19,6 +21,10 @@ class ProcessInfoPage
 
   @override
   Widget buildView() {
+    return _mainView();
+  }
+
+  Column _mainView() {
     return Column(
       children: [
         Expanded(
@@ -26,6 +32,30 @@ class ProcessInfoPage
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                const FormWidgetPage(),
+                // _mainTable(),
+                // _subTable(),
+                SizedBox(
+                  height: 10.h,
+                ),
+                ApproveWidget(todo: state.todo),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Column _mainViewOld() {
+    return Column(
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const FormWidgetPage(),
                 _mainTable(),
                 _subTable(),
                 SizedBox(
@@ -75,7 +105,7 @@ class ProcessInfoPage
             return Container();
           }
           Widget child = null != relationCtrl.user
-              ? testMappingComponents[element.field.type ?? ""]!(
+              ? mappingComponents[element.field.type ?? ""]!(
                   element.field, relationCtrl.user!)
               : Container();
           return child;

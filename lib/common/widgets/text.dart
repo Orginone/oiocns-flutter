@@ -73,7 +73,7 @@ class TextWidget extends StatelessWidget {
     this.textAlign,
   })  : style = const TextStyle(
           fontSize: 20,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.bold,
         ),
         super(key: key);
 
@@ -89,8 +89,25 @@ class TextWidget extends StatelessWidget {
     this.weight,
     this.textAlign,
   })  : style = const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+        super(key: key);
+
+  /// 文字 - 标题3
+  const TextWidget.title4(
+    this.text, {
+    Key? key,
+    this.maxLines = 1,
+    this.softWrap = false,
+    this.overflow = TextOverflow.clip,
+    this.color,
+    this.size,
+    this.weight,
+    this.textAlign,
+  })  : style = const TextStyle(
           fontSize: 15,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.bold,
         ),
         super(key: key);
 
