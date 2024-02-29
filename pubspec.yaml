@@ -194,6 +194,13 @@ flutter:
     - assets/images/
     - assets/images/work/
     - assets/icons/
+    - assets/icons/types/
+    - assets/icons/types/files/
+    - assets/icons/types/folders/
+    - assets/icons/operate/
+    - assets/icons/toolbar/
+    - assets/icons/topbar/
+    - assets/icons/navbar/
     - assets/markdown/originone.md
   fonts:
     - family: Orginone
