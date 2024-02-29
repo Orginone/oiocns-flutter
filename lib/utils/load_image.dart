@@ -47,11 +47,11 @@ class XImage {
     [const Color(0xFFE36118), const Color(0xFFFF7200)]
   ];
 
+  ///系统logo
+  static const String logo = "logo";
+  //================================================================== navbar
   ///沟通
   static const String chat = "chat";
-
-  ///沟通线条
-  static const String chatOutline = "chatOutline";
 
   ///办事
   static const String work = "work";
@@ -65,10 +65,72 @@ class XImage {
   ///关系
   static const String relation = "relation";
 
-  ///关系线条
-  static const String relationOutline = "relationOutline";
+  //================================================================== topbar
+  ///沟通线条
+  static const String chatOutline = "chatOutline";
 
-  ///工作台图标
+  ///成员线条
+  static const String memberOutline = "memberOutline";
+
+  // ///关系线条
+  // static const String relationOutline = "relationOutline";
+
+  ///动态线条
+  static const String dynamicOutline = "dynamicOutline";
+
+  ///文件线条
+  static const String fileOutline = "fileOutline";
+
+  ///设置线条
+  static const String settingOutline = "settingOutline";
+  //================================================================== toolbar
+
+  ///搜索
+  static const String search = "search";
+
+  ///扫码
+  static const String scan = "scan";
+
+  ///新增
+  static const String add = "add";
+
+  ///发起办事
+  static const String startWork = "startWork";
+
+  ///添加存储
+  static const String addStorage = "addStorage";
+
+  //================================================================== operate
+
+  ///动态-操作按钮
+  ///
+  ///点赞线条
+  static const String likeOutline = "likeOutLine";
+
+  ///点赞填充
+  static const String likeFill = "likeFill";
+
+  ///删除
+  static const String deleteOutline = "deleteOutline";
+
+  ///评论线条
+  static const String commentOutline = "commentOutline";
+
+  ///沟通-操作按钮
+  ///
+  ///转发
+  static const String forward = "forward";
+
+  ///复制
+  static const String copyOutline = "copyOutline";
+
+  ///引用
+  static const String quote = "quote";
+
+  ///撤回
+  static const String recall = "recall";
+
+  ///事项提醒-工作台
   ///
   ///办事
   static const String homeWork = "homeWork";
@@ -82,30 +144,8 @@ class XImage {
   ///未读消息
   static const String homeChat = "homeChat";
 
-  ///系统logo
-  static const String logo = "logo";
-
-  ///动态
-  static const String dynamicIcon = "dynamic";
-
-  ///动态线条
-  static const String dynamicOutline = "dynamicOutline";
-
-  ///文件
-  static const String file = "file";
-
-  ///文件线条
-  static const String fileOutline = "fileOutline";
-
-  ///设置
-  static const String settings = "settings";
-
-  ///设置线条
-  static const String settingOutline = "settingOutline";
-
-  ///成员线条
-  static const String memberOutline = "memberOutline";
-
+  ///快捷操作-工作台
+  ///
   ///添加好友
   static const String addFriend = "addFriend";
 
@@ -124,29 +164,43 @@ class XImage {
   ///加入单位
   static const String joinUnit = "joinUnit";
 
+  // ///设置
+  // static const String settings = "settings";
+
+  //================================================================== types/folders
+  ///属性
+  static const String folderProperties = "folderProperties";
+
+  ///分类
+  static const String folderClassification = "folderClassification";
+
+  ///字典
+  static const String folderDictionary = "folderDictionary";
+
+  ///表单
+  static const String folderForm = "folderForm";
+
+  ///业务模型
+  static const String folderModel = "folderModel";
+
+  ///应用
+  static const String folderApplication = "folderApplication";
+
+  ///文件
+  static const String folderStore = "folderStore";
+
+  ///代码
+  static const String folderCode = "folderCode";
+
+  ///镜像
+  static const String folderImage = "folderImage";
+  // ///资源
+  // static const String folderStore = "folderStore";
+
   ///目录
   static const String folder = "folder";
 
-  ///属性
-  static const String property = "property";
-
-  ///资源
-  static const String folderStore = "folderStore";
-
-  ///用户
-  static const String user = "user";
-
-  ///群组
-  static const String communicationGroup = "communicationGroup";
-
-  ///单位
-  static const String unit = "unit";
-
-  ///内设机构
-  static const String unitInstitution = "unitInstitution";
-
-  ///集群
-  static const String cluster = "cluster";
+  //================================================================== types/files
 
   ///pdf
   static const String pdf = "pdf";
@@ -172,44 +226,29 @@ class XImage {
   ///app应用
   static const String app = "app";
 
-  ///搜索
-  static const String search = "search";
+  ///文件
+  static const String file = "file";
+  //================================================================== types
+  ///动态
+  static const String dynamicIcon = "dynamic";
 
-  ///扫码
-  static const String scan = "scan";
+  ///属性
+  static const String property = "property";
 
-  ///新增
-  static const String add = "add";
+  ///用户
+  static const String user = "user";
 
-  ///发起办事
-  static const String startWork = "startWork";
+  ///群组
+  static const String communicationGroup = "communicationGroup";
 
-  ///添加存储
-  static const String addStorage = "addStorage";
+  ///单位
+  static const String unit = "unit";
 
-  ///点赞线条
-  static const String likeOutline = "likeOutLine";
+  ///内设机构
+  static const String unitInstitution = "unitInstitution";
 
-  ///点赞填充
-  static const String likeFill = "likeFill";
-
-  ///转发
-  static const String forward = "forward";
-
-  ///复制
-  static const String copyOutline = "copyOutline";
-
-  ///引用
-  static const String quote = "quote";
-
-  ///撤回
-  static const String recall = "recall";
-
-  ///删除
-  static const String deleteOutline = "deleteOutline";
-
-  ///评论线条
-  static const String commentOutline = "commentOutline";
+  ///集群
+  static const String cluster = "cluster";
 
   ///表单办事
   static const String formWork = "formWork";
@@ -229,6 +268,9 @@ class XImage {
   ///办事-申请加入群
   static const String workApplyAddCohort = "workApplyAddCohort";
 
+  ///办事-子流程
+  static const String workSend = "workSend";
+
   ///应用
   static const String application = "application";
 
@@ -246,6 +288,7 @@ class XImage {
 
   ///页面模版
   static const String pageTemplate = "pageTemplate";
+  //==================================================================
 
   static Widget localImage(String name,
       {double? width,
@@ -321,6 +364,14 @@ class XImage {
         circular: circular,
         info: TeamTypeInfo(share: data.shareIcon()),
       );
+    } else if (data is FixedDirectory &&
+        null != DirectoryType.getType(data.name)) {
+      iconW = XImage.localImage(
+        DirectoryType.getType(data.name)?.icon ?? DirectoryType.def.icon,
+        width: size?.width,
+        circular: circular,
+        radius: radius,
+      );
     } else if (data is IDirectory && null != SpaceEnum.getType(data.typeName)) {
       iconW = XImage.localImage(
         SpaceEnum.getType(data.typeName)!.icon,
@@ -343,7 +394,10 @@ class XImage {
         circular: circular,
         radius: radius ?? 7,
       );
-    } else if ((data is ShareIcon || data is XTarget || data is IEntity) &&
+    } else if ((data is ShareIcon ||
+            data is XTarget ||
+            data is IEntity ||
+            data is ActivityMessage) &&
         data.typeName == TargetType.person.label &&
         data.name.isNotEmpty) {
       iconW = _defaultPersonIcon(data.name, size: size, circular: circular);
@@ -375,14 +429,14 @@ class XImage {
         null != data.taskdata.taskType &&
         data.taskdata.taskType!.isNotEmpty) {
       iconW = XImage.localImage(
-        WorkType.getType(data.taskdata.taskType!).icon,
+        WorkType.getType(data.taskdata.taskType!)?.icon ?? WorkType.thing.icon,
         width: size?.width,
         circular: circular,
         radius: radius,
       );
     } else if (data is Work && data.typeName.isNotEmpty) {
       iconW = XImage.localImage(
-        WorkType.getType(data.typeName).icon,
+        WorkType.getType(data.typeName)?.icon ?? WorkType.thing.icon,
         width: size?.width,
         circular: circular,
         radius: radius,

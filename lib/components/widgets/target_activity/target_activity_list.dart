@@ -29,14 +29,15 @@ class TargetActivityList extends OrginoneStatelessWidget {
 
   @override
   Widget buildWidget(BuildContext context, dynamic data) {
-    return NotificationListener<ScrollNotification>(
+    return ActivityCommentBox(
+        body: NotificationListener<ScrollNotification>(
       onNotification: (notification) {
         if (notification is ScrollStartNotification) {
           // 开始滚动
         } else if (notification is ScrollUpdateNotification) {
           // 正在滚动。。。总滚动距离：${notification.metrics.maxScrollExtent}"
         } else if (notification is ScrollEndNotification) {
-          activity.value.load();
+          // activity.value.load();
           // "停止滚动"
         }
         return true;
@@ -60,7 +61,7 @@ class TargetActivityList extends OrginoneStatelessWidget {
           );
         }),
       ),
-    );
+    ));
   }
 
   Widget _item(int index) {

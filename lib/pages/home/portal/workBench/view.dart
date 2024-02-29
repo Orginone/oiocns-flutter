@@ -168,8 +168,8 @@ class WorkBenchPage
   // 操作组件
   Widget RenderOperate() {
     // 发送快捷命令
-    renderCmdBtn(String cmd, String title, String iconType, ShortcutData item,
-        Color btnColor) {
+    renderCmdBtn(
+        String iconName, String title, ShortcutData item, Color btnColor) {
       return GestureDetector(
         onTap: () {
           relationCtrl.settingMenuController.hideMenu();
@@ -178,7 +178,7 @@ class WorkBenchPage
         child: Container(
           child: Column(
             children: [
-              XImage.localImage(cmd,
+              XImage.localImage(iconName,
                   width: 30.w,
                   color: Colors.white,
                   bgColor: btnColor,
@@ -213,16 +213,16 @@ class WorkBenchPage
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                renderCmdBtn('addFriend', '添加好友', 'joinFriend',
+                renderCmdBtn(XImage.addFriend, '添加好友',
                     relationCtrl.menuItems[0], const Color(0xFFFF9A5C)),
-                renderCmdBtn('createGroup', '创建群组', '群组',
+                renderCmdBtn(XImage.createGroup, '创建群组',
                     relationCtrl.menuItems[4], const Color(0xFF228DEF)),
-                renderCmdBtn('joinGroup', '加入群聊', 'joinCohort',
+                renderCmdBtn(XImage.joinGroup, '加入群聊',
                     relationCtrl.menuItems[1], const Color(0xFFFFCE39)),
-                renderCmdBtn('establishmentUnit', '新建单位', '单位',
+                renderCmdBtn(XImage.establishmentUnit, '新建单位',
                     relationCtrl.menuItems[2], const Color(0xFFFFCE39)),
-                renderCmdBtn('joinUnit', '加入单位', 'joinCompany',
-                    relationCtrl.menuItems[3], const Color(0xFF59D8A5)),
+                renderCmdBtn(XImage.joinUnit, '加入单位', relationCtrl.menuItems[3],
+                    const Color(0xFF59D8A5)),
               ],
             )));
   }

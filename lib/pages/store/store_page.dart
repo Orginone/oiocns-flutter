@@ -129,31 +129,31 @@ class _StorePageState extends State<StorePage> {
                 parentData is Directory) {
               return loadDataStandards(parentData);
             } else if (parentData.typeName == SpaceEnum.directory.label &&
-                parentData.name == DirectoryType.Property.label &&
+                parentData.name == DirectoryType.property.label &&
                 parentData is Directory) {
               return loadProperties(parentData);
             } else if (parentData.typeName == SpaceEnum.directory.label &&
-                parentData.name == DirectoryType.Species.label &&
+                parentData.name == DirectoryType.species.label &&
                 parentData is Directory) {
               return loadSpecies(parentData);
             } else if (parentData.typeName == SpaceEnum.directory.label &&
-                parentData.name == DirectoryType.Dict.label &&
+                parentData.name == DirectoryType.dict.label &&
                 parentData is Directory) {
               return loadDicts(parentData);
             } else if (parentData.typeName == SpaceEnum.directory.label &&
-                parentData.name == DirectoryType.App.label &&
+                parentData.name == DirectoryType.app.label &&
                 parentData is Directory) {
               return loadApps(parentData);
             } else if (parentData.typeName == SpaceEnum.directory.label &&
-                parentData.name == DirectoryType.Model.label &&
+                parentData.name == DirectoryType.model.label &&
                 parentData is Directory) {
               return loadApps(parentData);
             } else if (parentData.typeName == SpaceEnum.directory.label &&
-                parentData.name == DirectoryType.Form.label &&
+                parentData.name == DirectoryType.form.label &&
                 parentData is Directory) {
               return loadForms(parentData);
             } else if (parentData.typeName == SpaceEnum.directory.label &&
-                parentData.name == DirectoryType.PageTemplate.label &&
+                parentData.name == DirectoryType.pageTemplate.label &&
                 parentData is Directory) {
               return loadPageTemplates(parentData);
             }

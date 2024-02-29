@@ -252,7 +252,7 @@ class RenderCtxMore extends StatelessWidget {
             children: [
               ButtonWidget.iconTextOutlined(
                 onTap: () async {
-                  handleReply(context);
+                  // handleReply(context);
                 },
                 // const ImageWidget(
                 //   AssetsImages.iconMsg,
@@ -262,29 +262,23 @@ class RenderCtxMore extends StatelessWidget {
                 '转发',
                 textColor: XColors.black3,
               ),
-              Offstage(
-                  offstage: !item.value.metadata.likes
-                      .contains(relationCtrl.user?.id),
-                  child: Padding(
-                    padding: EdgeInsets.only(left: 5.w),
-                    child: ButtonWidget.iconTextOutlined(
-                      onTap: () async {
-                        await item.value.like();
-                      },
-                      // const ImageWidget(
-                      //   AssetsImages.iconLike,
-                      //   size: 18,
-                      //   color: Colors.red,
-                      // ),
-                      XImage.localImage(XImage.likeFill, width: 24.w),
-                      '取消',
-                      textColor: XColors.black3,
-                    ),
-                  )),
-              Offstage(
-                offstage:
-                    item.value.metadata.likes.contains(relationCtrl.user?.id),
-                child: ButtonWidget.iconTextOutlined(
+              if (item.value.metadata.likes.contains(relationCtrl.user?.id))
+                ButtonWidget.iconTextOutlined(
+                  onTap: () async {
+                    await item.value.like();
+                  },
+                  // const ImageWidget(
+                  //   AssetsImages.iconLike,
+                  //   size: 18,
+                  //   color: Colors.red,
+                  // ),
+                  XImage.localImage(XImage.likeFill,
+                      width: 24.w, color: Colors.red),
+                  '取消',
+                  textColor: XColors.black3,
+                ),
+              if (!item.value.metadata.likes.contains(relationCtrl.user?.id))
+                ButtonWidget.iconTextOutlined(
                   onTap: () async {
                     await item.value.like();
                   },
@@ -296,8 +290,7 @@ class RenderCtxMore extends StatelessWidget {
                   '点赞',
                   textColor: XColors.black3,
                 ),
-              ),
-              Padding(padding: EdgeInsets.only(left: 5.w)),
+              // Padding(padding: EdgeInsets.only(left: 5.w)),
               ButtonWidget.iconTextOutlined(
                 onTap: () async {
                   handleReply(context);

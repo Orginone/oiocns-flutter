@@ -12,7 +12,7 @@ import 'package:orginone/dart/core/target/person.dart';
 import 'package:orginone/utils/load_image.dart';
 
 /// 动态集合名
-const ActivityCollName = '-resource-activity';
+const activityCollName = '-resource-activity';
 
 /// 动态消息接口
 abstract class IActivityMessage extends Emitter {
@@ -36,6 +36,7 @@ abstract class IActivityMessage extends Emitter {
   String get name;
 
   ShareIcon get share;
+  String get typeName;
 
   /// 更新元数据
   void update(ActivityType data);
@@ -67,6 +68,8 @@ class ActivityMessage extends Emitter implements IActivityMessage {
   String get name => activity.name;
   @override
   ShareIcon get share => activity.share;
+  @override
+  String get typeName => activity.typeName;
 
   @override
   int get createTime {
@@ -197,11 +200,11 @@ class Activity extends Entity<XTarget> implements IActivity {
   Activity(metadata, this.session) : super(metadata, ['动态']) {
     activityList = [];
     if (session.target.id == session.sessionId) {
-      coll = session.target.resource.genColl(ActivityCollName);
+      coll = session.target.resource.genColl(activityCollName);
     } else {
       coll = XCollection<ActivityType>(
         metadata,
-        ActivityCollName,
+        activityCollName,
         [metadata.id],
         [key],
       );
@@ -369,7 +372,6 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
   Future<List<IActivityMessage>> load([int take = 10]) async {
     if (_inited) return activityList;
 
-    _inited = true;
     List<IActivityMessage> more = [];
     await Future.wait(subActivitys.map((i) => i.load(take)));
     for (var activity in subActivitys) {
@@ -379,6 +381,9 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
     var news = more.getRange(0, min(more.length, take)).toList();
     if (news.isNotEmpty) {
       lastTime = news[news.length - 1].createTime;
+      activityList.addAll(news);
+    } else {
+      _inited = true;
     }
     return news;
   }

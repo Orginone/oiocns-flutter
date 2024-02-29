@@ -6,6 +6,7 @@
  * @LastEditors: Please set LastEditors
  * @LastEditTime: 2022-12-14 20:07:25
  */
+@Deprecated("旧方法，使用XImage.entityIcon替代")
 class AssetsSvgs {
   //============================菜单————————————————————————————————
   static const orderInMenuSvg = 'assets/svgs/menu/order_in_menu.svg';

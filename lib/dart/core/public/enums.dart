@@ -10,7 +10,7 @@ enum WorkType {
   addGroup("加群组", XImage.workApplyAddGroup),
   addStorage("加存储资源", XImage.workApplyAddStorage),
   addCohort("加组织群", XImage.workApplyAddCohort),
-
+  workSend("子流程", XImage.workSend),
   thing("事项", XImage.formWork);
 
   const WorkType(this.label, this.icon);
@@ -22,8 +22,8 @@ enum WorkType {
     return type.label;
   }
 
-  static WorkType getType(String name) {
-    return WorkType.values.firstWhere((element) => element.label == name);
+  static WorkType? getType(String name) {
+    return WorkType.values.firstWhereOrNull((element) => element.label == name);
   }
 }
 
@@ -516,58 +516,63 @@ enum DirectoryType {
   /// 一级类目
   ///
   /// 存储资源
-  Storage("存储资源"),
+  storage("存储资源", XImage.folder),
 
   ///数据标准
-  DataStandard("数据标准"),
+  dataStandard("数据标准", XImage.folder),
 
   ///业务模型
-  Model("业务模型"),
+  model("业务模型", XImage.folderModel),
 
   ///应用
-  App("应用"),
+  app("应用", XImage.folderApplication),
 
   ///文件
-  File("文件"),
+  file("文件", XImage.folderStore),
 
   ///代码
-  Code("代码"),
+  code("代码", XImage.folderCode),
 
   ///镜像
-  Mirror("镜像"),
+  mirror("镜像", XImage.folderImage),
 
   /// 二级类目
   ///
   ///属性
-  Property("属性"),
+  property("属性", XImage.folderProperties),
 
   ///分类
-  Species("分类"),
+  species("分类", XImage.folderClassification),
 
   ///字典
-  Dict("字典"),
+  dict("字典", XImage.folderDictionary),
 
   ///表单
-  Form("表单"),
+  form("表单", XImage.folderForm),
 
   ///报表
-  Report("报表"),
+  report("报表", XImage.folder),
 
   ///模板
-  PageTemplate("模板"),
+  pageTemplate("模板", XImage.folder),
 
   ///迁移
-  Transfer("迁移");
+  transfer("迁移", XImage.folder),
 
-  const DirectoryType(this.label);
+  ///默认
+  def("默认", XImage.folder);
+
+  const DirectoryType(this.label, this.icon);
 
   final String label;
+  final String icon;
 
   static String getName(DirectoryType type) {
     return type.label;
   }
 
-  static DirectoryType getType(String name) {
-    return DirectoryType.values.firstWhere((element) => element.label == name);
+  static DirectoryType? getType(String name) {
+    return DirectoryType.values
+        .firstWhereOrNull((element) => element.label == name);
   }
 }

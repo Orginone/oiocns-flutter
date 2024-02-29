@@ -7761,8 +7761,10 @@ class StandardDirectoryType extends XDirectory {
   StandardDirectoryType.fromJson(Map<String, dynamic> json)
       : sort = json['sort'] ?? 0,
         accept = json['accept'] != null
-            ? Lists.fromList(json['accept'],
-                (element) => DirectoryType.getType(json['accept']))
+            ? Lists.fromList(
+                json['accept'],
+                (element) =>
+                    DirectoryType.getType(json['accept']) ?? DirectoryType.def)
             : null,
         children = json['children'] != null
             ? Lists.fromList(json['children'], StandardDirectoryType.fromJson)

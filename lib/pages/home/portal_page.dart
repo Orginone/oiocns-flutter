@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:orginone/common/routers/pages.dart';
 import 'package:orginone/components/widgets/common/others/keep_alive_widget.dart';
 import 'package:orginone/components/widgets/infoListPage/index.dart';
-import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/home/portal/cohort/view.dart';
 import 'package:orginone/pages/home/portal/workBench/view.dart';
@@ -54,16 +53,8 @@ class PortalPage extends StatelessWidget {
               null != relationCtrl.user
           ? KeepAliveWidget(
               child: CohortActivityPage(
-                  "activity", "群动态", relationCtrl.cohortActivity,
-                  loadCohortActivity: () => GroupActivity(
-                        relationCtrl.user!,
-                        relationCtrl.chats
-                            .where((i) => i.isMyChat && i.isGroup)
-                            .map((i) => i.activity)
-                            .toList(),
-                        false,
-                      )))
-          : Container();
+                  "activity", "群动态", relationCtrl.cohortActivity))
+          : const Center(child: Text("数据加载中。。。"));
     });
     // } else {
     //   return Container(
@@ -83,18 +74,8 @@ class PortalPage extends StatelessWidget {
               "circle",
               "好友圈",
               relationCtrl.friendsActivity,
-              loadCohortActivity: () => GroupActivity(
-                relationCtrl.user!,
-                [
-                  relationCtrl.user!.session.activity,
-                  ...relationCtrl.user!.memberChats
-                      .map((i) => i.activity)
-                      .toList()
-                ],
-                true,
-              ),
             ))
-          : Container();
+          : const Center(child: Text("数据加载中。。。"));
     });
     // } else {
     //   return Container(
