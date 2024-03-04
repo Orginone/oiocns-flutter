@@ -3,6 +3,7 @@ import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/consts.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/thing/fileinfo.dart';
+import 'package:orginone/utils/index.dart';
 
 abstract class IForm implements IStandardFileInfo<XForm> {
   ///构造函数
@@ -46,7 +47,9 @@ class Form extends StandardFileInfo<XForm> implements IForm {
   }
   @override
   Future<bool> loadContent({bool reload = false}) async {
-    await loadFields(reload: reload);
+    List<FieldModel> fieds = await loadFieldsNew(reload: reload);
+    LogUtil.d('loadContent');
+    LogUtil.d(fieds);
     return true;
   }
 
@@ -64,11 +67,13 @@ class Form extends StandardFileInfo<XForm> implements IForm {
             lookups: [],
             valueType: attr.property?.valueType,
           );
-          if (attr.property!.speciesId!.isNotEmpty &&
+          if (attr.property!.speciesId != null &&
               attr.property!.speciesId!.isNotEmpty) {
             final data = await directory.resource.speciesItemColl.loadSpace({
               'options': {
-                'match': {'speciesId': attr.property?.speciesId}
+                'match': {
+                  'speciesId': {'_in_': attr.property?.speciesId}
+                }
               },
             });
             if (data.isNotEmpty) {
@@ -91,6 +96,67 @@ class Form extends StandardFileInfo<XForm> implements IForm {
     _fieldsLoaded = true;
 
     return fields;
+  }
+
+  Future<List<FieldModel>> loadFieldsNew({bool reload = false}) async {
+    if (!_fieldsLoaded || reload) {
+      fields = [];
+      final speciesIds = attributes
+          .map((i) => i.property?.speciesId)
+          .toList()
+          .where((i) => i != null && i.isNotEmpty)
+          .toList()
+          .map((i) => i!)
+          .toList();
+      final data = await loadItems(speciesIds);
+      await Future.wait(attributes.map((attr) async {
+        if (attr.property != null) {
+          final field = FieldModel(
+            id: attr.id,
+            rule: attr.rule,
+            name: attr.name,
+            code: 'T${attr.property?.id}',
+            remark: attr.remark,
+            lookups: [],
+            valueType: attr.property?.valueType,
+          );
+          if (attr.property!.speciesId != null &&
+              attr.property!.speciesId!.isNotEmpty) {
+            if (data.isNotEmpty) {
+              field.lookups = data
+                  .where((i) => i.speciesId == attr.property!.speciesId)
+                  .toList()
+                  .map((i) => FiledLookup(
+                        id: i.id,
+                        text: i.name,
+                        value: 'S${i.id}',
+                        icon: i.icon,
+                        parentId: i.parentId,
+                      ))
+                  .toList();
+            }
+          }
+          fields.add(field);
+        }
+      }));
+    }
+
+    _fieldsLoaded = true;
+
+    return fields;
+  }
+
+  Future<List<XSpeciesItem>> loadItems(List<String> speciesIds) async {
+    final ids = speciesIds.where((i) => i.isNotEmpty).toList();
+    if (ids.isEmpty) return [];
+    final data = await directory.resource.speciesItemColl.loadSpace({
+      'options': {
+        'match': {
+          'speciesId': {'_in_': ids}
+        }
+      },
+    });
+    return data;
   }
 
   @override

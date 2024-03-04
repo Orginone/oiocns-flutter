@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/widgets/form_widget/main_form/index.dart';
+import 'package:orginone/components/widgets/form/form_widget/main_form/index.dart';
 
 import 'index.dart';
 

@@ -1,6 +1,6 @@
 //路由 Pages
 
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide Form;
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/modules/chat/chat_session_page.dart';
@@ -9,14 +9,18 @@ import 'package:orginone/components/modules/common/file_list_page.dart';
 import 'package:orginone/components/modules/common/member_list_page.dart';
 import 'package:orginone/components/modules/relation/relation_cohort_page.dart';
 import 'package:orginone/components/modules/relation/relation_friend_page.dart';
-import 'package:orginone/components/widgets/form_widget/form_detail/index.dart';
+import 'package:orginone/components/widgets/form/form_page/index.dart';
+import 'package:orginone/components/widgets/form/form_widget/form_detail/index.dart';
+import 'package:orginone/components/widgets/form/form_widget/form_tool.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/controller/wallet_controller.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
+import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/chat/message_chat_info/binding.dart';
@@ -105,7 +109,7 @@ import 'package:orginone/pages/relation/person/security/bindings.dart';
 import 'package:orginone/pages/relation/person/security/index.dart';
 import 'package:orginone/pages/relation/version/version_page.dart';
 import 'package:orginone/pages/work/work_list/view.dart';
-import 'package:orginone/utils/file_utils.dart';
+import 'package:orginone/utils/index.dart';
 
 import '../../pages/store/store_tree/index.dart';
 
@@ -491,6 +495,10 @@ class RoutePages {
       page: () => const FormDetailPage(),
     ),
     GetPage(
+      name: Routers.formPage,
+      page: () => const FormPage(),
+    ),
+    GetPage(
       name: Routers.errorPage,
       page: () => const ErrorPage(),
     ),
@@ -552,9 +560,31 @@ class RoutePages {
   }
 
   /// 跳转到数据二级页面
-  static void jumpStore({dynamic parentData, List? listDatas}) {
-    jumpHome(
-        home: HomeEnum.store, parentData: parentData, listDatas: listDatas);
+  static void jumpStore({dynamic parentData, List? listDatas}) async {
+    if (parentData.typeName == SpaceEnum.form.label) {
+      // Get.toNamed(Routers.thing,
+      //     arguments: {'form': parentData, "belongId": parentData.belongId});
+      Form form = parentData;
+      await form.loadContent();
+      XForm xForm = parentData.metadata;
+      xForm.fields = form.fields;
+      // element.data = getFormData(element.id);
+      for (var field in xForm.fields) {
+        field.field = await FormTool.initFields(field);
+      }
+      Get.toNamed(Routers.formPage, arguments: {
+        'title': parentData.name,
+        'mainForm': [xForm].cast<XForm>(),
+        "subForm": [],
+      });
+      //跳转办事详情
+      // Get.toNamed(Routers.processDetails, arguments: {"todo": parentData});
+      LogUtil.d(parentData);
+      LogUtil.d(parentData.metadata);
+    } else {
+      jumpHome(
+          home: HomeEnum.store, parentData: parentData, listDatas: listDatas);
+    }
   }
 
   /// 跳转到数据详情页面
@@ -562,6 +592,9 @@ class RoutePages {
   /// defaultActiveTabs 默认激活页签
   static void jumpStoreInfoPage(
       {dynamic data, List<String> defaultActiveTabs = const []}) {
+    LogUtil.d('jumpStoreInfoPage');
+    LogUtil.d(data.runtimeType);
+    LogUtil.d(data);
     // if (data.typeName == TargetType.person.label) {
     //   Get.toNamed(Routers.storage, arguments: {
     //     "parents": [..._getParentRouteParams(), data],
@@ -735,7 +768,9 @@ class RoutePages {
       await work.loadInstance();
     }
     //跳转办事详情
-    Get.toNamed(Routers.processDetails, arguments: {"todo": work});
+    Get.toNamed(Routers.processDetails, arguments: {
+      "todo": work,
+    });
   }
 
   ///跳转动态详情

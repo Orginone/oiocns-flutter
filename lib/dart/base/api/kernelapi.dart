@@ -1029,7 +1029,14 @@ class KernelApi {
   Future<LoadResult<T>> collectionLoad<T>(
       String belongId, List<String> relations, String collName, dynamic options,
       {T Function(Map<String, dynamic>)? fromJson}) async {
-    options['belongId'] = belongId;
+    try {
+      //form loadContent  报错
+      //type 'String' is not a subtype of type 'Map<String, Map<String, Map<String, List<String>>>>' of 'value'
+      options['belongId'] = belongId;
+    } catch (e) {
+      LogUtil.d(e);
+    }
+
     ResultType res = await dataProxy(
       DataProxyType(
         module: 'Collection',

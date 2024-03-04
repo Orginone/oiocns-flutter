@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/widgets/common/others/mapping_components.dart';
-import 'package:orginone/components/widgets/form_widget/index.dart';
+import 'package:orginone/components/widgets/form/form_widget/index.dart';
 import 'package:orginone/config/colors.dart';
 
 import 'package:orginone/dart/base/model.dart';
