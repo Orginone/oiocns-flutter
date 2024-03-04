@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/index.dart';
-import 'package:orginone/components/widgets/form_widget/index.dart';
+import 'package:orginone/components/widgets/form/form_widget/index.dart';
 
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/main_base.dart';
@@ -32,7 +32,10 @@ class ProcessInfoPage
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const FormWidgetPage(),
+                FormWidget(
+                  mainForm: state.mainForm,
+                  subForm: state.subForm,
+                ),
                 // _mainTable(),
                 // _subTable(),
                 SizedBox(
@@ -47,28 +50,28 @@ class ProcessInfoPage
     );
   }
 
-  Column _mainViewOld() {
-    return Column(
-      children: [
-        Expanded(
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const FormWidgetPage(),
-                _mainTable(),
-                _subTable(),
-                SizedBox(
-                  height: 10.h,
-                ),
-                ApproveWidget(todo: state.todo),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
+  // Column _mainViewOld() {
+  //   return Column(
+  //     children: [
+  //       Expanded(
+  //         child: SingleChildScrollView(
+  //           child: Column(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             children: [
+  //               const FormWidget(),
+  //               _mainTable(),
+  //               _subTable(),
+  //               SizedBox(
+  //                 height: 10.h,
+  //               ),
+  //               ApproveWidget(todo: state.todo),
+  //             ],
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget _mainTable() {
     return Obx(() {

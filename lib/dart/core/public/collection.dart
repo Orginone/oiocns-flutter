@@ -1,5 +1,6 @@
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/main_base.dart';
+import 'package:orginone/utils/index.dart';
 
 import '../../base/common/lists.dart';
 import '../../base/schema.dart';
@@ -83,12 +84,55 @@ class XCollection<T extends Xbase> {
     return [];
   }
 
+  // Future<List<T>> loadSpaceNew(dynamic options,
+  //     [T Function(Map<String, dynamic>)? cvt]) async {
+  //   var res = await this.loadResult(options);
+  //   if (res.success && res.data != null) {
+  //     return res.data ?? [];
+  //   }
+  //   return [];
+  // }
+
+  // Future<LoadResult<List<T>>> loadResultNew(dynamic options,
+  //     [T Function(Map<String, dynamic>)? cvt]) async {
+  //   options = options ?? {};
+  //   options['userData'] = options['userData'] ?? {};
+  //   options['options'] = options['options'] ?? {};
+  //   options['options']['match'] = options['options']['match'] ?? {};
+  //   var res = await kernel.collectionLoad<List<T>>(
+  //     this._target.belongId ?? '',
+  //     this._relations,
+  //     this._collName,
+  //     options,
+  //     fromJson: (data) {
+  //       return Lists.fromList(data['data'] is List ? data['data'] : [],
+  //           cvt == null ? null : (d) => cvt(d));
+  //     },
+  //   );
+  //   return res;
+  // }
+
   Future<List<T>> loadSpace(dynamic options,
       [T Function(Map<String, dynamic>)? cvt]) async {
-    options = options;
+    options = options ?? {};
+    LogUtil.d('loadSpace');
+    LogUtil.d(options);
+    LogUtil.d(options['userData']);
+    if (options['userData'] == null) {
+      try {
+        //Exception: type 'List<dynamic>' is not a subtype of type 'Map<String, Map<String, Map<String, List<String>>>>' of 'value'
+        //这个赋值操作会导致上面的报错 场景 点击表单的时候调用
+        options['userData'] = [];
+      } catch (e) {
+        // options['userData'] = {};
+        LogUtil.d(e.toString());
+      }
+      // options['userData'] = [];
+    }
 
-    options['userData'] = options['userData'] ?? [];
-    options['collName'] = _collName;
+    LogUtil.d(options);
+    LogUtil.d(options['userData']);
+    // options['collName'] = _collName;
     options['options'] = options['options'] ?? {};
     options['options']['match'] = options['options']['match'] ?? {};
     // options['options']['match']['isDeleted'] = false;

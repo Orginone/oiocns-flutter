@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:orginone/common/models/file/asserts/asset_creation_config.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/entity.dart';
@@ -134,5 +135,68 @@ class FormTool {
           return value ?? "";
       }
     }
+  }
+
+  static Future<Fields> initFields(FieldModel field) async {
+    String? type;
+    String? router;
+    String? regx;
+    Map<dynamic, String> select = {};
+    Map rule = jsonDecode(field.rule ?? "{}");
+    String widget = rule['widget'] ?? "";
+    switch (field.valueType) {
+      case "描述型":
+        type = "input";
+        break;
+      case "数值型":
+        regx = r'[0-9]';
+        type = "input";
+        break;
+      case "选择型":
+      case "分类型":
+        if (widget == 'switch') {
+          type = "switch";
+        } else {
+          type = "select";
+        }
+        break;
+      case "日期型":
+        type = "selectDate";
+        break;
+      case "时间型":
+        if (widget == "dateRange") {
+          type = "selectDateRange";
+        } else if (widget == "timeRange") {
+          type = "selectTimeRange";
+        } else {
+          type = "selectTime";
+        }
+        break;
+      case "用户型":
+        if (widget.isEmpty) {
+          type = "selectPerson";
+        } else if (widget == 'group') {
+          type = "selectGroup";
+        } else if (widget == 'dept') {
+          type = "selectDepartment";
+        }
+        break;
+      case '附件型':
+        type = "upload";
+        break;
+      default:
+        type = 'input';
+        break;
+    }
+
+    return Fields(
+      title: field.name,
+      type: type,
+      code: field.code,
+      select: select,
+      router: router,
+      regx: regx,
+      readOnly: true,
+    );
   }
 }

@@ -175,6 +175,9 @@ class _StorePageState extends State<StorePage> {
             LogUtil.d('>>>>>>======点击了列表项 ${data.name} ${children.length}');
             // if (children.isNotEmpty) {
             RoutePages.jumpStore(parentData: data, listDatas: children);
+            // LogUtil.d('jumpStore');
+            // LogUtil.d(data.runtimeType);
+            // LogUtil.d(data);
             // } else {
             //   // RoutePages.jumpFileInfo(data: data);
             // }
@@ -261,7 +264,7 @@ class _StorePageState extends State<StorePage> {
   /// 加载属性
   Future<List<IProperty>> loadProperties(Directory item) async {
     List<IProperty> files = item.standard.propertys;
-    print('>>>>>>======files ${files.length}');
+    print('>>>>>>======loadProperties ${files.length}');
     if (files.isEmpty) {
       return await item.standard.loadPropertys();
     }
@@ -271,7 +274,7 @@ class _StorePageState extends State<StorePage> {
   ///加载分类
   Future<List<ISpecies>> loadSpecies(Directory item) async {
     List<ISpecies> files = item.standard.specieses;
-    print('>>>>>>======files ${files.length}');
+    print('>>>>>>======loadSpecies ${files.length}');
     if (files.isEmpty) {
       return await item.standard.loadSpecieses();
     }
@@ -281,7 +284,7 @@ class _StorePageState extends State<StorePage> {
   ///加载字典
   Future<List<ISpecies>> loadDicts(Directory item) async {
     List<ISpecies> files = item.standard.dicts;
-    print('>>>>>>======files ${files.length}');
+    print('>>>>>>======loadDicts ${files.length}');
     if (files.isEmpty) {
       return await item.standard.loadDicts();
     }
@@ -291,7 +294,7 @@ class _StorePageState extends State<StorePage> {
   ///加载应用
   Future<List<IApplication>> loadApps(Directory item) async {
     List<IApplication> files = item.standard.applications;
-    print('>>>>>>======files ${files.length}');
+    print('>>>>>>======loadApps ${files.length}');
     if (files.isEmpty) {
       return await item.standard.loadApplications();
     }
@@ -302,7 +305,7 @@ class _StorePageState extends State<StorePage> {
   ///加载表单
   Future<List<IForm>> loadForms(Directory item) async {
     List<IForm> files = item.standard.forms;
-    print('>>>>>>======files ${files.length}');
+    print('>>>>>>======loadForms ${files.length}');
     if (files.isEmpty) {
       return await item.standard.loadForms();
     }
@@ -313,7 +316,7 @@ class _StorePageState extends State<StorePage> {
   ///加载页面模版
   Future<List<IPageTemplate>> loadPageTemplates(Directory item) async {
     List<IPageTemplate> files = item.standard.templates;
-    print('>>>>>>======files ${files.length}');
+    print('>>>>>>======loadPageTemplates ${files.length}');
     if (files.isEmpty) {
       return await item.standard.loadTemplates();
     }

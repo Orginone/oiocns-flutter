@@ -61,6 +61,8 @@ class Routers {
 
   // 简单表单编辑器
   static const String form = "/form";
+  // 简单表单编辑器
+  static const String formPage = "/formPage";
   //表单详情
   static const String formDetail = "/formDetail";
 
