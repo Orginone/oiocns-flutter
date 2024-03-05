@@ -90,7 +90,7 @@ class TextWidget extends StatelessWidget {
     this.textAlign,
   })  : style = const TextStyle(
           fontSize: 16,
-          fontWeight: FontWeight.bold,
+          fontWeight: FontWeight.w600,
         ),
         super(key: key);
 

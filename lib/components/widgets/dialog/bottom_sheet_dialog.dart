@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_custom_dialog/flutter_custom_dialog.dart';
 
-typedef void ClickCallback(int index, String title);
-typedef void SelectCallback<T>(T model);
+typedef ClickCallback = void Function(int index, String title);
+typedef SelectCallback<T> = void Function(T model);
 
 YYDialog YYBottomSheetDialog(BuildContext context, List<String> titles,
     {bool hasCancel = false, ClickCallback? callback}) {
@@ -16,7 +16,7 @@ YYDialog YYBottomSheetDialog(BuildContext context, List<String> titles,
           .map((e) => BottomSheetItem(context,
               title: e, index: titles.indexOf(e), callback: callback))
           .toList(),
-      hasCancel ? BottomSheetItem(context, isCancel: true) : SizedBox(),
+      hasCancel ? BottomSheetItem(context, isCancel: true) : const SizedBox(),
     ]
     ..show();
 }
@@ -40,7 +40,7 @@ Widget BottomSheetItem(BuildContext context,
       onTap: () {
         Navigator.pop(context);
         if (!isCancel && callback != null) {
-          callback(index!, title!);
+          callback(index!, title);
         }
       },
       child: Center(
@@ -48,7 +48,9 @@ Widget BottomSheetItem(BuildContext context,
           isCancel ? "取消" : title,
           style: TextStyle(
             fontSize: 14,
-            color: isCancel ? Colors.black45 : Theme.of(context).colorScheme.secondary,
+            color: isCancel
+                ? Colors.black45
+                : Theme.of(context).colorScheme.secondary,
           ),
         ),
       ),
@@ -99,15 +101,11 @@ class PickerUtils {
 
   static void showListStringPicker(BuildContext context,
       {required List<String> titles,
-      required SelectCallback<String> callback,String doneTitle = "确定"}) {
-    showCupertinoPicker(
-      context,
-      titles: titles,
-      callback: (index, title) {
-        callback(title);
-      },
-      doneTitle: doneTitle
-    );
+      required SelectCallback<String> callback,
+      String doneTitle = "确定"}) {
+    showCupertinoPicker(context, titles: titles, callback: (index, title) {
+      callback(title);
+    }, doneTitle: doneTitle);
   }
 
   static void showTestPicker(BuildContext context) {
@@ -135,7 +133,7 @@ showCupertinoPicker(BuildContext context,
       builder: (BuildContext context) {
         return Container(
           height: 250,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.white,
           ),
           child: Column(
@@ -149,7 +147,7 @@ showCupertinoPicker(BuildContext context,
                     },
                     child: Text(
                       cancelTitle,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 15,
                         color: Colors.black38,
                       ),

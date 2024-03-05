@@ -229,8 +229,8 @@ class CommonWidget {
           ),
         ),
         Positioned(
-          top: 5.h,
-          left: 10.w,
+          top: 15.h,
+          left: 5.w,
           child: required
               ? const Text(
                   "*",

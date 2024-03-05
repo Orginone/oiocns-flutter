@@ -62,11 +62,13 @@ class SubFormPage extends GetView<SubFormController> {
       ButtonWidget.iconText(
         IconWidget.icon(
           Icons.call_made,
-          color: AppColors.blue,
+          color: AppColors.primary,
           size: 16,
         ),
         '查看详情',
-        textColor: AppColors.blue,
+        textSize: 14,
+        textWeight: FontWeight.w400,
+        textColor: AppColors.primary,
         onTap: () => controller.toDetail(forms.first, index),
       )
     ]
@@ -108,7 +110,7 @@ class SubFormPage extends GetView<SubFormController> {
           Widget row = <Widget>[
             Text('${fieldModel.name}:  '),
             Text(content),
-          ].toRow();
+          ].toRow().paddingBottom(5);
 
           return row;
         },

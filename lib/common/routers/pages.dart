@@ -10,17 +10,15 @@ import 'package:orginone/components/modules/common/member_list_page.dart';
 import 'package:orginone/components/modules/relation/relation_cohort_page.dart';
 import 'package:orginone/components/modules/relation/relation_friend_page.dart';
 import 'package:orginone/components/widgets/form/form_page/index.dart';
-import 'package:orginone/components/widgets/form/form_widget/form_detail/index.dart';
-import 'package:orginone/components/widgets/form/form_widget/form_tool.dart';
+import 'package:orginone/components/widgets/form/form_widget/form_detail/form_detail_page.dart';
+import 'package:orginone/components/widgets/standard_preview/standard_entity_preview_page.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/controller/wallet_controller.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/chat/message_chat_info/binding.dart';
@@ -77,6 +75,7 @@ import 'package:orginone/pages/store/application_details/binding.dart';
 import 'package:orginone/pages/store/application_details/view.dart';
 import 'package:orginone/pages/store/bindings.dart';
 import 'package:orginone/pages/store/store_page.dart';
+import 'package:orginone/pages/store/store_tools.dart';
 import 'package:orginone/pages/work/bindings.dart';
 import 'package:orginone/pages/work/create_work/binding.dart';
 import 'package:orginone/pages/work/create_work/view.dart';
@@ -408,6 +407,10 @@ class RoutePages {
       binding: WorkListBinding(),
     ),
     GetPage(
+      name: Routers.standardEntityPreView,
+      page: () => StandardEntityPreViewPage(),
+    ),
+    GetPage(
         name: Routers.messageFile,
         page: () => const MessageFilePage(),
         binding: MessageFileBinding()),
@@ -492,11 +495,11 @@ class RoutePages {
     ),
     GetPage(
       name: Routers.formDetail,
-      page: () => const FormDetailPage(),
+      page: () => FormDetailPage(),
     ),
     GetPage(
       name: Routers.formPage,
-      page: () => const FormPage(),
+      page: () => FormPage(),
     ),
     GetPage(
       name: Routers.errorPage,
@@ -561,30 +564,7 @@ class RoutePages {
 
   /// 跳转到数据二级页面
   static void jumpStore({dynamic parentData, List? listDatas}) async {
-    if (parentData.typeName == SpaceEnum.form.label) {
-      // Get.toNamed(Routers.thing,
-      //     arguments: {'form': parentData, "belongId": parentData.belongId});
-      Form form = parentData;
-      await form.loadContent();
-      XForm xForm = parentData.metadata;
-      xForm.fields = form.fields;
-      // element.data = getFormData(element.id);
-      for (var field in xForm.fields) {
-        field.field = await FormTool.initFields(field);
-      }
-      Get.toNamed(Routers.formPage, arguments: {
-        'title': parentData.name,
-        'mainForm': [xForm].cast<XForm>(),
-        "subForm": [],
-      });
-      //跳转办事详情
-      // Get.toNamed(Routers.processDetails, arguments: {"todo": parentData});
-      LogUtil.d(parentData);
-      LogUtil.d(parentData.metadata);
-    } else {
-      jumpHome(
-          home: HomeEnum.store, parentData: parentData, listDatas: listDatas);
-    }
+    StoreTool.jumpNextPage(parentData: parentData, listDatas: listDatas);
   }
 
   /// 跳转到数据详情页面
