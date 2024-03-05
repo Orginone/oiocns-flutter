@@ -5,6 +5,7 @@ import 'package:orginone/config/index.dart';
 
 class AppColors {
   static Color backgroundColor = const Color(0xFFF0F2F7);
+  static const Color bgColor = Color(0xffF3F3F3);
   static Color formBackgroundColor = const Color(0xFFD9E3F5);
   static Color formTitleBackgroundColor = const Color(0xFFF5F6FC);
 
@@ -27,7 +28,8 @@ class AppColors {
   static const eee = Color(0xffeeeeee);
   static const blue = Color(0xFF056DE3);
   static const deepPrimary = Color(0xFF95D5F8);
-  static const lightPrimary = Color(0xFFCCD6FF);
+  static const lightPrimary = Color(0xffF6F9FF);
+  static const primary = Color(0xff366EF4);
 
   static const Color black_333 = Color(0xFF333333); //51
   static const Color black_666 = Color(0xFF666666); //102
@@ -96,7 +98,7 @@ class AppColors {
 
   static Color get outline => Get.theme.colorScheme.outline;
 
-  static Color get primary => Get.theme.colorScheme.primary;
+  // static Color get primary => Get.theme.colorScheme.primary;
 
   static Color get primaryContainer => Get.theme.colorScheme.primaryContainer;
 

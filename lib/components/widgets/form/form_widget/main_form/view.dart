@@ -31,17 +31,19 @@ class MainFormPage extends GetView<MainFormController> {
     return <Widget>[
       Container()
           .backgroundColor(AppColors.blue)
-          .height(18)
           .width(4)
           .paddingLeft(10)
-          .paddingRight(5)
-          .paddingTop(4),
-      TextWidget.title3(form.name ?? ''),
+          .height(16)
+          .paddingRight(5),
+      // .paddingTop(4),
+      TextWidget.title3(form.name ?? '').paddingBottom(2),
     ]
         .toRow(
           crossAxisAlignment: CrossAxisAlignment.center,
         )
-        .paddingTop(15);
+        .backgroundColor(AppColors.white)
+        .height(30);
+    // .paddingTop(15);
   }
 
   _buildMainFormView() {

@@ -4,8 +4,11 @@ import 'package:common_utils/common_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/extension/index.dart';
 import 'package:orginone/components/index.dart';
 import 'package:orginone/components/widgets/form/form_widget/index.dart';
+import 'package:orginone/config/colors.dart';
+import 'package:orginone/config/space.dart';
 
 import 'package:orginone/dart/core/getx/base_get_page_view.dart';
 import 'package:orginone/main_base.dart';
@@ -18,7 +21,7 @@ import 'state.dart';
 class ProcessInfoPage
     extends BaseGetPageView<ProcessInfoController, ProcessInfoState> {
   ProcessInfoPage({super.key});
-
+  TextEditingController comment = TextEditingController();
   @override
   Widget buildView() {
     return _mainView();
@@ -41,15 +44,33 @@ class ProcessInfoPage
                 SizedBox(
                   height: 10.h,
                 ),
-                ApproveWidget(todo: state.todo),
+                _opinion()
               ],
             ),
           ),
+        ),
+        ApproveWidget(
+          todo: state.todo,
+          comment: comment,
         ),
       ],
     );
   }
 
+  Widget _opinion() {
+    if (state.todo?.metadata.status != 1) {
+      return Container();
+    }
+    return CommonWidget.commonTextTile(
+      "备注",
+      "",
+      required: true,
+      backgroundColor: AppColors.bgColor,
+      controller: comment,
+      hint: "请填写备注信息",
+      maxLine: 4,
+    ).paddingTop(AppSpace.listItem).paddingHorizontal(AppSpace.page);
+  }
   // Column _mainViewOld() {
   //   return Column(
   //     children: [

@@ -7,20 +7,24 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/pages/work/network.dart';
 import 'package:orginone/utils/index.dart';
+import 'package:orginone/utils/toast_utils.dart';
 
 // ignore: must_be_immutable
 class ApproveWidget extends StatelessWidget {
-  ApproveWidget({super.key, required this.todo});
+  const ApproveWidget({super.key, required this.todo, required this.comment});
   final IWorkTask? todo;
 
-  TextEditingController comment = TextEditingController();
+  final TextEditingController? comment;
   @override
   Widget build(BuildContext context) {
     return _buildMainView();
   }
 
   _buildMainView() {
-    return <Widget>[_opinion(), _approval()].toColumn();
+    return <Widget>[
+      // _opinion(),
+      _approval()
+    ].toColumn();
   }
 
   ///审批
@@ -30,13 +34,13 @@ class ApproveWidget extends StatelessWidget {
     }
     return Container(
       width: double.infinity,
-      height: 100.h,
+      height: 80.h,
       decoration: BoxDecoration(
           color: Colors.white,
           border:
               Border(top: BorderSide(color: Colors.grey.shade300, width: 0.5))),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           _button(
               text: '驳回',
@@ -44,7 +48,7 @@ class ApproveWidget extends StatelessWidget {
               color: Colors.red,
               onTap: () {
                 LogUtil.d('驳回');
-                approval(TaskStatus.refuseStart.status, comment: comment.text);
+                approval(TaskStatus.refuseStart.status, comment: comment?.text);
               }),
           _button(
               text: '通过',
@@ -53,8 +57,8 @@ class ApproveWidget extends StatelessWidget {
               onTap: () {
                 LogUtil.d('通过');
                 approval(TaskStatus.approvalStart.status,
-                    comment: comment.text);
-              }),
+                    comment: comment?.text);
+              }).paddingHorizontal(AppSpace.page),
         ],
       ),
     );
@@ -67,6 +71,7 @@ class ApproveWidget extends StatelessWidget {
     return CommonWidget.commonTextTile(
       "备注",
       "",
+      showLine: true,
       controller: comment,
       hint: "请填写备注信息",
       maxLine: 4,
@@ -84,10 +89,10 @@ class ApproveWidget extends StatelessWidget {
       child: Container(
         alignment: Alignment.center,
         height: 45.h,
-        width: 200.w,
+        width: 140.w,
         decoration: BoxDecoration(
           color: color,
-          borderRadius: BorderRadius.circular(8.w),
+          borderRadius: BorderRadius.circular(4.w),
           border: border,
         ),
         child: Text(
@@ -100,9 +105,13 @@ class ApproveWidget extends StatelessWidget {
 
   //网络请求
   void approval(int status, {String? comment}) async {
+    if (comment == null || comment.isEmpty) {
+      return ToastUtils.showMsg(msg: '请输入审批意见');
+    }
+
     await WorkNetWork.approvalTask(
         status: status,
-        comment: comment ?? '',
+        comment: comment,
         todo: todo!,
         onSuccess: () {
           EventBusUtil().fire(LoadTodosEvent());

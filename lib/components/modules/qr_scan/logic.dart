@@ -48,4 +48,10 @@ class QrScanController extends BaseController<QrScanState> {
     state.qrcode.value = data;
     Get.back(result: data);
   }
+
+  @override
+  void onClose() {
+    super.onClose();
+    scanController.pause();
+  }
 }

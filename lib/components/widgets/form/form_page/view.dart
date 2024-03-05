@@ -1,12 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:orginone/components/base/orginone_stateful_widget.dart';
 import 'package:orginone/components/widgets/form/form_widget/index.dart';
 import 'package:orginone/components/widgets/system/gy_scaffold.dart';
 
 import 'index.dart';
 
-class FormPage extends GetView<FormController> {
-  const FormPage({Key? key}) : super(key: key);
+class FormPage extends OrginoneStatefulWidget {
+  FormPage({super.key, super.data});
+
+  @override
+  State<FormPage> createState() => _FormPageState();
+}
+
+class _FormPageState extends OrginoneStatefulState<FormPage> {
+  @override
+  Widget buildWidget(BuildContext context, data) {
+    return FormWidget(
+      mainForm: [data.metadata],
+      subForm: const [],
+    );
+  }
+}
+
+class FormPage1 extends GetView<FormController> {
+  const FormPage1({Key? key}) : super(key: key);
 
   // 主视图
   Widget _buildView() {

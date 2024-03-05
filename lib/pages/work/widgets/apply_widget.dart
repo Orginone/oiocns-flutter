@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
+import 'package:orginone/components/widgets/common/others/common_widget.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -13,13 +14,13 @@ import 'package:orginone/utils/icons.dart';
 
 //申请加入办事组件
 class ApplyWidget extends StatelessWidget {
-  const ApplyWidget({
+  ApplyWidget({
     super.key,
     required this.todo,
   });
 
   final IWorkTask? todo;
-
+  TextEditingController comment = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return _buildMainView();
@@ -27,17 +28,19 @@ class ApplyWidget extends StatelessWidget {
 
   _buildMainView() {
     return <Widget>[
-      _buildApplyHeaderView(),
-      _buildDateView('申请时间：${todo?.taskdata.createTime}'),
-      _buildAyylyView(),
+      Expanded(
+          child: SingleChildScrollView(
+        child: <Widget>[
+          _buildApplyHeaderView(),
+          _buildDateView('申请时间：${todo?.taskdata.createTime}'),
+          _buildApplyResultView(),
+          _opinion(),
+        ].toColumn(crossAxisAlignment: CrossAxisAlignment.start),
+      )),
+      _buildApproveView(),
     ]
         .toColumn(crossAxisAlignment: CrossAxisAlignment.start)
         .paddingHorizontal(AppSpace.page);
-  }
-
-  _buildAyylyView() {
-    return <Widget>[_buildApplyResultView(), _buildApproveView()]
-        .toColumn(crossAxisAlignment: CrossAxisAlignment.start);
   }
 
   _buildApplyHeaderView() {
@@ -123,7 +126,25 @@ class ApplyWidget extends StatelessWidget {
     int status = todo?.taskdata.status ?? 0;
 
     if (status > 1) return const SizedBox();
-    return ApproveWidget(todo: todo);
+    return ApproveWidget(
+      todo: todo,
+      comment: comment,
+    );
+  }
+
+  Widget _opinion() {
+    if (todo?.metadata.status != 1) {
+      return Container();
+    }
+    return CommonWidget.commonTextTile(
+      "备注",
+      "",
+      required: true,
+      backgroundColor: AppColors.bgColor,
+      controller: comment,
+      hint: "请填写备注信息",
+      maxLine: 4,
+    ).paddingTop(AppSpace.listItem);
   }
 
   _buildApplyResultView() {

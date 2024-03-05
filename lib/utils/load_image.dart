@@ -450,6 +450,15 @@ class XImage {
         circular: circular,
         radius: radius,
       );
+    } else if (data is XForm &&
+        null != SpaceEnum.getType(data.typeName ?? "")) {
+      //会影响用户头像
+      iconW = XImage.localImage(
+        SpaceEnum.getType(data.typeName!)!.icon,
+        width: size?.width,
+        circular: circular,
+        radius: radius,
+      );
     } else if (data is FileItemShare) {
       iconW = XImage.localImage(
         StorageFileType.getType(data.contentType ?? "")?.icon ??

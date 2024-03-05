@@ -25,7 +25,19 @@ class SubFormController extends GetxController {
 //跳转到详情
   toDetail(XForm form, int infoIndex) {
     Get.toNamed(Routers.formDetail,
-        arguments: {"form": form, 'infoIndex': infoIndex});
+        arguments: RouterParam(
+            parents: [
+              // ..._getParentRouteParams(),
+              if (null != form) RouterParam(datas: form)
+            ],
+            // parents: [..._getParentRouteParams(), RouterParam(datas: parentData.metadata)],
+            // defaultActiveTabs: defaultActiveTabs ?? [TargetType.person.label],
+            datas: {
+              "form": form,
+              'infoIndex': infoIndex
+            }));
+    // Get.toNamed(Routers.formDetail,
+    //     arguments: {"form": form, 'infoIndex': infoIndex});
   }
 
   // @override

@@ -4,10 +4,24 @@ import 'package:orginone/common/models/file/asserts/asset_creation_config.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/entity.dart';
+import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/utils/index.dart';
 
 class FormTool {
+  static Future<dynamic> loadForm(dynamic parentData) async {
+    Form form = parentData;
+    await form.loadContent();
+    XForm xForm = parentData.metadata;
+    xForm.fields = form.fields;
+    // element.data = getFormData(element.id);
+    for (var field in xForm.fields) {
+      field.field = await FormTool.initFields(field);
+    }
+    // parentData.metadata = xForm;
+    return parentData;
+  }
+
   static Future<bool> loadMainFieldData(
       FieldModel field, Map<String, dynamic> data) async {
     var value = data[field.id];
