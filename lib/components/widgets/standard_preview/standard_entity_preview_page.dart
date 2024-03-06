@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:orginone/common/extension/ex_list.dart';
-import 'package:orginone/common/extension/ex_widget.dart';
-import 'package:orginone/common/widgets/text.dart';
+import 'package:orginone/common/index.dart';
 import 'package:orginone/components/base/orginone_stateful_widget.dart';
 import 'package:orginone/components/widgets/common/image/team_avatar.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/model.dart';
+import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/core/thing/standard/property.dart';
 import 'package:orginone/utils/index.dart';
@@ -29,25 +28,36 @@ class _StandardEntityPreViewPageState
 
   // 主视图
   Widget _buildView(BuildContext context, data) {
+    if (data == null || data.metadata == null) {
+      return const Text('数据异常');
+    }
+
     // ignore: prefer_typing_uninitialized_variables
     var item;
     if (data is Property) {
       item = data.metadata;
       LogUtil.d(item.toJson());
-    } else {}
+    } else {
+      item = data.metadata;
+    }
     return <Widget>[
       itemWidget('名称', item.name ?? '-', required: true),
       itemWidget('代码', item.code ?? '-', required: true),
       itemWidget('类型', item.valueType ?? '-', required: true),
-      itemWidget('附加信息', '-'),
+      itemWidget('附加信息', item.info ?? '-'),
       itemWidget(
         '归属',
-        data.belong != null ? (data.belong as ShareIcon).name : '-',
+        data.belong != null && data.belong is ShareIcon
+            ? (data.belong as ShareIcon).name
+            : '-',
         icon: data.belong,
       ),
       itemWidget(
         '创建人',
-        ShareIdSet[item.createUser].name ?? '-',
+        ShareIdSet[item.createUser] != null &&
+                ShareIdSet[item.createUser] is XTarget
+            ? ShareIdSet[item.createUser].name
+            : '-',
         userId: item.createUser,
       ),
       itemWidget(
@@ -56,7 +66,10 @@ class _StandardEntityPreViewPageState
       ),
       itemWidget(
         '更新人',
-        ShareIdSet[item.updateUser].name ?? '-',
+        ShareIdSet[item.updateUser] != null &&
+                ShareIdSet[item.updateUser] is XTarget
+            ? ShareIdSet[item.updateUser].name
+            : '-',
         userId: item.updateUser ?? '-',
       ),
       itemWidget(
@@ -100,8 +113,8 @@ class _StandardEntityPreViewPageState
           maxLines: 3,
           softWrap: true,
           overflow: TextOverflow.clip,
-        ),
-      ].toRow(),
+        ).width((Get.width - AppSpace.page * 2 - 44) / rowCount),
+      ].toRow(crossAxisAlignment: CrossAxisAlignment.center),
     ]
         .toColumn(crossAxisAlignment: CrossAxisAlignment.start)
         .width((Get.width - AppSpace.page * 2) / rowCount)
