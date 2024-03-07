@@ -39,7 +39,7 @@ class OutAgencyInfoController extends BaseController<OutAgencyInfoState>
         Get.toNamed(Routers.roleSettings, arguments: {"target": state.group});
         break;
       case CompanyFunction.addUser:
-        showSearchDialog(context, TargetType.company,
+        showSearchBottomSheet(context, TargetType.company,
             title: "添加成员",
             hint: "请输入单位的社会统一信用代码", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {
@@ -55,7 +55,7 @@ class OutAgencyInfoController extends BaseController<OutAgencyInfoState>
         });
         break;
       case CompanyFunction.addGroup:
-        showSearchDialog(context, TargetType.group,
+        showSearchBottomSheet(context, TargetType.group,
             title: "加入集团",
             hint: "请输入集团的编码", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {

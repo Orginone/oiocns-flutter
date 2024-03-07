@@ -7,7 +7,6 @@ import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/pages/work/network.dart';
 import 'package:orginone/utils/index.dart';
-import 'package:orginone/utils/toast_utils.dart';
 
 // ignore: must_be_immutable
 class ApproveWidget extends StatelessWidget {
@@ -105,9 +104,9 @@ class ApproveWidget extends StatelessWidget {
 
   //网络请求
   void approval(int status, {String? comment}) async {
-    if (comment == null || comment.isEmpty) {
-      return ToastUtils.showMsg(msg: '请输入审批意见');
-    }
+    // if (comment == null || comment.isEmpty) {
+    //   return ToastUtils.showMsg(msg: '请输入审批意见');
+    // }
 
     await WorkNetWork.approvalTask(
         status: status,

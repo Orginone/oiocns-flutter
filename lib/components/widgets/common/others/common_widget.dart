@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/common/values/index.dart';
+import 'package:orginone/common/index.dart';
 import 'package:orginone/components/index.dart';
 import 'package:orginone/config/colors.dart';
 import 'package:orginone/config/unified.dart';
@@ -361,7 +360,8 @@ class CommonWidget {
       Color? backgroundColor,
       Color? searchColor,
       EdgeInsetsGeometry? margin,
-      EdgeInsetsGeometry? padding}) {
+      EdgeInsetsGeometry? padding,
+      bool autofocus = false}) {
     return Container(
       decoration: BoxDecoration(
         color: backgroundColor ?? XColors.white,
@@ -386,6 +386,7 @@ class CommonWidget {
                   textInputAction: TextInputAction.done,
                   onSubmitted: onSubmitted,
                   onChanged: onChanged,
+                  autofocus: autofocus,
                   decoration: InputDecoration(
                     contentPadding: EdgeInsets.zero,
                     isDense: true,
@@ -443,36 +444,56 @@ class CommonWidget {
   }
 
   //标题信息
-  static commonHeadInfoWidget(String info,
-      {Widget? action, EdgeInsetsGeometry? padding, Color? color}) {
+  static commonHeadInfoWidget(
+    String info, {
+    Widget? action,
+    EdgeInsetsGeometry? padding,
+    Color? color,
+  }) {
     return Container(
       color: color,
-      padding:
-          padding ?? EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
+      // padding:
+      //     padding ?? EdgeInsets.symmetric(vertical: 10.h, horizontal: 16.w),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text.rich(
-            TextSpan(
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                WidgetSpan(
-                    child: Container(
-                      width: 5.w,
-                      height: 25.h,
-                      margin: EdgeInsets.only(right: 15.w),
-                      color: XColors.blueTextColor,
-                    ),
-                    alignment: PlaceholderAlignment.middle),
-                TextSpan(
-                    text: info,
-                    style: TextStyle(
-                        fontSize: 22.sp,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w500))
+                Text.rich(
+                  TextSpan(
+                    children: [
+                      // WidgetSpan(
+                      //     child: Container(
+                      //       width: 5.w,
+                      //       height: 25.h,
+                      //       margin: EdgeInsets.only(right: 15.w),
+                      //       color: XColors.blueTextColor,
+                      //     ),
+                      //     alignment: PlaceholderAlignment.middle),
+                      TextSpan(
+                          text: info,
+                          style: TextStyle(
+                              fontSize: 22.sp,
+                              color: Colors.black,
+                              fontWeight: FontWeight.w600))
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
-          action ?? Container(),
+          action ??
+              ButtonWidget.icon(
+                IconWidget.icon(
+                  Icons.close,
+                  color: Colors.black,
+                ),
+                width: 40,
+                height: 40,
+                onTap: () => Navigator.pop(Get.context!),
+              ),
         ],
       ),
     );

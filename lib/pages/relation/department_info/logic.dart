@@ -44,7 +44,7 @@ class DepartmentInfoController extends BaseController<DepartmentInfoState>
             arguments: {"target": state.depart.value});
         break;
       case CompanyFunction.addUser:
-        showSearchDialog(context, TargetType.person,
+        showSearchBottomSheet(context, TargetType.person,
             title: "添加成员",
             hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {

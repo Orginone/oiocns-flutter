@@ -810,12 +810,9 @@ void createTarget(PopupMenuKey key, RelationNavModel model,
     default:
   }
   var item = model.source ?? model.space;
-  showCreateOrganizationDialog(Get.context!, targetType, callBack: (String name,
-          String code,
-          String nickName,
-          String identify,
-          String remark,
-          TargetType type) async {
+  showCreateOrganizationBottomSheet(Get.context!, targetType, callBack:
+          (String name, String code, String nickName, String identify,
+              String remark, TargetType type) async {
     var target = TargetModel(
       name: name,
       code: code,

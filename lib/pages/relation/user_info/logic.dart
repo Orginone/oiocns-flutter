@@ -47,7 +47,7 @@ class UserInfoController extends BaseController<UserInfoState>
       case UserFunction.record:
         break;
       case UserFunction.addUser:
-        showSearchDialog(context, TargetType.person,
+        showSearchBottomSheet(context, TargetType.person,
             title: "添加好友",
             hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {
@@ -61,7 +61,7 @@ class UserInfoController extends BaseController<UserInfoState>
         });
         break;
       case UserFunction.addGroup:
-        showSearchDialog(context, TargetType.company,
+        showSearchBottomSheet(context, TargetType.company,
             title: "加入单位",
             hint: "请输入单位的社会统一信用代码", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {

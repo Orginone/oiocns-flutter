@@ -195,9 +195,10 @@ class RelationSubController extends BaseListController<RelationSubState> {
     switch (item.shortcut) {
       case Shortcut.createCompany:
       case Shortcut.addCohort:
-        showCreateOrganizationDialog(
+        showCreateOrganizationBottomSheet(
           Get.context!,
           [item.targetType!],
+          headerTitle: item.shortcut.label,
           callBack: (String name, String code, String nickName, String identify,
               String remark, TargetType type) async {
             var target = TargetModel(
@@ -220,7 +221,7 @@ class RelationSubController extends BaseListController<RelationSubState> {
       case Shortcut.addPerson:
       case Shortcut.addGroup:
       case Shortcut.addCompany:
-        showSearchDialog(Get.context!, item.targetType!,
+        showSearchBottomSheet(Get.context!, item.targetType!,
             title: item.title, hint: item.hint, onSelected: (targets) async {
           if (targets.isNotEmpty) {
             bool success = await relationCtrl.user?.applyJoin(targets) ?? false;
