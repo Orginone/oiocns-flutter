@@ -24,7 +24,7 @@ class StoreTool {
         _jumpDetailPage(Routers.standardEntityPreView, parentData);
         break;
       default:
-        RoutePages.jumpHome(
+        RoutePages.jumpHomeSub(
             home: HomeEnum.store, parentData: parentData, listDatas: listDatas);
     }
   }
