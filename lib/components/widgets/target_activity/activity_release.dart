@@ -1,8 +1,10 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/base/orginone_stateful_widget.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
+import 'package:orginone/pages/chat/widgets/text/at_textfield.dart';
 
 ///发布动态
 class ActivityRelease extends OrginoneStatefulWidget<IActivity> {
@@ -15,7 +17,11 @@ class _ActivityReleaseState
     extends OrginoneStatefulState<ActivityRelease, IActivity> {
   @override
   Widget buildWidget(BuildContext context, IActivity data) {
-    return Container();
+    return Column(
+      children: [
+        _buildInputBox(context, data),
+      ],
+    );
   }
 
   @override
@@ -29,5 +35,10 @@ class _ActivityReleaseState
         ),
       )
     ];
+  }
+
+  ///构建文本输入框
+  Widget _buildInputBox(BuildContext context, IActivity data) {
+    return const TextField();
   }
 }

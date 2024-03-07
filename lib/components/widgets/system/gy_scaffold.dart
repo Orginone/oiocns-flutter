@@ -267,13 +267,21 @@ class _GyScaffoldState extends State<GyScaffold> {
               actions: operations,
             )
           : Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 titleWidget ??
                     Text(
                       titleName,
                       style: titleStyle ??
                           TextStyle(color: Colors.black, fontSize: 24.sp),
-                    )
+                    ),
+                if (null != operations)
+                  Padding(
+                    padding: EdgeInsets.only(right: 10.w),
+                    child: Row(
+                      children: operations!,
+                    ),
+                  ),
               ],
             ),
       centerTitle: centerTitle,

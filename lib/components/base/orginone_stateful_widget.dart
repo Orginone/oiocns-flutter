@@ -121,8 +121,7 @@ mixin _OrginoneController<P> {
                 padding: const EdgeInsets.only(right: 5),
                 child: XImage.entityIcon(data, width: 40.w),
               ),
-              Expanded(
-                  child: Column(
+              Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(name,
@@ -133,7 +132,7 @@ mixin _OrginoneController<P> {
                   //     padding: const EdgeInsets.only(top: 2),
                   //     child: Text(spaceName, style: XFonts.size16Black9)),
                 ],
-              ))
+              )
             ],
           )
         : Container();
