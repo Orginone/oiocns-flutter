@@ -421,7 +421,7 @@ enum SpaceEnum {
 
   const SpaceEnum(this.label, this.icon);
 
-  static String getName(TargetType type) {
+  static String getName(SpaceEnum type) {
     return type.label;
   }
 

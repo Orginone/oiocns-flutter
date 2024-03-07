@@ -242,7 +242,7 @@ class RelationCenterController
       case PopupMenuKey.permission:
         break;
       case PopupMenuKey.addPerson:
-        showSearchDialog(Get.context!, TargetType.person,
+        showSearchBottomSheet(Get.context!, TargetType.person,
             title: "邀请成员", hint: "请输入用户的账号", onSelected: (targets) async {
           if (targets.isNotEmpty) {
             bool success = await state.model.value!.space!.applyJoin(targets);

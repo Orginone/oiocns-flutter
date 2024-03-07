@@ -59,8 +59,8 @@ class MessageSetting extends GetView<IndexController> {
                 TargetType.getType(chat.share.typeName) == TargetType.group
                     ? TargetType.company
                     : TargetType.person;
-            showSearchDialog(context, target, title: "邀请成员", hint: "请输入用户的账号",
-                onSelected: (targets) async {
+            showSearchBottomSheet(context, target,
+                title: "邀请成员", hint: "请输入用户的账号", onSelected: (targets) async {
               if (targets.isNotEmpty) {
                 var success = await (chat as ITeam).pullMembers(targets);
                 if (success) {

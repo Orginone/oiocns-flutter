@@ -71,7 +71,7 @@ class IdentityInfoController extends BaseController<IdentityInfoState> {
         roleSetting.deleteIdentity(identity.value);
         break;
       case IdentityFunction.addMember:
-        showSearchDialog(context, TargetType.person,
+        showSearchBottomSheet(context, TargetType.person,
             title: "添加成员",
             hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {

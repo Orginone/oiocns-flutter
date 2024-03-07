@@ -32,7 +32,7 @@ class CohortInfoController extends BaseController<CohortInfoState> {
         Get.toNamed(Routers.roleSettings, arguments: {"target": state.cohort});
         break;
       case CompanyFunction.addUser:
-        showSearchDialog(context, TargetType.company,
+        showSearchBottomSheet(context, TargetType.company,
             title: "添加成员",
             hint: "请输入用户的账号", onSelected: (List<XTarget> list) async {
           if (list.isNotEmpty) {

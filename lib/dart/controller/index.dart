@@ -383,9 +383,10 @@ class IndexController extends GetxController {
       switch (item.shortcut) {
         case Shortcut.createCompany:
         case Shortcut.addCohort:
-          showCreateOrganizationDialog(
+          showCreateOrganizationBottomSheet(
             Get.context!,
             [item.targetType!],
+            headerTitle: item.shortcut.label,
             callBack: (String name, String code, String nickName,
                 String identify, String remark, TargetType type) async {
               var target = TargetModel(
@@ -408,7 +409,7 @@ class IndexController extends GetxController {
         case Shortcut.addPerson:
         case Shortcut.addGroup:
         case Shortcut.addCompany:
-          showSearchDialog(Get.context!, item.targetType!,
+          showSearchBottomSheet(Get.context!, item.targetType!,
               title: item.title, hint: item.hint, onSelected: (targets) async {
             if (targets.isNotEmpty) {
               bool success = await user!.applyJoin(targets);

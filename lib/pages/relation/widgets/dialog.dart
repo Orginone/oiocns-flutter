@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/index.dart';
+import 'package:orginone/common/index.dart';
+import 'package:orginone/components/widgets/common/others/common_widget.dart';
+import 'package:orginone/components/widgets/dialog/bottom_sheet_dialog.dart';
+import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/thing/standard/species.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/relation/about/version_list/item.dart';
 import 'package:orginone/utils/date_utils%20copy.dart';
+import 'package:orginone/utils/load_image.dart';
 import 'package:orginone/utils/toast_utils.dart';
-import 'package:orginone/config/unified.dart';
 
 import '../../../dart/core/target/authority/authority.dart';
 import '../../../dart/core/target/base/target.dart';
@@ -141,79 +143,105 @@ Future<void> showCreateIdentityDialog(
   );
 }
 
-Future<void> showSearchDialog(BuildContext context, TargetType targetType,
+//showCreateOrganizationBottomSheet
+Future<void> showSearchBottomSheet(BuildContext context, TargetType targetType,
     {String title = '',
     String hint = '',
     ValueChanged<List<XTarget>>? onSelected}) async {
   TextEditingController searchController = TextEditingController();
-
   List<XTarget> data = [];
-
   List<XTarget> selected = [];
-
-  Widget item(XTarget item, {VoidCallback? onTap}) {
+  Widget itemWidget(XTarget item, {VoidCallback? onTap}) {
     bool isSelected = selected.contains(item);
 
-    List<Widget> children = [];
+    List<Widget> widgets = [];
 
-    if (targetType == TargetType.person) {
-      children = [
-        Row(
-          children: [
-            Text(item.name!),
-            SizedBox(
-              width: 10.w,
-            ),
-            Container(
-              padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 4.w),
-              decoration: BoxDecoration(
-                color: Colors.blue.withOpacity(0.2),
-                border: Border.all(color: Colors.blue, width: 0.5),
-                borderRadius: BorderRadius.circular(4.w),
+    // if (targetType == TargetType.person) {
+    //   widgets = [
+    //     Row(
+    //       children: [
+    //         Text(item.name!),
+    //         SizedBox(
+    //           width: 10.w,
+    //         ),
+    //         Container(
+    //           padding: EdgeInsets.symmetric(vertical: 2.h, horizontal: 4.w),
+    //           decoration: BoxDecoration(
+    //             color: Colors.blue.withOpacity(0.2),
+    //             border: Border.all(color: Colors.blue, width: 0.5),
+    //             borderRadius: BorderRadius.circular(4.w),
+    //           ),
+    //           child: Text(
+    //             "账号:${item.code}",
+    //             style: TextStyle(fontSize: 14.sp, color: Colors.blue),
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    //     SizedBox(
+    //       height: 10.h,
+    //     ),
+    //     Row(
+    //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //       children: [
+    //         Text("姓名:${item.name}"),
+    //         Text("手机号:${item.code}"),
+    //       ],
+    //     ),
+    //     SizedBox(
+    //       height: 10.h,
+    //     ),
+    //     Text("座右铭:${item.remark ?? ""}"),
+    //   ];
+    // }
+    // if (targetType == TargetType.group ||
+    //     targetType == TargetType.company ||
+    //     targetType == TargetType.cohort) {
+    //   widgets = [
+    //     Text(item.name!),
+    //     SizedBox(
+    //       height: 10.h,
+    //     ),
+    //     Text(item.remark ?? ""),
+    //   ];
+    // }
+    widgets = [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          XImage.entityIcon(item, width: 40),
+          SizedBox(
+            width: 10.h,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextWidget.title4(item.name!),
+              SizedBox(
+                height: 10.h,
               ),
-              child: Text(
-                "账号:${item.code}",
-                style: TextStyle(fontSize: 14.sp, color: Colors.blue),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 10.h,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text("姓名:${item.name}"),
-            Text("手机号:${item.code}"),
-          ],
-        ),
-        SizedBox(
-          height: 10.h,
-        ),
-        Text("座右铭:${item.remark ?? ""}"),
-      ];
-    }
-    if (targetType == TargetType.group ||
-        targetType == TargetType.company ||
-        targetType == TargetType.cohort) {
-      children = [
-        Text(item.name!),
-        SizedBox(
-          height: 10.h,
-        ),
-        Text("集团简介:${item.remark ?? ""}"),
-      ];
-    }
-
+              TextWidget.body2(
+                item.remark ?? "",
+                color: AppColors.gray_66,
+                softWrap: true,
+                maxLines: 6,
+                overflow: TextOverflow.ellipsis,
+              ).width(Get.width - 110),
+            ],
+          )
+        ],
+      )
+    ];
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        margin: EdgeInsets.only(bottom: 10.h),
-        width: 400.w,
+        margin: EdgeInsets.only(
+            bottom: 10.h, left: AppSpace.page, right: AppSpace.page),
+        width: Get.width - AppSpace.page * 2,
         decoration: BoxDecoration(
-            color:
-                isSelected ? XColors.themeColor.withOpacity(0.2) : Colors.white,
+            color: isSelected
+                ? AppColors.formBackgroundColor.withOpacity(0.2)
+                : Colors.white,
             borderRadius: BorderRadius.circular(4.w),
             border: Border.all(
                 color: isSelected ? XColors.themeColor : Colors.grey.shade400,
@@ -221,7 +249,7 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
         padding: EdgeInsets.symmetric(vertical: 15.w, horizontal: 20.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: children,
+          children: widgets,
         ),
       ),
     );
@@ -255,64 +283,84 @@ Future<void> showSearchDialog(BuildContext context, TargetType targetType,
         default:
       }
     }
+    // if (targets == null || targets.isEmpty) {
+    //   ToastUtils.showMsg(msg: '未查询到相关数据请核对');
+    // }
     return targets ?? [];
   }
 
-  return showDialog(
+  return showModalBottomSheet(
+    isScrollControlled: true,
     context: context,
+    backgroundColor: Colors.white,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10), topRight: Radius.circular(10))),
     builder: (context) {
-      return Dialog(
-          alignment: Alignment.center,
-          child: SingleChildScrollView(
-            child: StatefulBuilder(builder: (context, state) {
-              return SizedBox(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CommonWidget.commonHeadInfoWidget(title),
-                    CommonWidget.commonSearchBarWidget(
-                        controller: searchController,
-                        onChanged: (code) async {
-                          search(code).then((value) {
-                            state(() {
-                              data = value;
-                            });
-                          });
-                        },
-                        hint: hint),
-                    data.isEmpty
-                        ? Container()
-                        : SizedBox(
-                            height: 400.h,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: data.map((e) {
-                                  return item(e, onTap: () {
-                                    state(() {
-                                      if (selected.contains(e)) {
-                                        selected.remove(e);
-                                      } else {
-                                        selected.add(e);
-                                      }
-                                    });
-                                  });
-                                }).toList(),
-                              ),
-                            ),
+      return SingleChildScrollView(
+        child: StatefulBuilder(builder: (context, state) {
+          return AnimatedPadding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context)
+                    .viewInsets
+                    .bottom), // 我们可以根据这个获取需要的padding
+            duration: const Duration(milliseconds: 100),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                CommonWidget.commonHeadInfoWidget(title),
+                CommonWidget.commonSearchBarWidget(
+                    controller: searchController,
+                    autofocus: true,
+                    searchColor: AppColors.bgColor,
+                    onChanged: (code) async {
+                      search(code).then((value) {
+                        state(() {
+                          data = value;
+                        });
+                      });
+                    },
+                    hint: hint),
+                data.isEmpty && searchController.text.isNotEmpty
+                    ? SizedBox(
+                        height: 100.h,
+                        child: const Center(
+                          child: Text('抱歉，没有查询到相关结果'),
+                        )
+                            .height(88)
+                            .width(Get.width - AppSpace.page * 2)
+                            .border(all: 1, color: AppColors.bgColor),
+                      )
+                    : SizedBox(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: data.map((e) {
+                              return itemWidget(e, onTap: () {
+                                state(() {
+                                  if (selected.contains(e)) {
+                                    selected.remove(e);
+                                  } else {
+                                    selected.add(e);
+                                  }
+                                });
+                              });
+                            }).toList(),
                           ),
-                    CommonWidget.commonMultipleSubmitWidget(onTap1: () {
-                      Navigator.pop(context);
-                    }, onTap2: () {
-                      if (onSelected != null) {
-                        onSelected(selected);
-                      }
-                      Navigator.pop(context);
-                    }),
-                  ],
-                ),
-              );
-            }),
-          ));
+                        ),
+                      ),
+                CommonWidget.commonMultipleSubmitWidget(onTap1: () {
+                  Navigator.pop(context);
+                }, onTap2: () {
+                  if (onSelected != null) {
+                    onSelected(selected);
+                  }
+                  Navigator.pop(context);
+                }),
+              ],
+            ),
+          );
+        }),
+      );
     },
   );
 }
@@ -511,9 +559,10 @@ Future<void> showCreateFormDialog(BuildContext context,
   );
 }
 
-Future<void> showCreateOrganizationDialog(
+Future<void> showCreateOrganizationBottomSheet(
     BuildContext context, List<TargetType> targetType,
-    {String name = '',
+    {String? headerTitle,
+    String name = '',
     String code = '',
     String nickName = '',
     String identify = '',
@@ -531,89 +580,107 @@ Future<void> showCreateOrganizationDialog(
 
   TargetType selectedTarget = type ?? targetType.first;
 
-  return showDialog(
+  return showModalBottomSheet(
+    isScrollControlled: true,
     context: context,
+    backgroundColor: Colors.white,
+    shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(10), topRight: Radius.circular(10))),
     builder: (context) {
-      return Dialog(
-          alignment: Alignment.center,
-          child: SingleChildScrollView(
-            child: StatefulBuilder(builder: (context, state) {
-              return SizedBox(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CommonWidget.commonHeadInfoWidget(isEdit ? "编辑" : "新建"),
-                    CommonWidget.commonTextTile("名称", '',
-                        controller: nameController,
-                        showLine: true,
-                        required: true,
-                        hint: "请输入",
-                        textStyle: XFonts.size22Black0),
-                    CommonWidget.commonTextTile("代码", '',
-                        controller: codeController,
-                        showLine: true,
-                        required: true,
-                        hint: "请输入",
-                        textStyle: XFonts.size22Black0),
-                    CommonWidget.commonTextTile("简称", '',
-                        controller: nickNameController,
-                        showLine: true,
-                        hint: "请输入",
-                        textStyle: XFonts.size22Black0),
-                    CommonWidget.commonChoiceTile(
-                        "选择制定组织", selectedTarget.label,
-                        showLine: true, required: true, onTap: () {
-                      PickerUtils.showListStringPicker(Get.context!,
-                          titles: targetType.map((e) => e.label).toList(),
-                          callback: (str) {
-                        state(() {
-                          try {
-                            selectedTarget = targetType
-                                .firstWhere((element) => element.label == str);
-                            // ignore: empty_catches
-                          } catch (e) {}
+      return SingleChildScrollView(
+        child: StatefulBuilder(builder: (context, state) {
+          return AnimatedPadding(
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context)
+                    .viewInsets
+                    .bottom), // 我们可以根据这个获取需要的padding
+            duration: const Duration(milliseconds: 100),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 10),
+                      CommonWidget.commonHeadInfoWidget(
+                        headerTitle ?? (isEdit ? "编辑" : "新建"),
+                        color: Colors.white,
+                      ),
+                      CommonWidget.commonTextTile("名称", '',
+                          controller: nameController,
+                          showLine: true,
+                          required: true,
+                          hint: "请输入",
+                          textStyle: XFonts.size22Black0),
+                      CommonWidget.commonTextTile("代码", '',
+                          controller: codeController,
+                          showLine: true,
+                          required: true,
+                          hint: "请输入",
+                          textStyle: XFonts.size22Black0),
+                      CommonWidget.commonTextTile("简称", '',
+                          controller: nickNameController,
+                          showLine: true,
+                          hint: "请输入",
+                          textStyle: XFonts.size22Black0),
+                      CommonWidget.commonChoiceTile(
+                          "选择制定组织", selectedTarget.label,
+                          showLine: true, required: true, onTap: () {
+                        PickerUtils.showListStringPicker(Get.context!,
+                            titles: targetType.map((e) => e.label).toList(),
+                            callback: (str) {
+                          state(() {
+                            try {
+                              selectedTarget = targetType.firstWhere(
+                                  (element) => element.label == str);
+                              // ignore: empty_catches
+                            } catch (e) {}
+                          });
                         });
-                      });
-                    }, hint: "请选择", textStyle: XFonts.size22Black0),
-                    CommonWidget.commonTextTile("标识", '',
-                        controller: identifyController,
-                        showLine: true,
-                        hint: "请输入",
-                        textStyle: XFonts.size22Black0),
-                    CommonWidget.commonTextTile("备注", '',
-                        controller: remarkController,
-                        showLine: true,
-                        required: true,
-                        maxLine: 4,
-                        hint: "请输入",
-                        textStyle: XFonts.size22Black0),
-                    CommonWidget.commonMultipleSubmitWidget(onTap1: () {
-                      Navigator.pop(context);
-                    }, onTap2: () {
-                      if (nameController.text.isEmpty) {
-                        ToastUtils.showMsg(msg: "请输入名称");
-                      } else if (codeController.text.isEmpty) {
-                        ToastUtils.showMsg(msg: "请输入代码");
-                      } else if (remarkController.text.isEmpty) {
-                        ToastUtils.showMsg(msg: "请输入备注");
-                      } else {
-                        if (callBack != null) {
-                          callBack(
-                              nameController.text,
-                              codeController.text,
-                              nickNameController.text,
-                              identifyController.text,
-                              remarkController.text,
-                              selectedTarget);
-                        }
-                        Navigator.pop(context);
-                      }
-                    }),
-                  ],
+                      }, hint: "请选择", textStyle: XFonts.size22Black0),
+                      CommonWidget.commonTextTile("标识", '',
+                          controller: identifyController,
+                          showLine: true,
+                          hint: "请输入",
+                          textStyle: XFonts.size22Black0),
+                      CommonWidget.commonTextTile("备注", '',
+                          controller: remarkController,
+                          showLine: true,
+                          required: true,
+                          maxLine: 4,
+                          hint: "请输入",
+                          textStyle: XFonts.size22Black0),
+                    ],
+                  ),
                 ),
-              );
-            }),
-          ));
+                CommonWidget.commonMultipleSubmitWidget(onTap1: () {
+                  Navigator.pop(context);
+                }, onTap2: () {
+                  if (nameController.text.isEmpty) {
+                    ToastUtils.showMsg(msg: "请输入名称");
+                  } else if (codeController.text.isEmpty) {
+                    ToastUtils.showMsg(msg: "请输入代码");
+                  } else if (remarkController.text.isEmpty) {
+                    ToastUtils.showMsg(msg: "请输入备注");
+                  } else {
+                    if (callBack != null) {
+                      callBack(
+                          nameController.text,
+                          codeController.text,
+                          nickNameController.text,
+                          identifyController.text,
+                          remarkController.text,
+                          selectedTarget);
+                    }
+                    Navigator.pop(context);
+                  }
+                }),
+              ],
+            ),
+          );
+        }),
+      );
     },
   );
 }

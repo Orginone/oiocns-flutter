@@ -5,6 +5,7 @@ import 'package:custom_pop_up_menu/custom_pop_up_menu.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/extension/ex_widget.dart';
+import 'package:orginone/common/routers/names.dart';
 import 'package:orginone/components/widgets/common/image/image_widget.dart';
 import 'package:orginone/components/widgets/common/image/team_avatar.dart';
 import 'package:orginone/config/space.dart';
@@ -636,8 +637,23 @@ class XImage {
   static Widget get _startWorkWidget {
     return IconButton(
       icon: XImage.localImage(XImage.startWork),
-      onPressed: () {
+      onPressed: () async {
+        Get.toNamed(Routers.createWork, arguments: {
+          // "work": work.source,
+          // "node": node,
+          // 'target': work.space
+        });
         // relationCtrl.qrScan();
+        //  WorkNodeModel? node = await work.source.loadWorkNode();
+        // if (node != null && node.forms != null && node.forms!.isNotEmpty) {
+        //   Get.toNamed(Routers.createWork, arguments: {
+        //     "work": work.source,
+        //     "node": node,
+        //     'target': work.space
+        //   });
+        // } else {
+        //   ToastUtils.showMsg(msg: "流程未绑定表单");
+        // }
       },
     );
   }
