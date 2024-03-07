@@ -1,7 +1,11 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:orginone/common/index.dart';
+import 'package:orginone/components/base/action_container.dart';
 import 'package:orginone/components/base/orginone_stateful_widget.dart';
+import 'package:orginone/components/widgets/common/empty/empty_file.dart';
 import 'package:orginone/components/widgets/list_widget/index.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/dart/core/target/innerTeam/department.dart';
@@ -21,7 +25,7 @@ class FileListPage extends OrginoneStatefulWidget {
   State<StatefulWidget> createState() => _FileListPageState();
 }
 
-class _FileListPageState extends OrginoneStatefulState<FileListPage> {
+class _FileListPageState extends OrginoneStatefulState<FileListPage, dynamic> {
   @override
   Widget buildWidget(BuildContext context, dynamic data) {
     List<IEntity> directorys = [];
@@ -40,11 +44,28 @@ class _FileListPageState extends OrginoneStatefulState<FileListPage> {
     } else if (data is ISession) {
       directorys = loadAll<IDirectory>(data.target.directory);
     }
-
-    return Container(
-        margin: EdgeInsets.symmetric(vertical: 1.h),
-        decoration: const BoxDecoration(color: Colors.white),
-        child: _buildList(context, directorys));
+    Widget content = const EmptyFile();
+    if (directorys.isNotEmpty) {
+      content = Container(
+          margin: EdgeInsets.symmetric(vertical: 1.h),
+          decoration: const BoxDecoration(color: Colors.white),
+          child: _buildList(context, directorys));
+    }
+    return ActionContainer(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          FilePickerResult? result =
+              await FilePicker.platform.pickFiles(type: FileType.any);
+          if (result != null) {
+            RoutePages.jumpUploadFiles(filePicker: result);
+          }
+        },
+        mini: true,
+        tooltip: "上传文件",
+        child: const Icon(Icons.add),
+      ),
+      child: content,
+    );
   }
 
   List<IEntity> loadAll<T extends IDirectory>(T targtet) {
@@ -118,12 +139,14 @@ class _FileListPageState extends OrginoneStatefulState<FileListPage> {
       },
       getAction: (dynamic data) {
         return GestureDetector(
-          onTap: () {
-            LogUtil.d('>>>>>>======点击了感叹号');
-            RoutePages.jumpEneityInfo(data: data);
-          },
-          child: const XImageWidget.asset(width: 35, height: 35, ''),
-        );
+            onTap: () {
+              LogUtil.d('>>>>>>======点击了感叹号');
+              RoutePages.jumpEneityInfo(data: data);
+            },
+            child: const IconWidget(
+              color: XColors.black666,
+              iconData: Icons.info_outlined,
+            ));
       },
       onTap: (dynamic item, List children) {
         LogUtil.d(

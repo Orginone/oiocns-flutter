@@ -16,6 +16,7 @@ import 'package:orginone/dart/core/chat/message.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/utils/log/log_util.dart';
 import 'package:orginone/utils/notification_util.dart';
+import 'package:orginone/utils/system/system_utils.dart';
 
 import '../target/team/company.dart';
 
@@ -132,8 +133,10 @@ class Session extends Entity<XEntity> implements ISession {
     noReadCount = "";
     newMessageHandler = NewMessageHandler(this);
     // loadCacheChatData();
-    Future.delayed(Duration(milliseconds: id == userId ? 100 : 0),
-        () async => {await _loadCacheChatData()});
+    Future.delayed(Duration(milliseconds: id == userId ? 100 : 0), () async {
+      await _loadCacheChatData();
+      await activity.load();
+    });
     // if (id != userId) {
     //   loadCacheChatData();
     // }
@@ -373,7 +376,9 @@ class Session extends Entity<XEntity> implements ISession {
           .toList();
       if (ids.isNotEmpty) {
         tagMessage(ids, '已读');
-        readCount = ids.length;
+        readCount = chatdata.value.noReadCount > pageSize
+            ? pageSize
+            : chatdata.value.noReadCount;
         LogUtil.d('>>>>>>>====已读数：$readCount');
       } else {
         readCount = chatdata.value.noReadCount;
@@ -381,8 +386,8 @@ class Session extends Entity<XEntity> implements ISession {
     }
 
     chatdata.value.mentionMe = false;
-    if (chatdata.value.noReadCount > 0 || readCount > 0) {
-      chatdata.value.noReadCount -= min(chatdata.value.noReadCount, readCount);
+    if (chatdata.value.noReadCount > 0 && readCount > 0) {
+      chatdata.value.noReadCount -= readCount;
       if (null == msg) cacheChatData(true);
       LogUtil.d('>>>>>>>====总已读数：${chatdata.value.noReadCount}');
       refreshNoReadCount();
@@ -416,12 +421,14 @@ class Session extends Entity<XEntity> implements ISession {
         '>>>KEY:$key ID:$id hashCode:$hashCode belong:$belongId target:${target.id} name:$name');
     LogUtil.d(
         '>>>^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^');
+    String deviceId = await SystemUtils.getDeviceId();
     var data = await coll.insert(
         ChatMessageType.fromJson({
           "typeName": type.label,
           "fromId": userId,
           "toId": sessionId,
           "comments": [],
+          "deviceId": deviceId,
           "content": StringGzip.deflate(
             '[obj]${json.encode({
                   "body": text,
@@ -550,7 +557,7 @@ class Session extends Entity<XEntity> implements ISession {
         chatdata.value = data as MsgChatData;
         refreshNoReadCount();
         target.user?.cacheObj.setValue(cachePath, data);
-        command.emitterFlag('session');
+        command.emitterFlag('session-init');
       }
     });
     // LogUtil.d('>>>>=======$key');

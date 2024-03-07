@@ -4,6 +4,7 @@ import 'package:orginone/common/widgets/icon.dart';
 import 'package:orginone/components/base/orginone_stateful_widget.dart';
 import 'package:orginone/components/modules/chat/chat_session_page.dart';
 import 'package:orginone/components/modules/common/entity_info_page.dart';
+import 'package:orginone/components/widgets/common/empty/empty_activity.dart';
 import 'package:orginone/components/widgets/infoListPage/index.dart';
 import 'package:orginone/components/widgets/list_widget/index.dart';
 import 'package:orginone/components/widgets/target_activity/activity_message.dart';
@@ -62,7 +63,7 @@ class RelationFriendPage extends OrginoneStatelessWidget {
     } else {
       chat = relationCtrl.user?.findMemberChat(data.id);
     }
-    if (null != chat) {
+    if (null != chat && chat.activity.activityList.isNotEmpty) {
       return Container(
           color: XColors.bgListBody,
           child: ListView(
@@ -74,11 +75,7 @@ class RelationFriendPage extends OrginoneStatelessWidget {
             );
           }).toList()));
     }
-    return Container(
-      child: const Center(
-        child: Text("还未发布动态"),
-      ),
-    );
+    return const EmptyActivity();
   }
 
   TabItemsModel createTabItemsModel({

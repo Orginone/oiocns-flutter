@@ -33,7 +33,7 @@ class TargetActivityView
   Widget _title() {
     return Column(
       children: [
-        Text(state.activity.name ?? "", style: XFonts.size24Black3),
+        Text(state.activity.value?.name ?? "", style: XFonts.size24Black3),
       ],
     );
   }
@@ -77,8 +77,8 @@ class TargetActivityViewController
 }
 
 class TargetActivityViewState extends BaseGetState {
-  late IActivity activity;
-  late IActivityMessage? activityMessage;
+  late Rxn<IActivity> activity = Rxn();
+  late Rxn<IActivityMessage> activityMessage = Rxn();
 
   late GlobalKey scrollKey;
 
@@ -89,11 +89,11 @@ class TargetActivityViewState extends BaseGetState {
   TargetActivityViewState() {
     dynamic params = RoutePages.getRouteParams();
     if (params is ActivityMessage) {
-      activityMessage = params;
-      activity = activityMessage!.activity;
+      activityMessage.value = params;
+      activity.value = activityMessage.value!.activity;
     } else if (params is IActivity) {
-      activity = params;
-      activityCount.value = activity.activityList.length;
+      activity.value = params;
+      activityCount.value = activity.value!.activityList.length;
     }
     scrollKey = GlobalKey();
   }

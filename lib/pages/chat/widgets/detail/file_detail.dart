@@ -48,9 +48,7 @@ class FileDetail extends BaseDetail {
     /// 限制大小
     BoxConstraints boxConstraints = BoxConstraints(
         minWidth: 280.w,
-        minHeight: 90.h,
-        maxWidth: MediaQuery.of(context).size.width - 110,
-        maxHeight: 130.h);
+        maxWidth: (MediaQuery.maybeOf(context)?.size.width ?? 400) - 110);
 
     Widget child = Container(
         constraints: boxConstraints,
@@ -58,6 +56,7 @@ class FileDetail extends BaseDetail {
         padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
         child: Column(children: [
           Expanded(
+            flex: 0,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,9 +69,9 @@ class FileDetail extends BaseDetail {
                     children: [
                       Text(
                         msgBody.name ?? "",
-                        style: XFonts.chatSMInfo,
+                        style: XFonts.chatSMInfo.merge(
+                            const TextStyle(overflow: TextOverflow.ellipsis)),
                         maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         getFileSizeString(bytes: msgBody.size ?? 0),

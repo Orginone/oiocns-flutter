@@ -2,7 +2,6 @@ import 'package:get/get.dart';
 import 'package:orginone/common/routers/names.dart';
 import 'package:orginone/common/routers/pages.dart';
 import 'package:orginone/components/widgets/form/form_widget/form_tool.dart';
-import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/dart/core/thing/standard/property.dart';
@@ -51,8 +50,7 @@ class StoreTool {
       //   'title': '查看属性',
       // });
     } else {
-      RoutePages.jumpHome(
-          home: HomeEnum.store, parentData: parentData, listDatas: listDatas);
+      RoutePages.jumpStorage(parentData: parentData, listDatas: listDatas);
     }
   }
 }

@@ -183,7 +183,7 @@ abstract class IActivity extends IEntity<XTarget> {
   );
 
   /// 加载动态
-  Future<List<IActivityMessage>> load([int take = 10]);
+  Future<List<IActivityMessage>> load({bool reload = false, int take = 10});
 }
 
 /// 动态实现
@@ -224,7 +224,12 @@ class Activity extends Entity<XTarget> implements IActivity {
   }
 
   @override
-  Future<List<IActivityMessage>> load([int take = 10]) async {
+  Future<List<IActivityMessage>> load(
+      {bool reload = false, int take = 10}) async {
+    if (reload) {
+      finished = false;
+      activityList.clear();
+    }
     if (!finished) {
       var data = await coll.load({
         'skip': activityList.length,
@@ -325,6 +330,7 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
   List<String> subscribeIds = [];
   late List<IActivity> subActivitys;
   int lastTime = DateTime.now().millisecondsSinceEpoch;
+  late List<IActivityMessage> _activityList;
 
   /// 是否初始化完成
   late bool _inited;
@@ -343,7 +349,9 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
     allPublish = userPublish;
     session = _user.session;
     subActivitys = _activitys;
+    _activityList = [];
     _inited = false;
+    // load();
   }
 
   @override
@@ -357,23 +365,32 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
   }
 
   @override
-  List<IActivityMessage> get activityList {
-    List<IActivityMessage> more = [];
-    for (var activity in subActivitys) {
-      more.addAll(activity.activityList
-          .where((i) => i.createTime >= lastTime)
-          .toList());
-    }
-    more.sort((a, b) => b.createTime - a.createTime);
-    return more;
-  }
+  List<IActivityMessage> get activityList => _activityList;
+  // {
+  //   List<IActivityMessage> more = [];
+  //   for (var activity in subActivitys) {
+  //     more.addAll(activity.activityList
+  //         .where((i) => i.createTime >= lastTime)
+  //         .toList());
+  //   }
+  //   more.sort((a, b) => b.createTime - a.createTime);
+  //   return more;
+  // }
 
   @override
-  Future<List<IActivityMessage>> load([int take = 10]) async {
-    if (_inited) return activityList;
+  Future<List<IActivityMessage>> load(
+      {bool reload = false, int take = 10}) async {
+    if (reload) {
+      lastTime = DateTime.now().millisecondsSinceEpoch;
+      _activityList.clear();
+      _inited = false;
+    } else if (_inited) {
+      return _activityList;
+    }
 
     List<IActivityMessage> more = [];
-    await Future.wait(subActivitys.map((i) => i.load(take)));
+    await Future.wait(
+        subActivitys.map((i) => i.load(reload: reload, take: take)));
     for (var activity in subActivitys) {
       more.addAll(activity.activityList.where((i) => i.createTime < lastTime));
     }
@@ -381,7 +398,7 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
     var news = more.getRange(0, min(more.length, take)).toList();
     if (news.isNotEmpty) {
       lastTime = news[news.length - 1].createTime;
-      activityList.addAll(news);
+      _activityList.addAll(news);
     } else {
       _inited = true;
     }

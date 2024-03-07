@@ -6,6 +6,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:getwidget/components/progress_bar/gf_progress_bar.dart';
 import 'package:getwidget/types/gf_progress_type.dart';
+import 'package:orginone/common/values/images.dart';
 import 'package:orginone/config/a_font.dart';
 import 'package:orginone/components/widgets/common/image/image_widget.dart';
 import 'package:orginone/utils/log/log_util.dart';
@@ -103,7 +104,7 @@ class UpdaterDialog extends Dialog {
         alignment: Alignment.topCenter,
         child: Image(
           width: 70.w,
-          image: const AssetImage("assets/icons/logo.png"),
+          image: const AssetImage(AssetsImages.logo),
         ),
       );
 

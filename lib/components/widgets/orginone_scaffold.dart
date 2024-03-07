@@ -40,7 +40,8 @@ class OrginoneScaffold extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height * appBarPercent;
+    var height =
+        (MediaQuery.maybeOf(context)?.size.height ?? 1) * appBarPercent;
     height = appBarHeight ?? height;
     return Scaffold(
       resizeToAvoidBottomInset: resizeToAvoidBottomInset ?? true,

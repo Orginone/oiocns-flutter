@@ -31,12 +31,12 @@ class CohortActivityController extends BaseListController<CohortActivityState> {
 
   @override
   Future<void> loadData({bool isRefresh = false, bool isLoad = false}) async {
-    super.loadData(isRefresh: isRefresh, isLoad: isLoad);
     if (isRefresh) {
-      await cohortActivity.load();
+      await cohortActivity.load(reload: true);
     } else {
       await cohortActivity.load();
       state.activityMessageList.value = cohortActivity.activityList;
     }
+    super.loadData(isRefresh: isRefresh, isLoad: isLoad);
   }
 }

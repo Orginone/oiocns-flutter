@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/common/routers/pages.dart';
-import 'package:orginone/common/widgets/image.dart';
+import 'package:orginone/common/widgets/icon.dart';
 import 'package:orginone/components/widgets/infoListPage/index.dart';
 import 'package:orginone/components/widgets/list_widget/index.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/public/entity.dart';
@@ -121,13 +122,14 @@ class _StorePageState extends State<StorePage> {
                 parentData.typeName == TargetType.storage.label) {
               return loadStoragesDirectory(parentData);
             } else if (parentData.typeName == SpaceEnum.directory.label &&
-                parentData.name == SpaceEnum.dataStandards.label &&
+                [
+                  SpaceEnum.dataStandards.label,
+                  SpaceEnum.businessModeling.label,
+                  SpaceEnum.applications.label,
+                  SpaceEnum.view.label,
+                ].contains(parentData.name) &&
                 parentData is Directory) {
-              return loadDataStandards(parentData);
-            } else if (parentData.typeName == SpaceEnum.directory.label &&
-                parentData.name == SpaceEnum.businessModeling.label &&
-                parentData is Directory) {
-              return loadDataStandards(parentData);
+              return loadSystemDirectory(parentData);
             } else if (parentData.typeName == SpaceEnum.directory.label &&
                 parentData.name == DirectoryType.property.label &&
                 parentData is Directory) {
@@ -141,7 +143,7 @@ class _StorePageState extends State<StorePage> {
                 parentData is Directory) {
               return loadDicts(parentData);
             } else if (parentData.typeName == SpaceEnum.directory.label &&
-                parentData.name == DirectoryType.app.label &&
+                parentData.name == DirectoryType.work.label &&
                 parentData is Directory) {
               return loadApps(parentData);
             } else if (parentData.typeName == SpaceEnum.directory.label &&
@@ -166,7 +168,10 @@ class _StorePageState extends State<StorePage> {
                 onTap: () {
                   LogUtil.d('>>>>>>======点击了感叹号');
                 },
-                child: const XImageWidget.asset(width: 35, height: 35, ''),
+                child: const IconWidget(
+                  color: XColors.black666,
+                  iconData: Icons.info_outlined,
+                ),
               );
             }
             return null;
@@ -232,8 +237,8 @@ class _StorePageState extends State<StorePage> {
     return datas;
   }
 
-  /// 加载数据标准
-  List<Directory> loadDataStandards(Directory item) {
+  /// 加载系统目录
+  List<Directory> loadSystemDirectory(Directory item) {
     List<Directory> datas = [];
     XDirectory tmpDir;
     int id = 0;

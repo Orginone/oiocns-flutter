@@ -20,7 +20,7 @@ class AboutPage extends BaseGetView<AboutController, AboutState> {
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery.maybeOf(context)?.size.height,
           clipBehavior: Clip.antiAlias,
           decoration: const BoxDecoration(color: Colors.white),
           child: Stack(

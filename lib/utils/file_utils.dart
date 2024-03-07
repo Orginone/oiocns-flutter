@@ -63,4 +63,5 @@ class FileUtils {
       extension.contains("xls") ||
       extension.contains("pptx") ||
       extension.contains("txt");
+  static bool isMarkDown(String extension) => extension.contains("md");
 }

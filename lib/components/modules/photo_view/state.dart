@@ -7,13 +7,11 @@ class PhotoViewState extends BaseGetState {
   late ExtendedPageController pageController;
   var currentIndex = 0.obs;
 
-  PhotoViewState(){
-    Map<String,dynamic>? args = Get.arguments;
+  PhotoViewState() {
+    Map<String, dynamic>? args = Get.arguments;
     images = args?["images"] ?? [];
     int index = args?["index"] ?? 0;
     currentIndex.value = index;
-    pageController =
-        ExtendedPageController(initialPage: index);
+    pageController = ExtendedPageController(initialPage: index);
   }
-
 }

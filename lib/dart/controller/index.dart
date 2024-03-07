@@ -53,7 +53,8 @@ enum Shortcut {
 
 enum SettingEnum {
   security("账号与安全", Ionicons.key_outline),
-  cardbag("卡包设置", Ionicons.card_outline),
+  // TODO 上架IOS临时注释
+  // cardbag("卡包设置", Ionicons.card_outline),
   gateway("门户设置", Ionicons.home_outline),
   theme("主题设置", Ionicons.color_palette_outline),
   // vsrsion("版本记录", Ionicons.rocket_outline),
@@ -157,10 +158,10 @@ class IndexController extends GetxController {
     functionMenuController = CustomPopupMenuController();
     settingMenuController = CustomPopupMenuController();
     emitter = Emitter();
-    // // 监听消息加载
-    emitter.subscribe((key, args) {
-      // loadChats();
-    }, false);
+    // // // 监听消息加载
+    // emitter.subscribe((key, args) {
+    //   // loadChats();
+    // }, false);
     _provider = UserProvider(emitter);
     _userSub = EventBusUtil.instance.on<UserLoaded>((event) async {
       EventBusHelper.fire(ShowLoading(true));
@@ -203,7 +204,7 @@ class IndexController extends GetxController {
             .toList(),
         false,
       );
-      await cohortActivity.value!.load();
+      await cohortActivity.value!.load(reload: true);
       // cohortActivity.refresh();
       friendsActivity.value = GroupActivity(
         user!,
@@ -213,7 +214,7 @@ class IndexController extends GetxController {
         ],
         true,
       );
-      await friendsActivity.value!.load();
+      await friendsActivity.value!.load(reload: true);
       friendsActivity.refresh();
     }
   }
@@ -304,11 +305,19 @@ class IndexController extends GetxController {
   }
 
   void initNoReadCommand() {
+    bool isInit = false;
+    command.subscribeByFlag('session-init', ([List<dynamic>? args]) {
+      if (provider.inited && !isInit) {
+        loadChats().then((value) async {
+          await _initActivity();
+          isInit = true;
+        });
+      }
+    });
     //沟通未读消息提示处理
-    command.subscribeByFlag('session', ([List<dynamic>? args]) {
-      if (provider.inited) {
-        loadChats();
-        _initActivity();
+    command.subscribeByFlag('session', ([List<dynamic>? args]) async {
+      if (provider.inited && isInit) {
+        await loadChats();
       }
     });
   }
@@ -446,6 +455,7 @@ class IndexController extends GetxController {
     String passWord = account.last;
     var login = await provider.login(accountName, passWord);
     if (login.success) {
+      command.emitterFlag('session-init');
       Get.offAndToNamed(Routers.logintrans, arguments: true);
     } else {
       // exitLogin(false);
@@ -519,9 +529,9 @@ class IndexController extends GetxController {
       case SettingEnum.security:
         Get.toNamed(Routers.forgotPassword);
         break;
-      case SettingEnum.cardbag:
-        RoutePages.jumpCardBag();
-        break;
+      // case SettingEnum.cardbag:
+      //   RoutePages.jumpCardBag();
+      //   break;
       case SettingEnum.gateway:
         Get.toNamed(
           Routers.security,

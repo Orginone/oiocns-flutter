@@ -76,6 +76,10 @@ class LoginController extends BaseController<LoginState> {
       ToastUtils.showMsg(msg: "账号或密码不能为空");
       return;
     }
+    // else if (!state.agreeTerms.value) {
+    //   ToastUtils.showMsg(msg: "请阅读并同意服务条款与隐私条款");
+    //   return;
+    // }
     var res = await relationCtrl.provider.login(
       state.accountController.text,
       state.passWordController.text,

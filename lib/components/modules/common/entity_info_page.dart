@@ -41,75 +41,75 @@ class EntityInfoPage extends OrginoneStatelessWidget {
   publicInfo(BuildContext context, dynamic entity) {
     XTarget? target = _getStorageTarget(entity);
     return Card(
-        // margin: EdgeInsets.all(10),
+        margin: const EdgeInsets.only(left: 0, right: 0),
         child: Container(
-      padding: const EdgeInsets.all(12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeaderTitle('公开信息'),
-          _buildColumnInfo('个人头像', XImage.entityIcon(entity, width: 35)),
-          // IconWidget(iconData: ,),
-          _buildColumnTextInfo('名称', entity.name),
-          _buildColumnTextInfo('账号', entity.code),
-          if (null != target)
-            target.typeName == TargetType.storage.label
-                ? _buildColumnInfo(
-                    '当前数据核',
-                    Row(
-                      children: [
-                        XImage.entityIcon(target, width: 30.w),
-                        SizedBox(width: 5.h),
-                        Text(
-                          target.name ?? '奥集能数据核',
-                          style: const TextStyle(
-                            color: Color(0xFF366EF4),
-                            fontSize: 14,
-                            fontFamily: 'PingFang SC',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        )
-                      ],
-                    ))
-                : _buildColumnInfo(
-                    '归属',
-                    Row(
-                      children: [
-                        XImage.entityIcon(target, width: 30.w),
-                        SizedBox(width: 5.h),
-                        Text(
-                          target.name ?? '奥集能数据核',
-                          style: const TextStyle(
-                            color: Color(0xFF366EF4),
-                            fontSize: 14,
-                            fontFamily: 'PingFang SC',
-                            fontWeight: FontWeight.w500,
-                          ),
-                        )
-                      ],
-                    )),
-          // _buildColumnInfo(
-          //     '归属',
-          //     Row(
-          //       children: [
-          //         XImage.entityIcon(belong, width: 30.w),
-          //         SizedBox(width: 5.h),
-          //         Text(
-          //           belong.name ?? '',
-          //           style: const TextStyle(
-          //             color: Color(0xFF366EF4),
-          //             fontSize: 14,
-          //             fontFamily: 'PingFang SC',
-          //             fontWeight: FontWeight.w500,
-          //           ),
-          //         )
-          //       ],
-          //     )),
-          _buildColumnTextInfo('简介', entity.remark),
-          _buildColumnInfo('二维码', _buildQRCode()),
-        ],
-      ),
-    ));
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildHeaderTitle('公开信息'),
+              _buildColumnInfo('个人头像', XImage.entityIcon(entity, width: 35)),
+              // IconWidget(iconData: ,),
+              _buildColumnTextInfo('名称', entity.name),
+              _buildColumnTextInfo('账号', entity.code),
+              if (null != target)
+                target.typeName == TargetType.storage.label
+                    ? _buildColumnInfo(
+                        '当前数据核',
+                        Row(
+                          children: [
+                            XImage.entityIcon(target, width: 30.w),
+                            SizedBox(width: 5.h),
+                            Text(
+                              target.name ?? '奥集能数据核',
+                              style: const TextStyle(
+                                color: Color(0xFF366EF4),
+                                fontSize: 14,
+                                fontFamily: 'PingFang SC',
+                                fontWeight: FontWeight.w500,
+                              ),
+                            )
+                          ],
+                        ))
+                    : _buildColumnInfo(
+                        '归属',
+                        Row(
+                          children: [
+                            XImage.entityIcon(target, width: 30.w),
+                            SizedBox(width: 5.h),
+                            Text(
+                              target.name ?? '奥集能数据核',
+                              style: const TextStyle(
+                                color: Color(0xFF366EF4),
+                                fontSize: 14,
+                                fontFamily: 'PingFang SC',
+                                fontWeight: FontWeight.w500,
+                              ),
+                            )
+                          ],
+                        )),
+              // _buildColumnInfo(
+              //     '归属',
+              //     Row(
+              //       children: [
+              //         XImage.entityIcon(belong, width: 30.w),
+              //         SizedBox(width: 5.h),
+              //         Text(
+              //           belong.name ?? '',
+              //           style: const TextStyle(
+              //             color: Color(0xFF366EF4),
+              //             fontSize: 14,
+              //             fontFamily: 'PingFang SC',
+              //             fontWeight: FontWeight.w500,
+              //           ),
+              //         )
+              //       ],
+              //     )),
+              _buildColumnTextInfo('简介', entity.remark),
+              _buildColumnInfo('二维码', _buildQRCode()),
+            ],
+          ),
+        ));
   }
 
   Widget _buildQRCode() {

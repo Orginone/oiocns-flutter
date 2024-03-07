@@ -150,7 +150,7 @@ class ActivityCommentBox extends StatelessWidget with WidgetsBindingObserver {
     });
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((duration) {
-      var bottom = MediaQuery.of(context).viewInsets.bottom;
+      var bottom = MediaQuery.maybeOf(context)?.viewInsets.bottom ?? 0;
       var inputStatus = controller.inputStatus;
       if (inputStatus == InputStatus.focusing ||
           inputStatus == InputStatus.notPopup ||

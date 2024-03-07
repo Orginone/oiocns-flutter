@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/widgets/common/text/text_tag.dart';
@@ -31,7 +32,7 @@ class ListWidget<T> extends StatefulWidget {
   Widget? Function(T data)? getAvatar;
 
   // 获得角标
-  int? Function(T data)? getBadge;
+  String? Function(T data)? getBadge;
 
   // 获得内容菜单
   Widget? Function(T data)? getAction;
@@ -175,26 +176,32 @@ class _ListWidgetState<T> extends State<ListWidget> {
 
   Widget? _buildAvatar(T item) {
     Widget? child = widget.getAvatar?.call(item);
-    int noRead = widget.getBadge?.call(item) ?? 0;
-    if (noRead > 0) {
-      child = badges.Badge(
-        ignorePointer: false,
-        position: badges.BadgePosition.topEnd(top: -6, end: -8),
-        badgeContent: Text(
-          '$noRead',
-          // "${noRead > 99 ? "99+" : noRead}",
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 10,
-            letterSpacing: 1,
-            wordSpacing: 2,
-            height: 1,
-          ),
+    String noRead = widget.getBadge?.call(item) ?? "";
+    bool isMaxVal = noRead.contains("+");
+    child = badges.Badge(
+      ignorePointer: false,
+      showBadge: noRead.isNotEmpty,
+      position: badges.BadgePosition.topEnd(top: -6, end: isMaxVal ? -10 : -8),
+      badgeStyle: isMaxVal
+          ? const BadgeStyle(
+              shape: BadgeShape.square,
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              padding: EdgeInsets.all(3.0),
+            )
+          : const BadgeStyle(),
+      badgeContent: Text(
+        noRead,
+        // "${noRead > 99 ? "99+" : noRead}",
+        style: const TextStyle(
+          color: Colors.white,
+          fontSize: 10,
+          letterSpacing: 1,
+          wordSpacing: 2,
+          height: 1,
         ),
-        child: child,
-      );
-    }
-
+      ),
+      child: child,
+    );
     return child;
   }
 

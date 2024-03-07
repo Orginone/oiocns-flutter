@@ -130,14 +130,15 @@ class _TabPageState extends State<TabPage> {
             child: ExpandTabBar(
               // bgColor: Colors.white,
               isScrollable: false,
-              labelColor: XColors.themeColor,
+              labelColor: XColors.selectedColor,
               unselectedLabelColor: XColors.black666,
               labelPadding: const EdgeInsets.only(left: 5, right: 5, bottom: 5),
               labelStyle:
                   TextStyle(fontSize: 18.sp, fontWeight: FontWeight.bold),
               unselectedLabelStyle: TextStyle(fontSize: 18.sp),
               indicator: const UnderlineTabIndicator(
-                  borderSide: BorderSide(width: 2.0, color: XColors.themeColor),
+                  borderSide:
+                      BorderSide(width: 2.0, color: XColors.selectedColor),
                   insets: EdgeInsets.symmetric(horizontal: 50)),
               tabNames: tabItems.map((TabItemsModel tab) {
                 return tab.title;
@@ -223,7 +224,7 @@ class _TabPageState extends State<TabPage> {
           // indicatorPadding: const EdgeInsets.all(5),
           labelPadding: const EdgeInsets.only(left: 10, right: 10),
           // indicatorColor: Colors.red,
-          labelColor: XColors.themeColor,
+          labelColor: XColors.selectedColor,
           unselectedLabelColor: XColors.black,
           bgColor: Colors.grey[200],
           unselectedBgColor: Colors.white,

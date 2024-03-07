@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:orginone/common/routers/pages.dart';
 import 'package:orginone/config/colors.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/pages/home/components/user_bar.dart';
@@ -41,6 +40,8 @@ class GyScaffold extends StatefulWidget {
   final double? titleSpacing;
 
   final Widget? floatingActionButton;
+  final bool isHomePage;
+  final dynamic parentRouteParam;
 
   const GyScaffold(
       {Key? key,
@@ -61,7 +62,9 @@ class GyScaffold extends StatefulWidget {
       this.bottomNavigationBar,
       this.toolbarHeight,
       this.titleSpacing,
-      this.floatingActionButton})
+      this.floatingActionButton,
+      this.isHomePage = false,
+      this.parentRouteParam})
       : super(key: key);
 
   @override
@@ -103,9 +106,10 @@ class _GyScaffoldState extends State<GyScaffold> {
   double? titleSpacing;
 
   Widget? floatingActionButton;
+  late bool isHomePage;
+  late dynamic parentRouteParam;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     init();
   }
@@ -129,6 +133,25 @@ class _GyScaffoldState extends State<GyScaffold> {
     toolbarHeight = widget.toolbarHeight;
     titleSpacing = widget.titleSpacing;
     floatingActionButton = widget.floatingActionButton;
+    isHomePage = widget.isHomePage;
+    parentRouteParam = widget.parentRouteParam;
+
+    // relationCtrl.homeEnum.listen(_listenHomeEnum);
+  }
+
+  // void _listenHomeEnum(HomeEnum value) {
+  //   print('>>>topbar listen mounted $value isHomePage $isHomePage');
+  //   if (mounted && !isHomePage) {
+  //     // setState(() {
+  //     isHomePage = true;
+  //     parentRouteParam = null;
+  //     // });
+  //   }
+  // }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -189,16 +212,18 @@ class _GyScaffoldState extends State<GyScaffold> {
     if (oldWidget.floatingActionButton != widget.floatingActionButton) {
       floatingActionButton = widget.floatingActionButton;
     }
+    isHomePage = widget.isHomePage;
+    parentRouteParam = widget.parentRouteParam;
   }
 
   @override
   Widget build(BuildContext context) {
     final hasGyScaffold = context.findAncestorWidgetOfExactType<GyScaffold>();
-    final bool isHomePage = RoutePages.getRouteLevel() == 0;
+    print('>>>topbar build hasGyScaffold: $hasGyScaffold ');
     if (null != hasGyScaffold) {
       return body;
     }
-
+    // _listenHomeEnum(relationCtrl.homeEnum.value);
     // if (RoutePages.getRouteLevel() == 0) {
     //   return body;
     // }
@@ -208,13 +233,13 @@ class _GyScaffoldState extends State<GyScaffold> {
         child: body,
       );
     }
-
     return Scaffold(
       appBar: _buildTitle(isHomePage),
       backgroundColor: backgroundColor,
       body: _buildBody(isHomePage),
       bottomNavigationBar: bottomNavigationBar,
       floatingActionButton: floatingActionButton,
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniEndFloat,
       resizeToAvoidBottomInset: true,
     );
   }
@@ -233,19 +258,24 @@ class _GyScaffoldState extends State<GyScaffold> {
 
   /// 构建二级页面头部
   PreferredSizeWidget _buildTitle(bool isHomePage) {
+    print('>>>topbar isHomePage: $isHomePage titleName: $titleName');
     return AppBar(
       title: isHomePage
           ? UserBar(
               title: titleName,
-              data: RoutePages.getParentRouteParam(),
+              data: parentRouteParam,
               actions: operations,
             )
-          : titleWidget ??
-              Text(
-                titleName,
-                style: titleStyle ??
-                    TextStyle(color: Colors.black, fontSize: 24.sp),
-              ),
+          : Row(
+              children: [
+                titleWidget ??
+                    Text(
+                      titleName,
+                      style: titleStyle ??
+                          TextStyle(color: Colors.black, fontSize: 24.sp),
+                    )
+              ],
+            ),
       centerTitle: centerTitle,
       elevation: elevation,
       toolbarOpacity: isHomePage ? 0 : 1.0,

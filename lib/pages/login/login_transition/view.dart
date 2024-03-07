@@ -55,7 +55,7 @@ class _LoginTransPageState extends State<LoginTransPage> {
           Positioned(
             left: 0,
             right: 0,
-            top: MediaQuery.of(context).size.height * 0.30,
+            top: (MediaQuery.maybeOf(context)?.size.height ?? 600) * 0.30,
             child: const Text(
               '物以类聚  人以群分',
               textAlign: TextAlign.center,
@@ -71,7 +71,7 @@ class _LoginTransPageState extends State<LoginTransPage> {
           Positioned(
             left: 0,
             right: 0,
-            top: MediaQuery.of(context).size.height * 0.33,
+            top: (MediaQuery.maybeOf(context)?.size.height ?? 600) * 0.33,
             child: const Text(
               'Orginone',
               textAlign: TextAlign.center,
@@ -106,7 +106,7 @@ class _LoginTransPageState extends State<LoginTransPage> {
               clipBehavior: Clip.antiAlias,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(AssetsImages.logoNoBg),
+                  image: AssetImage(AssetsImages.logo),
                   fit: BoxFit.fill,
                 ),
               ),

@@ -18,7 +18,7 @@ class XColors {
   static const Color themeColor = Color(0xff3D5ED1);
   static const Color applicationColor = Color(0xff2F96F9);
   static const Color starColor = Color(0xff154AD8);
-  static const Color selectedColor = Color(0xFF3D5ED1);
+  static const Color selectedColor = Color(0xFF366EF4);
   static const Color black = Color(0xff000000);
   static const Color black3 = Color(0xff303133);
   static const Color black6 = Color(0xff606266);
@@ -74,7 +74,7 @@ class XWidgets {
 class XFonts {
   ///沟通
   //沟通会话信息
-  static get chatSMInfo => size24Black0; //文本信息
+  static TextStyle get chatSMInfo => size24Black0; //文本信息
   static get chatSMSysTip => size14Black0; //系统提示文本信息
   static get chatSMTimeTip =>
       TextStyle(color: Colors.grey, fontSize: 18.sp); //聊天时间提示信息
@@ -198,7 +198,7 @@ class XFonts {
     return TextStyle(fontSize: 22.sp, color: XColors.black9);
   }
 
-  static get size24Black0 {
+  static TextStyle get size24Black0 {
     return TextStyle(fontSize: 24.sp, color: XColors.black);
   }
 

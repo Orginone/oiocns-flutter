@@ -27,7 +27,7 @@ import 'icons.dart';
 
 ///系统图片图标访问类
 class XImage {
-  XImage._();
+  // XImage._();
 
   ///操作图标
   static final Map<String, Widget> _operationsIconWidgets = {
@@ -48,7 +48,12 @@ class XImage {
   ];
 
   ///系统logo
-  static const String logo = "logo";
+  static const String logo = "assets/images/logo.png";
+  static const String scanLogin = "assets/images/scanLogin.png";
+  static const String emptyPage = "";
+  static const String emptyChat = "assets/images/empty/empty_chat.png";
+  static const String emptyFile = "assets/images/empty/empty_file.png";
+  static const String emptyActivity = "assets/images/empty/empty_activity.png";
   //================================================================== navbar
   ///沟通
   static const String chat = "chat";
@@ -163,6 +168,9 @@ class XImage {
 
   ///加入单位
   static const String joinUnit = "joinUnit";
+
+  ///工作台
+  static const String more = "more";
 
   // ///设置
   // static const String settings = "settings";
@@ -288,23 +296,31 @@ class XImage {
 
   ///页面模版
   static const String pageTemplate = "pageTemplate";
+  //================================================================== other
   //==================================================================
 
   static Widget localImage(String name,
-      {double? width,
+      {Key? key,
+      double? width,
+      double? height,
+      double? size,
       BoxFit? fit,
       Color? color,
       Color? bgColor,
       bool circular = false,
       double? radius}) {
-    ///常规图
-    String iconPath = (IconsUtils.icons['x']?[name]) ?? "";
+    ///常规图标
+    String path = (IconsUtils.icons['x']?[name]) ?? name;
+    if (path.isEmpty) path = XImage.user;
 
     return null == bgColor
         ? ImageWidget(
-            iconPath,
+            path,
+            key: key,
             fit: fit ?? BoxFit.cover,
-            size: width,
+            width: width,
+            height: height,
+            size: size,
             color: color,
             circular: circular,
             radius: radius,
@@ -316,9 +332,12 @@ class XImage {
             ),
             padding: const EdgeInsets.all(10),
             child: ImageWidget(
-              iconPath,
+              path,
+              key: key,
               fit: fit ?? BoxFit.cover,
-              size: width,
+              width: width,
+              height: height,
+              size: size,
               color: color,
               circular: circular,
               radius: radius,
@@ -338,7 +357,9 @@ class XImage {
     bool gaplessPlayback = false,
   }) {
     Widget iconW;
-    if (null == data) return XImage.localImage(XImage.user);
+    if (null == data || (data is String && data.isEmpty)) {
+      return XImage.localImage(XImage.user);
+    }
     if (null != width && null != height) {
       size = Size(width, height);
     } else if (null != width) {
@@ -346,17 +367,7 @@ class XImage {
     } else if (null != height) {
       size = Size(height, height);
     }
-    //根据实体id查找实体
-    // if (data is String) {
-    //   dynamic metadata = relationCtrl.user.findMetadata(data);
-    //   if (null != metadata) data = metadata;
-    // }
 
-    // if (data is XTarget &&
-    //     data.typeName == TargetType.person.label &&
-    //     null == data.shareIcon()) {
-    //   iconW = _defaultPersonIcon(data, size: size, circular: circular);
-    // }
     if (data is XEntity && null != data.shareIcon()) {
       iconW = TeamAvatar(
         key: ValueKey(data.shareIcon()),
@@ -367,6 +378,7 @@ class XImage {
     } else if (data is FixedDirectory &&
         null != DirectoryType.getType(data.name)) {
       iconW = XImage.localImage(
+        key: ValueKey(data.id),
         DirectoryType.getType(data.name)?.icon ?? DirectoryType.def.icon,
         width: size?.width,
         circular: circular,
@@ -374,6 +386,7 @@ class XImage {
       );
     } else if (data is IDirectory && null != SpaceEnum.getType(data.typeName)) {
       iconW = XImage.localImage(
+        key: ValueKey(data.id),
         SpaceEnum.getType(data.typeName)!.icon,
         width: size?.width,
         circular: circular,
@@ -403,6 +416,7 @@ class XImage {
       iconW = _defaultPersonIcon(data.name, size: size, circular: circular);
     } else if (data is IEntity && null != SpaceEnum.getType(data.typeName)) {
       iconW = XImage.localImage(
+        key: ValueKey(data.id),
         SpaceEnum.getType(data.typeName)!.icon,
         width: size?.width,
         circular: circular,
@@ -412,6 +426,7 @@ class XImage {
         data.typeName != TargetType.person.label &&
         null != TargetType.getType(data.typeName)) {
       iconW = XImage.localImage(
+        key: ValueKey(data.id),
         TargetType.getType(data.typeName)!.icon,
         width: size?.width,
         circular: circular,
@@ -419,6 +434,7 @@ class XImage {
       );
     } else if (data is ISysFileInfo) {
       iconW = XImage.localImage(
+        key: ValueKey(data.id),
         StorageFileType.getType(data.typeName)?.icon ??
             StorageFileType.getTypeByFileName(data.name).icon,
         width: size?.width,
@@ -429,6 +445,7 @@ class XImage {
         null != data.taskdata.taskType &&
         data.taskdata.taskType!.isNotEmpty) {
       iconW = XImage.localImage(
+        key: ValueKey(data.id),
         WorkType.getType(data.taskdata.taskType!)?.icon ?? WorkType.thing.icon,
         width: size?.width,
         circular: circular,
@@ -436,15 +453,17 @@ class XImage {
       );
     } else if (data is Work && data.typeName.isNotEmpty) {
       iconW = XImage.localImage(
+        key: ValueKey(data.id),
         WorkType.getType(data.typeName)?.icon ?? WorkType.thing.icon,
         width: size?.width,
         circular: circular,
         radius: radius,
       );
-    } else if (data is XTarget &&
+    } else if ((data is XTarget || data is IActivityMessage) &&
         null != TargetType.getType(data.typeName ?? "")) {
       //会影响用户头像
       iconW = XImage.localImage(
+        key: ValueKey(data.id),
         TargetType.getType(data.typeName!)!.icon,
         width: size?.width,
         circular: circular,
@@ -461,6 +480,7 @@ class XImage {
       );
     } else if (data is FileItemShare) {
       iconW = XImage.localImage(
+        key: ValueKey(data.name ?? data.contentType),
         StorageFileType.getType(data.contentType ?? "")?.icon ??
             StorageFileType.getTypeByFileName(data.name ?? "").icon,
         width: size?.width,
@@ -469,6 +489,7 @@ class XImage {
       );
     } else {
       iconW = localImage(
+        key: const ValueKey(user),
         user,
         width: size?.width,
         color: XColors.doorDesGrey,
@@ -477,24 +498,7 @@ class XImage {
       );
     }
     return iconW;
-    // null != SpaceEnum.getType(data.typeName)
-    //       ? XImage.localImage(SpaceEnum.getType(data.typeName)!.icon,
-    //           size: const Size(35, 35))
-    //       : data is XEntity && null != data.shareIcon()
-    //           ? TeamAvatar(
-    //               size: 35, info: TeamTypeInfo(share: data.shareIcon()))
-    //           : data is IEntity
-    //               ? TeamAvatar(size: 35, info: TeamTypeInfo(share: data.share))
-    //               : XImageWidget.asset(
-    //                   width: 35,
-    //                   height: 35,
-    //                   IconsUtils.workDefaultAvatar(data.typeName))
   }
-
-  // static Widget _defaultShareIcon(ShareIcon data,
-  //     {Size? size, bool circular = false}) {
-  //   return _defaultIcon(data.name, size: size, circular: circular);
-  // }
 
   static Widget _defaultPersonIcon(String name,
       {Size? size, bool circular = false}) {
@@ -564,7 +568,7 @@ class XImage {
           showSearch(context: Get.context!, delegate: search);
         }
       },
-      constraints: BoxConstraints(maxWidth: 50.w),
+      // constraints: const BoxConstraints(maxWidth: 50),
     );
   }
 

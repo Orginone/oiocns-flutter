@@ -134,11 +134,17 @@ class ActivityMessageWidget extends StatelessWidget {
                 overflow: TextOverflow.ellipsis),
           ));
         } else {
-          return HtmlWidget(metadata!.content,
-              textStyle: TextStyle(fontSize: 24.sp), onTapUrl: (url) {
-            Get.toNamed(Routers.webView, arguments: {'url': url});
-            return true;
-          });
+          return HtmlWidget(
+            metadata!.content,
+            textStyle: TextStyle(fontSize: 24.sp),
+            onTapUrl: (url) {
+              Get.toNamed(Routers.webView, arguments: {'url': url});
+              return true;
+            },
+            onTapImage: (url) {
+              print(">>>>>>>>>$url");
+            },
+          );
         }
       default:
     }
@@ -258,14 +264,17 @@ class RenderCtxMore extends StatelessWidget {
                 //   AssetsImages.iconMsg,
                 //   size: 18,
                 // ),
-                XImage.localImage(XImage.forward, width: 24.w),
+                XImage.localImage(XImage.forward, width: 22),
                 '转发',
                 textColor: XColors.black3,
               ),
               if (item.value.metadata.likes.contains(relationCtrl.user?.id))
                 ButtonWidget.iconTextOutlined(
                   onTap: () async {
-                    await item.value.like();
+                    item.value.like();
+                    item.value.metadata.likes
+                        .remove(relationCtrl.user?.id ?? "");
+                    item.refresh();
                   },
                   // const ImageWidget(
                   //   AssetsImages.iconLike,
@@ -273,20 +282,22 @@ class RenderCtxMore extends StatelessWidget {
                   //   color: Colors.red,
                   // ),
                   XImage.localImage(XImage.likeFill,
-                      width: 24.w, color: Colors.red),
+                      width: 22, color: Colors.red),
                   '取消',
                   textColor: XColors.black3,
                 ),
               if (!item.value.metadata.likes.contains(relationCtrl.user?.id))
                 ButtonWidget.iconTextOutlined(
                   onTap: () async {
-                    await item.value.like();
+                    item.value.like();
+                    item.value.metadata.likes.add(relationCtrl.user?.id ?? "");
+                    item.refresh();
                   },
                   // const ImageWidget(
                   //   AssetsImages.iconLike,
                   //   size: 18,
                   // ),
-                  XImage.localImage(XImage.likeOutline, width: 24.w),
+                  XImage.localImage(XImage.likeOutline, width: 22),
                   '点赞',
                   textColor: XColors.black3,
                 ),
@@ -299,18 +310,18 @@ class RenderCtxMore extends StatelessWidget {
                 //   AssetsImages.iconMsg,
                 //   size: 18,
                 // ),
-                XImage.localImage(XImage.commentOutline, width: 24.w),
+                XImage.localImage(XImage.commentOutline, width: 22),
                 '评论',
                 textColor: XColors.black3,
               ),
-              if (item.value.canDelete) ...[
-                Padding(padding: EdgeInsets.only(left: 5.w)),
+              if (item.value.canDelete)
                 ButtonWidget.iconTextOutlined(
                   onTap: () async {
                     await item.value.delete();
                     isDelete.value = true;
                     //提醒动态分类更新信息
                     activity.activityList.first.changCallback();
+                    item.refresh();
                   },
                   // const Icon(
                   //   Icons.delete_outline,
@@ -318,11 +329,10 @@ class RenderCtxMore extends StatelessWidget {
                   //   color: XColors.black3,
                   // ),
                   XImage.localImage(XImage.deleteOutline,
-                      color: XColors.black3, width: 24.w),
+                      color: XColors.black3, width: 22),
                   '删除',
                   textColor: XColors.black3,
                 ),
-              ]
             ],
           )
         ],

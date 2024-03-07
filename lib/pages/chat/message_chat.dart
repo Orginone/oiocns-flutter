@@ -27,33 +27,35 @@ class MessageChatPage
 
   @override
   Widget buildView() {
-    state.noReadCount = state.chat.noReadCount;
+    state.noReadCount = state.chat?.noReadCount ?? "";
     return GyScaffold(
       toolbarHeight: 80.h,
       titleWidget: _title(),
       actions: _actions(),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).requestFocus(FocusNode());
-          state.chatBoxCtrl
-              .eventFire(context, InputEvent.clickBlank, state.chat);
-        },
-        child: Column(
-          children: [
-            Expanded(child: MessageList()),
-            ChatBox(chat: state.chat, controller: state.chatBoxCtrl)
-          ],
-        ),
-      ),
+      body: null != state.chat
+          ? GestureDetector(
+              onTap: () {
+                FocusScope.of(context).requestFocus(FocusNode());
+                state.chatBoxCtrl
+                    .eventFire(context, InputEvent.clickBlank, state.chat!);
+              },
+              child: Column(
+                children: [
+                  Expanded(child: MessageList()),
+                  ChatBox(chat: state.chat!, controller: state.chatBoxCtrl)
+                ],
+              ),
+            )
+          : Container(),
     );
   }
 
   Widget _title() {
-    String name = state.chat.chatdata.value.chatName ?? "";
-    if (state.chat.members.length > 1) {
-      name += "(${state.chat.members.length})";
+    String name = state.chat!.chatdata.value.chatName ?? "";
+    if (state.chat!.members.length > 1) {
+      name += "(${state.chat!.members.length})";
     }
-    var spaceName = state.chat.groupTags.join(" | ");
+    var spaceName = state.chat!.groupTags.join(" | ");
     return Column(
       children: [
         Text(name, style: XFonts.size24Black3),
@@ -169,7 +171,7 @@ class MessageChatController extends BaseController<MessageChatState> {
     super.onClose();
     // LogUtil.d(
     //     '>>>>>>======messageChat ${state.chat.noReadCount} ${state.noReadCount}');
-    if (state.chat.noReadCount != state.noReadCount) {
+    if (state.chat?.noReadCount != state.noReadCount) {
       relationCtrl.loadChats();
     }
   }
@@ -179,14 +181,14 @@ class MessageChatController extends BaseController<MessageChatState> {
     // TODO: implement onReceivedEvent
     super.onReceivedEvent(event);
     if (event is JumpSpecifyMessage) {
-      int index = state.chat.messages.indexOf(event.message);
+      int index = state.chat?.messages.indexOf(event.message) ?? 0;
       state.itemScrollController.jumpTo(index: index);
     }
   }
 }
 
 class MessageChatState extends BaseGetState {
-  late ISession chat;
+  ISession? chat;
   late String noReadCount = '';
 
   ChatBoxController get chatBoxCtrl => Get.find();

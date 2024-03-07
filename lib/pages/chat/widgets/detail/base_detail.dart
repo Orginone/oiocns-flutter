@@ -74,7 +74,9 @@ abstract class BaseDetail extends StatelessWidget {
       },
       child: Container(
         constraints: constraints ??
-            BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 110),
+            BoxConstraints(
+                maxWidth:
+                    (MediaQuery.maybeOf(context)?.size.width ?? 400) - 110),
         padding:
             padding ?? EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
         margin: textDirection == TextDirection.ltr

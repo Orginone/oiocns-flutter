@@ -59,7 +59,7 @@ abstract class BaseGetListPageView<T extends BaseListController,
     return SingleChildScrollView(
       child: Container(
         width: double.infinity,
-        height: MediaQuery.of(context).size.height.w,
+        height: MediaQuery.maybeOf(context)?.size.height.w,
         alignment: Alignment.center,
         color: Colors.white,
         child: Image.asset(AssetsImages.empty, width: 200.w),

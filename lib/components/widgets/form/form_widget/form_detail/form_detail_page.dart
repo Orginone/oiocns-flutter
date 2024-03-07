@@ -13,7 +13,8 @@ class FormDetailPage extends OrginoneStatefulWidget {
   State<FormDetailPage> createState() => _FormDetailPageState();
 }
 
-class _FormDetailPageState extends OrginoneStatefulState<FormDetailPage> {
+class _FormDetailPageState
+    extends OrginoneStatefulState<FormDetailPage, dynamic> {
   // 主视图
   Widget _buildView(XForm xForm, int infoIndex) {
     if (xForm == null) {
@@ -27,7 +28,7 @@ class _FormDetailPageState extends OrginoneStatefulState<FormDetailPage> {
   }
 
   @override
-  Widget buildWidget(BuildContext context, data) {
+  Widget buildWidget(BuildContext context, dynamic data) {
     LogUtil.d(Get.arguments);
     return _buildView(data, Get.arguments.datas['infoIndex'] ?? 0);
   }

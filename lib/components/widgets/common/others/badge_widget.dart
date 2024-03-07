@@ -1,3 +1,4 @@
+import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -43,10 +44,18 @@ class BadgeTabWidget extends StatelessWidget {
         child: child,
       );
     }
-    String msg = mgsCount > 99 ? "99+" : "$mgsCount";
+    bool isMaxVal = mgsCount > 99;
+    String msg = isMaxVal ? "99+" : "$mgsCount";
     return badges.Badge(
       ignorePointer: false,
-      position: badges.BadgePosition.topEnd(top: 5),
+      position: badges.BadgePosition.topEnd(top: 5, end: isMaxVal ? -15 : -10),
+      badgeStyle: isMaxVal
+          ? const BadgeStyle(
+              shape: BadgeShape.square,
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+              padding: EdgeInsets.all(3.0),
+            )
+          : const BadgeStyle(),
       badgeContent: Text(
         msg,
         style: const TextStyle(

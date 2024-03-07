@@ -11,7 +11,10 @@ import 'package:orginone/utils/index.dart';
 
 class ImageWidget extends StatelessWidget {
   final dynamic path;
-
+  @override
+  final Key? key;
+  final double? width;
+  final double? height;
   final double? size;
 
   final Color? color;
@@ -29,7 +32,9 @@ class ImageWidget extends StatelessWidget {
   final Map<String, String>? httpHeaders;
 
   const ImageWidget(this.path,
-      {Key? key,
+      {this.key,
+      this.width,
+      this.height,
       this.size,
       this.color,
       this.iconColor,
@@ -83,8 +88,8 @@ class ImageWidget extends StatelessWidget {
     return SvgPicture.asset(
       path,
       fit: fit,
-      width: size,
-      height: size,
+      width: width ?? size,
+      height: height ?? size,
       colorFilter:
           null != color ? ColorFilter.mode(color!, BlendMode.srcIn) : null,
       // color: color,
@@ -96,8 +101,8 @@ class ImageWidget extends StatelessWidget {
       /// 对应上述的XXX的base64编码部分
       base64Decode(path.split(',')[1]),
       fit: fit,
-      width: size,
-      height: size,
+      width: width ?? size,
+      height: height ?? size,
       color: color,
       gaplessPlayback: gaplessPlayback,
     );
@@ -107,8 +112,8 @@ class ImageWidget extends StatelessWidget {
     return Image.asset(
       path,
       fit: fit,
-      width: size,
-      height: size,
+      width: width ?? size,
+      height: height ?? size,
       color: color,
       gaplessPlayback: gaplessPlayback,
     );
@@ -119,8 +124,8 @@ class ImageWidget extends StatelessWidget {
     //     'https://ts1.cn.mm.bing.net/th/id/R-C.79f51ff10efd5b83802e31152f19e1e1?rik=VFCY3zzecv8j2w&riu=http%3a%2f%2fabc.2008php.com%2f2019_Website_appreciate%2f2019-03-21%2f20190321205013r9uwk.jpg&ehk=D6ZmSPTqfBdk5ue51OOnY5EVjSC49lkGeVyyrlrUObk%3d&risl=&pid=ImgRaw&r=0';
     return CachedNetworkImage(
       fit: fit,
-      width: size,
-      height: size,
+      width: width ?? size,
+      height: height ?? size,
       color: color,
       imageUrl: path,
       httpHeaders: httpHeaders,
@@ -149,8 +154,8 @@ class ImageWidget extends StatelessWidget {
     return XImageWidget.url(
       path,
       fit: fit,
-      width: size,
-      height: size,
+      width: width ?? size,
+      height: height ?? size,
     ).onTap(
       () {},
     );
@@ -159,16 +164,17 @@ class ImageWidget extends StatelessWidget {
   Widget memory() {
     return Image.memory(
       path,
+      key: key,
       fit: fit,
-      width: size,
-      height: size,
+      width: width ?? size,
+      height: height ?? size,
       color: color,
       gaplessPlayback: true ?? gaplessPlayback,
       errorBuilder: (context, error, stackTrace) {
         return Icon(
           Icons.broken_image,
           color: Colors.grey.shade300,
-          size: size,
+          size: width ?? size,
         );
       },
     );
@@ -177,8 +183,8 @@ class ImageWidget extends StatelessWidget {
   Widget file() {
     return Image.file(path,
         fit: fit,
-        width: size,
-        height: size,
+        width: width ?? size,
+        height: height ?? size,
         color: color,
         gaplessPlayback: gaplessPlayback);
   }
@@ -186,7 +192,7 @@ class ImageWidget extends StatelessWidget {
   Widget icon() {
     return Icon(
       path,
-      size: max(size ?? 24.w, size ?? 24.h),
+      size: max(width ?? size ?? 24.w, height ?? size ?? 24.h),
       color: iconColor,
     );
   }

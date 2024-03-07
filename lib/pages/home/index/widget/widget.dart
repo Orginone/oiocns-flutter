@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:getwidget/getwidget.dart';
-import 'package:orginone/common/values/index.dart';
 
 import 'package:orginone/components/widgets/common/image/image_widget.dart';
 import 'package:orginone/config/unified.dart';
+import 'package:orginone/utils/load_image.dart';
 
 class TextArrow extends StatelessWidget {
   final String title;
@@ -29,7 +29,7 @@ class TextArrow extends StatelessWidget {
         WidgetSpan(
             child: Container(
                 margin: EdgeInsets.only(left: 10.w),
-                child: const ImageWidget(AssetsImages.toMore)),
+                child: XImage.localImage(XImage.more)),
             alignment: PlaceholderAlignment.middle)
       ])),
     );

@@ -1259,19 +1259,11 @@ class _ExpandTabBarState extends State<ExpandTabBar> {
   @override
   Widget build(BuildContext context) {
     assert(debugCheckHasMaterialLocalizations(context));
-    assert(() {
-      if (_controller!.length != widget.tabs.length) {
-        if (widget.tabs.length != widget.tabNames.length) {
-          initTabs();
-        }
-        if (_controller!.length != widget.tabs.length) {
-          throw FlutterError(
-              "Controller's length property (${_controller!.length}) does not match the "
-              "number of tabs (${widget.tabs.length}) present in TabBar's tabs property.");
-        }
+    if (_controller!.length != widget.tabs.length) {
+      if (widget.tabs.length != widget.tabNames.length) {
+        initTabs();
       }
-      return true;
-    }());
+    }
     final MaterialLocalizations localizations =
         MaterialLocalizations.of(context);
     if (_controller!.length == 0) {

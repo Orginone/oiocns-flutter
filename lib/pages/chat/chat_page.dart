@@ -104,9 +104,9 @@ class _ChatPageState extends State<ChatPage> {
           },
           getBadge: (dynamic data) {
             if (data.noReadCount.isNotEmpty) {
-              return int.parse(data.noReadCount);
+              return data.noReadCount;
             }
-            return 0;
+            return null;
           },
           getAction: (dynamic data) {
             return GestureDetector(

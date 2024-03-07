@@ -21,20 +21,31 @@ import 'package:orginone/config/unified.dart';
 
 /// 首页
 class HomePage extends OrginoneStatefulWidget {
+  HomeEnum homeEnum;
+  bool isHomePage;
   @override
-  HomePage({super.key, super.data});
+  HomePage(
+      {super.key,
+      this.homeEnum = HomeEnum.door,
+      this.isHomePage = true,
+      super.data});
 
   @override
   State<StatefulWidget> createState() => _HomePageState();
 }
 
-class _HomePageState extends OrginoneStatefulState<HomePage> {
+class _HomePageState extends OrginoneStatefulState<HomePage, dynamic> {
   var currentIndex = 0.obs;
   DateTime? lastCloseApp;
   @override
   void initState() {
     super.initState();
     AppUpdate.instance.update();
+  }
+
+  @override
+  bool isHomePage() {
+    return widget.isHomePage ? true : super.isHomePage();
   }
 
   @override
@@ -61,11 +72,6 @@ class _HomePageState extends OrginoneStatefulState<HomePage> {
                 Expanded(
                   child: Column(
                     children: [
-                      // if (null == data)
-                      //   Container(
-                      //     color: Colors.white,
-                      //     child: const UserBar(),
-                      //   ),
                       Expanded(
                         child: ExtendedTabBarView(
                           // shouldIgnorePointerWhenScrolling: false,
@@ -169,52 +175,4 @@ class _HomePageState extends OrginoneStatefulState<HomePage> {
     }
     return null;
   }
-
-  // @override
-  // void onInit() {
-  //   // TODO: implement onInit
-  //   super.onInit();
-  //   state.tabController = TabController(
-  //       length: 5,
-  //       vsync: this,
-  //       initialIndex: 2,
-  //       animationDuration: Duration.zero);
-  //   state.tabController.addListener(() {
-  //     LogUtil.d('>>>>====${state.tabController.index}');
-  //     if (relationCtrl.homeEnum.value.index != state.tabController.index) {
-  //       relationCtrl.homeEnum.value =
-  //           HomeEnum.values[state.tabController.index];
-  //     }
-  //   });
-  //   if (Get.arguments ?? false) {
-  //     EventBusUtil.instance.fire(UserLoaded());
-  //   }
-  // }
-
-  // @override
-  // void onReady() {
-  //   // TODO: implement onReady
-  //   super.onReady();
-  //   AppUpdate.instance.update();
-  // }
-
-  // @override
-  // void onReceivedEvent(event) {
-  //   if (event is ShowLoading) {
-  //     if (event.isShow) {
-  //       // LoadingDialog.showLoading(Get.context!, msg: "加载数据中");
-  //     } else {
-  //       LoadingDialog.dismiss(Get.context!);
-  //     }
-  //   }
-  //   if (event is StartLoad) {
-  //     EventBusUtil.instance.fire(UserLoaded());
-  //   }
-  // }
-
-  // @override
-  // void onClose() {
-  //   state.tabController.dispose();
-  //   super.onClose();
-  // }
 }

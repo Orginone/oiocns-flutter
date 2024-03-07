@@ -6,6 +6,11 @@
  * @LastEditors: 
  * @LastEditTime: 2022-12-15 16:21:22
  */
+
+import 'dart:io';
+
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -43,5 +48,27 @@ class SystemUtils {
   /// 清除数据
   static void clearClientKeyboard() {
     SystemChannels.textInput.invokeMethod('TextInput.clearClient');
+  }
+
+  /// 获得设备ID
+  static String? _deviceId;
+  static Future<String> getDeviceId() async {
+    if (kIsWeb) {
+      return "web";
+    } else if (null != _deviceId) {
+      return _deviceId ?? "";
+    }
+
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    if (Platform.isAndroid) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      _deviceId = androidInfo.id;
+    } else if (Platform.isIOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      _deviceId = iosInfo.identifierForVendor;
+    } else {
+      _deviceId = "unknown";
+    }
+    return _deviceId ?? "";
   }
 }

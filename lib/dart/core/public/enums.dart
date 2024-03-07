@@ -87,7 +87,8 @@ enum DirectoryGroupType {
   // 存储
   storage("存储资源", [
     SpaceEnum.dataStandards,
-    SpaceEnum.businessModeling,
+    SpaceEnum.view,
+    // SpaceEnum.businessModeling,
     SpaceEnum.applications,
     SpaceEnum.file,
     SpaceEnum.code,
@@ -95,20 +96,36 @@ enum DirectoryGroupType {
   ]),
 
   /// 数据标准
-  dataStandards("数据标准", [
+  dataStandards("标准", [
     SpaceEnum.property,
     SpaceEnum.species,
     SpaceEnum.dict,
   ]),
 
   /// 业务模型
-  businessModeling("业务模型", [
+  businessModeling("模型", [
     SpaceEnum.form,
     SpaceEnum.report,
     SpaceEnum.rransfer,
     SpaceEnum.pageTemplate,
   ]),
-  ;
+
+  ///视图
+  view("视图", [
+    SpaceEnum.table,
+    SpaceEnum.report,
+    SpaceEnum.bulletinBoard,
+  ]),
+
+  ///应用
+  report("应用", [
+    SpaceEnum.model,
+    SpaceEnum.work,
+    SpaceEnum.form,
+    SpaceEnum.role,
+    SpaceEnum.dataMigration,
+    SpaceEnum.shoppingPage,
+  ]);
 
   const DirectoryGroupType(this.name, this.types);
 
@@ -348,6 +365,12 @@ enum SpaceEnum {
   ///表单
   form("表单", XImage.form),
   report("报表", XImage.folder),
+  table("表格", XImage.folder),
+  dataMigration("数据迁移", XImage.folder),
+  shoppingPage("商城页面", XImage.folder),
+  model("模块", XImage.folder),
+  role("规则", XImage.folder),
+  bulletinBoard("看板", XImage.folder),
   rransfer("迁移", XImage.folder),
   pageTemplate("页面模板", XImage.pageTemplate),
   file("文件", XImage.folder),
@@ -375,7 +398,10 @@ enum SpaceEnum {
   internalAgent("内设机构", XImage.unitInstitution),
 
   /// 数据标准
-  dataStandards("数据标准", XImage.folder),
+  dataStandards("标准", XImage.folder),
+
+  ///视图
+  view("视图", XImage.folder),
 
   /// 业务模型
   businessModeling("业务模型", XImage.folder),
@@ -519,13 +545,16 @@ enum DirectoryType {
   storage("存储资源", XImage.folder),
 
   ///数据标准
-  dataStandard("数据标准", XImage.folder),
+  dataStandard("标准", XImage.folder),
 
   ///业务模型
   model("业务模型", XImage.folderModel),
 
   ///应用
   app("应用", XImage.folderApplication),
+
+  ///办事
+  work("办事", XImage.folder),
 
   ///文件
   file("文件", XImage.folderStore),

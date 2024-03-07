@@ -14,7 +14,7 @@ class VideoPlayController extends BaseController<VideoPlayState> {
     super.onInit();
     await state.videoPlayerController.initialize();
     state.chewieController = ChewieController(
-        aspectRatio: 16 / 9,
+        // aspectRatio: 16 / 9,
         videoPlayerController: state.videoPlayerController,
         autoPlay: true,
         looping: true);

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/routers/pages.dart';
 import 'package:orginone/components/index.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/core/getx/base_get_view.dart';
@@ -65,11 +66,12 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
               CommonWidget.logoLR(),
               backToLogin(),
               SizedBox(
-                height: 680,
+                height: 710,
                 child: Stack(
                   children: [
                     Positioned(
-                      top: MediaQuery.of(context).size.height * 0.25,
+                      top: (MediaQuery.maybeOf(context)?.size.height ?? 600) *
+                          0.25,
                       left: 30,
                       right: 30,
                       child: Text(
@@ -78,7 +80,8 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                       ),
                     ),
                     Positioned(
-                      top: MediaQuery.of(context).size.height * 0.31,
+                      top: (MediaQuery.maybeOf(context)?.size.height ?? 600) *
+                          0.31,
                       left: 30,
                       right: 30,
                       child: Text(
@@ -244,22 +247,28 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
           TextSpan(children: [
             const TextSpan(text: "同意"),
             WidgetSpan(
-              child: GestureDetector(
-                child: Text(
-                  "《服务条款》",
-                  style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
-                ),
+                child: GestureDetector(
+              onTap: () {
+                RoutePages.jumpAssectMarkDown(
+                    title: "服务条款", path: "assets/markdown/term_service.md");
+              },
+              child: Text(
+                "《服务条款》",
+                style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
               ),
-            ),
+            )),
             const TextSpan(text: "与"),
             WidgetSpan(
-              child: GestureDetector(
-                child: Text(
-                  "《隐私条款》",
-                  style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
-                ),
+                child: GestureDetector(
+              onTap: () {
+                RoutePages.jumpAssectMarkDown(
+                    title: "隐私条款", path: "assets/markdown/privacy_clause.md");
+              },
+              child: Text(
+                "《隐私条款》",
+                style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
               ),
-            )
+            ))
           ]),
           style: TextStyle(color: Colors.black, fontSize: 20.sp),
         )
@@ -293,7 +302,7 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
 
   Widget registerForm() {
     return Positioned(
-        top: MediaQuery.of(context).size.height * 0.37,
+        top: (MediaQuery.maybeOf(context)?.size.height ?? 600) * 0.37,
         left: 30,
         right: 30,
         child: Obx(() {
@@ -383,8 +392,8 @@ class RegisterPage extends BaseGetView<RegisterController, RegisterState> {
                 ],
               ),
               const SizedBox(height: 20),
-              // clause(),
-              // const SizedBox(height: 10),
+              clause(),
+              const SizedBox(height: 10),
               comfirmSubmit(),
             ],
           );

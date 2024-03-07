@@ -1191,6 +1191,7 @@ class ChatMessageType extends Xbase {
   late String sessionId; // 接收会话Id
   late String typeName; // 类型
   late String content; // 内容
+  late String deviceId; // 设备ID
   late List<CommentType> comments; // 评注
 
   ChatMessageType({
@@ -1200,6 +1201,7 @@ class ChatMessageType extends Xbase {
     required this.typeName,
     required this.content,
     required this.comments,
+    required this.deviceId,
     required super.id,
   });
   ChatMessageType.fromJson(Map<String, dynamic> json) : super.fromJson(json) {

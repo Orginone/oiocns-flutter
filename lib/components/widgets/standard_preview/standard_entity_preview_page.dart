@@ -20,9 +20,9 @@ class StandardEntityPreViewPage extends OrginoneStatefulWidget {
 }
 
 class _StandardEntityPreViewPageState
-    extends OrginoneStatefulState<StandardEntityPreViewPage> {
+    extends OrginoneStatefulState<StandardEntityPreViewPage, dynamic> {
   @override
-  Widget buildWidget(BuildContext context, data) {
+  Widget buildWidget(BuildContext context, dynamic data) {
     return _buildView(context, data);
   }
 

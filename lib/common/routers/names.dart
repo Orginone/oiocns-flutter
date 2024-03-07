@@ -10,6 +10,7 @@ class Routers {
   /// 首页
   static const String homeOld = "/homeOld";
   static const String home = "/home";
+  static const String homeSub = "/homeSub";
   static const String todo = "/todo";
   static const String todoList = "/todoList";
   static const String todoDetail = "/todoDetail";
@@ -234,6 +235,9 @@ class Routers {
   static const String generalBreadCrumbs = "/generalBreadCrumbs";
 
   static const String videoPlay = "/videoPlay";
+  static const String markDownPreview = "/markDownPreview";
+  static const String activityRelease = "/activityRelease";
+  static const String uploadFiles = "/uploadFiles";
 
   static const String editSubGroup = "/editSubGroup";
 

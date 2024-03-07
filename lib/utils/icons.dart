@@ -5,8 +5,6 @@ import 'package:orginone/utils/load_image.dart';
 class IconsUtils {
   static Map<String, Map<String, String>> icons = {
     "x": {
-      ///系统logo
-      XImage.logo: "assets/icons/logo.png",
       //================================================================== navbar
       ///沟通
       XImage.chat: "assets/icons/navbar/chat.svg",
@@ -118,6 +116,9 @@ class IconsUtils {
 
       ///加入单位
       XImage.joinUnit: "assets/icons/operate/join_unit.svg",
+
+      ///工作台
+      XImage.more: "assets/icons/operate/to_more.svg",
 
       // //动态
       // XImage.dynamicIcon: "assets/icons/dynamic.svg",

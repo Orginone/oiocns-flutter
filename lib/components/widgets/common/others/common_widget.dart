@@ -6,6 +6,7 @@ import 'package:orginone/common/values/index.dart';
 import 'package:orginone/components/index.dart';
 import 'package:orginone/config/colors.dart';
 import 'package:orginone/config/unified.dart';
+import 'package:orginone/utils/load_image.dart';
 
 typedef DocumentOperation = Function(dynamic type, String data);
 
@@ -396,11 +397,8 @@ class CommonWidget {
               SizedBox(
                 width: 5.w,
               ),
-              Image.asset(
-                AssetsImages.searchIcon,
-                width: 28.w,
-                height: 28.w,
-              ),
+              XImage.localImage(XImage.search,
+                  width: 28.w, color: XColors.black666),
             ],
           ),
         ),
@@ -1346,7 +1344,7 @@ class CommonWidget {
               clipBehavior: Clip.antiAlias,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(AssetsImages.logoNoBg),
+                  image: AssetImage(AssetsImages.logo),
                   fit: BoxFit.fill,
                 ),
               ),
@@ -1383,7 +1381,7 @@ class CommonWidget {
               clipBehavior: Clip.antiAlias,
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(AssetsImages.logoNoBg),
+                  image: AssetImage(AssetsImages.logo),
                   fit: BoxFit.fill,
                 ),
               ),

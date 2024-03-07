@@ -13,9 +13,9 @@ class FormPage extends OrginoneStatefulWidget {
   State<FormPage> createState() => _FormPageState();
 }
 
-class _FormPageState extends OrginoneStatefulState<FormPage> {
+class _FormPageState extends OrginoneStatefulState<FormPage, dynamic> {
   @override
-  Widget buildWidget(BuildContext context, data) {
+  Widget buildWidget(BuildContext context, dynamic data) {
     return FormWidget(
       mainForm: [data.metadata],
       subForm: const [],

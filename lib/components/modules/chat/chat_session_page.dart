@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/components/base/orginone_stateful_widget.dart';
+import 'package:orginone/components/widgets/common/empty/empty_chat.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/target/base/target.dart';
 import 'package:orginone/pages/chat/message_chat.dart';
@@ -14,7 +15,8 @@ class ChatSessionPage extends OrginoneStatefulWidget {
   State<StatefulWidget> createState() => _ChatSessionPageState();
 }
 
-class _ChatSessionPageState extends OrginoneStatefulState<ChatSessionPage> {
+class _ChatSessionPageState
+    extends OrginoneStatefulState<ChatSessionPage, dynamic> {
   late ChatBoxController chatBoxCtrl;
   late MessageChatController chatCtrl;
 
@@ -64,11 +66,7 @@ class _ChatSessionPageState extends OrginoneStatefulState<ChatSessionPage> {
               ],
             ),
           )
-        : Container(
-            child: const Center(
-              child: Text("--还未开始沟通--"),
-            ),
-          );
+        : const EmptyChat();
   }
 
   // @override

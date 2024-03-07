@@ -26,7 +26,8 @@ class AtPersonDialog {
               color: Colors.white,
             ),
             constraints: BoxConstraints(
-                maxHeight: MediaQuery.of(context).size.height * 0.8),
+                maxHeight:
+                    (MediaQuery.maybeOf(context)?.size.height ?? 600) * 0.8),
             child: AtContactListPage(
               userId: chat.userId,
               persons: chat.members,

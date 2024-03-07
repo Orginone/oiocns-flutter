@@ -95,7 +95,8 @@ class ActionBottomSheet {
       builder: (context) => SafeArea(
         minimum: const EdgeInsets.all(10),
         child: AnimatedPadding(
-          padding: MediaQuery.of(context).viewInsets,
+          padding: MediaQuery.maybeOf(context)?.viewInsets ??
+              const EdgeInsets.all(0),
           duration: const Duration(milliseconds: 150),
           child: Container(
             padding: contentPadding ?? const EdgeInsets.all(10),

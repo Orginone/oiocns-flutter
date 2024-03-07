@@ -15,7 +15,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.4+104
+version: 1.0.4+105
 
 environment:
   sdk: ">=2.17.0 <4.0.0"
@@ -25,7 +25,7 @@ flutter_icons:
   android: true
   ios: true
   remove_alpha_ios: true
-  image_path: "assets/icons/logo.png"
+  image_path: "assets/image/logo.png"
 
 flutter_app_name:
   name: "奥集能"
@@ -90,7 +90,6 @@ dependencies:
   emoji_picker_flutter: ^1.5.0
   cached_network_image: ^3.2.1
   photo_view: ^0.14.0
-  package_info_plus: ^4.0.2
   flutter_custom_dialog: ^1.0.20
   flutter_advanced_avatar: ^1.1.0
   flutter_datetime_picker_plus: ^2.0.1
@@ -145,7 +144,7 @@ dependencies:
   photo_manager: ^2.6.0
   extended_image: ^8.0.2
 
-  chewie: ^1.7.0
+  # chewie: ^1.7.0
   video_player: ^2.6.1
   toggle_switch: ^2.1.0
   flutter_background_service: ^3.0.1
@@ -166,6 +165,9 @@ dependencies:
 
   #网络库
   connectivity: ^3.0.3
+  package_info_plus: ^4.0.2
+  # 设备信息
+  device_info_plus: ^9.0.2
 
 dev_dependencies:
   flutter_test:
@@ -192,7 +194,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
-    - assets/images/work/
+    - assets/images/empty/
     - assets/icons/
     - assets/icons/types/
     - assets/icons/types/files/
@@ -201,7 +203,8 @@ flutter:
     - assets/icons/toolbar/
     - assets/icons/topbar/
     - assets/icons/navbar/
-    - assets/markdown/originone.md
+    - assets/markdown/
+    # - assets/markdown/originone.md
   fonts:
     - family: Orginone
       fonts:

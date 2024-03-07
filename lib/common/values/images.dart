@@ -7,10 +7,16 @@
  * @LastEditTime: 2022-11-25 10:11:13
  */
 class AssetsImages {
+  static const logo = 'assets/images/logo_not_bg.png';
+  static const String iconEmoji = "assets/images/icon_emoji.png";
+  static const String iconVoice = "assets/images/icon_voice.png";
+  static const String iconAddAction = "assets/images/icon_add_action.png";
+
+  static const String searchIcon = "assets/images/search_icon.png";
+
   static const defaultPng = 'assets/images/default.png';
   static const homePlaceholderPng = 'assets/images/home_placeholder.png';
   static const logoBackground = 'assets/images/logo_background.png';
-  static const logoNoBg = 'assets/images/logo_not_bg.png';
   static const loginAccount = 'assets/images/icon_login_account.png';
   static const loginPhone = 'assets/images/icon_login_phone.png';
   static const loginSecret = 'assets/images/icon_login_secret.png';
@@ -33,8 +39,6 @@ class AssetsImages {
       "assets/images/batch_operation_icon.png";
 
   static const String qrScanIcon = "assets/images/qr_scan_icon.png";
-
-  static const String searchIcon = "assets/images/search_icon.png";
 
   static const String totalValueIcon = "assets/images/total_value_icon.png";
 
@@ -67,12 +71,6 @@ class AssetsImages {
   static const String empty = "assets/images/empty.png";
 
   static const String logOut = "assets/images/icon_log_out.svg";
-
-  static const String iconEmoji = "assets/images/icon_emoji.png";
-
-  static const String iconVoice = "assets/images/icon_voice.png";
-
-  static const String iconAddAction = "assets/images/icon_add_action.png";
 
   static const String iconFile = "assets/images/icon_file.png";
 

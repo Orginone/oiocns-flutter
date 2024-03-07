@@ -85,6 +85,7 @@ abstract class Target extends Team implements ITarget {
       Duration(milliseconds: id == userId ? 100 : 0),
       () async {
         await loadUserData(keys, metadata);
+        // await session.activity.load();
       },
     );
   }

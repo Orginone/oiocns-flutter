@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:orginone/common/routers/pages.dart';
 import 'package:orginone/common/values/images.dart';
 import 'package:orginone/components/widgets/common/image/image_widget.dart';
 import 'package:orginone/components/widgets/common/image/photo_widget.dart';
@@ -51,7 +52,7 @@ class ActivityResourceWidget extends StatelessWidget {
       List<Widget> widgetList, int index) {
     if (item.contentType?.startsWith('image') ?? false) {
       // 获取屏幕高度
-      final height = MediaQuery.of(context).size.height;
+      final height = MediaQuery.maybeOf(context)?.size.height ?? 600.0;
       String link = shareOpenLink(item.shareLink);
       widgetList.add(PhotoWidget(
         imageProvider: CachedNetworkImageProvider(link),
@@ -77,11 +78,16 @@ class ActivityResourceWidget extends StatelessWidget {
             link,
           ));
     } else if (item.contentType?.startsWith('video') ?? false) {
-      return ImageWidget(
-          item.poster != null && item.poster!.isNotEmpty
-              ? shareOpenLink(item.poster)
-              : item.thumbnailUint8List,
-          size: computedSize());
+      return GestureDetector(
+        onTap: () {
+          RoutePages.jumpFile(file: item);
+        },
+        child: ImageWidget(
+            item.poster != null && item.poster!.isNotEmpty
+                ? shareOpenLink(item.poster)
+                : item.thumbnailUint8List,
+            size: computedSize()),
+      );
     } else if ((item.contentType?.contains('pdf') ?? false) ||
         (item.contentType?.startsWith('text') ?? false)) {
       return getThumbnail(shareOpenLink(item.shareLink));

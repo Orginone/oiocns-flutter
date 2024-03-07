@@ -19,7 +19,7 @@ class LoginState extends BaseGetState {
 
   RxString dynamicId = ''.obs;
 
-  var agreeTerms = true.obs;
+  var agreeTerms = false.obs;
 
   var passwordUnVisible = true.obs;
 

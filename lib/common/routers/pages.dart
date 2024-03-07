@@ -1,5 +1,6 @@
 //路由 Pages
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart' hide Form;
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
@@ -7,11 +8,13 @@ import 'package:orginone/components/modules/chat/chat_session_page.dart';
 import 'package:orginone/components/modules/common/entity_info_page.dart';
 import 'package:orginone/components/modules/common/file_list_page.dart';
 import 'package:orginone/components/modules/common/member_list_page.dart';
+import 'package:orginone/components/modules/md/mark_down_preview.dart';
 import 'package:orginone/components/modules/relation/relation_cohort_page.dart';
 import 'package:orginone/components/modules/relation/relation_friend_page.dart';
 import 'package:orginone/components/widgets/form/form_page/index.dart';
 import 'package:orginone/components/widgets/form/form_widget/form_detail/form_detail_page.dart';
 import 'package:orginone/components/widgets/standard_preview/standard_entity_preview_page.dart';
+import 'package:orginone/components/widgets/target_activity/activity_release.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/controller/index.dart';
@@ -168,6 +171,13 @@ class RoutePages {
     /// 首页
     GetPage(name: Routers.home, page: () => HomePage()),
 
+    /// 首页子页面
+    GetPage(
+        name: Routers.homeSub,
+        page: () => HomePage(
+              isHomePage: false,
+            )),
+
     /// 数据页面
     GetPage(name: Routers.storePage, page: () => const StorePage()),
 
@@ -198,6 +208,15 @@ class RoutePages {
       name: Routers.targetActivity,
       page: () => TargetActivityList(),
     ),
+
+    ///markdown文件查看
+    GetPage(name: Routers.markDownPreview, page: () => MarkDownPreview()),
+
+    ///动态发布
+    GetPage(name: Routers.activityRelease, page: () => ActivityRelease()),
+
+    ///文件上传
+    // GetPage(name: Routers.uploadFiles, page:()=>UploadFiles()),
 
     /// 沟通会话页面
     GetPage(
@@ -535,6 +554,23 @@ class RoutePages {
     );
   }
 
+  /// 跳转到动态发布页面
+  static void jumpActivityRelease({required IActivity activity}) {
+    Get.toNamed(Routers.activityRelease,
+        arguments: RouterParam(
+            parents: [..._getParentRouteParams(), RouterParam(datas: activity)],
+            datas: activity));
+  }
+
+  /// 跳转到markdown查看页面
+  static void jumpAssectMarkDown(
+      {String? title, String? path, FileItemShare? file}) {
+    if (null == file && null != title && null != path) {
+      file = FileItemShare(name: title, shareLink: path, extension: "md");
+    }
+    Get.toNamed(Routers.markDownPreview, arguments: RouterParam(datas: file));
+  }
+
   static void jumpFile({required FileItemShare file, String type = 'chat'}) {
     var extension = file.extension?.toLowerCase() ?? "";
     //TODO:react分支 无此方法  具体调试看这个业务是什么
@@ -557,6 +593,8 @@ class RoutePages {
       Get.toNamed(Routers.messageFile, arguments: {'file': file});
     } else if (FileUtils.isVideo(extension)) {
       Get.toNamed(Routers.videoPlay, arguments: {'file': file});
+    } else if (FileUtils.isMarkDown(extension)) {
+      RoutePages.jumpAssectMarkDown(file: file);
     } else {
       Get.toNamed(Routers.messageFile, arguments: {"file": file});
     }
@@ -592,7 +630,7 @@ class RoutePages {
 
   /// 跳转到关系二级页面
   static void jumpRelation({dynamic parentData, List? listDatas}) {
-    jumpHome(
+    jumpHomeSub(
         home: HomeEnum.relation, parentData: parentData, listDatas: listDatas);
   }
 
@@ -696,17 +734,55 @@ class RoutePages {
 
   /// 跳转到消息模块
   static void jumpChat({List<String> defaultActiveTabs = const []}) {
-    jumpHome(home: HomeEnum.chat, defaultActiveTabs: defaultActiveTabs);
+    jumpHomeSub(home: HomeEnum.chat, defaultActiveTabs: defaultActiveTabs);
   }
 
   /// 跳转到办事模块
   static void jumpWork({List<String> defaultActiveTabs = const []}) {
-    jumpHome(home: HomeEnum.work, defaultActiveTabs: defaultActiveTabs);
+    jumpHomeSub(home: HomeEnum.work, defaultActiveTabs: defaultActiveTabs);
+  }
+
+  /// 跳转到数据模块
+  static void jumpStorage(
+      {dynamic parentData,
+      List? listDatas,
+      List<String> defaultActiveTabs = const []}) {
+    jumpHomeSub(
+        home: HomeEnum.store,
+        parentData: parentData,
+        listDatas: listDatas,
+        defaultActiveTabs: defaultActiveTabs);
+  }
+
+  /// 跳转到首页子页面
+  static void jumpHomeSub(
+      {required HomeEnum home,
+      dynamic parentData,
+      List? listDatas,
+      List<String> defaultActiveTabs = const [],
+      bool preventDuplicates = false}) {
+    _jumpHome(
+        home: home,
+        parentData: parentData,
+        listDatas: listDatas,
+        defaultActiveTabs: defaultActiveTabs,
+        preventDuplicates: preventDuplicates,
+        page: Routers.homeSub);
   }
 
   /// 跳转到首页
   static void jumpHome(
       {required HomeEnum home,
+      dynamic parentData,
+      List? listDatas,
+      List<String> defaultActiveTabs = const [],
+      bool preventDuplicates = false}) {
+    _jumpHome(home: home);
+  }
+
+  static void _jumpHome(
+      {required HomeEnum home,
+      String? page,
       dynamic parentData,
       List? listDatas,
       List<String> defaultActiveTabs = const [],
@@ -723,7 +799,7 @@ class RoutePages {
               datas: listDatas,
               defaultActiveTabs: defaultActiveTabs));
     } else {
-      Get.toNamed(Routers.home,
+      Get.toNamed(page ?? Routers.home,
           preventDuplicates: preventDuplicates,
           arguments: RouterParam(
               modelName: home.label,
@@ -761,6 +837,9 @@ class RoutePages {
           datas: data,
         ));
   }
+
+  /// 批量上传文件
+  static void jumpUploadFiles({FilePickerResult? filePicker}) {}
 
   /// 获取关系子页面参数
   static List<RouterParam> _getParentRouteParams() {
@@ -876,7 +955,7 @@ class RoutePages {
   // static bool isClearParams = false;
   static void clearRoute() {
     print('>>>>>>>>> 1>${Get.routeTree.routes}');
-    debugPrint('did ${RoutePages.history.toString()}');
+    print('did1 ${RoutePages.history.toString()}');
     if (RoutePages.history.length <= 1) return;
     RoutePages.historyRoute.sublist(1).map((e) {
       // observer.didRemove(e, null);
@@ -885,7 +964,7 @@ class RoutePages {
     });
     RoutePages.history.removeRange(1, RoutePages.history.length);
     RoutePages.historyRoute.removeRange(1, RoutePages.historyRoute.length);
-    debugPrint('did ${RoutePages.history.toString()}');
+    print('did2 ${RoutePages.history.toString()}');
     // Get.routeTree.routes.removeRange(1, Get.routeTree.routes.length);
     print('>>>>>>>>> 2>${Get.routeTree.routes}');
     // isClearParams = true;

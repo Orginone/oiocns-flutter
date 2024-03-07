@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/common/routers/pages.dart';
-import 'package:orginone/common/widgets/image.dart';
+import 'package:orginone/common/widgets/icon.dart';
 import 'package:orginone/components/widgets/infoListPage/index.dart';
 import 'package:orginone/components/widgets/list_widget/index.dart';
+import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/controller/index.dart';
 import 'package:orginone/dart/core/public/entity.dart';
@@ -49,7 +50,7 @@ class _RelationState extends State<RelationPage> {
     if (relationCtrl.homeEnum.value == HomeEnum.relation &&
         RoutePages.getRouteLevel() > 0) {
       relationCtrl.homeEnum.listen((homeEnum) {
-        if (homeEnum == HomeEnum.relation) {
+        if (mounted && homeEnum == HomeEnum.relation) {
           setState(() {
             relationModel = null;
             datas = RoutePages.getRouteParams(homeEnum: HomeEnum.relation);
@@ -170,7 +171,10 @@ class _RelationState extends State<RelationPage> {
                   LogUtil.d('>>>>>>======点击了感叹号');
                   RoutePages.jumpRelationInfo(data: data);
                 },
-                child: const XImageWidget.asset(width: 35, height: 35, ''),
+                child: const IconWidget(
+                  color: XColors.black666,
+                  iconData: Icons.info_outlined,
+                ),
               );
             }
             return null;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:orginone/common/routers/pages.dart';
 import 'package:orginone/common/values/images.dart';
 import 'package:orginone/components/index.dart';
 import 'package:orginone/config/unified.dart';
@@ -19,7 +20,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
       resizeToAvoidBottomInset: true,
       body: SingleChildScrollView(
         child: Container(
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery.maybeOf(context)?.size.height,
           clipBehavior: Clip.antiAlias,
           decoration: const BoxDecoration(color: Colors.white),
           child: Stack(
@@ -40,7 +41,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
   //切换账号登录和验证码登录类型
   Widget switchLoginType() {
     return Positioned(
-      top: MediaQuery.of(context).size.height * 0.29,
+      top: (MediaQuery.maybeOf(context)?.size.height ?? 600) * 0.29,
       left: 35,
       right: 35,
       child: Obx(() {
@@ -148,6 +149,10 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
             const TextSpan(text: "同意"),
             WidgetSpan(
                 child: GestureDetector(
+              onTap: () {
+                RoutePages.jumpAssectMarkDown(
+                    title: "服务条款", path: "assets/markdown/term_service.md");
+              },
               child: Text(
                 "《服务条款》",
                 style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
@@ -156,6 +161,10 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
             const TextSpan(text: "与"),
             WidgetSpan(
                 child: GestureDetector(
+              onTap: () {
+                RoutePages.jumpAssectMarkDown(
+                    title: "隐私条款", path: "assets/markdown/privacy_clause.md");
+              },
               child: Text(
                 "《隐私条款》",
                 style: TextStyle(color: XColors.themeColor, fontSize: 20.sp),
@@ -187,7 +196,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
   }
 
   Widget button(Color color) {
-    double widthBtn = MediaQuery.of(context).size.width - 70;
+    double widthBtn = (MediaQuery.maybeOf(context)?.size.width ?? 400) - 70;
     return Container(
         width: widthBtn,
         height: 45,
@@ -215,31 +224,32 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
 
   //第三方登录按钮
   Widget thirdLoginPlatform() {
-    return Container(
-      alignment: Alignment.centerLeft,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            '其他方式',
-            style: TextStyle(
-              color: Colors.black.withOpacity(0.6000000238418579),
-              fontSize: 14,
-              fontFamily: 'PingFang SC',
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          const SizedBox(width: 16),
-          plantForm(AssetsImages.loginWechat),
-          const SizedBox(width: 16),
-          plantForm(AssetsImages.loginZhifubao),
-          const SizedBox(width: 16),
-          plantForm(AssetsImages.loginDing),
-        ],
-      ),
-    );
+    return Container();
+    // return Container(
+    //   alignment: Alignment.centerLeft,
+    //   child: Row(
+    //     mainAxisSize: MainAxisSize.min,
+    //     mainAxisAlignment: MainAxisAlignment.start,
+    //     crossAxisAlignment: CrossAxisAlignment.center,
+    //     children: [
+    //       Text(
+    //         '其他方式',
+    //         style: TextStyle(
+    //           color: Colors.black.withOpacity(0.6000000238418579),
+    //           fontSize: 14,
+    //           fontFamily: 'PingFang SC',
+    //           fontWeight: FontWeight.w400,
+    //         ),
+    //       ),
+    //       const SizedBox(width: 16),
+    //       plantForm(AssetsImages.loginWechat),
+    //       const SizedBox(width: 16),
+    //       plantForm(AssetsImages.loginZhifubao),
+    //       const SizedBox(width: 16),
+    //       plantForm(AssetsImages.loginDing),
+    //     ],
+    //   ),
+    // );
   }
 
   Widget plantForm(
@@ -282,7 +292,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
     return Obx(() {
       if (state.accountLogin.value) {
         return Positioned(
-            top: MediaQuery.of(context).size.height * 0.38,
+            top: (MediaQuery.maybeOf(context)?.size.height ?? 600) * 0.38,
             left: 35,
             right: 35,
             height: 500,
@@ -325,39 +335,10 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
                               size: 24.w,
                               color: Colors.grey,
                             ))),
-                    Container(
-                      height: 50,
-                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          SizedBox(
-                              child: GestureDetector(
-                            onTap: () {
-                              controller.register();
-                            },
-                            child: const Text(
-                              "注册用户",
-                              style: TextStyle(color: XColors.themeColor),
-                            ),
-                          )),
-                          Container(
-                            padding: const EdgeInsets.only(right: 5),
-                            child: GestureDetector(
-                              onTap: () {
-                                controller.forgotPassword(
-                                    state.accountController.text);
-                              },
-                              child: const Text(
-                                "忘记密码",
-                                style: TextStyle(color: XColors.themeColor),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    _jumpButton(),
                     const SizedBox(height: 10),
+                    // clause(),
+                    // const SizedBox(height: 10),
                     loginSubmit(),
                     const SizedBox(height: 20),
                     thirdLoginPlatform(),
@@ -365,7 +346,7 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
                 )));
       } else {
         return Positioned(
-          top: MediaQuery.of(context).size.height * 0.38,
+          top: (MediaQuery.maybeOf(context)?.size.height ?? 600) * 0.38,
           left: 35,
           right: 35,
           height: 400,
@@ -400,7 +381,8 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
                     child: verificationCodeCountDown(),
                   ),
                 ),
-                const SizedBox(height: 60),
+                _jumpButton(),
+                const SizedBox(height: 10),
                 loginSubmit(),
                 const SizedBox(height: 20),
                 thirdLoginPlatform(),
@@ -410,6 +392,40 @@ class LoginPage extends BaseGetView<LoginController, LoginState> {
         );
       }
     });
+  }
+
+  Widget _jumpButton() {
+    return Container(
+      height: 50,
+      padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          SizedBox(
+              child: GestureDetector(
+            onTap: () {
+              controller.register();
+            },
+            child: const Text(
+              "注册用户",
+              style: TextStyle(color: XColors.themeColor),
+            ),
+          )),
+          Container(
+            padding: const EdgeInsets.only(right: 5),
+            child: GestureDetector(
+              onTap: () {
+                controller.forgotPassword(state.accountController.text);
+              },
+              child: const Text(
+                "忘记密码",
+                style: TextStyle(color: XColors.themeColor),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget verificationCodeCountDown() {

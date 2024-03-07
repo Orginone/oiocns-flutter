@@ -62,10 +62,10 @@ class RegisterController extends BaseController<RegisterState> {
       ToastUtils.showMsg(msg: "请输入正确的座右铭");
       return false;
     }
-    // if (!state.agreeTerms.value) {
-    //   ToastUtils.showMsg(msg: "请阅读并同意服务条款与隐私条款");
-    //   return false;
-    // }
+    if (!state.agreeTerms.value) {
+      ToastUtils.showMsg(msg: "请阅读并同意服务条款与隐私条款");
+      return false;
+    }
 
     return true;
   }

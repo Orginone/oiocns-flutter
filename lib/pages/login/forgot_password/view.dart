@@ -56,7 +56,8 @@ class ForgotPasswordPage
                     backToLogin(),
                     CommonWidget.logoLR(),
                     Positioned(
-                        top: MediaQuery.of(context).size.height * 0.3,
+                        top: (MediaQuery.maybeOf(context)?.size.height ?? 600) *
+                            0.3,
                         left: 30,
                         right: 30,
                         child: Column(

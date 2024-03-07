@@ -23,9 +23,8 @@ class TargetActivityList extends OrginoneStatelessWidget {
   }
 
   TargetActivityViewController get controller => Get.find();
-  Rx<IActivity> get activity => controller.state.activity.obs;
-  Rx<IActivityMessage?> get activityMessage =>
-      controller.state.activityMessage.obs;
+  Rxn<IActivity> get activity => controller.state.activity;
+  Rxn<IActivityMessage> get activityMessage => controller.state.activityMessage;
 
   @override
   Widget buildWidget(BuildContext context, dynamic data) {
@@ -65,15 +64,15 @@ class TargetActivityList extends OrginoneStatelessWidget {
   }
 
   Widget _item(int index) {
-    if (activityMessage != null) {
+    if (activityMessage.value != null) {
       return ActivityMessageWidget(
         item: activityMessage.value!,
         activity: activityMessage.value!.activity,
       );
-    } else {
+    } else if (null != activity.value) {
       return ActivityMessageWidget(
-        item: activity.value.activityList[index],
-        activity: activity.value.activityList[index].activity,
+        item: activity.value!.activityList[index],
+        activity: activity.value!.activityList[index].activity,
       );
     }
 
