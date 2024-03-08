@@ -13,6 +13,7 @@ import 'package:orginone/components/modules/relation/relation_cohort_page.dart';
 import 'package:orginone/components/modules/relation/relation_friend_page.dart';
 import 'package:orginone/components/widgets/form/form_page/index.dart';
 import 'package:orginone/components/widgets/form/form_widget/form_detail/form_detail_page.dart';
+import 'package:orginone/components/widgets/form/form_widget/form_tool.dart';
 import 'package:orginone/components/widgets/standard_preview/standard_entity_preview_page.dart';
 import 'package:orginone/components/widgets/target_activity/activity_release.dart';
 import 'package:orginone/config/constant.dart';
@@ -22,6 +23,7 @@ import 'package:orginone/dart/controller/wallet_controller.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
+import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/chat/message_chat_info/binding.dart';
@@ -78,7 +80,6 @@ import 'package:orginone/pages/store/application_details/binding.dart';
 import 'package:orginone/pages/store/application_details/view.dart';
 import 'package:orginone/pages/store/bindings.dart';
 import 'package:orginone/pages/store/store_page.dart';
-import 'package:orginone/pages/store/store_tools.dart';
 import 'package:orginone/pages/work/bindings.dart';
 import 'package:orginone/pages/work/create_work/binding.dart';
 import 'package:orginone/pages/work/create_work/view.dart';
@@ -602,7 +603,31 @@ class RoutePages {
 
   /// 跳转到数据二级页面
   static void jumpStore({dynamic parentData, List? listDatas}) async {
-    StoreTool.jumpNextPage(parentData: parentData, listDatas: listDatas);
+    LogUtil.d(parentData);
+    LogUtil.d(parentData.typeName);
+    LogUtil.d(parentData.metadata.toString());
+
+    SpaceEnum? type = SpaceEnum.getType(parentData.typeName);
+    switch (type) {
+      case SpaceEnum.form:
+        Form form = await FormTool.loadForm(parentData);
+        _jumpDetailPage(Routers.formPage, form);
+        break;
+      case SpaceEnum.property:
+      case SpaceEnum.dict:
+        _jumpDetailPage(Routers.standardEntityPreView, parentData);
+        break;
+      default:
+        _jumpHomeSub(
+            home: HomeEnum.store, parentData: parentData, listDatas: listDatas);
+    }
+  }
+
+  static _jumpDetailPage(String router, dynamic params) {
+    Get.toNamed(router,
+        arguments: RouterParam(
+            parents: [if (null != params) RouterParam(datas: params)],
+            datas: params));
   }
 
   /// 跳转到数据详情页面
@@ -630,7 +655,7 @@ class RoutePages {
 
   /// 跳转到关系二级页面
   static void jumpRelation({dynamic parentData, List? listDatas}) {
-    jumpHomeSub(
+    _jumpHomeSub(
         home: HomeEnum.relation, parentData: parentData, listDatas: listDatas);
   }
 
@@ -734,12 +759,12 @@ class RoutePages {
 
   /// 跳转到消息模块
   static void jumpChat({List<String> defaultActiveTabs = const []}) {
-    jumpHomeSub(home: HomeEnum.chat, defaultActiveTabs: defaultActiveTabs);
+    _jumpHomeSub(home: HomeEnum.chat, defaultActiveTabs: defaultActiveTabs);
   }
 
   /// 跳转到办事模块
   static void jumpWork({List<String> defaultActiveTabs = const []}) {
-    jumpHomeSub(home: HomeEnum.work, defaultActiveTabs: defaultActiveTabs);
+    _jumpHomeSub(home: HomeEnum.work, defaultActiveTabs: defaultActiveTabs);
   }
 
   /// 跳转到数据模块
@@ -747,15 +772,20 @@ class RoutePages {
       {dynamic parentData,
       List? listDatas,
       List<String> defaultActiveTabs = const []}) {
-    jumpHomeSub(
+    _jumpHomeSub(
         home: HomeEnum.store,
         parentData: parentData,
         listDatas: listDatas,
         defaultActiveTabs: defaultActiveTabs);
   }
 
+  /// 跳转到网页
+  static void jumpWeb({required String url}) {
+    Get.toNamed(Routers.webView, arguments: {'url': url});
+  }
+
   /// 跳转到首页子页面
-  static void jumpHomeSub(
+  static void _jumpHomeSub(
       {required HomeEnum home,
       dynamic parentData,
       List? listDatas,
@@ -770,14 +800,19 @@ class RoutePages {
         page: Routers.homeSub);
   }
 
-  /// 跳转到首页
-  static void jumpHome(
+  /// 跳转到门户
+  static void jumpPortal(
       {required HomeEnum home,
       dynamic parentData,
       List? listDatas,
       List<String> defaultActiveTabs = const [],
       bool preventDuplicates = false}) {
-    _jumpHome(home: home);
+    _jumpHome(
+        home: home,
+        parentData: parentData,
+        listDatas: listDatas,
+        defaultActiveTabs: defaultActiveTabs,
+        preventDuplicates: preventDuplicates);
   }
 
   static void _jumpHome(

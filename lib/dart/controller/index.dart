@@ -305,18 +305,16 @@ class IndexController extends GetxController {
   }
 
   void initNoReadCommand() {
-    bool isInit = false;
     command.subscribeByFlag('session-init', ([List<dynamic>? args]) {
-      if (provider.inited && !isInit) {
+      if (provider.inited) {
         loadChats().then((value) async {
           await _initActivity();
-          isInit = true;
         });
       }
     });
     //沟通未读消息提示处理
     command.subscribeByFlag('session', ([List<dynamic>? args]) async {
-      if (provider.inited && isInit) {
+      if (provider.inited) {
         await loadChats();
       }
     });

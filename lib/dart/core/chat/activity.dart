@@ -289,10 +289,10 @@ class Activity extends Entity<XTarget> implements IActivity {
         ActivityType res = ActivityType.fromJson(data['data']);
         switch (data['operate']) {
           case 'insert':
-            activityList = [
+            activityList.insert(
+              0,
               ActivityMessage(res, this),
-              ...activityList,
-            ];
+            );
             changCallback();
             break;
           case 'update':
@@ -352,6 +352,7 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
     _activityList = [];
     _inited = false;
     // load();
+    subscribeNotify();
   }
 
   @override
@@ -413,6 +414,42 @@ class GroupActivity extends Entity<XTarget> implements IActivity {
     List<String> tags,
   ) {
     return session.activity.send(content, typeName, resources, tags);
+  }
+
+  subscribeNotify() {
+    coll.subscribe(
+      [key],
+      (data) {
+        ActivityType res = ActivityType.fromJson(data['data']);
+        switch (data['operate']) {
+          case 'insert':
+            activityList.insert(
+              0,
+              ActivityMessage(res, session.activity),
+            );
+            changCallback();
+            break;
+          case 'update':
+            {
+              var index = activityList.indexWhere(
+                (i) => i.metadata.id == res.id,
+              );
+              if (index > -1) {
+                activityList[index].update(res);
+              }
+            }
+            break;
+          case 'delete':
+            _activityList = activityList
+                .where(
+                  (i) => i.metadata.id != res.id,
+                )
+                .toList();
+            changCallback();
+            break;
+        }
+      },
+    );
   }
 
   @override

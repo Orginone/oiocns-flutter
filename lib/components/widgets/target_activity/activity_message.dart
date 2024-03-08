@@ -138,7 +138,7 @@ class ActivityMessageWidget extends StatelessWidget {
             metadata!.content,
             textStyle: TextStyle(fontSize: 24.sp),
             onTapUrl: (url) {
-              Get.toNamed(Routers.webView, arguments: {'url': url});
+              RoutePages.jumpWeb(url: url);
               return true;
             },
             onTapImage: (url) {
@@ -320,8 +320,11 @@ class RenderCtxMore extends StatelessWidget {
                     await item.value.delete();
                     isDelete.value = true;
                     //提醒动态分类更新信息
-                    activity.activityList.first.changCallback();
-                    item.refresh();
+                    // if (activity.activityList.isNotEmpty) {
+                    //   activity.activityList.first.changCallback();
+                    // } else {
+                    Get.back();
+                    // }
                   },
                   // const Icon(
                   //   Icons.delete_outline,
@@ -399,7 +402,7 @@ class RenderCtxMore extends StatelessWidget {
         children: [
           Padding(padding: EdgeInsets.only(top: 5.h)),
           Offstage(
-            offstage: showLikes,
+            offstage: false, //showLikes,
             child: Container(
                 padding: EdgeInsets.all(5.w),
                 child: Row(

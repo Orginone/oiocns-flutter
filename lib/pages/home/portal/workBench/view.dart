@@ -5,6 +5,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/widgets/index.dart';
+import 'package:orginone/components/widgets/target_activity/activity_List.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/dart/base/common/format.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -115,25 +116,12 @@ class WorkBenchPage
   Widget _renderGroupActivity() {
     return modelWindow("动态",
         contentWidget: null != relationCtrl.cohortActivity.value
-            ? Container(
-                child: Column(
-                children: relationCtrl.cohortActivity.value!.activityList
-                    .sublist(
-                        0,
-                        min(
-                            2,
-                            relationCtrl
-                                .cohortActivity.value!.activityList.length))
-                    .map((item) {
-                  return ActivityMessageWidget(
-                    item: item,
-                    activity: item.activity,
-                    hideResource: true,
-                  );
-                }).toList(),
-              ))
+            ? ActivityListWidget(
+                activity: relationCtrl.cohortActivity.value,
+                showCount: 2,
+              )
             : Container(), onMoreTap: () {
-      RoutePages.jumpHome(
+      RoutePages.jumpPortal(
           home: relationCtrl.homeEnum.value, defaultActiveTabs: ["群动态"]);
     });
   }
@@ -142,25 +130,12 @@ class WorkBenchPage
   Widget _renderFieldCircle() {
     return modelWindow("好友圈",
         contentWidget: null != relationCtrl.friendsActivity.value
-            ? Container(
-                child: Column(
-                children: relationCtrl.friendsActivity.value!.activityList
-                    .sublist(
-                        0,
-                        min(
-                            2,
-                            relationCtrl
-                                .friendsActivity.value!.activityList.length))
-                    .map((item) {
-                  return ActivityMessageWidget(
-                    item: item,
-                    activity: item.activity,
-                    hideResource: true,
-                  );
-                }).toList(),
-              ))
+            ? ActivityListWidget(
+                activity: relationCtrl.friendsActivity.value,
+                showCount: 2,
+              )
             : Container(), onMoreTap: () {
-      RoutePages.jumpHome(
+      RoutePages.jumpPortal(
           home: relationCtrl.homeEnum.value, defaultActiveTabs: ["好友圈"]);
     });
   }

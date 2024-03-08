@@ -2,8 +2,7 @@ import 'package:extended_nested_scroll_view/extended_nested_scroll_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/components/widgets/target_activity/activity_message.dart';
-import 'package:orginone/config/unified.dart';
+import 'package:orginone/components/widgets/target_activity/activity_list.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/getx/base_get_list_page_view.dart';
 import 'package:orginone/utils/load_image.dart';
@@ -39,54 +38,49 @@ class CohortActivityPage
       state.currentActivity = cohortActivity.value!.activitys.first.obs;
     }
     return ExtendedNestedScrollView(
-        headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
-          if (state.currentActivity.value is! GroupActivity ||
-              state.activityMessageList.isEmpty) {
-            state.activityMessageList.value =
-                state.currentActivity.value.activitys.first.activityList ?? [];
-          }
-          return [
-            SliverToBoxAdapter(
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.only(
-                    top: 10.h, left: 10.w, right: 10.w, bottom: 12.w),
-                child: Row(
-                  children: activityGroup(controller.cohortActivity),
-                ),
+      headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+        if (state.currentActivity.value is! GroupActivity ||
+            state.activityMessageList.isEmpty) {
+          state.activityMessageList.value =
+              state.currentActivity.value.activitys.first.activityList ?? [];
+        }
+        return [
+          SliverToBoxAdapter(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.only(
+                  top: 10.h, left: 10.w, right: 10.w, bottom: 12.w),
+              child: Row(
+                children: activityGroup(controller.cohortActivity),
               ),
             ),
-          ];
-        },
-        onlyOneScrollInBody: true,
-        pinnedHeaderSliverHeightBuilder: () {
-          return 0;
-        },
-        body: Obx(() {
-          return Container(
-            color: XColors.bgListBody,
-            child: ListView(
-                controller: scrollController,
-                children: GroupActivityItem(
-                    cohortActivity: controller.cohortActivity,
-                    activity: controller.cohortActivity.activitys.isNotEmpty
-                        ? controller.cohortActivity.activitys.first
-                        : null)),
-          );
-        }));
+          ),
+        ];
+      },
+      onlyOneScrollInBody: true,
+      pinnedHeaderSliverHeightBuilder: () {
+        return 0;
+      },
+      body: controller.cohortActivity.activitys.isNotEmpty
+          ? ActivityListWidget(
+              scrollController: scrollController,
+              activity: state.currentActivity.value,
+            )
+          : Container(),
+    );
   }
 
-  //渲染动态列表
-  List<Widget> GroupActivityItem(
-      {required GroupActivity cohortActivity, IActivity? activity}) {
-    return state.activityMessageList.map((item) {
-      return ActivityMessageWidget(
-        item: item,
-        activity: item.activity,
-        hideResource: true,
-      );
-    }).toList();
-  }
+  // //渲染动态列表
+  // List<Widget> GroupActivityItem(
+  //     {required GroupActivity cohortActivity, IActivity? activity}) {
+  //   return state.activityMessageList.map((item) {
+  //     return ActivityMessageWidget(
+  //       item: item,
+  //       activity: item.activity,
+  //       hideResource: true,
+  //     );
+  //   }).toList();
+  // }
 
   List<Widget> activityGroup(GroupActivity activity) {
     return activity.activitys
@@ -98,7 +92,7 @@ class CohortActivityPage
             onTap: () {
               state.currentActivity.value = item;
               state.activityMessageList.value = item.activityList;
-              scrollController.reactive;
+              scrollController.jumpTo(0.0);
             },
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

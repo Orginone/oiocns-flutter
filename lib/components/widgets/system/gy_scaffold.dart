@@ -128,7 +128,7 @@ class _GyScaffoldState extends State<GyScaffold> {
     leading = widget.leading;
     elevation = widget.elevation;
     backColor = widget.backColor ?? Colors.black;
-    leadingWidth = widget.leadingWidth ?? kToolbarHeight;
+    leadingWidth = widget.leadingWidth ?? 15; //kToolbarHeight;
     bottomNavigationBar = widget.bottomNavigationBar;
     toolbarHeight = widget.toolbarHeight;
     titleSpacing = widget.titleSpacing;
