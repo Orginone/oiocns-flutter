@@ -4910,6 +4910,8 @@ class XSpecies extends XStandard {
   });
 
   XSpecies.fromJson(Map<String, dynamic> json) : super.fromJson(json) {
+    // LogUtil.d('XSpecies.fromJson');
+    // LogUtil.d(json);
     directoryId = json['directoryId'] ?? "";
     sourceId = json['sourceId'] ?? "";
     speciesItems = (json['speciesItems'] as List<dynamic>?)

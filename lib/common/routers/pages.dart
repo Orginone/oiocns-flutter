@@ -615,6 +615,7 @@ class RoutePages {
         break;
       case SpaceEnum.property:
       case SpaceEnum.dict:
+      case SpaceEnum.species:
         _jumpDetailPage(Routers.standardEntityPreView, parentData);
         break;
       default:

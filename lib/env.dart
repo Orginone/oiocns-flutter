@@ -12,8 +12,20 @@ enum Env {
   prod, //正式环境
 }
 
+//发布平台枚举类型
+enum ReleasePlatform {
+  universal, //安卓通用版本
+  huawei, //华为
+  rongyao, //荣耀
+  xiaomi, //小米
+  oppo,
+  vivo,
+  ios, //ios版本
+}
+
 class EnvConfig {
   static Env? env;
+  static ReleasePlatform? platform;
 
   static String get baseHost {
     switch (env) {

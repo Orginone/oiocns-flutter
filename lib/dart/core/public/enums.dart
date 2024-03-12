@@ -22,6 +22,18 @@ enum WorkType {
     return type.label;
   }
 
+  //判断是否是加操作
+  static bool isAdd(String workType) {
+    List adds = [
+      WorkType.addPerson.label,
+      WorkType.addUnit.label,
+      WorkType.addGroup.label,
+      WorkType.addStorage.label,
+      WorkType.addCohort.label,
+    ];
+    return adds.contains(workType);
+  }
+
   static WorkType? getType(String name) {
     return WorkType.values.firstWhereOrNull((element) => element.label == name);
   }

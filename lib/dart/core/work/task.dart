@@ -128,9 +128,19 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
   List<XTarget> get targets {
     if (taskdata.taskType != WorkType.thing.label) {
       try {
-        final parsedContent =
-            jsonDecode(taskdata.content ?? "[]") as List<dynamic>;
-        return parsedContent.map((item) => XTarget.fromJson(item)).toList();
+        // LogUtil.d(taskdata.content);
+        // LogUtil.d(taskdata.content.runtimeType);
+        var content = (taskdata.content != null &&
+                taskdata.content!.trim() != "" &&
+                taskdata.content!.isNotEmpty)
+            ? taskdata.content!
+            : "[]";
+        // LogUtil.d('targets---content');
+        // LogUtil.d(content);
+        final parsedContent = jsonDecode(content) as List<dynamic>;
+        List<XTarget> targets =
+            parsedContent.map((item) => XTarget.fromJson(item)).toList();
+        return targets;
       } catch (ex) {
         LogUtil.d(ex);
         return [];
@@ -223,7 +233,7 @@ class WorkTask extends FileInfo<XEntity> implements IWorkTask {
       if (status == -1) {
         return await recallApply();
       }
-      if (taskdata.taskType != WorkType.thing.label) {
+      if (WorkType.isAdd(taskdata.taskType ?? '')) {
         return approvalJoinTask(status, comment: comment);
       } else if (await loadInstance(reload: true)) {
         final res = await kernel.approvalTask(ApprovalTaskReq(

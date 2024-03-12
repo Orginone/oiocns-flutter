@@ -62,9 +62,9 @@ class Species extends StandardFileInfo<XSpecies> implements ISpecies {
         'options': {
           'match': {'speciesId': id}
         },
-      });
+      }, (json) => XSpeciesItem.fromJson(json));
       _itemLoaded = true;
-      items = res ?? [];
+      items = res;
     }
     return items;
   }

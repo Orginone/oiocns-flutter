@@ -399,7 +399,7 @@ class ButtonWidget extends StatelessWidget {
       case ButtonWidgetType.primary:
         return null;
       default:
-        return MaterialStateProperty.all(AppColors.lightGray);
+        return MaterialStateProperty.all(AppColors.deepPrimary);
     }
   }
 
