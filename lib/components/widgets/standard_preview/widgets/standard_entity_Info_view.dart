@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
-import 'package:orginone/components/widgets/common/image/team_avatar.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/entity.dart';
 import 'package:orginone/utils/index.dart';
+import 'package:orginone/utils/load_image.dart';
 
 class StandardEntityInfoView extends StatefulWidget {
   const StandardEntityInfoView(
@@ -36,7 +36,8 @@ class _StandardEntityInfoViewState extends State<StandardEntityInfoView> {
         item,
         '归属',
         'belong',
-        icon: belong,
+        // icon: belong,
+        userId: item['belongId'] ?? '-',
       ),
 
       widgets(
@@ -95,16 +96,20 @@ class _StandardEntityInfoViewState extends State<StandardEntityInfoView> {
       return const SizedBox();
     }
     return itemWidget(title, value,
-        required: required, rowCount: rowCount, icon: icon, userId: userId);
+        required: required,
+        rowCount: rowCount,
+        icon: icon,
+        userId: userId,
+        item: item);
   }
 
   itemWidget(String title, String value,
       {bool required = false,
       int rowCount = 2,
       ShareIcon? icon,
+      Map? item,
       String? userId}) {
     bool hasIcon = icon != null || userId != null;
-
     return <Widget>[
       <Widget>[
         required
@@ -119,21 +124,16 @@ class _StandardEntityInfoViewState extends State<StandardEntityInfoView> {
         ),
       ].toRow().paddingBottom(AppSpace.listRow),
       <Widget>[
-        icon == null && userId == null
+        userId == null
             ? const SizedBox()
-            : TeamAvatar(
-                key: ValueKey(icon),
-                size: 18,
-                circular: false,
-                info: TeamTypeInfo(share: icon, userId: userId),
-              ).paddingRight(3),
+            : XImage.entityIcon(userId, entityId: userId, height: 20),
         TextWidget.body1(
           value,
-          color: AppColors.gray_33,
+          color: userId != null ? AppColors.primary : AppColors.gray_66,
           maxLines: 3,
           softWrap: true,
           overflow: TextOverflow.clip,
-        ).width((Get.width - AppSpace.page * 2) / rowCount -
+        ).paddingLeft(3).width((Get.width - AppSpace.page * 2) / rowCount -
             (hasIcon ? 18 + 3 : 0)),
       ].toRow(crossAxisAlignment: CrossAxisAlignment.center),
     ]

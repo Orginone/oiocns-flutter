@@ -56,8 +56,9 @@ class WorkProvider implements IWorkProvider {
       }
     ]);
     EventBusUtil().on<ReceiveEvent>((event) {
-      // LogUtil.d(event);
       if (event.eventName == 'RecvTask') {
+        LogUtil.d('WorkProvider--');
+        LogUtil.d(event);
         XWorkTask work = XWorkTask.fromJson(event.data);
         if (_todoLoaded && work.approveType != '抄送') {
           updateTask(work);

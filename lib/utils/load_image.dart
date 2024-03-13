@@ -356,6 +356,7 @@ class XImage {
     double? radius,
     BoxFit fit = BoxFit.contain,
     bool gaplessPlayback = false,
+    String? entityId, //用户id
   }) {
     Widget iconW;
     if (null == data || (data is String && data.isEmpty)) {
@@ -367,6 +368,14 @@ class XImage {
       size = Size(width, width);
     } else if (null != height) {
       size = Size(height, height);
+    }
+    if (data is String && entityId != null) {
+      return iconW = TeamAvatar(
+        key: ValueKey(entityId),
+        size: size?.width,
+        circular: false,
+        info: TeamTypeInfo(userId: entityId),
+      );
     }
 
     if (data is XEntity && null != data.shareIcon()) {
@@ -509,10 +518,13 @@ class XImage {
   static Widget _defaultIcon(String? data,
       {Size? size, bool circular = false}) {
     String name = data ?? "--";
+    double fontSize = (size?.width ?? 0) > 33 ? 14 : 12;
+    // double vertical = (size?.width ?? 0) > 33 ? 7.82 : 3;
+    double vertical = 7.82;
     return Container(
       width: size?.width,
       height: size?.height,
-      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 7.82),
+      // padding: EdgeInsets.symmetric(horizontal: 2, vertical: vertical),
       clipBehavior: Clip.antiAlias,
       decoration: ShapeDecoration(
         gradient: LinearGradient(
@@ -526,7 +538,7 @@ class XImage {
       child: Center(
           child: Text(name.substring(max(0, name.length - 2), name.length),
               style: TextStyle(
-                  fontSize: (size?.width ?? 0) > 33 ? 14 : 12,
+                  fontSize: fontSize,
                   color: XColors.white,
                   fontWeight: FontWeight.bold))),
     );

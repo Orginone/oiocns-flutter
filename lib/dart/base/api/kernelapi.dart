@@ -1339,13 +1339,15 @@ class KernelApi {
 
   /// 接收服务端消息
   _receive(List<dynamic>? params) {
-    LogUtil.d('>>>========收到新消息');
     if (params == null || params.isEmpty) {
       return;
     }
+
     Map<String, dynamic> param = params[0];
-    ReceiveType res = ReceiveType.fromJson(param);
+    LogUtil.d('>>>========收到新消息');
     // LogUtil.d(param);
+    ReceiveType res = ReceiveType.fromJson(param);
+
     bool onlineOnly = true;
 
     switch (res.target) {

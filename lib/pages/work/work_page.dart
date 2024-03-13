@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:orginone/common/routers/pages.dart';
 import 'package:orginone/components/widgets/infoListPage/index.dart';
 import 'package:orginone/components/widgets/list_widget/index.dart';
@@ -13,8 +14,6 @@ import 'package:orginone/dart/core/target/outTeam/storage.dart';
 import 'package:orginone/dart/core/thing/directory.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main_base.dart';
-import 'package:orginone/utils/bus/event_bus.dart';
-import 'package:orginone/utils/bus/events.dart';
 import 'package:orginone/utils/date_util.dart';
 import 'package:orginone/utils/log/log_util.dart';
 
@@ -33,16 +32,23 @@ class WorkPage extends StatefulWidget {
 
 class _WorkPageState extends State<WorkPage> {
   InfoListPageModel? get workModel => widget.workModel;
+  set workModel(InfoListPageModel? value) {
+    widget.workModel = value;
+  }
+
   dynamic get datas => widget.datas;
   set datas(dynamic datas) => widget.datas;
-  set workModel(InfoListPageModel? value) => widget.workModel;
-
+  RxList<IWorkTask> get todos => relationCtrl.work.todos;
   @override
   void initState() {
     super.initState();
-    EventBusUtil().on((event) async {
-      if (event is LoadTodosEvent) {
-        setState(() {});
+
+    todos.listen((values) {
+      if (mounted) {
+        setState(() {
+          widget.datas = values;
+          widget.workModel = null;
+        });
       }
     });
   }

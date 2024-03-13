@@ -3,14 +3,12 @@ import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/widgets/common/others/common_widget.dart';
 import 'package:orginone/config/index.dart';
-import 'package:orginone/dart/base/index.dart';
 import 'package:orginone/dart/base/model.dart';
-import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/public/enums.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/work/widgets/approve_widget.dart';
-import 'package:orginone/utils/icons.dart';
+import 'package:orginone/utils/load_image.dart';
 
 //申请加入办事组件
 class ApplyWidget extends StatelessWidget {
@@ -47,7 +45,8 @@ class ApplyWidget extends StatelessWidget {
     return <Widget>[
       <Widget>[
         const TextWidget.body1('申  请  者：'),
-        _imageWidget(target: todo!.targets.first),
+        // _imageWidget(target: todo!.targets.first),
+        XImage.entityIcon(todo!.targets.first, height: 28),
         TextWidget.body1(
           '${todo?.targets.first.name}' ?? '',
           softWrap: true,
@@ -58,7 +57,8 @@ class ApplyWidget extends StatelessWidget {
       ].toRow().paddingBottom(AppSpace.listItem),
       <Widget>[
         const TextWidget.body1('申请加入：'),
-        _imageWidget(target: todo!.targets.last),
+        // _imageWidget(target: todo!.targets.last),
+        XImage.entityIcon(todo!.targets.last, height: 28),
         TextWidget.body1(
           todo?.targets.last.name ?? '',
           softWrap: true,
@@ -75,52 +75,48 @@ class ApplyWidget extends StatelessWidget {
   }
 
   ///头像组件
-  _imageWidget({XTarget? target, ShareIcon? shareIcon}) {
-    ShareIcon? icon;
-    if (target?.icon == null) {
-      icon = shareIcon ??
-          relationCtrl.provider.user?.findShareById(target?.id ?? '');
-      if (icon?.name.isEmpty ?? false) {
-        icon?.name = (shareIcon == null
-                ? target == null
-                    ? ''
-                    : target.name
-                : shareIcon.typeName) ??
-            '';
-        icon?.typeName = (shareIcon == null
-                ? target == null
-                    ? ''
-                    : target.typeName
-                : shareIcon.typeName) ??
-            '';
-      }
-    } else {
-      icon = ShareIcon(
-          name: target?.name ?? '',
-          typeName: target?.typeName ?? '',
-          avatar: parseAvatar(target?.icon));
-    }
-    // LogUtil.d('_imageWidget');
-    // LogUtil.d(target?.name);
-    // LogUtil.d(icon?.name);
-    // LogUtil.d(icon?.typeName);
-    // LogUtil.d(icon?.avatar?.thumbnail);
-    return icon?.avatar?.thumbnailUint8List == null
-        ? XImageWidget.asset(
-            IconsUtils.workDefaultAvatar(
-                target?.typeName ?? shareIcon?.typeName ?? ''),
-            // target!.defaultAvatar(),
-            width: 20,
-            height: 20,
-            fit: BoxFit.fill,
-          )
-        : XImageWidget(
-            data: icon?.avatar?.thumbnailUint8List,
-            width: 20,
-            height: 20,
-            type: ImageWidgetType.memory,
-            url: '');
-  }
+  // _imageWidget({XTarget? target, ShareIcon? shareIcon}) {
+  //   ShareIcon? icon;
+  //   if (target?.icon == null) {
+  //     icon = shareIcon ??
+  //         relationCtrl.provider.user?.findShareById(target?.id ?? '');
+  //     if (icon?.name.isEmpty ?? false) {
+  //       icon?.name = (shareIcon == null
+  //               ? target == null
+  //                   ? ''
+  //                   : target.name
+  //               : shareIcon.typeName) ??
+  //           '';
+  //       icon?.typeName = (shareIcon == null
+  //               ? target == null
+  //                   ? ''
+  //                   : target.typeName
+  //               : shareIcon.typeName) ??
+  //           '';
+  //     }
+  //   } else {
+  //     icon = ShareIcon(
+  //         name: target?.name ?? '',
+  //         typeName: target?.typeName ?? '',
+  //         avatar: parseAvatar(target?.icon));
+  //   }
+
+  //   return icon?.avatar?.thumbnailUint8List == null
+  //       ? XImageWidget.asset(
+  //           IconsUtils.workDefaultAvatar(
+  //               target?.typeName ?? shareIcon?.typeName ?? ''),
+  //           // target!.defaultAvatar(),
+  //           width: 20,
+  //           height: 20,
+  //           fit: BoxFit.fill,
+  //         )
+  //       : XImageWidget(
+  //           data: icon?.avatar?.thumbnailUint8List,
+  //           width: 20,
+  //           height: 20,
+  //           type: ImageWidgetType.memory,
+  //           url: '');
+  // }
 
   _buildApproveView() {
     int status = todo?.taskdata.status ?? 0;
@@ -152,6 +148,10 @@ class ApplyWidget extends StatelessWidget {
         todo?.taskdata.records == null
             ? ''
             : todo?.taskdata.records?.first.createUser ?? '');
+
+    String createUser = todo?.taskdata.records == null
+        ? ''
+        : todo?.taskdata.records?.first.createUser ?? '';
     // LogUtil.d('_buildApplyResultView');
     // LogUtil.d(record?.toJson());
     // LogUtil.d(todo?.taskdata.records?.first.createUser);
@@ -159,8 +159,13 @@ class ApplyWidget extends StatelessWidget {
     if (status < TaskStatus.approvalStart.status) return const SizedBox();
     var result = <Widget>[
       // Image.network('src'),
-      _imageWidget(shareIcon: record),
-      TextWidget.body1(record?.name ?? '').paddingLeft(AppSpace.listItem),
+      XImage.entityIcon("createUser", entityId: createUser, height: 28),
+
+      // _imageWidget(shareIcon: record),
+      TextWidget.body1(
+        record?.name ?? '',
+        color: AppColors.primary,
+      ).paddingLeft(AppSpace.listItem),
       const SizedBox(
               height: 15, width: 4, child: VerticalDivider(color: Colors.grey))
           .paddingLeft(AppSpace.listItem),
