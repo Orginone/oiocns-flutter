@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
+import 'package:orginone/components/widgets/common/others/common_widget.dart';
 import 'package:orginone/components/widgets/form/form_widget/index.dart';
 import 'package:orginone/config/colors.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -25,18 +26,7 @@ class SubFormPage extends GetView<SubFormController> {
       return Container();
     }
     XForm form = forms[0];
-    return <Widget>[
-      Container()
-          .backgroundColor(AppColors.blue)
-          .height(18)
-          .width(4)
-          .paddingLeft(10)
-          .paddingRight(5)
-          .paddingTop(4),
-      TextWidget.title3(form.name ?? ''),
-    ].toRow(
-      crossAxisAlignment: CrossAxisAlignment.center,
-    );
+    return CommonWidget.sectionHeaderView(form.name ?? '');
   }
 
   _buildFormView() {

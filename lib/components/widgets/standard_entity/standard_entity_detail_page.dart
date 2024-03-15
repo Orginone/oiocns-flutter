@@ -1,31 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:orginone/common/index.dart';
 import 'package:orginone/components/base/orginone_stateful_widget.dart';
+import 'package:orginone/components/widgets/common/others/common_widget.dart';
 import 'package:orginone/config/index.dart';
 import 'package:orginone/dart/base/schema.dart';
 import 'package:orginone/dart/core/thing/standard/index.dart';
 import 'package:orginone/utils/index.dart';
 
 import 'widgets/standard_entity_Info_view.dart';
+import 'widgets/standard_entity_child_list_view.dart';
 
 // ignore: must_be_immutable
-class StandardEntityPreViewPage extends OrginoneStatefulWidget {
-  StandardEntityPreViewPage({super.key, super.data});
+class StandardEntityDetailPage extends OrginoneStatefulWidget {
+  StandardEntityDetailPage({super.key, super.data});
 
   @override
-  State<StandardEntityPreViewPage> createState() =>
-      _StandardEntityPreViewPageState();
+  State<StandardEntityDetailPage> createState() =>
+      _StandardEntityDetailPageState();
 }
 
-class _StandardEntityPreViewPageState
-    extends OrginoneStatefulState<StandardEntityPreViewPage, dynamic> {
+class _StandardEntityDetailPageState
+    extends OrginoneStatefulState<StandardEntityDetailPage, dynamic> {
   @override
   Widget buildWidget(BuildContext context, dynamic data) {
-    return _buildView(context, data);
+    return _buildMainView(context, data);
   }
 
   // 主视图
-  Widget _buildView(BuildContext context, data) {
+  Widget _buildMainView(BuildContext context, data) {
     if (data == null || data.metadata == null) {
       return const Text('数据异常');
     }
@@ -45,6 +47,7 @@ class _StandardEntityPreViewPageState
     item = data.metadata.toJson();
 
     if (data is Species) {
+      //如果是字典和分类项目  加载loadContent
       return FutureBuilder(
         future: data.loadContent(reload: true),
         builder: (context, snapshot) {
@@ -68,16 +71,25 @@ class _StandardEntityPreViewPageState
           // LogUtil.d('-------------------');
           LogUtil.d(item);
 
-          return StandardEntityInfoView(
-            item: item,
-            belong: data.belong,
-          );
+          return _buildBody(data, item, species);
         },
       );
     }
-    return StandardEntityInfoView(
-      item: item,
-      belong: data.belong,
-    );
+    return _buildBody(data, item, XSpecies.fromJson(item));
+  }
+
+  _buildBody(dynamic data, dynamic item, XSpecies species) {
+    return SingleChildScrollView(
+        child: <Widget>[
+      CommonWidget.sectionHeaderView(
+          '${data.typeName ?? ''}${[data.name ?? '']}基本信息'),
+      StandardEntityInfoView(
+        item: item,
+        belong: data.belong,
+      ),
+      StandardEntityChildListView(
+        data: species,
+      )
+    ].toColumn().backgroundColor(AppColors.white));
   }
 }

@@ -13,8 +13,8 @@ import 'package:orginone/components/modules/relation/relation_cohort_page.dart';
 import 'package:orginone/components/modules/relation/relation_friend_page.dart';
 import 'package:orginone/components/widgets/form/form_page/index.dart';
 import 'package:orginone/components/widgets/form/form_widget/form_detail/form_detail_page.dart';
-import 'package:orginone/components/widgets/form/form_widget/form_tool.dart';
-import 'package:orginone/components/widgets/standard_preview/standard_entity_preview_page.dart';
+import 'package:orginone/components/widgets/standard_entity/standard_entity_detail_page.dart';
+import 'package:orginone/components/widgets/standard_entity/standard_entity_info_page.dart';
 import 'package:orginone/components/widgets/target_activity/activity_release.dart';
 import 'package:orginone/config/constant.dart';
 import 'package:orginone/dart/base/model.dart';
@@ -23,7 +23,6 @@ import 'package:orginone/dart/controller/wallet_controller.dart';
 import 'package:orginone/dart/core/chat/activity.dart';
 import 'package:orginone/dart/core/chat/session.dart';
 import 'package:orginone/dart/core/public/enums.dart';
-import 'package:orginone/dart/core/thing/standard/form.dart';
 import 'package:orginone/dart/core/work/task.dart';
 import 'package:orginone/main_base.dart';
 import 'package:orginone/pages/chat/message_chat_info/binding.dart';
@@ -80,6 +79,7 @@ import 'package:orginone/pages/store/application_details/binding.dart';
 import 'package:orginone/pages/store/application_details/view.dart';
 import 'package:orginone/pages/store/bindings.dart';
 import 'package:orginone/pages/store/store_page.dart';
+import 'package:orginone/pages/store/store_tools.dart';
 import 'package:orginone/pages/work/bindings.dart';
 import 'package:orginone/pages/work/create_work/binding.dart';
 import 'package:orginone/pages/work/create_work/view.dart';
@@ -427,8 +427,12 @@ class RoutePages {
       binding: WorkListBinding(),
     ),
     GetPage(
-      name: Routers.standardEntityPreView,
-      page: () => StandardEntityPreViewPage(),
+      name: Routers.standardEntityInfoPage,
+      page: () => StandardEntityInfoPage(),
+    ),
+    GetPage(
+      name: Routers.standardEntityDetailPage,
+      page: () => StandardEntityDetailPage(),
     ),
     GetPage(
         name: Routers.messageFile,
@@ -603,42 +607,35 @@ class RoutePages {
 
   /// 跳转到数据二级页面
   static void jumpStore({dynamic parentData, List? listDatas}) async {
-    LogUtil.d(parentData);
-    LogUtil.d(parentData.typeName);
-    LogUtil.d(parentData.metadata.toString());
+    // LogUtil.d(parentData);
+    // LogUtil.d(parentData.typeName);
+    // LogUtil.d(parentData.metadata.toString());
 
-    SpaceEnum? type = SpaceEnum.getType(parentData.typeName);
-    switch (type) {
-      case SpaceEnum.form:
-        Form form = await FormTool.loadForm(parentData);
-        _jumpDetailPage(Routers.formPage, form);
-        break;
-      case SpaceEnum.property:
-      case SpaceEnum.dict:
-      case SpaceEnum.species:
-        _jumpDetailPage(Routers.standardEntityPreView, parentData);
-        break;
-      default:
-        _jumpHomeSub(
-            home: HomeEnum.store, parentData: parentData, listDatas: listDatas);
-    }
-  }
-
-  static _jumpDetailPage(String router, dynamic params) {
-    Get.toNamed(router,
-        arguments: RouterParam(
-            parents: [if (null != params) RouterParam(datas: params)],
-            datas: params));
+    // SpaceEnum? type = SpaceEnum.getType(parentData.typeName);
+    // switch (type) {
+    //   case SpaceEnum.form:
+    //     Form form = await FormTool.loadForm(parentData);
+    //     _jumpDetailOrInfoPage(Routers.formPage, form);
+    //     break;
+    //   case SpaceEnum.property:
+    //   case SpaceEnum.dict:
+    //   case SpaceEnum.species:
+    //     _jumpDetailOrInfoPage(Routers.standardEntityPreView, parentData);
+    //     break;
+    //   default:
+    //     _jumpHomeSub(
+    //         home: HomeEnum.store, parentData: parentData, listDatas: listDatas);
+    // }
+    StoreTool.jumpStore(parentData: parentData, listDatas: listDatas);
   }
 
   /// 跳转到数据详情页面
   /// data 需要展示的目标对象
   /// defaultActiveTabs 默认激活页签
   static void jumpStoreInfoPage(
-      {dynamic data, List<String> defaultActiveTabs = const []}) {
-    LogUtil.d('jumpStoreInfoPage');
-    LogUtil.d(data.runtimeType);
-    LogUtil.d(data);
+      {dynamic data, List<String> defaultActiveTabs = const []}) async {
+    StoreTool.jumpStoreInfoPage(
+        data: data, defaultActiveTabs: defaultActiveTabs);
     // if (data.typeName == TargetType.person.label) {
     //   Get.toNamed(Routers.storage, arguments: {
     //     "parents": [..._getParentRouteParams(), data],
@@ -768,11 +765,12 @@ class RoutePages {
     _jumpHomeSub(home: HomeEnum.work, defaultActiveTabs: defaultActiveTabs);
   }
 
-  /// 跳转到数据模块
-  static void jumpStorage(
+  /// 跳转到数据子模块
+  static void jumpStoreSub(
       {dynamic parentData,
       List? listDatas,
-      List<String> defaultActiveTabs = const []}) {
+      List<String> defaultActiveTabs = const [],
+      bool preventDuplicates = false}) {
     _jumpHomeSub(
         home: HomeEnum.store,
         parentData: parentData,

@@ -167,6 +167,7 @@ class _StorePageState extends State<StorePage> {
               return GestureDetector(
                 onTap: () {
                   LogUtil.d('>>>>>>======点击了感叹号');
+                  RoutePages.jumpStoreInfoPage(data: data);
                 },
                 child: const IconWidget(
                   color: XColors.black666,

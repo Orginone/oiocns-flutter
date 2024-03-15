@@ -18,6 +18,7 @@ class ProcessDetailsPage
   Widget buildView() {
     return GyScaffold(
       titleName: state.todo?.taskdata.title,
+      leadingWidth: 24,
       body: _buildMainView(),
     );
   }

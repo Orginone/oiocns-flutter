@@ -13,7 +13,7 @@ import 'env.dart';
 Future<void> main() async {
   EnvConfig.env = Env.prod;
   //TODO：打包发布的时候修改一下发布平台
-  EnvConfig.platform = ReleasePlatform.huawei;
+  EnvConfig.platform = ReleasePlatform.universal;
   await initApp();
 }
 

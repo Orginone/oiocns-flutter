@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:orginone/common/index.dart';
+import 'package:orginone/components/widgets/common/others/common_widget.dart';
 import 'package:orginone/components/widgets/common/others/mapping_components.dart';
 import 'package:orginone/components/widgets/form/form_widget/index.dart';
-import 'package:orginone/config/colors.dart';
 
 import 'package:orginone/dart/base/model.dart';
 import 'package:orginone/dart/base/schema.dart';
@@ -28,21 +28,7 @@ class MainFormPage extends GetView<MainFormController> {
       return Container();
     }
     XForm form = forms[0];
-    return <Widget>[
-      Container()
-          .backgroundColor(AppColors.blue)
-          .width(4)
-          .paddingLeft(10)
-          .height(16)
-          .paddingRight(5),
-      // .paddingTop(4),
-      TextWidget.title3(form.name ?? '').paddingBottom(2),
-    ]
-        .toRow(
-          crossAxisAlignment: CrossAxisAlignment.center,
-        )
-        .backgroundColor(AppColors.white)
-        .height(30);
+    return CommonWidget.sectionHeaderView(form.name ?? '');
     // .paddingTop(15);
   }
 

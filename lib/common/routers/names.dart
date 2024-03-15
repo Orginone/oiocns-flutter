@@ -213,8 +213,11 @@ class Routers {
   //属性定义详情
   static const String workList = "/workList";
 
-  /// 标准数据预览 StandardEntityPreViewPage
-  static const String standardEntityPreView = "/standardEntityPreView";
+  /// 标准数据信息页面 standardEntityInfoPage
+  static const String standardEntityInfoPage = "/standardEntityInfoPage";
+
+  /// 标准数据详情页 standardEntityDetailPage
+  static const String standardEntityDetailPage = "/standardEntityDetailPage";
 
   ///数据二级至N级页面
   static const String storeTree = "/storeTree";

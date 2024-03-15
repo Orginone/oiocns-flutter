@@ -290,7 +290,7 @@ class AppUpdate {
     switch (EnvConfig.platform) {
       case ReleasePlatform.huawei:
         jsonUrl = huawei;
-        _updateModel!.force = true;
+        // _updateModel!.force = true;
         // _updateModel!.content =
         //     '1、底层框架进行了深度优化改版底层框架进行了深度优化改版；\r\n2、门户、数据、关系等用户页面进行了改版；\r\n3、底层框架进行了深度优化改版；\r\n4、门户、数据、关系等用户页面进行了改版；\r\n5、底层框架进行了深度优化改版；\r\n6、门户、数据、关系等用户页面进行了改版；\r\n7、底层框架进行了深度优化改版；\r\n8、门户、数据、关系等用户页面进行了改版；门户、数据、关系等用户页面进行了改版\r\n1、底层框架进行了深度优化改版底层框架进行了深度优化改版；\r\n2、门户、数据、关系等用户页面进行了改版；\r\n3、底层框架进行了深度优化改版；\r\n4、门户、数据、关系等用户页面进行了改版；\r\n5、底层框架进行了深度优化改版；\r\n6、门户、数据、关系等用户页面进行了改版；\r\n7、底层框架进行了深度优化改版；\r\n8、门户、数据、关系等用户页面进行了改版；门户、数据、关系等用户页面进行了改版\r\n';
         // // _updateModel!.content = '1、底层框架进行了深度优化改；';
@@ -355,6 +355,8 @@ class AppUpdate {
         LogUtil.d('_openMarket');
         LogUtil.d(value);
       });
+    } else {
+      ToastUtils.showMsg(msg: '跳转失败');
     }
   }
 

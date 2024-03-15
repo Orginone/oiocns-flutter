@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:orginone/common/index.dart';
-import 'package:orginone/components/index.dart';
+import 'package:orginone/common/extension/index.dart';
+import 'package:orginone/common/values/index.dart';
+import 'package:orginone/common/widgets/index.dart';
+import 'package:orginone/components/widgets/common/image/image_widget.dart';
+import 'package:orginone/components/widgets/common/text/index.dart'
+    hide TextWidget;
+
 import 'package:orginone/config/colors.dart';
 import 'package:orginone/config/unified.dart';
 import 'package:orginone/utils/load_image.dart';
@@ -10,6 +16,24 @@ import 'package:orginone/utils/load_image.dart';
 typedef DocumentOperation = Function(dynamic type, String data);
 
 class CommonWidget {
+  static Widget sectionHeaderView(String title) {
+    return <Widget>[
+      Container()
+          .backgroundColor(AppColors.blue)
+          .width(4)
+          .paddingLeft(10)
+          .height(16)
+          .paddingRight(5),
+      // .paddingTop(4),
+      TextWidget.title3(title).paddingBottom(2),
+    ]
+        .toRow(
+          crossAxisAlignment: CrossAxisAlignment.center,
+        )
+        .backgroundColor(AppColors.white)
+        .height(30);
+  }
+
   //提交按钮
   static Widget commonCreateSubmitWidget(
       {VoidCallback? draft, VoidCallback? submit}) {
